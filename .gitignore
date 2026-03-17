@@ -1,0 +1,54 @@
+### Java & Gradle ###
+*.class
+*.jar
+*.war
+*.ear
+bin/
+.gradle/                # Gradle 캐시 폴더
+build/                  # Gradle 빌드 결과물
+!gradle-wrapper.jar     # 래퍼 실행기
+
+### IntelliJ IDEA ###
+.idea/
+*.iml
+*.iws
+out/
+gen/
+.navigation/            # 인텔리제이 내부 파일
+
+### OS & Misc ###
+.DS_Store
+Thumbs.db
+*.log
+
+### Security & Config (민감 정보 보호) ###
+*.properties
+*.yml
+
+### 설정 파일 ###
+src/main/resources/config/db.properties
+src/main/resources/config/mail.properties
+src/main/resources/config/enterprise.properties
+src/main/resources/config/redis.properties
+src/main/resources/config/kh-holding.properties
+src/main/resources/config/payment.properties
+src/main/resources/config/slack.properties
+src/main/resources/config/kakao.properties
+
+### Frontend (React + Vite) ###
+mlfarm-frontend/node_modules/
+mlfarm-frontend/dist/
+mlfarm-frontend/.env
+mlfarm-frontend/.env.local
+mlfarm-frontend/.env.development.local
+mlfarm-frontend/.env.production.local
+
+### Build & Temp ###
+target/                 # 메이븐 흔적 지우기
+*.tmp
+*.bak
+*.swp
+logs/
+
+### 기타 ###
+ANTIGRAVITY.md
