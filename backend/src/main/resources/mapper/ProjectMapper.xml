@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.animalfarm.backend.domain.project.ProjectRepository">
+
+    <resultMap id="ProjectDetailMap"
+               type="com.animalfarm.backend.domain.project.dto.ProjectDetailDTO"
+               autoMapping="true">
+
+        <id column="project_id" property="projectId"/>
+
+        <result property="projectName" column="project_name"/>
+
+        <association property="farm"
+                     javaType="com.animalfarm.backend.domain.project.dto.FarmDTO">
+            <id property="farmId" column="farm_id"/>
+            <result property="addressSido" column="address_sido"/>
+            <result property="area" column="area"/>
+        </association>
+
+        <collection property="images" ofType="string">
+            <result column="image_url"/>
+        </collection>
+
+        <collection property="temperatureInside"
+                    ofType="java.math.BigDecimal">
+            <result column="temperature_inside"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectDetail" parameterType="long" resultMap="ProjectDetailMap">
+        SELECT
+        p.*,
+        f.*,
+        c.crop,
+        c.method,
+        t.ticker_symbol,
+        t.total_supply,
+        t.token_id,
+        img.image_url, -- 직접 조인 (중복 행 발생하지만 MyBatis가 처리함)
+        fed.temperature_inside -- 직접 조인
+        FROM projects p
+        LEFT JOIN farms f ON p.farm_id = f.farm_id
+        LEFT JOIN cultivations c ON p.project_id = c.project_id
+        LEFT JOIN tokens t ON p.project_id = t.project_id
+        -- 서브쿼리 그룹화 대신 원본 테이블과 직접 조인
+        LEFT JOIN project_images img ON p.project_id = img.project_id
+        LEFT JOIN farm_env_data fed ON f.farm_id = fed.farm_id
+        WHERE p.project_id = #{projectId}
+    </select>
+
+</mapper>
