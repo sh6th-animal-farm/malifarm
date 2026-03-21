@@ -27,19 +27,19 @@ public class GlobalExceptionHandler {
 		String errorBody = e.getErrorBody();
 		log.error("[External API Fail] Status: {}, Body: {}", statusCode, errorBody);
 
-		// 1. 에러 메시지 추출
-		String extractedMessage = extractMessage(errorBody);
+		String message = "문제가 발생했습니다. 다시 시도해주세요";
+		try {
+			ExternalApiResponseDTO<?> error = objectMapper.readValue(errorBody, ExternalApiResponseDTO.class);
 
-		// 2. 에러 메시지 정제
-		String finalMessage = cleanMessage(extractedMessage);
+			if (error.getMessage() != null && !error.getMessage().isBlank()) {
+				message = error.getMessage();
+			}
 
-		// 3. 에러 메시지 반환
-		Map<String, String> responseBody = new HashMap<>();
-		responseBody.put("message", finalMessage);
+		} catch (Exception ex) {
+			log.warn("API 응답 메시지 파싱 실패: {}", errorBody);
+		}
 
-		return ResponseEntity
-			.status(e.getStatusCode())
-			.body(responseBody);
+		throw new RuntimeException(message);
 	}
 
 	private String extractMessage(String errorBody) {
