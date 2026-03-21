@@ -39,7 +39,9 @@ public class GlobalExceptionHandler {
 			log.warn("API 응답 메시지 파싱 실패: {}", errorBody);
 		}
 
-		throw new RuntimeException(message);
+		return ResponseEntity
+			.status(e.getStatusCode())
+			.body(message);
 	}
 
 	private String extractMessage(String errorBody) {
