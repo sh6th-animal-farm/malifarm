@@ -24,6 +24,9 @@ import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.dto.PagedResponseDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/mypage")
 public class MypageController {
