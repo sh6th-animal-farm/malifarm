@@ -1,4 +1,14 @@
 package com.animalfarm.backend.global.dto;
 
-public class ApiResponseDTO {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+public class ApiResponseDTO<T> {
+
+	private String message;
+	private T payload;
 }
