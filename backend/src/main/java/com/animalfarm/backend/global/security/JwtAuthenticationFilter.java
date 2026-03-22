@@ -1,4 +1,4 @@
 package com.animalfarm.backend.global.security;
 
-public class JwtAutenticationFilter {
+public class JwtAuthenticationFilter {
 }
