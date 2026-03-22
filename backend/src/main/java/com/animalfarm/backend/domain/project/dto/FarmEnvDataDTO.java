@@ -15,7 +15,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FarmEnvDataDTO {
-
 	private Long feId; // 환경 데이터 ID (PK)
 	private Long farmId; // 농가 ID (FK)
 
