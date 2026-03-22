@@ -21,7 +21,13 @@ public class ExternalApiClient {
 
 	private final WebClient webClient;
 
-	// 강황증권 API 호출 메서드
+	// 강황증권 API 호출 메서드 - 멱등성 키 X
+	public <T> T callApi(String url, HttpMethod method, Object body,
+		ParameterizedTypeReference<ExternalApiResponseDTO<T>> responseType) {
+		return callApi(url, method, body, responseType, null);
+	}
+
+	// 강황증권 API 호출 메서드 - 멱등성 키 O
 	public <T> T callApi(String url, HttpMethod method, Object body,
 		ParameterizedTypeReference<ExternalApiResponseDTO<T>> responseType, String idempotencyKey) {
 
