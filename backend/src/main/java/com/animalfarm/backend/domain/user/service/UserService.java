@@ -92,13 +92,10 @@ public class UserService {
 		userRepository.updateAddress(address, userId);
 	}
 
-<<<<<<< HEAD
-=======
 	public UserDTO getUserById(Long userId) {
 		return userRepository.getUserById(userId);
 	}
 
->>>>>>> develop
 	public String getMyName() {
 		Long userId = SecurityUtil.getCurrentUserId();
 		if (userId == null) {
@@ -113,8 +110,6 @@ public class UserService {
 		return name;
 	}
 
-<<<<<<< HEAD
-=======
 	public String getMyRole() {
 		Long userId = SecurityUtil.getCurrentUserId();
 		if (userId == null) {
@@ -129,5 +124,4 @@ public class UserService {
 		return role;
 	}
 
->>>>>>> develop
 }
