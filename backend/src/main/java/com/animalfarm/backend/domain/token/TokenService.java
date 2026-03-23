@@ -18,7 +18,7 @@ import com.animalfarm.backend.domain.token.dto.OrderDTO;
 import com.animalfarm.backend.domain.token.dto.OrderPriceDTO;
 import com.animalfarm.backend.domain.token.dto.TokenDTO;
 import com.animalfarm.backend.domain.token.dto.TokenDetailDTO;
-import com.animalfarm.backend.domain.token.dto.TokenListDTO;
+import com.animalfarm.backend.domain.token.dto.TokenSummaryDTO;
 import com.animalfarm.backend.domain.token.dto.TokenPendingDTO;
 import com.animalfarm.backend.domain.token.dto.TradePriceDTO;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
@@ -40,13 +40,13 @@ public class TokenService {
 	private String khUrl;
 
 	// 전체 토큰 시세 조회
-	public List<TokenListDTO> selectAll() {
+	public List<TokenSummaryDTO> selectAll() {
 		try {
-			List<TokenListDTO> list = externalApiClient.callApi(
+			List<TokenSummaryDTO> list = externalApiClient.callApi(
 				khUrl + "api/market",
 				HttpMethod.GET,
 				null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<List<TokenListDTO>>>() {}
+				new ParameterizedTypeReference<ExternalApiResponseDTO<List<TokenSummaryDTO>>>() {}
 			);
 
 			list.forEach(dto -> {
@@ -240,13 +240,13 @@ public class TokenService {
 		return true;
 	}
 
-	public TokenListDTO selectTokenOhlcv(Long tokenId) {
+	public TokenSummaryDTO selectTokenOhlcv(Long tokenId) {
 		try {
-			TokenListDTO token = externalApiClient.callApi(
+			TokenSummaryDTO token = externalApiClient.callApi(
 				khUrl + "api/market/ohlcv/" + tokenId,
 				HttpMethod.GET,
 				null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<TokenListDTO>>() {}
+				new ParameterizedTypeReference<ExternalApiResponseDTO<TokenSummaryDTO>>() {}
 			);
 
 			return token; // token이 null인 경우, null 반환

@@ -19,6 +19,8 @@ public enum ErrorCode {
 
 	// 인증 관련 에러
 	INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "AUTH_001", "비밀번호가 일치하지 않습니다."),
+	NEED_LOGIN(HttpStatus.UNAUTHORIZED, "AUTH_002", "로그인이 필요한 서비스입니다."),
+	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_003", "로그인 정보가 만료되었습니다. 다시 로그인해주세요."),
 
 	// 시스템 에러
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "서버 내부 오류가 발생했습니다."),
