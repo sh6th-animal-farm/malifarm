@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.animalfarm.backend.domain.accounting.RevenueSummaryRepository;
+import com.animalfarm.backend.domain.accounting.FinancesRepository;
 import com.animalfarm.backend.domain.accounting.dto.RevenueSummaryDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
 import com.animalfarm.backend.domain.subscription.SubscriptionService;
@@ -34,7 +34,7 @@ public class ProjectBatchScheduler {
 	private final TokenService tokenService;
 	private final JobLauncher jobLauncher;
 	private final Job projectClosingJob;
-	private final RevenueSummaryRepository summaryRepo;
+	private final FinancesRepository financesRepository;
 
 	// 1분마다 실행
 	@Scheduled(cron = "0 * * * * *")
@@ -56,7 +56,7 @@ public class ProjectBatchScheduler {
 					TokenDTO token = tokenService.selectByProjectId(projectId);
 
 					// DividendBatchService에서 했던 것처럼 정산 요약 정보도 가져와야 함
-					RevenueSummaryDTO summary = summaryRepo.selectByProjectId(projectId);
+					RevenueSummaryDTO summary = financesRepository.selectRevenueSummaryByProjectId(projectId);
 
 					if (summary == null || token == null) {
 						log.warn(">>> 프로젝트 {}의 정산 정보나 토큰 정보가 없어 건너뜁니다.", projectId);

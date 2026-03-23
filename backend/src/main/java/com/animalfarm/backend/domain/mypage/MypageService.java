@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,8 @@ public class MypageService {
 	private final PasswordEncoder passwordEncoder;
 
 	// 강황증권 API 서버 주소
-	private final String KH_API_URL = "https://kh-holdings.cloud/";
+	@Value("${api.kh-stock.url}")
+	private String khUrl;
 
 	// ---------------------------------------------------------
 	// 거래 내역 조회
@@ -62,7 +64,7 @@ public class MypageService {
 	private List<MyTransactionHistDTO> fetchList(Long walletId, int page, int period, String apiCategory) {
 		try {
 			// 변경된 명세: /api/my/transaction/{walletId}?page=..&period=..&category=..
-			StringBuilder urlBuilder = new StringBuilder(KH_API_URL)
+			StringBuilder urlBuilder = new StringBuilder(khUrl)
 				.append("api/my/transaction/").append(walletId)
 				.append("?page=").append(page)
 				.append("&period=").append(period);
@@ -156,7 +158,7 @@ public class MypageService {
 		}
 
 		try {
-			String url = KH_API_URL + "api/my/wallet/" + walletId;
+			String url = khUrl + "api/my/wallet/" + walletId;
 			ResponseEntity<ExternalApiResponseDTO<WalletDTO>> response = restTemplate.exchange(
 				url, HttpMethod.GET, null,
 				new ParameterizedTypeReference<ExternalApiResponseDTO<WalletDTO>>() {
@@ -177,7 +179,7 @@ public class MypageService {
 		}
 
 		try {
-			String url = KH_API_URL + "api/my/token/" + walletId + "?page=" + page;
+			String url = khUrl + "api/my/token/" + walletId + "?page=" + page;
 			ResponseEntity<ExternalApiResponseDTO<List<HoldingDTO>>> response = restTemplate.exchange(
 				url, HttpMethod.GET, null,
 				new ParameterizedTypeReference<ExternalApiResponseDTO<List<HoldingDTO>>>() {
@@ -207,7 +209,7 @@ public class MypageService {
 
 		try {
 			// 1. 강황증권 API로 {userId}에 해당하는 지갑 정보 조회 (GET 방식)
-			String url = KH_API_URL + "api/my/account/" + userId;
+			String url = khUrl + "api/my/account/" + userId;
 
 			ResponseEntity<ExternalApiResponseDTO<Long>> response = restTemplate.exchange(
 				url,
