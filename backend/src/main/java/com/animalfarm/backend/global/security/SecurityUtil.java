@@ -3,6 +3,9 @@ package com.animalfarm.backend.global.security;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.animalfarm.backend.global.exception.BusinessException;
+import com.animalfarm.backend.global.exception.ErrorCode;
+
 /**
  * [보안 관련 공통 유틸리티]
  * 어느 서비스에서나 현재 로그인한 유저의 정보를 쉽게 가져올 수 있도록 합니다.
@@ -16,7 +19,7 @@ public class SecurityUtil {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
 		if (auth == null || auth.getPrincipal() == null || !(auth.getPrincipal() instanceof CustomUser)) {
-			throw new RuntimeException("로그인 정보가 만료되었습니다. 다시 로그인해주세요.");
+			throw new BusinessException(ErrorCode.TOKEN_EXPIRED);
 		}
 
 		CustomUser user = (CustomUser)auth.getPrincipal();

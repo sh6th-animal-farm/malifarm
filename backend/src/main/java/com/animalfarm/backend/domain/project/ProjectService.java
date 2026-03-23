@@ -1,9 +1,41 @@
 package com.animalfarm.backend.domain.project;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
+import com.animalfarm.backend.domain.accounting.dto.SnapshotResponseDTO;
+import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
+import com.animalfarm.backend.domain.project.dto.FarmDTO;
+import com.animalfarm.backend.domain.project.dto.ImgEditable;
+import com.animalfarm.backend.domain.project.dto.ProjectDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDetailDTO;
+import com.animalfarm.backend.domain.project.dto.ProjectInsertDTO;
+import com.animalfarm.backend.domain.project.dto.ProjectListDTO;
+import com.animalfarm.backend.domain.project.dto.ProjectPictureDTO;
+import com.animalfarm.backend.domain.project.dto.ProjectSearchReqDTO;
+import com.animalfarm.backend.domain.project.dto.ProjectStarredDTO;
+import com.animalfarm.backend.domain.project.dto.ProjectStatusDTO;
+import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
+import com.animalfarm.backend.domain.token.TokenRepository;
+import com.animalfarm.backend.domain.token.dto.TokenIssueDTO;
+import com.animalfarm.backend.global.HashManager;
+import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
+import com.animalfarm.backend.global.http.ApiResponse;
+import com.animalfarm.backend.global.http.ExternalApiClient;
+import com.animalfarm.backend.global.security.SecurityUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +44,326 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class ProjectService {
-
 	@Autowired
 	ProjectRepository projectRepository;
 
+	@Autowired
+	TokenRepository tokenRepository;
+
+	// 강황증권 API 서버 주소
+	@Value("${api.kh-stock.url}")
+	private String khUrl;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Autowired
+	ExternalApiClient externalApiClient;
+
+	public List<ProjectDTO> selectAll() {
+		return projectRepository.selectAll();
+	}
+
 	public ProjectDetailDTO selectDetail(Long projectId) {
 		return projectRepository.selectDetail(projectId);
+	}
+
+	public List<ProjectListDTO> selectByCondition(ProjectSearchReqDTO searchDTO) {
+		return projectRepository.selectByCondition(searchDTO);
+	}
+
+	public List<ProjectListDTO> selectByConditionForMain() {
+		return projectRepository.selectByConditionForMain();
+	}
+
+	public boolean getStarredStatus(ProjectStarredDTO projectStarredDTO) {
+		return projectRepository.getStarredStatus(projectStarredDTO);
+	}
+
+	//select하여 있다면 관심 프로젝트 등록/해제 없다면 관심 프로젝트 신규 생성
+	public boolean upsertStrarredProject(ProjectStarredDTO projectStarredDTO) {
+		try {
+			boolean isExist = projectRepository.selectStarredProject(projectStarredDTO);
+			if (isExist) {
+				projectRepository.updateStarred(projectStarredDTO);
+				return true;
+			} else {
+				projectRepository.insertStrarredProject(projectStarredDTO);
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Transactional(rollbackFor = Exception.class) // 모든 예외에 대해 롤백 보장
+	public boolean insertProject(ProjectInsertDTO projectInsertDTO) {
+		try {
+			BigDecimal subscriptionRate = projectInsertDTO.getActualAmount()
+				.divide(projectInsertDTO.getTargetAmount(), 4, RoundingMode.HALF_UP).multiply(new BigDecimal("100"));
+			projectInsertDTO.setSubscriptionRate(subscriptionRate);
+			projectRepository.insertProject(projectInsertDTO);
+			if (projectInsertDTO.getProjectImageNames() != null && !projectInsertDTO.getProjectImageNames().isEmpty()) {
+				projectRepository.insertPictureList(extractPictureDTO(projectInsertDTO));
+			}
+			projectRepository.insertToken(projectInsertDTO);
+
+			// 1. 거래 고유 식별 번호 생성 (예: ISS_프로젝트ID_타임스탬프)
+			Long tokenId = projectInsertDTO.getTokenId();
+			Long projectId = projectInsertDTO.getProjectId();
+			BigDecimal totalSupply = projectInsertDTO.getTotalSupply();
+
+			String timePart = String.valueOf(System.currentTimeMillis());
+			String shortTime = timePart.substring(timePart.length() - 6);
+			String txId = "ISS_" + projectId + "_" + shortTime;
+
+			TokenLedgerDTO projectNewTokenDTO = TokenLedgerDTO.builder()
+				.tokenId(tokenId) // 토큰 번호
+				.fromUserId(null) // [요구사항 1-3] 보낸 사용자 null
+				.toUserId(1L) // [요구사항 1-2] 시스템 관리자(1)에게 배정
+				.transactionId(txId) // 거래 고유 식별 번호
+				.externalRefId(990803L) // 증권사 참조 ID (일단 동일하게 세팅)
+				.orderAmount(totalSupply) // [요구사항 1-1] 전체 토큰 지분
+				.contractAmount(totalSupply) // 발행 시 체결 수량은 전체 수량과 동일
+				.status("COMPLETED") // 발행 완료 상태
+				.fee(BigDecimal.ZERO) // 최초 발행 수수료 0
+				.transactionType("ISSUE") // 거래 종류: 발행
+				.from_balanceAfter(BigDecimal.ZERO) // 송금 후 잔액 변동 없음 변경 필수
+				.to_balanceAfter(totalSupply) // 수금 후 잔액 변동 없음 변경 필수
+				.prevHashValue("0") // 이전 해시가 없으므로 "0"
+				.hashValue(HashManager.createHash("0", tokenId, totalSupply)) // 해시 계산
+				.build();
+
+			tokenRepository.insertTokenLedger(projectNewTokenDTO);
+			this.postTokenIssue(projectInsertDTO);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			// 여기서 에러 로그를 남겨서 개발자가 알게 함
+			log.error("통합 처리 중 에러 발생! DB 롤백을 시작합니다. 사유: {}", e.getMessage());
+			//// 제일 중요!! 예외를 다시 밖으로 던져야 스프링이 롤백을 해줍니다.
+			throw new RuntimeException("프로젝트 등록 중 오류 발생: " + e.getMessage(), e);
+		}
+	}
+
+	// 간단한 해시 계산 예시 메서드
+	public String createHash(String prevHash, Long projectId, BigDecimal amount) {
+		return org.springframework.util.DigestUtils.md5DigestAsHex(
+			(prevHash + projectId + amount.toString()).getBytes());
+	}
+
+	public List<FarmDTO> selectAllFarm() {
+		return projectRepository.selectAllFarm();
+	}
+
+	@Transactional(rollbackFor = Exception.class) // 모든 예외에 대해 롤백 보장
+	public boolean updateProject(ProjectDTO projectDTO) {
+		try {
+			projectRepository.updateProject(projectDTO);
+			if (projectDTO.getProjectImageNames() != null && !projectDTO.getProjectImageNames().isEmpty()) {
+				projectRepository.insertPictureList(extractPictureDTO(projectDTO));
+
+			}
+			if (projectDTO.getDeletedPictureIds() != null && !projectDTO.getDeletedPictureIds().isEmpty()) {
+				projectRepository.deletePictureList(projectDTO.getDeletedPictureIds());
+			}
+			return true; // 성공 시 true 반환
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			throw new RuntimeException("프로젝트 수정 중 오류 발생: " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("프로젝트 수정 중 오류 발생: " + e.getMessage());
+		}
+	}
+
+	public List<ProjectPictureDTO> selectPictures(Long projectId) {
+		return projectRepository.selectPictures(projectId);
+	}
+
+	public List<ProjectPictureDTO> extractPictureDTO(ImgEditable imgEditableDTO) {
+		List<ProjectPictureDTO> newPictureDTOList = new ArrayList<>();
+		for (String projectName : imgEditableDTO.getProjectImageNames()) {
+			ProjectPictureDTO newPicture = new ProjectPictureDTO();
+			newPicture.setProjectId(imgEditableDTO.getProjectId());
+			newPicture.setImageUrl(projectName);
+			newPictureDTOList.add(newPicture);
+		}
+		return newPictureDTOList;
+	}
+
+	public List<ProjectStatusDTO> selectStatus() {
+		List<ProjectStatusDTO> dto = projectRepository.selectStatus();
+		for (ProjectStatusDTO projectStatusDTO : dto) {
+			String current = projectStatusDTO.getProjectStatus();
+			String next = "";
+
+			switch (current) {
+				case "PREPARING": {
+					next = "ANNOUNCEMENT";
+					projectStatusDTO.setNextStatus(next);
+					break;
+				}
+				case "ANNOUNCEMENT": {
+					next = "SUBSCRIPTION";
+					projectStatusDTO.setNextStatus(next);
+					break;
+				}
+				case "SUBSCRIPTION": {
+					next = "SUBSCRIPTION";
+					projectStatusDTO.setNextStatus(next);
+					break;
+				}
+			}
+			projectRepository.updateProjectStatus(projectStatusDTO);
+		}
+		return projectRepository.selectStatus();
+	}
+
+	public boolean checkAccount() {
+		Long userId = SecurityUtil.getCurrentUserId();
+		System.out.println("checkAccount userId  " + userId);
+		// 1. 목적지 주소 생성 (외부 IP + 상세 경로)
+		String targetUrl = khUrl + "api/my/account/" + userId;
+		Long uclId = projectRepository.selectMyWalletId(userId);
+		if (uclId == null) {
+			log.info("사용자 {}의 매핑된 uclId가 없습니다.", userId);
+			return false; // 외부 API 호출할 필요도 없이 계좌 없음
+		}
+
+		try {
+			// 2. GET 방식으로 데이터 요청 (응답은 String으로 받는 예시)
+			Object payload = externalApiClient.callApi(targetUrl, HttpMethod.GET, null,
+				new ParameterizedTypeReference<ExternalApiResponseDTO<Object>>() {
+				});
+			System.out.println("응답 결과: " + payload);
+
+			return payload != null;
+
+		} catch (Exception e) {
+			// 3. 외부 서버 연결 실패 시 예외 처리 (재시도 테이블 insert 등)
+			log.error("계좌 확인 실패: {}", e.getMessage());
+			return false;
+		}
+	}
+
+	public Double selectMyWalletAmount() {
+		Long userId = SecurityUtil.getCurrentUserId();
+		Long uclId = projectRepository.selectMyWalletId(userId);
+		// 1. 목적지 주소 생성 (외부 IP + 상세 경로)
+		String targetUrl = khUrl + "api/my/wallet/" + uclId;
+
+		if (uclId == null) {
+			log.warn("조회 실패: 사용자 {}의 uclId가 존재하지 않습니다.", userId);
+			return null; // 0.0 대신 null을 주어 '계좌 없음'과 '잔액 0원'을 구분하는 게 좋습니다.
+		}
+		try {
+			// 2. GET 방식으로 데이터 요청 (응답은 String으로 받는 예시)
+			ResponseEntity<ApiResponse> responseEntity = restTemplate.getForEntity(targetUrl, ApiResponse.class);
+			int status = responseEntity.getStatusCodeValue();
+			System.out.println("응답 결과: " + status);
+			if (status == 200) {
+				ApiResponse response = responseEntity.getBody();
+				System.out.println("response : " + response.getPayload());
+				Map<String, Object> list = (Map<String, Object>)response.getPayload();
+				Object rawBalance = list.get("cashBalance");
+				System.out.println("list : " + list);
+				if (response.getPayload() != null) {
+					System.out.println("메시지" + response.getMessage());
+					BigDecimal balanceBD = new BigDecimal(String.valueOf(rawBalance));
+					System.out.println(balanceBD);
+					return balanceBD.doubleValue();
+				} else {
+					System.out.println("메시지" + response.getMessage());
+				}
+			}
+			return 0.0;
+		} catch (Exception e) {
+			// 3. 외부 서버 연결 실패 시 예외 처리 (재시도 테이블 insert 등)
+			System.err.println("여긴가 외부 서버 통신 실패: " + e.getMessage());
+			return 0.0;
+		}
+	}
+
+	public List<SnapshotResponseDTO> getDividendSnapshot(Long projectId) {
+		String fullUrl = khUrl + "api/project/dividend/before/" + projectId.toString();
+		try {
+			return externalApiClient.callApi(fullUrl, HttpMethod.POST, null,
+				new ParameterizedTypeReference<ExternalApiResponseDTO<List<SnapshotResponseDTO>>>() {
+				}, null);
+		} catch (Exception e) {
+			return new ArrayList<>();
+		}
+	}
+
+	public WalletDTO selectMyWalletInfo(Long uclId) {
+		String targetUrl = khUrl + "api/my/wallet/" + uclId;
+		try {
+			// 2. ExternalApiUtil의 callApi 호출
+			// ParameterizedTypeReference를 사용해 결과 타입을 WalletDTO로 명시합니다.
+			WalletDTO wallet = externalApiClient.callApi(targetUrl, HttpMethod.GET,
+				null, new ParameterizedTypeReference<ExternalApiResponseDTO<WalletDTO>>() {
+				}
+			);
+			if (wallet != null) {
+				log.info("지갑 정보 조회 성공: {}", wallet);
+				return wallet;
+			}
+		} catch (RuntimeException e) {
+			log.error("지갑 조회 실패: {}", e.getMessage());
+		}
+		return null;
+	}
+
+	/* 로직 생각해서 다시 사용할 수 있으니 남겨둘게요.
+	public void postTokenIssue(ProjectInsertDTO projectInsertDTO) {
+		TokenIssueDTO tokenIssueDTO = TokenIssueDTO.builder()
+			.tokenName(projectInsertDTO.getProjectName())
+			.tickerSymbol(projectInsertDTO.getTickerSymbol())
+			.totalSupply(projectInsertDTO.getTotalSupply())
+			.projectId(projectInsertDTO.getProjectId())
+			.issuePrice(projectInsertDTO.getTargetAmount().divide(projectInsertDTO.getTotalSupply()))
+			.createdAt(projectInsertDTO.getCreatedAt())
+			.build();
+
+		String targetUrl = khUrl + "api/project/open";
+		try {
+			TokenIssueDTO result = externalApiUtil.callApi(targetUrl, HttpMethod.POST, tokenIssueDTO,
+				new ParameterizedTypeReference<ApiResponse<TokenIssueDTO>>() {});
+			log.info("증권사 전송 성공 : " + result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			log.error("실패!!! : " + e.getMessage());
+		}
+	}
+	*/
+	public List<ProjectDTO> selectEndTargetProject() {
+		return projectRepository.selectEndTargetProject();
+	}
+
+	public void postTokenIssue(ProjectInsertDTO projectInsertDTO) {
+		TokenIssueDTO tokenIssueDTO = TokenIssueDTO.builder()
+			.tokenId(projectInsertDTO.getTokenId())
+			.tokenName(projectInsertDTO.getTokenName())
+			.tickerSymbol(projectInsertDTO.getTickerSymbol())
+			.totalSupply(projectInsertDTO.getTotalSupply())
+			.projectId(projectInsertDTO.getProjectId())
+			.issuePrice(
+				projectInsertDTO.getTargetAmount().divide(projectInsertDTO.getTotalSupply(), 0, RoundingMode.FLOOR))
+			.createdAt(projectInsertDTO.getCreatedAt())
+			.build();
+
+		String targetUrl = khUrl + "api/project/open";
+
+		// externalApiUtil.callApi 내부에서 이미 에러 시 RuntimeException을 던지도록 되어있으니
+		// 그냥 호출만 하면 에러가 상위로 전파됨.
+		TokenIssueDTO result = externalApiClient.callApi(targetUrl, HttpMethod.POST, tokenIssueDTO,
+			new ParameterizedTypeReference<ExternalApiResponseDTO<TokenIssueDTO>>() {
+			});
+
+		log.info("증권사 전송 성공 : " + result);
 	}
 }

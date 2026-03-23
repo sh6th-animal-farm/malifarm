@@ -92,6 +92,13 @@ public class UserService {
 		userRepository.updateAddress(address, userId);
 	}
 
+<<<<<<< HEAD
+=======
+	public UserDTO getUserById(Long userId) {
+		return userRepository.getUserById(userId);
+	}
+
+>>>>>>> develop
 	public String getMyName() {
 		Long userId = SecurityUtil.getCurrentUserId();
 		if (userId == null) {
@@ -106,4 +113,21 @@ public class UserService {
 		return name;
 	}
 
+<<<<<<< HEAD
+=======
+	public String getMyRole() {
+		Long userId = SecurityUtil.getCurrentUserId();
+		if (userId == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
+		}
+
+		String role = userRepository.selectUserRoleById(userId);
+		if (role == null || role.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자 권한이 없습니다.");
+		}
+
+		return role;
+	}
+
+>>>>>>> develop
 }
