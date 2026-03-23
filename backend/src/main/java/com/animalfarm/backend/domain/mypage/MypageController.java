@@ -100,7 +100,7 @@ public class MypageController {
 	@PatchMapping("/password")
 	public ResponseEntity<ApiResponseDTO<Void>> updatePassword(@RequestBody PasswordUpdateRequestDTO dto) {
 		mypageService.updatePassword(dto);
-		return ResponseEntity.ok(ApiResponseDTO.success(null, "정보를 수정했습니다."));
+		return ResponseEntity.ok(ApiResponseDTO.success(null, "비밀번호를 수정했습니다."));
 	}
 
 	// 내 프로젝트 조회
@@ -125,6 +125,6 @@ public class MypageController {
 		@RequestParam Long projectId,
 		@RequestParam boolean starred) {
 		mypageService.setStarred(projectId, starred);
-		return ResponseEntity.ok(ApiResponseDTO.success(null, starred ? "찜한 프로젝트에 등록되었습니다." : "찜한 프로젝트에서 해제되었습니다."));
+		return ResponseEntity.ok(ApiResponseDTO.success(null, starred ? "관심 프로젝트에 등록되었습니다." : "관심 프로젝트에서 해제되었습니다."));
 	}
 }
