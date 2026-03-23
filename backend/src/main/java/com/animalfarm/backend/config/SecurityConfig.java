@@ -10,9 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.animalfarm.backend.global.security.JwtAuthenticationFilter;
+import com.animalfarm.backend.global.security.JwtProvider;
+import com.animalfarm.backend.global.security.RedisUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,15 +40,19 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, JwtProvider jwtProvider, RedisUtil redisUtil) throws
+		Exception {
 		http
 			.csrf(csrf -> csrf.disable())
 			.httpBasic(httpBasic -> httpBasic.disable())
 			.formLogin(formLogin -> formLogin.disable())
 			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 			.authorizeHttpRequests(auth -> auth
-				.anyRequest().permitAll()
-			);
+				.anyRequest().permitAll() // 일단 다 열어두더라도
+			)
+			// ⭐️ 이 줄이 꼭 들어가야 토큰을 인식합니다!
+			.addFilterBefore(new JwtAuthenticationFilter(jwtProvider, redisUtil),
+				UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
