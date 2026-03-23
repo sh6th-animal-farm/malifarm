@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.animalfarm.backend.domain.user.UserRepository;
 import com.animalfarm.backend.domain.user.dto.UserDTO;
+import com.animalfarm.backend.domain.user.repository.UserRepository;
 
 /**
  * [회원 관리 서비스]

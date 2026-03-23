@@ -15,9 +15,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.animalfarm.backend.global.RedisUtil;
 import com.animalfarm.backend.global.security.JwtAuthenticationFilter;
 import com.animalfarm.backend.global.security.JwtProvider;
-import com.animalfarm.backend.global.security.RedisUtil;
 
 import lombok.RequiredArgsConstructor;
 
