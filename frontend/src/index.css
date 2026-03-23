@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-@theme {
-  /* --- 1. Primary Colors (Green System) --- */
+@theme inline {
+  /* --- 1. Green Colors --- */
   --color-green-0: #efffe7; --color-green-50: #d3f5bb; --color-green-100: #bef09e;
   --color-green-200: #aaea81; --color-green-300: #97e267; --color-green-400: #85d84d;
-  --color-green-500: #6cc32d; --color-green-600: #4a9f2e; --color-green-700: #3f8f2d;
+  --color-green-500: #6cc32d; --color-primary-600: #4a9f2e; --color-green-700: #3f8f2d;
   --color-green-800: #2e7127; --color-green-900: #225223; --color-green-950: #163b16;
 
-  /* --- 2. Greyscale (Neutral System) --- */
+  /* --- 2. Gray Colors --- */
   --color-gray-0: #fcfcfc; --color-gray-50: #f8fafb; --color-gray-100: #f2f2f2;
   --color-gray-200: #e1e1e1; --color-gray-300: #c6c6c6; --color-gray-400: #707070;
   --color-gray-500: #565656; --color-gray-600: #404040; --color-gray-700: #313131;
@@ -27,8 +27,8 @@
 
   /* --- 5. Typography Defaults --- */
   --font-main: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  --letter-spacing-std: -0.02em;
-  --line-height-std: 1.4;
+  --tracking-std: -0.02em;
+  --leading-std: 1.4;
 
   /* --- 6. Border Radius & Shadow --- */
   --radius-xs: 4px; --radius-s: 8px; --radius-m: 12px; --radius-l: 16px; --radius-xl: 999px;
@@ -41,7 +41,7 @@
 
   * { @apply m-0 p-0 box-border tracking-std; }
   body {
-    @apply font-main bg-gray-50 text-gray-600 leading-std antialiased flex flex-col min-h-screen;
+    @apply font-main bg-white text-gray-600 leading-std antialiased flex flex-col min-h-screen;
   }
   a { @apply cursor-pointer no-underline text-inherit; }
   
@@ -103,10 +103,10 @@
   /* Dropdown & Cards */
   .card { @apply bg-gray-0 border border-gray-100 rounded-l p-8 shadow-std; }
   .dropdown-content {
-    @apply hidden absolute top-[calc(100%+12px)] right-0 bg-white min-w-[180px] shadow-std rounded-s py-2 z-[1000]
-           after:content-[''] after:absolute after:-top-2 after:right-3 after:border-l-8 after:border-l-transparent after:border-r-8 after:border-r-transparent after:border-b-8 after:border-b-white;
+    @apply hidden absolute top-[calc(100%+12px)] right-0 bg-white min-w-[180px] shadow-std rounded-s py-2 z-[1000];
+    @apply after:content-[''] after:absolute after:-top-2 after:right-3 after:border-l-8 after:border-l-transparent after:border-r-8 after:border-r-transparent after:border-b-8 after:border-b-white;
   }
-  .show { @apply block !important; }
+  .show { @apply !block; }
 
   /* Footer */
   .main-footer { @apply w-full py-20 bg-white border-t border-gray-100; }
