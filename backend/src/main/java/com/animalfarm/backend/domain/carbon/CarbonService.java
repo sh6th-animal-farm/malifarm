@@ -20,6 +20,7 @@ import com.animalfarm.backend.domain.carbon.dto.CarbonListDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonOrderCompleteDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonOrderResponseDTO;
 import com.animalfarm.backend.domain.carbon.dto.UserBenefitDTO;
+import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
@@ -228,7 +229,7 @@ public class CarbonService {
 	/**
 	 * [상세 조회] 특정 상품 정보와 유저의 실시간 혜택 계산
 	 */
-	public ExternalApiResponseDTO<CarbonDetailDTO> selectDetail(Long cpId) {
+	public ApiResponseDTO<CarbonDetailDTO> selectDetail(Long cpId) {
 		Long userId = SecurityUtil.getCurrentUserId();
 		Long walletId = carbonRepository.getWalletIdByUserId(userId);
 
@@ -262,13 +263,13 @@ public class CarbonService {
 			detail.getCarbonInfo().getCpPrice(),
 			totalSupply, myHolding));
 
-		return new ExternalApiResponseDTO<CarbonDetailDTO>("상품 상세 정보 조회에 성공했습니다.", detail);
+		return ApiResponseDTO.success(detail, "상품 상세 정보 조회에 성공했습니다.");
 	}
 
 	/**
 	 * [모달용] 주문 견적
 	 */
-	public ExternalApiResponseDTO<CarbonOrderResponseDTO> quoteOrder(Long cpId, BigDecimal amount) {
+	public ApiResponseDTO<CarbonOrderResponseDTO> quoteOrder(Long cpId, BigDecimal amount) {
 
 		if (cpId == null) {
 			throw new IllegalArgumentException("cpId가 필요합니다.");
@@ -333,7 +334,7 @@ public class CarbonService {
 			.discountRate(discountRate)
 			.build();
 
-		return new ExternalApiResponseDTO<>("주문 견적 조회에 성공했습니다.", resp);
+		return ApiResponseDTO.success(resp, "주문 견적 조회에 성공했습니다.");
 	}
 
 	@Transactional
@@ -353,8 +354,8 @@ public class CarbonService {
 		Long userId = SecurityUtil.getCurrentUserId();
 
 		// 3) 주문 견적 뽑아오기
-		ExternalApiResponseDTO<CarbonOrderResponseDTO> quoteRes = quoteOrder(req.getCpId(), req.getAmount());
-		CarbonOrderResponseDTO quote = quoteRes.getPayload();
+		ApiResponseDTO<CarbonOrderResponseDTO> quoteRes = quoteOrder(req.getCpId(), req.getAmount());
+		CarbonOrderResponseDTO quote = quoteRes.getData();
 		if (quote == null) {
 			throw new RuntimeException("주문 견적 payload가 없습니다.");
 		}

@@ -16,7 +16,7 @@ import com.animalfarm.backend.domain.carbon.dto.CarbonDetailDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonListDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonOrderCompleteDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonOrderResponseDTO;
-import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
+import com.animalfarm.backend.global.dto.ApiResponseDTO;
 
 @RestController
 @RequestMapping("/api/carbon")
@@ -27,12 +27,12 @@ public class CarbonController {
 
 	/**
 	 * [수정] 전체 조회
-	 * ExternalApiResponseDTO로 감싸서 반환해야 JS의 result.payload 로직이 작동합니다.
+	 * ApiResponseDTO로 감싸서 반환해야 JS의 result.payload 로직이 작동합니다.
 	 */
 	@GetMapping("/list")
-	public ExternalApiResponseDTO<List<CarbonListDTO>> selectAll() {
+	public ApiResponseDTO<List<CarbonListDTO>> selectAll() {
 		List<CarbonListDTO> list = carbonService.selectAll();
-		return new ExternalApiResponseDTO<>("전체 상품 리스트 조회 성공", list);
+		return ApiResponseDTO.success(list, "전체 상품 리스트 조회 성공");
 	}
 
 	/**
@@ -40,23 +40,23 @@ public class CarbonController {
 	 * carbon_list.js의 fetch 요청과 응답 규격을 맞춥니다.
 	 */
 	@GetMapping("/category")
-	public ExternalApiResponseDTO<List<CarbonListDTO>> selectByCategory(
+	public ApiResponseDTO<List<CarbonListDTO>> selectByCategory(
 		@RequestParam(value = "category", required = false, defaultValue = "ALL")
 		String category) {
 
 		List<CarbonListDTO> list = carbonService.selectByCondition(category);
-		return new ExternalApiResponseDTO<>(category + " 카테고리 조회 성공", list);
+		return ApiResponseDTO.success(list, category + " 카테고리 조회 성공");
 	}
 
 	// 상세 페이지 조회
 	@GetMapping("/{cpId}")
-	public ExternalApiResponseDTO<CarbonDetailDTO> selectDetail(@PathVariable
+	public ApiResponseDTO<CarbonDetailDTO> selectDetail(@PathVariable
 	Long cpId) {
 		return carbonService.selectDetail(cpId);
 	}
 
 	@GetMapping("/orders/quote")
-	public ExternalApiResponseDTO<CarbonOrderResponseDTO> quote(
+	public ApiResponseDTO<CarbonOrderResponseDTO> quote(
 		@RequestParam("cpId")
 		Long cpId,
 		@RequestParam("amount")
@@ -65,9 +65,9 @@ public class CarbonController {
 	}
 
 	@PostMapping("/orders/complete")
-	public ExternalApiResponseDTO<String> completeOrder(@RequestBody
+	public ApiResponseDTO<String> completeOrder(@RequestBody
 	CarbonOrderCompleteDTO req) {
 		carbonService.completeOrder(req); // 서비스에 구현
-		return new ExternalApiResponseDTO<>("주문 완료 처리 성공", null);
+		return ApiResponseDTO.success(null, "주문 완료 처리 성공");
 	}
 }
