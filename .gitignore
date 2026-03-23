@@ -21,11 +21,11 @@ gen/
 Thumbs.db
 *.log
 
-### Security & Config (민감 정보 보호) ###
+### Backend - Security & Config ###
 *.properties
 *.yml
 
-### 설정 파일 ###
+### Backend - 설정 파일 ###
 src/main/resources/config/db.properties
 src/main/resources/config/mail.properties
 src/main/resources/config/enterprise.properties
@@ -36,12 +36,28 @@ src/main/resources/config/slack.properties
 src/main/resources/config/kakao.properties
 
 ### Frontend (React + Vite) ###
-mlfarm-frontend/node_modules/
-mlfarm-frontend/dist/
-mlfarm-frontend/.env
-mlfarm-frontend/.env.local
-mlfarm-frontend/.env.development.local
-mlfarm-frontend/.env.production.local
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+
+### Frontend - 환경 변수 ###
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+frontend/.*.env.local
+frontend/.env.*.local
+
+### VSCode ###
+.vscode/
+!.vscode/extensions.json
+
+### Frontend Cashing ###
+.vite/                  # Vite 캐시 폴더
+.eslintcache            # ESLint 실행 캐시
+.stylelintcache         # Stylelint 실행 캐시
+node_modules/
 
 ### Build & Temp ###
 target/                 # 메이븐 흔적 지우기
