@@ -10,7 +10,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
 	/*
-	** 에러 코드 필요에 따라 정의
+	 ** 에러 코드 필요에 따라 정의
 	 */
 
 	// 사용자 관련 에러
@@ -28,7 +28,11 @@ public enum ErrorCode {
 	// 외부 API 연동 에러
 	EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_001", "외부 서비스 연동 중 오류가 발생했습니다."),
 	EXTERNAL_API_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "EXTERNAL_002", "외부 서비스 응답 시간이 초과되었습니다."),
-	EXTERNAL_API_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_003", "외부 서비스 데이터 해석에 실패했습니다.");
+	EXTERNAL_API_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_003", "외부 서비스 데이터 해석에 실패했습니다."),
+
+	// 계좌 연동
+	EXTERNAL_API_ACC_EXIST(HttpStatus.BAD_REQUEST, "EXTERNAL_004", "이미 연동된 회원입니다."),
+	EXTERNAL_API_ACC_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXTERNAL_005", "연동 가능한 강황증권 계좌를 찾을 수 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;
