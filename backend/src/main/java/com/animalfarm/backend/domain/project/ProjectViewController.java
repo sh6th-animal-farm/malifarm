@@ -21,6 +21,7 @@ import com.animalfarm.backend.domain.accounting.dto.DividendDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectListDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectSearchReqDTO;
 import com.animalfarm.backend.domain.subscription.SubscriptionService;
+import com.animalfarm.backend.domain.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class ProjectViewController {
 	@Autowired
 	DividendService dividendService;
 	@Autowired
-	com.animalfarm.mlf.domain.user.service.UserService userService;
+	UserService userService;
 	@Autowired
 	SubscriptionService subscriptionService;
 

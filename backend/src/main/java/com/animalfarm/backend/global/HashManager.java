@@ -1,4 +1,4 @@
-package com.animalfarm.backend.common;
+package com.animalfarm.backend.global;
 
 import java.math.BigDecimal;
 

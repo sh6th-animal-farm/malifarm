@@ -6,9 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.animalfarm.backend.domain.mypage.dto.CarbonHistoryDTO;
+import com.animalfarm.backend.domain.mypage.dto.MypageProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
-import com.animalfarm.backend.domain.mypage.dto.ProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.TokenInfoDTO;
 
 @Mapper
@@ -41,7 +41,7 @@ public interface MypageRepository {
 		@Param("accessToken") String randomAccessToken,
 		@Param("refreshToken") String randomRefreshToken);
 
-	List<ProjectDTO> selectJoinedProjectCards(
+	List<MypageProjectDTO> selectJoinedProjectCards(
 		@Param("userId") Long userId,
 		@Param("status") String status,
 		@Param("limit") int limit,
@@ -51,7 +51,7 @@ public interface MypageRepository {
 		@Param("userId") Long userId,
 		@Param("status") String status);
 
-	List<ProjectDTO> selectStarredProjectCards(
+	List<MypageProjectDTO> selectStarredProjectCards(
 		@Param("userId") Long userId,
 		@Param("status") String status,
 		@Param("limit") int limit,

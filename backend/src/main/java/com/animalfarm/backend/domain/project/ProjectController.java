@@ -1,4 +1,4 @@
-package com.animalfarm.mlf.domain.project;
+package com.animalfarm.backend.domain.project;
 
 import java.util.List;
 
@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.animalfarm.backend.domain.project.ProjectService;
+import com.animalfarm.backend.domain.accounting.DividendService;
+import com.animalfarm.backend.domain.accounting.dto.DividendSelectDTO;
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDetailDTO;
@@ -36,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectController {
 
 	private final ProjectService projectService;
-	private final com.animalfarm.mlf.domain.project.FarmService farmService;
+	private final FarmService farmService;
 
 	@Autowired
 	DividendService dividendService;

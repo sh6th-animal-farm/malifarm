@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.animalfarm.backend.common.HashManager;
 import com.animalfarm.backend.domain.accounting.dto.SnapshotResponseDTO;
 import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
@@ -31,7 +31,9 @@ import com.animalfarm.backend.domain.project.dto.ProjectStatusDTO;
 import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
 import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.domain.token.dto.TokenIssueDTO;
+import com.animalfarm.backend.global.HashManager;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
+import com.animalfarm.backend.global.http.ApiResponse;
 import com.animalfarm.backend.global.http.ExternalApiClient;
 import com.animalfarm.backend.global.security.SecurityUtil;
 

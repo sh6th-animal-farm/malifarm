@@ -20,10 +20,10 @@ import org.springframework.web.client.RestTemplate;
 import com.animalfarm.backend.domain.mypage.dto.CarbonHistoryDTO;
 import com.animalfarm.backend.domain.mypage.dto.HoldingDTO;
 import com.animalfarm.backend.domain.mypage.dto.MyTransactionHistDTO;
+import com.animalfarm.backend.domain.mypage.dto.MypageProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.PasswordUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
-import com.animalfarm.backend.domain.mypage.dto.ProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProjectTabsDTO;
 import com.animalfarm.backend.domain.mypage.dto.TokenInfoDTO;
 import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
@@ -319,7 +319,7 @@ public class MypageService {
 		return dt == null ? "-" : dt.format(DF);
 	}
 
-	private void decorate(ProjectDTO p, boolean joinedTab) {
+	private void decorate(MypageProjectDTO p, boolean joinedTab) {
 		p.setPeriodText(fmt(p.getProjectStartDate()) + " - " + fmt(p.getProjectEndDate()));
 		p.setStatusText1(mapProjectStatus(p.getProjectStatus()));
 		p.setStatusText2(joinedTab ? mapSubscriptionStatus(p.getSubscriptionStatus()) : null);
@@ -334,13 +334,13 @@ public class MypageService {
 	}
 
 	@Transactional(readOnly = true)
-	public PagedResponseDTO<ProjectDTO> getProjectCards(String type, String status, int page, int size) {
+	public PagedResponseDTO<MypageProjectDTO> getProjectCards(String type, String status, int page, int size) {
 		Long userId = SecurityUtil.getCurrentUserId();
 		int limit = Math.max(1, Math.min(size, 30));
 		int offset = Math.max(0, (page - 1) * limit);
 
 		boolean joinedTab = "JOIN".equalsIgnoreCase(type);
-		List<ProjectDTO> list;
+		List<MypageProjectDTO> list;
 		long total;
 
 		if (joinedTab) {
@@ -351,7 +351,7 @@ public class MypageService {
 			total = mypageRepository.countStarredProjectCards(userId, status);
 		}
 
-		for (ProjectDTO p : list) {
+		for (MypageProjectDTO p : list) {
 			decorate(p, joinedTab);
 		}
 

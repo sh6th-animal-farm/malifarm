@@ -1,7 +1,7 @@
 package com.animalfarm.backend.domain.accounting.dto;
 
-import com.animalfarm.mlf.domain.project.dto.TokenLedgerDTO;
-import com.animalfarm.mlf.domain.refund.RefundDTO;
+import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
+import com.animalfarm.backend.domain.refund.RefundDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

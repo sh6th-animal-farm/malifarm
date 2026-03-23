@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.animalfarm.backend.domain.subscription.dto.SubscriptionApplicationDTO;
-import com.animalfarm.mlf.common.http.ApiResponse;
+import com.animalfarm.backend.global.http.ApiResponse;
 
 import lombok.extern.slf4j.Slf4j;
 

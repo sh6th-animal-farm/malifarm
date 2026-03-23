@@ -2,7 +2,7 @@ package com.animalfarm.backend.domain.accounting.dto;
 
 import java.math.BigDecimal;
 
-import io.swagger.annotations.ApiModel;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-@ApiModel(value = "DividendRequestDTO", description = "배당금 지급 요청 정보")
+@Schema(name = "DividendRequestDTO", description = "배당금 지급 요청 정보")
 public class DividendRequestDTO {
 	private Long dividendId;
 	private Long walletId;
