@@ -43,6 +43,8 @@ frontend/.vite/
 
 ### Frontend - 환경 변수 ###
 frontend/.env
+frontend/.env.development
+frontend/.env.production
 frontend/.env.local
 frontend/.env.development.local
 frontend/.env.production.local
