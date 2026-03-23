@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,6 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
 	private final ObjectMapper objectMapper;
+
+	// 커스텀 에러 처리
+	@ExceptionHandler(BusinessException.class)
+	public ResponseEntity<ApiResponseDTO<Void>> handleBusinessException(BusinessException e) {
+		ErrorCode errorCode = e.getErrorCode();
+
+		return ResponseEntity
+			.status(errorCode.getHttpStatus())
+			.body(ApiResponseDTO.fail(errorCode.getCode(), e.getMessage()));
+	}
 
 	// 강황증권 API 에러 처리
 	@ExceptionHandler(ExternalApiException.class)
@@ -41,7 +52,7 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 			.status(e.getStatusCode())
-			.body(message);
+			.body(ApiResponseDTO.fail("EXTERNAL_API_ERROR", message));
 	}
 
 	private String extractMessage(String errorBody) {
