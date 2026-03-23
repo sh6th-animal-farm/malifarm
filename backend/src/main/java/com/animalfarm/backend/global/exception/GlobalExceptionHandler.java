@@ -24,11 +24,9 @@ public class GlobalExceptionHandler {
 	// 커스텀 에러 처리
 	@ExceptionHandler(BusinessException.class)
 	public ResponseEntity<ApiResponseDTO<Void>> handleBusinessException(BusinessException e) {
-		ErrorCode errorCode = e.getErrorCode();
-
 		return ResponseEntity
-			.status(errorCode.getHttpStatus())
-			.body(ApiResponseDTO.fail(errorCode.getCode(), e.getMessage()));
+			.status(e.getHttpStatus())
+			.body(ApiResponseDTO.fail(e.getCode(), e.getMessage()));
 	}
 
 	// 강황증권 API 에러 처리
