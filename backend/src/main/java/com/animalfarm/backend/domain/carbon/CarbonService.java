@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import com.animalfarm.backend.domain.carbon.dto.CarbonListDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonOrderCompleteDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonOrderResponseDTO;
 import com.animalfarm.backend.domain.carbon.dto.UserBenefitDTO;
-import com.animalfarm.backend.global.dto.ApiResponseDTO;
+import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
 import jakarta.transaction.Transactional;
@@ -34,7 +35,8 @@ public class CarbonService {
 	private RestTemplate restTemplate;
 
 	// 강황증권 API 서버 주소
-	private final String GANGHWANG_API_URL = "https://kh-holdings.cloud/";
+	@Value("${api.kh-stock.url}") // 강황증권 API 서버 주소
+	private String khUrl;
 
 	// ---------------------------------------------------------
 	// 1. 공통 유틸리티 메서드 (내부 전용)
@@ -46,19 +48,19 @@ public class CarbonService {
 	 */
 	public List<CarbonDiscountDTO> fetchAllHoldings(Long walletId) {
 		try {
-			String url = GANGHWANG_API_URL + "/api/carbon/" + walletId;
+			String url = khUrl + "/api/carbon/" + walletId;
 
 			// ParameterizedTypeReference를 써야 제네릭(<T>)이 포함된 응답을 정확히 읽어옵니다.
-			ResponseEntity<ApiResponseDTO<List<CarbonDiscountDTO>>> responseEntity = restTemplate.exchange(
+			ResponseEntity<ExternalApiResponseDTO<List<CarbonDiscountDTO>>> responseEntity = restTemplate.exchange(
 				url,
 				HttpMethod.GET,
 				null,
-				new ParameterizedTypeReference<ApiResponseDTO<List<CarbonDiscountDTO>>>() {
+				new ParameterizedTypeReference<ExternalApiResponseDTO<List<CarbonDiscountDTO>>>() {
 				});
 
-			ApiResponseDTO<List<CarbonDiscountDTO>> response = responseEntity.getBody();
+			ExternalApiResponseDTO<List<CarbonDiscountDTO>> response = responseEntity.getBody();
 
-			// 상자(ApiResponseDTO)를 열어 실제 내용물(payload)인 리스트를 꺼냅니다.
+			// 상자(ExternalApiResponseDTO)를 열어 실제 내용물(payload)인 리스트를 꺼냅니다.
 			if (response != null && response.getPayload() != null) {
 				return response.getPayload();
 			}
@@ -75,7 +77,7 @@ public class CarbonService {
 	 */
 	public BigDecimal fetchAvailableBalance(Long walletId) {
 		try {
-			String url = GANGHWANG_API_URL + "api/order/balance/" + walletId;
+			String url = khUrl + "api/order/balance/" + walletId;
 
 			ResponseEntity<String> responseEntity = restTemplate.exchange(
 				url,
@@ -226,7 +228,7 @@ public class CarbonService {
 	/**
 	 * [상세 조회] 특정 상품 정보와 유저의 실시간 혜택 계산
 	 */
-	public ApiResponseDTO<CarbonDetailDTO> selectDetail(Long cpId) {
+	public ExternalApiResponseDTO<CarbonDetailDTO> selectDetail(Long cpId) {
 		Long userId = SecurityUtil.getCurrentUserId();
 		Long walletId = carbonRepository.getWalletIdByUserId(userId);
 
@@ -260,13 +262,13 @@ public class CarbonService {
 			detail.getCarbonInfo().getCpPrice(),
 			totalSupply, myHolding));
 
-		return new ApiResponseDTO<CarbonDetailDTO>("상품 상세 정보 조회에 성공했습니다.", detail);
+		return new ExternalApiResponseDTO<CarbonDetailDTO>("상품 상세 정보 조회에 성공했습니다.", detail);
 	}
 
 	/**
 	 * [모달용] 주문 견적
 	 */
-	public ApiResponseDTO<CarbonOrderResponseDTO> quoteOrder(Long cpId, BigDecimal amount) {
+	public ExternalApiResponseDTO<CarbonOrderResponseDTO> quoteOrder(Long cpId, BigDecimal amount) {
 
 		if (cpId == null) {
 			throw new IllegalArgumentException("cpId가 필요합니다.");
@@ -331,7 +333,7 @@ public class CarbonService {
 			.discountRate(discountRate)
 			.build();
 
-		return new ApiResponseDTO<>("주문 견적 조회에 성공했습니다.", resp);
+		return new ExternalApiResponseDTO<>("주문 견적 조회에 성공했습니다.", resp);
 	}
 
 	@Transactional
@@ -351,7 +353,7 @@ public class CarbonService {
 		Long userId = SecurityUtil.getCurrentUserId();
 
 		// 3) 주문 견적 뽑아오기
-		ApiResponseDTO<CarbonOrderResponseDTO> quoteRes = quoteOrder(req.getCpId(), req.getAmount());
+		ExternalApiResponseDTO<CarbonOrderResponseDTO> quoteRes = quoteOrder(req.getCpId(), req.getAmount());
 		CarbonOrderResponseDTO quote = quoteRes.getPayload();
 		if (quote == null) {
 			throw new RuntimeException("주문 견적 payload가 없습니다.");
