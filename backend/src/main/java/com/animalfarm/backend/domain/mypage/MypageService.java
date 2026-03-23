@@ -20,13 +20,13 @@ import org.springframework.web.client.RestTemplate;
 import com.animalfarm.backend.domain.mypage.dto.CarbonHistoryDTO;
 import com.animalfarm.backend.domain.mypage.dto.HoldingDTO;
 import com.animalfarm.backend.domain.mypage.dto.MyTransactionHistDTO;
+import com.animalfarm.backend.domain.mypage.dto.MypageWalletDTO;
 import com.animalfarm.backend.domain.mypage.dto.PasswordUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProjectTabsDTO;
 import com.animalfarm.backend.domain.mypage.dto.TokenInfoDTO;
-import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.dto.PagedResponseDTO;
 import com.animalfarm.backend.global.security.SecurityUtil;
@@ -149,7 +149,7 @@ public class MypageService {
 	}
 
 	// 지갑 요약 정보 조회
-	public WalletDTO getWalletInfo() {
+	public MypageWalletDTO getWalletInfo() {
 		Long walletId = validateAndGetWalletId();
 		if (walletId == null) {
 			return null; // 미연동 사용자 처리
@@ -157,9 +157,9 @@ public class MypageService {
 
 		try {
 			String url = KH_API_URL + "api/my/wallet/" + walletId;
-			ResponseEntity<ExternalApiResponseDTO<WalletDTO>> response = restTemplate.exchange(
+			ResponseEntity<ExternalApiResponseDTO<MypageWalletDTO>> response = restTemplate.exchange(
 				url, HttpMethod.GET, null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<WalletDTO>>() {
+				new ParameterizedTypeReference<ExternalApiResponseDTO<MypageWalletDTO>>() {
 				});
 
 			return (response.getBody() != null) ? response.getBody().getPayload() : null;

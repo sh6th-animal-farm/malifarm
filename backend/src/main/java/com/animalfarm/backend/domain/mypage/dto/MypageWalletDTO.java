@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class WalletDTO {
+public class MypageWalletDTO {
 
 	private String accountNo; // 계좌번호
 	private String bankName; // 은행명
