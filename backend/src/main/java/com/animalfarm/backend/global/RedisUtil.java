@@ -1,12 +1,12 @@
-package com.animalfarm.backend.global.security;
-
-//Redis를 사용하여 데이터를 저장, 조회, 삭제하는 실무 유틸리티입니다.
+package com.animalfarm.backend.global;
 
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+//Redis를 사용하여 데이터를 저장, 조회, 삭제하는 실무 유틸리티입니다.
 
 /**
  * [Redis 조작 유틸리티]

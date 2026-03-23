@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.animalfarm.backend.domain.mypage.dto.CarbonHistoryDTO;
 import com.animalfarm.backend.domain.mypage.dto.HoldingDTO;
 import com.animalfarm.backend.domain.mypage.dto.MyTransactionHistDTO;
+import com.animalfarm.backend.domain.mypage.dto.MypageProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.PasswordUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
-import com.animalfarm.backend.domain.mypage.dto.ProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProjectTabsDTO;
 import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
@@ -111,12 +111,12 @@ public class MypageController {
 	}
 
 	@GetMapping("/projects")
-	public ResponseEntity<ApiResponseDTO<PagedResponseDTO<ProjectDTO>>> getProjects(
+	public ResponseEntity<ApiResponseDTO<PagedResponseDTO<MypageProjectDTO>>> getProjects(
 		@RequestParam(defaultValue = "JOIN") String type,
 		@RequestParam(defaultValue = "ALL") String status,
 		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "10") int size) {
-		PagedResponseDTO<ProjectDTO> dto = mypageService.getProjectCards(type, status, page, size);
+		PagedResponseDTO<MypageProjectDTO> dto = mypageService.getProjectCards(type, status, page, size);
 		return ResponseEntity.ok(ApiResponseDTO.success(dto));
 	}
 

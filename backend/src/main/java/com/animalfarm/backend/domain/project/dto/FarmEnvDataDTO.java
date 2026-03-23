@@ -3,6 +3,8 @@ package com.animalfarm.backend.domain.project.dto;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +17,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FarmEnvDataDTO {
-
 	private Long feId; // 환경 데이터 ID (PK)
 	private Long farmId; // 농가 ID (FK)
 
@@ -31,5 +32,6 @@ public class FarmEnvDataDTO {
 	private BigDecimal temperatureOutside; // 외부 온도 (℃)
 
 	// 데이터 수집 시점 (DB 스키마에 따라 추가 가능)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
 	private OffsetDateTime createdAt;
 }

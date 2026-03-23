@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProjectDTO {
+public class MypageProjectDTO {
 	private String subscription_status; // 대기중인지, 당첨됐는지, 낙첨됐는지 등 의 상태
 	private Boolean is_starred;
 

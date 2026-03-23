@@ -1,0 +1,16 @@
+package com.animalfarm.backend.domain.project;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.animalfarm.backend.domain.project.dto.FarmDTO;
+
+@Mapper
+public interface FarmRepository {
+
+	public List<FarmDTO> selectAllFarm();
+
+	public void insertFarm(FarmDTO farmDTO);
+
+}

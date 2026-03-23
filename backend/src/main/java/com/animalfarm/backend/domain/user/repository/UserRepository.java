@@ -1,4 +1,4 @@
-package com.animalfarm.backend.domain.user;
+package com.animalfarm.backend.domain.user.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,4 +26,6 @@ public interface UserRepository {
 
 	String selectUserNameById(@Param("userId")
 	Long userId);
+
+	String selectUserRoleById(Long userId);
 }

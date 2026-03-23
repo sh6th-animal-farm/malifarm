@@ -20,7 +20,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class FarmDTO {
-
 	private Long farmId; // 농가 ID (PK)
 	private String farmName; // 농가 이름
 

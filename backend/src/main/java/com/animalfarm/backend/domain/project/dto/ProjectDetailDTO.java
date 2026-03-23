@@ -16,7 +16,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjectDetailDTO {
-
 	private Long projectId;
 	private Long farmId;
 	private String projectName;

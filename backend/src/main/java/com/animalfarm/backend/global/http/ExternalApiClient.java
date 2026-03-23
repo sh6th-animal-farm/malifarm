@@ -1,5 +1,7 @@
 package com.animalfarm.backend.global.http;
 
+import java.util.Map;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
@@ -58,12 +60,60 @@ public class ExternalApiClient {
 			)
 			.bodyToMono(responseType) // 응답값을 responseType 형태로 변환
 			.block(); // 동기
-
 		if (response == null) {
 			throw new RuntimeException("API 응답이 비어있습니다.");
 		}
 
 		log.info("[API Success] URL: {}, Msg: {}", url, response.getMessage());
 		return response.getPayload();
+	}
+
+	public <T> T callExternalApi(String url, HttpMethod method, Object body,
+		ParameterizedTypeReference<T> responseType, Map<String, String> customHeaders) {
+
+		// 1. 요청 준비 (WebClient 방식)
+		WebClient.RequestBodySpec requestSpec = webClient.method(method)
+			.uri(url)
+			.headers(headers -> {
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				// 기존의 Map 헤더들을 WebClient 헤더에 주입
+				if (customHeaders != null) {
+					customHeaders.forEach(headers::set);
+				}
+			});
+
+		// 2. 바디 설정
+		if (body != null) {
+			requestSpec.bodyValue(body);
+		}
+
+		// 3. 실행 및 예외 처리
+		try {
+			return requestSpec
+				.retrieve()
+				// API 응답 에러 처리 (4xx, 5xx)
+				.onStatus(HttpStatusCode::isError, clientResponse ->
+					clientResponse.bodyToMono(String.class)
+						.flatMap(errorBody -> {
+							log.error("[External API Fail] Status: {}, Body: {}", clientResponse.statusCode(),
+								errorBody);
+							return Mono.error(new ExternalApiException(
+								clientResponse.statusCode().value(),
+								errorBody
+							));
+						})
+				)
+				// 이 메서드는 DTO로 감싸지 않고 바로 T 타입을 반환함
+				.bodyToMono(responseType)
+				.block(); // 동기식으로 결과 대기
+
+		} catch (ExternalApiException e) {
+			// 비즈니스 에러는 그대로 던짐
+			throw e;
+		} catch (Exception e) {
+			// 시스템 에러(타임아웃, 접속 불가 등) 처리
+			log.error("[External API System Error] URL: {}, Message: {}", url, e.getMessage());
+			throw new RuntimeException("외부 서비스 호출 중 시스템 오류가 발생했습니다.", e);
+		}
 	}
 }
