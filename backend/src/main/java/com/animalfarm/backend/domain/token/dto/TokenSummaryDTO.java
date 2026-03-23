@@ -13,7 +13,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenListDTO {
+public class TokenSummaryDTO {
 	private Long tokenId;
 	private String tokenName;
 	private String tickerSymbol;
