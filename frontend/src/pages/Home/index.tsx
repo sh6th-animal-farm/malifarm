@@ -1,6 +1,6 @@
 import React from "react";
-import type { Token } from "../../types/tokenType";
-import { tokenApi } from "../../api/tokenApi";
+import type { Token } from "@/types/tokenType";
+import { tokenApi } from "@/api/tokenApi";
 
 export default function Home() {
   const [tokenId, setTokenId] = React.useState<number | "">("");
