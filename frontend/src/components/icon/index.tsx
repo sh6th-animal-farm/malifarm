@@ -1,39 +1,28 @@
 import type { IconName, IconProps } from "./iconTypes";
-import HeartFilled from "./icons/HeartFilled";
-import Leaf from "./icons/leaf";
-import BellOn from "./icons/BellOn";
-import BellOff from "./icons/BellOff";
-import Profile from "./icons/Profile";
-import Instagram from "./icons/Instagram";
-import Youtube from "./icons/Youtube";
-import Seedling from "./icons/Seedling";
-import Search from "./icons/Search";
-import Warning from "./icons/Warning";
-import ChevronRight from "./icons/ChevronRight";
-import Link from "./icons/Link";
-import Trashcan from "./icons/Trashcan";
-import Check from "./icons/Check";
-import Home from "./icons/Home";
-import User from "./icons/User";
+import * as Icons from "./Icons";
 
 const ICON_MAP: Record<IconName, React.ComponentType<IconProps>> = {
-  heart_filled: HeartFilled,
-  leaf: Leaf,
-  bell_on: BellOn,
-  bell_off: BellOff,
-  profile: Profile,
-  instagram: Instagram,
-  youtube: Youtube,
-  seedling: Seedling,
-  search: Search,
-  warning: Warning,
-  chevron_right: ChevronRight,
-  link: Link,
-  trashcan: Trashcan,
-  check: Check,
-  home: Home,
-  user: User,
+  heart_filled: Icons.HeartFilled,
+  leaf: Icons.Leaf,
+  bell_on: Icons.BellOn,
+  bell_off: Icons.BellOff,
+  profile: Icons.Profile,
+  instagram: Icons.Instagram,
+  youtube: Icons.Youtube,
+  seedling: Icons.Seedling,
+  search: Icons.Search,
+  warning: Icons.Warning,
+  chevron_right: Icons.ChevronRight,
+  link: Icons.LinkIcon,
+  trashcan: Icons.Trashcan,
+  check: Icons.Check,
+  home: Icons.Home,
+  user: Icons.User,
 };
+
+interface FinalIconProps extends IconProps {
+  name: IconName;
+}
 
 export default function Icon({
   name,
@@ -41,10 +30,13 @@ export default function Icon({
   color = "currentColor",
   className = "",
   ...props
-}: IconProps) {
-  const IconComponent = name ? ICON_MAP[name] : null;
+}: FinalIconProps) {
+  const IconComponent = ICON_MAP[name];
 
-  if (!IconComponent) return null;
+  if (!IconComponent) {
+    console.warn(`[Icon] "${name}" 아이콘을 찾을 수 없습니다.`);
+    return null;
+  }
 
   return (
     <IconComponent size={size} color={color} className={className} {...props} />

@@ -16,7 +16,7 @@ function App() {
           <div className="container">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/auth/login" element={<Login />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>
