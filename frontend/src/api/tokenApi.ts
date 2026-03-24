@@ -3,6 +3,6 @@ import apiClient from "./apiClient";
 
 export const tokenApi = {
     getTokenInfo: (tokenId: number) => {
-        return apiClient.get<Token>(`/token/${tokenId}`);
+        return apiClient.get<Token>(`/api/token/${tokenId}`);
     },
 }
