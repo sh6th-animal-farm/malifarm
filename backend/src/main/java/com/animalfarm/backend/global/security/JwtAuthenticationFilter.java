@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.animalfarm.backend.global.JwtProvider;
 import com.animalfarm.backend.global.RedisUtil;
 
 import jakarta.servlet.FilterChain;

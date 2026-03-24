@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
 import com.animalfarm.backend.domain.project.ProjectService;
 import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
 import com.animalfarm.backend.domain.refund.RefundDTO;
@@ -37,6 +36,7 @@ import com.animalfarm.backend.domain.subscription.dto.SubscriptionApplicationDTO
 import com.animalfarm.backend.domain.subscription.dto.SubscriptionHistDTO;
 import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.domain.token.TokenService;
+import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.ApiResponseDTO;
 import com.animalfarm.backend.global.MailService;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;

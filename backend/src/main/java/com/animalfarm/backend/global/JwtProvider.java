@@ -1,4 +1,4 @@
-package com.animalfarm.backend.global.security;
+package com.animalfarm.backend.global;
 
 import java.security.Key;
 import java.util.Date;
@@ -142,4 +142,3 @@ public class JwtProvider {
 	}
 
 }
-
