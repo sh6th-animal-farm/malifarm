@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { authApi } from "../../api/authApi.ts";
+import Icon from "../icon/index.tsx";
 
 export default function Header() {
   const location = useLocation();
