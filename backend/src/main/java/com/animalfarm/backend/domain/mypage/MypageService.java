@@ -159,7 +159,7 @@ public class MypageService {
 
 		try {
 			String url = khUrl + "api/my/wallet/" + walletId;
-			ResponseEntity<ExternalApiResponseDTO<WalletDTO>> response = restTemplate.exchange(
+			ResponseEntity<ExternalApiResponseDTO<MypageWalletDTO>> response = restTemplate.exchange(
 				url, HttpMethod.GET, null,
 				new ParameterizedTypeReference<ExternalApiResponseDTO<MypageWalletDTO>>() {
 				});
