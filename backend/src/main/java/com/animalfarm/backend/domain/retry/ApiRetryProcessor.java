@@ -1,5 +1,8 @@
 package com.animalfarm.backend.domain.retry;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.scheduling.annotation.Async;
@@ -33,6 +36,7 @@ public class ApiRetryProcessor {
 
 		retry.setStatus("PROCESSING");
 		apiRetryQueueMapper.updateStatus(retry);
+		String idempotencyKey = retry.getIdempotencyKey();
 
 		try {
 			// DB의 문자열 타입을 다시 Enum 타입으로 복구
@@ -42,25 +46,28 @@ public class ApiRetryProcessor {
 			Object[] params = objectMapper.readValue(retry.getQuery(), Object[].class);
 			String fullUrl = KH_BASE_URL + type.getFullUri(params);
 
+			Map<String, String> headers = new HashMap<>();
+			headers.put("X-Idempotency-Key", idempotencyKey);
+
 			// 외부 API 호출 (멱등성 키 포함)
 			Object response = externalApiUtil.callApi(
 				fullUrl,
 				type.getMethod(),
 				retry.getPayload(),
-				new ParameterizedTypeReference<ExternalApiResponseDTO<Object>>() {
-				},
-				retry.getIdempotencyKey());
+				new ParameterizedTypeReference<ExternalApiResponseDTO<Object>>() {},
+				headers
+			);
 
 			// 성공 시 완료 처리
 			retry.setStatus("COMPLETED");
 			apiRetryQueueMapper.updateStatus(retry);
-			log.info("재시도 성공했습니다. Key: {}", retry.getIdempotencyKey());
+			log.info("재시도 성공했습니다. Key: {}", idempotencyKey);
 
 			apiRetryService.afterRetrySuccess(retry, response);
 
 		} catch (Exception e) {
 			// 실패
-			log.warn("재시도 실패했습니다. Key: {}, 사유: {}", retry.getIdempotencyKey(), e.getMessage());
+			log.warn("재시도 실패했습니다. Key: {}, 사유: {}", idempotencyKey, e.getMessage());
 			service.handleFailure(retry);
 		}
 	}

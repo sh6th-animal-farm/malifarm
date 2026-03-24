@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -92,15 +93,21 @@ public class SubscriptionService {
 
 		// 멱등성 키 생성
 		String idempotencyKey = "SUB-CANCEL-" + subscriptionHistDTO.getShId();
+		Map<String, String> headers = new HashMap<>();
+		headers.put("X-Idempotency-Key", idempotencyKey);
 
 		// url 생성
 		String url = KH_BASE_URL + "api/project/cancel/" + subscriptionHistDTO.getExternalRefId();
 		RefundDTO refundDTO = null;
 		try {
 			// 취소 및 환불 요청
-			refundDTO = externalApiUtil.callApi(url, HttpMethod.POST, subscriptionHistDTO,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<RefundDTO>>() {
-				}, idempotencyKey);
+			refundDTO = externalApiUtil.callApi(
+				url,
+				HttpMethod.POST,
+				subscriptionHistDTO,
+				new ParameterizedTypeReference<ExternalApiResponseDTO<RefundDTO>>() {},
+				headers
+			);
 
 			if (refundDTO == null) {
 				throw new Exception("환불 처리에 실패했습니다.");
@@ -334,15 +341,21 @@ public class SubscriptionService {
 
 			// 멱등성 키 생성
 			String idempotencyKey = "SUB-REJECTED-" + subscriptionHistDTO.getShId();
+			Map<String, String> headers = new HashMap<>();
+			headers.put("X-Idempotency-Key", idempotencyKey);
 
 			// url 생성
 			String url = KH_BASE_URL + "api/project/cancel/" + subscriptionHistDTO.getExternalRefId();
 			RefundDTO refundDTO = null;
 			try {
 				// 취소 및 환불 요청
-				refundDTO = externalApiUtil.callApi(url, HttpMethod.POST, subscriptionHistDTO,
-					new ParameterizedTypeReference<ExternalApiResponseDTO<RefundDTO>>() {
-					}, idempotencyKey);
+				refundDTO = externalApiUtil.callApi(
+					url,
+					HttpMethod.POST,
+					subscriptionHistDTO,
+					new ParameterizedTypeReference<ExternalApiResponseDTO<RefundDTO>>() {},
+					headers
+				);
 
 				if (refundDTO == null) {
 					throw new Exception("환불 처리에 실패했습니다.");

@@ -1,6 +1,7 @@
 package com.animalfarm.backend.domain.token;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -46,15 +47,17 @@ public class TokenBurnTasklet implements Tasklet {
 		// 거래 중지 & 토큰 소각 API 요청
 		final String burnUrl = KH_BASE_URL + "/api/project/close/" + tokenId;
 		String idempotencyKey = "BURN-" + tokenId;
+		Map<String, String> headers = new HashMap<>();
+		headers.put("X-Idempotency-Key", idempotencyKey);
 
 		try {
 			// 증권사에서 uclId(walletId), external_ref_id(transactionId), amount 보내줌
 			List<RefundDTO> refundOriginList = externalApiUtil.callApi(burnUrl,
 				HttpMethod.POST,
 				null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<List<RefundDTO>>>() {
-				},
-				idempotencyKey);
+				new ParameterizedTypeReference<ExternalApiResponseDTO<List<RefundDTO>>>() {},
+				headers
+			);
 
 			// JobExecutionContext에 저장 (다음 Step으로 넘기기 위함)
 			ExecutionContext jobContext = chunkContext.getStepContext().getStepExecution()
