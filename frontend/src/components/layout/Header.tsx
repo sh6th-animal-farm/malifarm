@@ -83,13 +83,10 @@ export default function Header() {
     location.pathname.includes(path) ? "active" : "";
 
   return (
-    <header className="h-header-height bg-white/85 border-b border-gray-100 sticky top-0 z-[1000] flex items-center">
-      <div className="container flex items-center justify-between h-full px-gutter">
+    <header>
+      <div className="container header-inner">
         {/* 로고 영역 */}
-        <Link
-          to="/"
-          className="logo-text font-subtitle-01 text-gray-900 flex items-center overflow-hidden whitespace-nowrap cursor-pointer"
-        >
+        <Link to="/" className="logo-text">
           <Icon
             name="leaf"
             color="var(--color-green-600)"
@@ -102,7 +99,7 @@ export default function Header() {
 
         {/* 네비게이션 영역 */}
         <nav>
-          <ul className="nav-list flex list-none gap-1">
+          <ul className="nav-list">
             <li>
               <Link
                 to="/project"
@@ -130,112 +127,71 @@ export default function Header() {
         </nav>
 
         {/* 로그인/회원가입 또는 알림/프로필 영역 */}
-        <div className="auth-group flex items-center gap-4" ref={dropdownRef}>
+        <div className="auth-group" ref={dropdownRef}>
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
-            <div className="flex items-center gap-6">
-              <Link
-                to="/auth/login"
-                className="btn-login font-button-02 text-gray-900 no-underline"
-              >
+            <div className="guest-group">
+              <Link to="/auth/login" className="btn-login">
                 로그인
               </Link>
-              <Link
-                to="/auth/signup"
-                className="btn-signup bg-green-600 text-white px-3 py-1 rounded-s font-button-02 no-underline transition-colors duration-200 hover:bg-green-700"
-              >
+              <Link to="/auth/signup" className="btn-signup">
                 회원가입
               </Link>
             </div>
           ) : (
             /* 로그인 한 사용자 */
-            <div className="flex items-center gap-4">
+            <div className="user-group">
               {/* 알림 드롭다운 */}
-              <div className="relative">
+              <div className="drop-down-wrapper">
                 <button
                   type="button"
-                  className="p-2 text-gray-400 hover:text-gray-900"
+                  className="icon-btn"
                   onClick={(e) => toggleDropdown("noti", e)}
                 >
                   <Icon name="bell_on" />
                 </button>
                 <div
-                  className={`dropdown-content w-64 ${openDropdown === "noti" ? "show" : ""}`}
+                  className={`dropdown-content msg-box ${openDropdown === "noti" ? "show" : ""}`}
                 >
-                  <p className="py-4 text-center text-gray-400 font-caption-01">
-                    알림이 없습니다.
-                  </p>
+                  <p className="empty-msg">알림이 없습니다.</p>
                 </div>
               </div>
 
               {/* 프로필 드롭다운 */}
-              <div className="relative">
+              <div className="drop-down-wrapper">
                 <button
                   type="button"
-                  className="p-2 text-gray-400 hover:text-gray-900"
+                  className="icon-btn"
                   onClick={(e) => toggleDropdown("profile", e)}
                 >
                   <Icon name="profile" />
                 </button>
                 <div
-                  className={`dropdown-content ${openDropdown === "profile" ? "show" : ""}`}
+                  className={`dropdown-content profile-menu ${openDropdown === "profile" ? "show" : ""}`}
                 >
-                  <Link
-                    to="/mypage/profile"
-                    className="block px-4 py-2 hover:bg-gray-50"
-                  >
-                    내 정보
-                  </Link>
-                  <Link
-                    to="/mypage/project-history"
-                    className="block px-4 py-2 hover:bg-gray-50"
-                  >
-                    나의 프로젝트
-                  </Link>
-                  <Link
-                    to="/mypage/wallet"
-                    className="block px-4 py-2 hover:bg-gray-50"
-                  >
-                    나의 전자지갑
-                  </Link>
-                  <Link
-                    to="/mypage/transaction-history"
-                    className="block px-4 py-2 hover:bg-gray-50"
-                  >
-                    거래 내역
-                  </Link>
+                  <Link to="/mypage/profile">내 정보</Link>
+                  <Link to="/mypage/project-history">나의 프로젝트</Link>
+                  <Link to="/mypage/wallet">나의 전자지갑</Link>
+                  <Link to="/mypage/transaction-history">거래 내역</Link>
 
                   {/* ADMIN 권한인 사용자만 표시 */}
                   {userRole === "ADMIN" && (
-                    <Link
-                      to="/admin"
-                      className="block px-4 py-2 text-blue-600 hover:bg-gray-50 border-t border-gray-100 mt-1"
-                    >
-                      관리자 페이지
-                    </Link>
+                    <Link to="/admin">관리자 페이지</Link>
                   )}
 
                   {userRole === "ENTERPRISE" && (
-                    <Link
-                      to="/mypage/carbon-history"
-                      className="block px-4 py-2 text-blue-600 hover:bg-gray-50 border-t border-gray-100 mt-1"
-                    >
+                    <Link to="/mypage/carbon-history">
                       탄소 배출권 구매 내역
                     </Link>
                   )}
 
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-error hover:bg-gray-50 border-t border-gray-100 mt-1"
-                  >
+                  <Link to="/" className="logout-text" onClick={handleLogout}>
                     로그아웃
-                  </button>
+                  </Link>
                 </div>
               </div>
 
-              <span className="font-body-03 text-gray-800 ml-2">
-                {userName} 님
-              </span>
+              <span className="font-button-01">{userName} 님</span>
             </div>
           )}
         </div>
