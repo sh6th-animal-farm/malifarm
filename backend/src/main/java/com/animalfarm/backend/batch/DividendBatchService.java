@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.animalfarm.backend.domain.accounting.DividendRepository;
-import com.animalfarm.backend.domain.accounting.RevenueSummaryRepository;
+import com.animalfarm.backend.domain.accounting.FinancesRepository;
 import com.animalfarm.backend.domain.accounting.dto.RevenueSummaryDTO;
 import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.domain.token.dto.TokenDTO;
@@ -32,13 +32,13 @@ public class DividendBatchService {
 	private final Job dividendJob;
 	private final Job dividendClosingJob;
 
-	private final RevenueSummaryRepository summaryRepo; // 정산 데이터 조회용
 	private final TokenRepository tokenRepository; // 토큰 발행량 조회용
 	private final DividendRepository dividendRepository;
+	private final FinancesRepository financesRepository;
 
 	public void runDividendBatch(Long projectId) throws Exception {
 		// rsId를 기반으로 정산 요약 정보 조회 (DB에서 직접 가져옴)
-		RevenueSummaryDTO summary = summaryRepo.selectByProjectId(projectId);
+		RevenueSummaryDTO summary = financesRepository.selectRevenueSummaryByProjectId(projectId);
 
 		if (summary == null) {
 			throw new RuntimeException("정산 대기 중인 내역이 없습니다.");
