@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.animalfarm.backend.domain.mypage.dto.CarbonHistoryDTO;
 import com.animalfarm.backend.domain.mypage.dto.HoldingDTO;
 import com.animalfarm.backend.domain.mypage.dto.MyTransactionHistDTO;
-import com.animalfarm.backend.domain.mypage.dto.MypageWalletDTO;
 import com.animalfarm.backend.domain.mypage.dto.MypageProjectDTO;
+import com.animalfarm.backend.domain.mypage.dto.MypageWalletDTO;
 import com.animalfarm.backend.domain.mypage.dto.PasswordUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProjectTabsDTO;
-import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.dto.PagedResponseDTO;
 import com.animalfarm.backend.global.exception.BusinessException;
@@ -64,9 +63,9 @@ public class MypageController {
 
 	// 나의 지갑 (kh)
 	@GetMapping("/wallet-info")
-	public ResponseEntity<ExternalApiResponseDTO<MypageWalletDTO>> getWalletInfo() {
+	public ResponseEntity<ApiResponseDTO<MypageWalletDTO>> getWalletInfo() {
 		MypageWalletDTO wallet = mypageService.getWalletInfo();
-		return ResponseEntity.ok(new ExternalApiResponseDTO<>("지갑 정보 조회 성공", wallet));
+		return ResponseEntity.ok(ApiResponseDTO.success(wallet));
 	}
 
 	// 연동하기 (kh)
