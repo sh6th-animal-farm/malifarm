@@ -15,11 +15,11 @@ import com.animalfarm.backend.domain.mypage.dto.CarbonHistoryDTO;
 import com.animalfarm.backend.domain.mypage.dto.HoldingDTO;
 import com.animalfarm.backend.domain.mypage.dto.MyTransactionHistDTO;
 import com.animalfarm.backend.domain.mypage.dto.MypageProjectDTO;
+import com.animalfarm.backend.domain.mypage.dto.MypageWalletDTO;
 import com.animalfarm.backend.domain.mypage.dto.PasswordUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProjectTabsDTO;
-import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.dto.PagedResponseDTO;
 import com.animalfarm.backend.global.exception.BusinessException;
@@ -63,8 +63,8 @@ public class MypageController {
 
 	// 나의 지갑 (kh)
 	@GetMapping("/wallet-info")
-	public ResponseEntity<ApiResponseDTO<WalletDTO>> getWalletInfo() {
-		WalletDTO wallet = mypageService.getWalletInfo();
+	public ResponseEntity<ApiResponseDTO<MypageWalletDTO>> getWalletInfo() {
+		MypageWalletDTO wallet = mypageService.getWalletInfo();
 		return ResponseEntity.ok(ApiResponseDTO.success(wallet));
 	}
 
