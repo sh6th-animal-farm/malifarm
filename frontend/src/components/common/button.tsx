@@ -44,7 +44,7 @@ export default function Button({
     "outline-disabled":
       "bg-white border-gray-300 text-gray-300 cursor-not-allowed",
     check:
-      "bg-green-600 border-green-600 text-white hover:bg-green-700 hover:border-green-700",
+      "bg-green-600 border-green-600 text-white hover:bg-green-800 hover:border-green-700",
   };
 
   // 💡 인라인 스타일로 가로/세로 크기 결정
