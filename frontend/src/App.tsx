@@ -5,6 +5,7 @@ import Footer from "./components/layout/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Auth/Login";
 import NotFound from "./pages/Error/NotFound";
+import ProjectDetail from "./pages/project/ProjectDetail";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth/login" element={<Login />} />
+            <Route path="/project/:id" element={<ProjectDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
