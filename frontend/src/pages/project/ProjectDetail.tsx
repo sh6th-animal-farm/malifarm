@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Chart, registerables } from 'chart.js';
 import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/project';
+import InfoGrid from '@/components/common/InfoGrid';
 
 Chart.register(...registerables);
 
@@ -106,25 +107,25 @@ export default function ProjectDetail() {
             <button onClick={() => setActiveTab('farm')} className={`pb-4 transition-all ${activeTab === 'farm' ? 'text-green-600 border-b-4 border-green-600' : 'text-gray-300'}`}>농장 정보</button>
           </div>
 
-          <div className="min-h-[400px]">
+          <div className="w-full">
             {activeTab === 'invest' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InfoBox label="예상 수익률" value={`${projectData.expectedReturn}%`} highlight />
-                <InfoBox label="청약 달성률" value={`${projectData.subscriptionRate}%`} />
-                <InfoBox label="총 모집 금액" value={`${projectData.actualAmount?.toLocaleString()}원`} />
-                <InfoBox label="목표 금액" value={`${projectData.targetAmount?.toLocaleString()}원`} />
-                <InfoBox label="진행 상태" value={projectData.projectStatus} />
-                <div className="col-span-full p-8 bg-gray-50 border border-gray-100 rounded-[24px] mt-4 font-bold text-gray-600">
-                  <h4 className="text-gray-900 mb-4">운영 계획</h4>
-                  <p className="whitespace-pre-wrap">{projectData.projectDescription}</p>
-                </div>
-              </div>
+                <InfoGrid items={[
+                  { label: "예상 수익률", value: `${projectData.expectedReturn}%`},
+                  { label: "청약 달성률", value: `${projectData.subscriptionRate}%` },
+                  { label: "총 모집 금액", value: `${projectData.actualAmount?.toLocaleString()}원` },
+                  { label: "목표 금액", value: `${projectData.targetAmount?.toLocaleString()}원` },
+                  { label: "인당 투자 최소 금액", value: `${projectData.minAmountPerInvestor?.toLocaleString()}원` },
+                  { label: "진행 상태", value: projectData.projectStatus },
+                ]} />
             ) : (
               <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InfoBox label="농장 위치" value={projectData.farm?.addressSido || "정보 없음"} />
-                  <InfoBox label="농장 면적" value={`${projectData.farm?.area?.toLocaleString()}㎡`} />
-                </div>
+                <InfoGrid items={[
+                  { label: "농장 위치", value: projectData.farm?.addressSido || "정보 없음" },
+                  { label: "운영 인원", value: `${projectData.managerCount}명` },
+                  { label: "농장 면적", value: `${projectData.farm?.area?.toLocaleString()}㎡` },
+                  { label: "재배 방법", value: projectData.method },
+                  { label: "운영 계획", value: projectData.projectDescription, fullWidth: true}
+                ]} />
                 <div className="p-8 bg-white border border-gray-100 rounded-[24px] shadow-sm">
                   <p className="text-sm font-bold text-gray-800 mb-6">농장 실시간 기온 추이</p>
                   <div className="h-[300px] w-full"><canvas ref={chartRef}></canvas></div>
