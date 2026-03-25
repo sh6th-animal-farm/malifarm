@@ -289,3 +289,56 @@ export const User = ({ size, color, className, ...props }: IconProps) => (
     />
   </svg>
 );
+
+export const CheckCircle = ({ className, ...props }: IconProps) => (
+  <svg
+    width="60"
+    height="60"
+    className={className}
+    viewBox="0 0 60 60"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect width="60" height="60" rx="30" fill="#E8F1FA" />
+    <path
+      d="M30 43.75C22.4053 43.75 16.25 37.5947 16.25 30C16.25 22.4053 22.4053 16.25 30 16.25C37.5947 16.25 43.75 22.4053 43.75 30C43.75 37.5947 37.5947 43.75 30 43.75ZM30 18.8281C23.8286 18.8281 18.8281 23.8286 18.8281 30C18.8281 36.1714 23.8286 41.1719 30 41.1719C36.1714 41.1719 41.1719 36.1714 41.1719 30C41.1719 23.8286 36.1714 18.8281 30 18.8281ZM33.7974 25.3755C34.2163 24.8008 35.022 24.6719 35.5967 25.0908C36.1714 25.5098 36.3003 26.3154 35.8813 26.8901L29.3232 35.9136C29.103 36.2197 28.7593 36.4131 28.3833 36.4399C28.0073 36.4668 27.6367 36.3325 27.3735 36.0693L24.3711 33.0669C23.8662 32.562 23.8662 31.7456 24.3711 31.2461C24.876 30.7466 25.6924 30.7412 26.1919 31.2461L28.1255 33.1797L33.7974 25.3809V25.3755Z"
+      fill="#1976D2"
+    />
+  </svg>
+);
+
+export const WarningCircle = ({ className, ...props }: IconProps) => (
+  <svg
+    width="60"
+    height="60"
+    className={className}
+    viewBox="0 0 60 60"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect width="60" height="60" rx="30" fill="#FFEBEE" />
+    <path
+      d="M30 42.5C36.9036 42.5 42.5 36.9036 42.5 30C42.5 23.0964 36.9036 17.5 30 17.5C23.0964 17.5 17.5 23.0964 17.5 30C17.5 36.9036 23.0964 42.5 30 42.5Z"
+      stroke="#E53935"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M30 25V30"
+      stroke="#E53935"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M30 35H30.0125"
+      stroke="#E53935"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
