@@ -12,13 +12,11 @@ function App() {
       <Header />
 
       <main className="content-wrapper">
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </main>
 
       <Footer />
