@@ -81,6 +81,8 @@
   .col-4 { @apply w-[33.333%]; } .col-6 { @apply w-[50%]; } .col-8 { @apply w-[66.666%]; }
   .col-12 { @apply w-full; }
 
+
+  /* TODO: 아래 내용 컴포넌트로 분리 */
   /* Buttons */
   .btn { @apply inline-flex items-center justify-center px-6 py-3 rounded-[var(--radius-s)] font-semibold cursor-pointer transition-all duration-200 border-none font-main; }
   .btn-primary { @apply bg-green-500 text-white hover:bg-green-400; }
@@ -97,7 +99,6 @@
   }
 
   /* Profile Menu */
-  /* TODO: 컴포넌트로 분리 */
   .profile-menu { @apply flex flex-col w-full; }
   .profile-menu a, 
   .profile-menu button {
@@ -108,20 +109,6 @@
     @apply bg-gray-50 text-green-600;
   }
   .profile-menu .logout-text { @apply !text-red-500 font-bold hover:bg-red-50 hover:text-red-700 ; }
-
-  /* Footer */
-  .main-footer { @apply py-20 bg-white border-t border-gray-100; }
-  .footer-top-menu { @apply flex gap-[44px] mb-6; }
-  .footer-top-menu a { @apply text-base font-bold text-gray-900 no-underline hover:text-green-600 transition-colors; }
-  .footer-info-text { @apply text-sm leading-[1.6] text-gray-400; }
-  .footer-right { @apply flex flex-col items-end justify-end gap-[2px] text-right; }
-  .footer-logo { @apply text-[20px] font-bold text-gray-900; }
-  .footer-logo span { @apply text-green-600; }
-
-  /* SNS */
-  .sns-group { @apply flex justify-end gap-3; }
-  .sns-link { @apply h-6 grayscale opacity-60 transition-all duration-200 hover:grayscale-0 hover:opacity-100; }
-  .copyright { @apply text-sm text-gray-400; }
 
   /* Loading */
   .mlf-spinner { @apply w-10 h-10 border-4 border-gray-100 border-t-green-600 rounded-[var(--radius-full)] animate-spin; }
