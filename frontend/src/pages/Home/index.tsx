@@ -1,6 +1,7 @@
 import React from "react";
 import type { Token } from "@/types/tokenType";
 import { tokenApi } from "@/api/tokenApi";
+import Button from "@/components/common/button";
 
 export default function Home() {
   const [tokenId, setTokenId] = React.useState<number | "">("");
@@ -33,16 +34,15 @@ export default function Home() {
             setTokenId(val === "" ? "" : Number(val));
           }}
         />
-        <button
-          className="btn btn-primary"
+        <Button
+          variant="check"
+          children="로그인"
           onClick={() => {
             if (tokenId !== "") {
               handleTokenBtn(tokenId);
             }
           }}
-        >
-          조회
-        </button>
+        />
       </div>
       {tokenData && (
         <div className="p-4 border rounded">
