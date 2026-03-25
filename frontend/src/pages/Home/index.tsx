@@ -4,10 +4,13 @@ import { tokenApi } from "@/api/tokenApi";
 import Button from "@/components/common/Button";
 import Tag from "@/components/common/Tag";
 import FilterGroup from "@/components/common/FilterGroup";
+import TabMenu from "@/components/common/TabMenu";
 
 export default function Home() {
   const [tokenId, setTokenId] = React.useState<number | "">("");
   const [tokenData, setTokenData] = React.useState<Token | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState("all");
+  const [selectedTab, setselectedTab] = useState("token");
 
   const handleTokenBtn = async (tokenId: number) => {
     try {
@@ -19,12 +22,15 @@ export default function Home() {
     }
   };
 
-  const [selectedFilter, setSelectedFilter] = useState("all");
-
   const filterItems = [
     { text: "전체보기", value: "all" },
     { text: "청약중", value: "subscription" },
     { text: "진행중", value: "ongoing" },
+  ];
+
+  const tabItems = [
+    { text: "토큰", value: "token", count: 3 },
+    { text: "프로젝트", value: "project", count: 2 },
   ];
 
   return (
@@ -63,6 +69,13 @@ export default function Home() {
         items={filterItems}
         currentValue={selectedFilter}
         onFilterChange={setSelectedFilter}
+      />
+
+      <div className="mt-4" />
+      <TabMenu
+        items={tabItems}
+        currentValue={selectedTab}
+        onTabChange={setselectedTab}
       />
 
       {tokenData && (
