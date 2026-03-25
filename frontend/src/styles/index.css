@@ -17,7 +17,7 @@
   --color-info: #1976d2; --color-info-light: #e8f1fa;
   --color-warning: #ffa000; --color-warning-light: #fff8e1;
   --color-error: #d32f2f; --color-error-light: #ffebee;
-  --color-success: #388e3c;
+  --color-success: #388e3c; --color-success-light: #efffe7;
 
   /* --- 4. Layout & Spacing --- */
   --spacing-gutter: 24px;

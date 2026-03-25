@@ -2,6 +2,7 @@ import React from "react";
 import type { Token } from "@/types/tokenType";
 import { tokenApi } from "@/api/tokenApi";
 import Button from "@/components/common/button";
+import Tag from "@/components/common/tag";
 
 export default function Home() {
   const [tokenId, setTokenId] = React.useState<number | "">("");
@@ -34,16 +35,18 @@ export default function Home() {
             setTokenId(val === "" ? "" : Number(val));
           }}
         />
-        <Button
-          variant="check"
-          children="로그인"
-          onClick={() => {
-            if (tokenId !== "") {
-              handleTokenBtn(tokenId);
-            }
-          }}
-        />
       </div>
+      <Button
+        variant="check"
+        children="로그인"
+        onClick={() => {
+          if (tokenId !== "") {
+            handleTokenBtn(tokenId);
+          }
+        }}
+      />
+      <div className="mt-4" />
+      <Tag variant="info">공고중</Tag>
       {tokenData && (
         <div className="p-4 border rounded">
           <h2 className="font-subtitle-01 text-gray-800 mb-2">토큰 정보</h2>
