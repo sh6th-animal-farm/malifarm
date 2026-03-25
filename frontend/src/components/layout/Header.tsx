@@ -79,14 +79,28 @@ export default function Header() {
   };
 
   // 메뉴 활성화 체크 함수
-  const isActive = (path: string) =>
-    location.pathname.includes(path) ? "active" : "";
+  // const isActive = (path: string) =>
+  //   location.pathname.includes(path) ? "active" : "";
+
+  // 활성화 체크 및 Tailwind 클래스 반환
+  const getNavItemClass = (path: string) => {
+    const baseClass =
+      "relative inline-flex flex-col items-center font-body-03 px-5 py-1 text-gray-600 transition-all duration-200 hover:text-gray-900 no-underline";
+    const activeClass =
+      "text-gray-900 -translate-y-[2px] after:content-[''] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-green-600 after:rounded-[var(--radius-xl)]";
+    return location.pathname.includes(path)
+      ? `${baseClass} ${activeClass}`
+      : baseClass;
+  };
 
   return (
-    <header>
-      <div className="container header-inner">
+    <header className="h-header-height bg-white/85 border-b border-gray-100 sticky top-0 z-[1000] flex items-center">
+      <div className="container flex items-center justify-between w-full h-full">
         {/* 로고 영역 */}
-        <Link to="/" className="logo-text">
+        <Link
+          to="/"
+          className="font-subtitle-01 text-gray-900 flex items-center overflow-hidden whitespace-nowrap cursor-pointer"
+        >
           <Icon
             name="leaf"
             color="var(--color-green-600)"
@@ -99,27 +113,24 @@ export default function Header() {
 
         {/* 네비게이션 영역 */}
         <nav>
-          <ul className="nav-list">
+          <ul className="flex list-none gap-1">
             <li>
-              <Link
-                to="/project"
-                className={`nav-item ${isActive("/project")}`}
-              >
+              <Link to="/project" className={getNavItemClass("/project")}>
                 프로젝트 목록
               </Link>
             </li>
             <li>
-              <Link to="/token" className={`nav-item ${isActive("/token")}`}>
+              <Link to="/token" className={getNavItemClass("/token")}>
                 토큰 거래소
               </Link>
             </li>
             <li>
-              <Link to="/carbon" className={`nav-item ${isActive("/carbon")}`}>
+              <Link to="/carbon" className={getNavItemClass("/carbon")}>
                 탄소 마켓
               </Link>
             </li>
             <li>
-              <Link to="/notice" className={`nav-item ${isActive("/notice")}`}>
+              <Link to="/notice" className={getNavItemClass("/notice")}>
                 공지사항
               </Link>
             </li>
@@ -127,10 +138,10 @@ export default function Header() {
         </nav>
 
         {/* 로그인/회원가입 또는 알림/프로필 영역 */}
-        <div className="auth-group" ref={dropdownRef}>
+        <div className="flex items-center gap-6" ref={dropdownRef}>
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
-            <div className="guest-group">
+            <div className="flex items-center gap-6">
               <Link to="/auth/login" className="btn-login">
                 로그인
               </Link>
@@ -140,20 +151,22 @@ export default function Header() {
             </div>
           ) : (
             /* 로그인 한 사용자 */
-            <div className="user-group">
+            <div className="flex items-center gap-[18px] relative">
               {/* 알림 드롭다운 */}
-              <div className="drop-down-wrapper">
+              <div className="dropdown-wrapper">
                 <button
                   type="button"
-                  className="icon-btn"
+                  className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
                   onClick={(e) => toggleDropdown("noti", e)}
                 >
                   <Icon name="bell_on" />
                 </button>
                 <div
-                  className={`dropdown-content msg-box ${openDropdown === "noti" ? "show" : ""}`}
+                  className={`dropdown-content w-[200px] py-5 text-center flex flex-col items-center justify-center ${openDropdown === "noti" ? "!block" : ""}`}
                 >
-                  <p className="empty-msg">알림이 없습니다.</p>
+                  <p className="text-[#999] text-sm m-0 font-body-04">
+                    알림이 없습니다.
+                  </p>
                 </div>
               </div>
 
@@ -161,31 +174,63 @@ export default function Header() {
               <div className="drop-down-wrapper">
                 <button
                   type="button"
-                  className="icon-btn"
+                  className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
                   onClick={(e) => toggleDropdown("profile", e)}
                 >
                   <Icon name="profile" />
                 </button>
                 <div
-                  className={`dropdown-content profile-menu ${openDropdown === "profile" ? "show" : ""}`}
+                  className={`dropdown-content flex flex-col w-full ${openDropdown === "profile" ? "!block" : ""}`}
                 >
-                  <Link to="/mypage/profile">내 정보</Link>
-                  <Link to="/mypage/project-history">나의 프로젝트</Link>
-                  <Link to="/mypage/wallet">나의 전자지갑</Link>
-                  <Link to="/mypage/transaction-history">거래 내역</Link>
+                  <Link
+                    to="/mypage/profile"
+                    className="hover:bg-gray-50 hover:text-green-600"
+                  >
+                    내 정보
+                  </Link>
+                  <Link
+                    to="/mypage/project-history"
+                    className="hover:bg-gray-50 hover:text-green-600"
+                  >
+                    나의 프로젝트
+                  </Link>
+                  <Link
+                    to="/mypage/wallet"
+                    className="hover:bg-gray-50 hover:text-green-600"
+                  >
+                    나의 전자지갑
+                  </Link>
+                  <Link
+                    to="/mypage/transaction-history"
+                    className="hover:bg-gray-50 hover:text-green-600"
+                  >
+                    거래 내역
+                  </Link>
 
                   {/* ADMIN 권한인 사용자만 표시 */}
                   {userRole === "ADMIN" && (
-                    <Link to="/admin">관리자 페이지</Link>
+                    <Link
+                      to="/admin"
+                      className="hover:bg-gray-50 hover:text-green-600"
+                    >
+                      관리자 페이지
+                    </Link>
                   )}
 
                   {userRole === "ENTERPRISE" && (
-                    <Link to="/mypage/carbon-history">
+                    <Link
+                      to="/mypage/carbon-history"
+                      className="hover:bg-gray-50 hover:text-green-600"
+                    >
                       탄소 배출권 구매 내역
                     </Link>
                   )}
 
-                  <Link to="/" className="logout-text" onClick={handleLogout}>
+                  <Link
+                    to="/"
+                    className="!text-red-500 font-bold hover:bg-red-50 hover:text-red-700"
+                    onClick={handleLogout}
+                  >
                     로그아웃
                   </Link>
                 </div>
