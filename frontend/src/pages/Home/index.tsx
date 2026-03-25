@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Token } from "@/types/tokenType";
 import { tokenApi } from "@/api/tokenApi";
-import Button from "@/components/common/button";
-import Tag from "@/components/common/tag";
+import Button from "@/components/common/Button";
+import Tag from "@/components/common/Tag";
+import FilterGroup from "@/components/common/FilterGroup";
 
 export default function Home() {
   const [tokenId, setTokenId] = React.useState<number | "">("");
@@ -17,6 +18,14 @@ export default function Home() {
       console.error("토큰 조회 실패 :", error.message);
     }
   };
+
+  const [selectedFilter, setSelectedFilter] = useState("all");
+
+  const filterItems = [
+    { text: "전체보기", value: "all" },
+    { text: "청약중", value: "subscription" },
+    { text: "진행중", value: "ongoing" },
+  ];
 
   return (
     <div className="container">
@@ -45,8 +54,17 @@ export default function Home() {
           }
         }}
       />
+
       <div className="mt-4" />
       <Tag variant="info">공고중</Tag>
+
+      <div className="mt-4" />
+      <FilterGroup
+        items={filterItems}
+        currentValue={selectedFilter}
+        onFilterChange={setSelectedFilter}
+      />
+
       {tokenData && (
         <div className="p-4 border rounded">
           <h2 className="font-subtitle-01 text-gray-800 mb-2">토큰 정보</h2>
