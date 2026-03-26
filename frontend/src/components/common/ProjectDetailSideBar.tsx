@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button';
 
 interface SideBarProps {
   projectData: {
@@ -94,24 +95,24 @@ export default function ProjectDetailSideBar({ projectData, isApplied, onAction 
                 </div>
               </div>
 
-              {/* 버튼 로직 */}
+              {/* 버튼 로직: 공통 Button 컴포넌트로 교체 */}
               <div className="space-y-6">
                 {projectData.projectStatus === 'ANNOUNCEMENT' ? (
-                  <button className="w-full py-6 bg-gray-400 text-white rounded-[var(--radius-m)] font-button-01 cursor-not-allowed" disabled>
+                  <Button variant="subscriptionDisabled" width="100%">
                     청약 예정입니다
-                  </button>
+                  </Button>
                 ) : (projectData.projectStatus === 'SUBSCRIPTION' && isClosed) ? (
-                  <button className="w-full py-6 bg-gray-400 text-white rounded-[var(--radius-m)] font-button-01 cursor-not-allowed" disabled>
+                  <Button variant="disabled" width="100%">
                     청약이 종료되었습니다
-                  </button>
+                  </Button>
                 ) : isApplied ? (
-                  <button onClick={onAction} className="w-full py-6 bg-white text-error border-[1.5px] border-error rounded-[var(--radius-m)] font-button-01 hover:bg-error-light transition-colors">
+                  <Button variant="subscriptionCancel" width="100%" onClick={onAction}>
                     청약 신청 취소하기
-                  </button>
+                  </Button>
                 ) : (
-                  <button onClick={onAction} className="w-full py-6 bg-green-600 text-white rounded-[var(--radius-m)] font-button-01 shadow-lg shadow-green-500/20 transition-all">
+                  <Button variant="subscriptionCheck" width="100%" onClick={onAction}>
                     청약 신청하기
-                  </button>
+                  </Button>
                 )}
                 <p className="text-center font-caption-01 text-gray-400">* 본 자산은 세준 증권 원장에 실시간 기록됩니다.</p>
               </div>
@@ -128,12 +129,9 @@ export default function ProjectDetailSideBar({ projectData, isApplied, onAction 
                   <span className="text-error font-caption-01 font-bold">▲ 0.0%</span>
                 </div>
               </div>
-              <button 
-                onClick={() => window.location.href=`/token/${projectData.tokenId}`}
-                className="w-full py-5 bg-gray-900 text-white rounded-[var(--radius-m)] font-button-01 hover:bg-black transition-all"
-              >
-                토큰 거래소 바로가기
-              </button>
+              <Button variant="default" width="100%" onClick={onAction}>
+                    토큰 거래소 바로가기
+              </Button>
             </div>
           )}
 
@@ -144,9 +142,9 @@ export default function ProjectDetailSideBar({ projectData, isApplied, onAction 
                 <span className="font-caption-01 text-gray-500 block mb-2">최종 토큰가</span>
                 <strong className="font-header-02 text-gray-900 text-2xl">{tokenPrice.toLocaleString()} 원</strong>
               </div>
-              <button className="w-full py-6 bg-gray-400 text-white rounded-[var(--radius-m)] font-button-01 cursor-not-allowed" disabled>
-                종료된 프로젝트입니다.
-              </button>
+              <Button variant="outline-disabled" width="100%">
+                    종료된 프로젝트입니다.
+              </Button>
             </div>
           )}
 
