@@ -26,8 +26,6 @@ export default function Login() {
         password,
       })) as LoginResponse;
 
-      console.log(loginData);
-
       localStorage.setItem("accessToken", loginData.accessToken);
       localStorage.setItem("refreshToken", loginData.refreshToken);
 

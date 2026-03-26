@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.animalfarm.backend.domain.user.dto.UserDTO;
 import com.animalfarm.backend.domain.user.service.UserService;
+import com.animalfarm.backend.global.dto.ApiResponseDTO;
+import com.animalfarm.backend.global.exception.ErrorCode;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
 @RestController
@@ -19,29 +21,35 @@ public class UserDetailController {
 	private UserService userService;
 
 	@GetMapping("/me")
-	public ResponseEntity<Object> getCurrentUserInfo() {
+	public ResponseEntity<ApiResponseDTO<Object>> getCurrentUserInfo() {
 		try {
 			Long userId = SecurityUtil.getCurrentUserId();
 			if (userId == null) {
 				// 토큰이 없거나 유효하지 않은 경우 401 반환
-				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+				return ResponseEntity
+					.status(HttpStatus.UNAUTHORIZED)
+					.body(ApiResponseDTO.fail(ErrorCode.NEED_LOGIN.getCode(), ErrorCode.NEED_LOGIN.getMessage()));
 			}
 
 			// 유저 정보 조회 (address 포함)
 			UserDTO user = userService.getUserById(userId);
-			return ResponseEntity.ok(user);
+			return ResponseEntity.ok(ApiResponseDTO.success(user));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+			return ResponseEntity
+				.status(HttpStatus.UNAUTHORIZED)
+				.body(ApiResponseDTO.fail(ErrorCode.NEED_LOGIN.getCode(), ErrorCode.NEED_LOGIN.getMessage()));
 		}
 	}
 
-	@GetMapping(value = "/me/name", produces = "text/plain; charset=UTF-8")
-	public ResponseEntity<String> getMyName() {
-		return ResponseEntity.ok(userService.getMyName());
+	@GetMapping(value = "/me/name")
+	public ResponseEntity<ApiResponseDTO<String>> getMyName() {
+		String userName = userService.getMyName();
+		return ResponseEntity.ok(ApiResponseDTO.success(userName));
 	}
 
 	@GetMapping("/me/role")
-	public ResponseEntity<String> getMyRole() {
-		return ResponseEntity.ok(userService.getMyRole());
+	public ResponseEntity<ApiResponseDTO<String>> getMyRole() {
+		String userRole = userService.getMyRole();
+		return ResponseEntity.ok(ApiResponseDTO.success(userRole));
 	}
 }
