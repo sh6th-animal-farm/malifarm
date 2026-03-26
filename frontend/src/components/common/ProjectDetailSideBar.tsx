@@ -142,7 +142,7 @@ export default function ProjectDetailSideBar({ projectData, isApplied, onAction 
                 <span className="font-caption-01 text-gray-500 block mb-2">최종 토큰가</span>
                 <strong className="font-header-02 text-gray-900 text-2xl">{tokenPrice.toLocaleString()} 원</strong>
               </div>
-              <Button variant="outline-disabled" width="100%">
+              <Button variant="subscriptionEnd" width="100%">
                     종료된 프로젝트입니다.
               </Button>
             </div>
