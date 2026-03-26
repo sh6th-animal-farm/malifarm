@@ -13,7 +13,7 @@ export default function Login() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:8081/api/auth/login", {
+      const res = await fetch("http://localhost:8080/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,10 +98,7 @@ export default function Login() {
 
           <div className="mt-8 text-center text-[14px] text-gray-500">
             계정이 없으신가요?
-            <Link
-              to="/auth/signup"
-              className="ml-1 font-bold text-green-600"
-            >
+            <Link to="/auth/signup" className="ml-1 font-bold text-green-600">
               회원가입
             </Link>
           </div>

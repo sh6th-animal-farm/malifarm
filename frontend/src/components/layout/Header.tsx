@@ -153,25 +153,27 @@ export default function Header() {
             /* 로그인 한 사용자 */
             <div className="flex items-center gap-[18px] relative">
               {/* 알림 드롭다운 */}
-              <div className="dropdown-wrapper">
+              <div className="relative inline-block">
                 <button
                   type="button"
                   className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
                   onClick={(e) => toggleDropdown("noti", e)}
                 >
-                  <Icon name="bell_on" />
+                  <Icon name="bell_off" />
                 </button>
                 <div
-                  className={`dropdown-content w-[200px] py-5 text-center flex flex-col items-center justify-center ${openDropdown === "noti" ? "!block" : ""}`}
+                  className={`
+                    absolute top-[calc(100%+12px)] right-0 flex w-full px-6 py-3 text-center
+                    bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] z-[1000]
+                    ${openDropdown === "noti" ? "!block" : "hidden"}
+                  `}
                 >
-                  <p className="text-[#999] text-sm m-0 font-body-04">
-                    알림이 없습니다.
-                  </p>
+                  <p className="font-body-01 text-gray-300">알림이 없습니다.</p>
                 </div>
               </div>
 
               {/* 프로필 드롭다운 */}
-              <div className="drop-down-wrapper">
+              <div className="relative inline-block">
                 <button
                   type="button"
                   className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
@@ -180,59 +182,45 @@ export default function Header() {
                   <Icon name="profile" />
                 </button>
                 <div
-                  className={`dropdown-content flex flex-col w-full ${openDropdown === "profile" ? "!block" : ""}`}
+                  className={`
+                    absolute top-[calc(100%+12px)] right-0 flex flex-col w-full py-2 
+                    bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] z-[1000]
+                    ${openDropdown === "profile" ? "block" : "hidden"}
+                  `}
                 >
-                  <Link
-                    to="/mypage/profile"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    내 정보
-                  </Link>
-                  <Link
-                    to="/mypage/project-history"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    나의 프로젝트
-                  </Link>
-                  <Link
-                    to="/mypage/wallet"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    나의 전자지갑
-                  </Link>
-                  <Link
-                    to="/mypage/transaction-history"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    거래 내역
-                  </Link>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/profile">내 정보</Link>
+                  </div>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/project-history">나의 프로젝트</Link>
+                  </div>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/wallet">나의 전자지갑</Link>
+                  </div>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/transaction-history">거래 내역</Link>
+                  </div>
 
                   {/* ADMIN 권한인 사용자만 표시 */}
                   {userRole === "ADMIN" && (
-                    <Link
-                      to="/admin"
-                      className="hover:bg-gray-50 hover:text-green-600"
-                    >
-                      관리자 페이지
-                    </Link>
+                    <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                      <Link to="/admin">관리자 페이지</Link>
+                    </div>
                   )}
 
                   {userRole === "ENTERPRISE" && (
-                    <Link
-                      to="/mypage/carbon-history"
-                      className="hover:bg-gray-50 hover:text-green-600"
-                    >
-                      탄소 배출권 구매 내역
-                    </Link>
+                    <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                      <Link to="/mypage/carbon-history">
+                        탄소 배출권 구매 내역
+                      </Link>
+                    </div>
                   )}
 
-                  <Link
-                    to="/"
-                    className="!text-red-500 font-bold hover:bg-red-50 hover:text-red-700"
-                    onClick={handleLogout}
-                  >
-                    로그아웃
-                  </Link>
+                  <div className="px-4 py-2.5 font-caption-01 text-error hover:bg-gray-50 hover:text-error">
+                    <Link to="/" onClick={handleLogout}>
+                      로그아웃
+                    </Link>
+                  </div>
                 </div>
               </div>
 
