@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,9 +31,9 @@ public class CarbonController {
 	 * ApiResponseDTO로 감싸서 반환해야 JS의 result.payload 로직이 작동합니다.
 	 */
 	@GetMapping("/list")
-	public ApiResponseDTO<List<CarbonListDTO>> selectAll() {
+	public ResponseEntity<ApiResponseDTO<List<CarbonListDTO>>> selectAll() {
 		List<CarbonListDTO> list = carbonService.selectAll();
-		return ApiResponseDTO.success(list, "전체 상품 리스트 조회 성공");
+		return ResponseEntity.ok(ApiResponseDTO.success(list, "전체 상품 리스트 조회 성공"));
 	}
 
 	/**
@@ -40,34 +41,36 @@ public class CarbonController {
 	 * carbon_list.js의 fetch 요청과 응답 규격을 맞춥니다.
 	 */
 	@GetMapping("/category")
-	public ApiResponseDTO<List<CarbonListDTO>> selectByCategory(
+	public ResponseEntity<ApiResponseDTO<List<CarbonListDTO>>> selectByCategory(
 		@RequestParam(value = "category", required = false, defaultValue = "ALL")
 		String category) {
 
 		List<CarbonListDTO> list = carbonService.selectByCondition(category);
-		return ApiResponseDTO.success(list, category + " 카테고리 조회 성공");
+		return ResponseEntity.ok(ApiResponseDTO.success(list, category + " 카테고리 조회 성공"));
 	}
 
 	// 상세 페이지 조회
 	@GetMapping("/{cpId}")
-	public ApiResponseDTO<CarbonDetailDTO> selectDetail(@PathVariable
+	public ResponseEntity<ApiResponseDTO<CarbonDetailDTO>> selectDetail(@PathVariable
 	Long cpId) {
-		return carbonService.selectDetail(cpId);
+		CarbonDetailDTO data = carbonService.selectDetail(cpId);
+		return ResponseEntity.ok(ApiResponseDTO.success(data, " 상세 조회 성공"));
 	}
 
 	@GetMapping("/orders/quote")
-	public ApiResponseDTO<CarbonOrderResponseDTO> quote(
+	public ResponseEntity<ApiResponseDTO<CarbonOrderResponseDTO>> quote(
 		@RequestParam("cpId")
 		Long cpId,
 		@RequestParam("amount")
 		BigDecimal amount) {
-		return carbonService.quoteOrder(cpId, amount);
+		CarbonOrderResponseDTO resp = carbonService.quoteOrder(cpId, amount);
+		return ResponseEntity.ok(ApiResponseDTO.success(resp, "주문 견적 조회에 성공했습니다."));
 	}
 
 	@PostMapping("/orders/complete")
-	public ApiResponseDTO<String> completeOrder(@RequestBody
+	public ResponseEntity<ApiResponseDTO<String>> completeOrder(@RequestBody
 	CarbonOrderCompleteDTO req) {
 		carbonService.completeOrder(req); // 서비스에 구현
-		return ApiResponseDTO.success(null, "주문 완료 처리 성공");
+		return ResponseEntity.ok(ApiResponseDTO.success(null, "주문 완료 처리 성공"));
 	}
 }
