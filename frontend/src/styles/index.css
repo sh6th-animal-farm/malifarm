@@ -17,7 +17,7 @@
   --color-info: #1976d2; --color-info-light: #e8f1fa;
   --color-warning: #ffa000; --color-warning-light: #fff8e1;
   --color-error: #d32f2f; --color-error-light: #ffebee;
-  --color-success: #388e3c;
+  --color-success: #388e3c; --color-success-light: #efffe7;
 
   /* --- 4. Layout & Spacing --- */
   --spacing-gutter: 24px;
@@ -47,7 +47,7 @@
   
   /* Form Controls */
   input[type="text"], input[type="number"], select, textarea {
-    @apply w-full p-[14px] border border-gray-200 rounded-s text-[16px] transition-colors focus:outline-none focus:border-green-500;
+    @apply w-full p-[14px] border border-gray-200 rounded-[var(--radius-s)] text-[16px] transition-colors focus:outline-none focus:border-green-500;
   }
   label { @apply block text-[14px] font-semibold mb-2 text-gray-800; }
 }
@@ -81,39 +81,37 @@
   .col-4 { @apply w-[33.333%]; } .col-6 { @apply w-[50%]; } .col-8 { @apply w-[66.666%]; }
   .col-12 { @apply w-full; }
 
-  /* Header */
-  header { @apply h-header-height bg-white/85 border-b border-gray-100 sticky top-0 z-[1000] flex items-center; }
-  .logo-text { @apply font-subtitle-01 text-gray-900 flex items-center overflow-hidden whitespace-nowrap cursor-pointer; }
-  .nav-list { @apply flex list-none gap-1; }
-  .nav-item {
-    @apply relative inline-flex flex-col items-center font-body-03 px-5 py-1 text-gray-600 transition-all duration-200;
-  }
-  .nav-item:hover, .nav-item.active { @apply text-gray-900; }
-  .nav-item.active {
-    @apply -translate-y-[2px] after:content-[''] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-green-600 after:rounded-xl;
-  }
 
+  /* TODO: 아래 내용 컴포넌트로 분리 */
   /* Buttons */
-  .btn { @apply inline-flex items-center justify-center px-6 py-3 rounded-s font-semibold cursor-pointer transition-all duration-200 border-none font-main; }
+  .btn { @apply inline-flex items-center justify-center px-6 py-3 rounded-[var(--radius-s)] font-semibold cursor-pointer transition-all duration-200 border-none font-main; }
   .btn-primary { @apply bg-green-500 text-white hover:bg-green-400; }
   .btn-outline { @apply bg-transparent border border-gray-200 text-gray-700 hover:bg-gray-50; }
   .btn-login { @apply font-button-02 text-gray-900 no-underline; }
-  .btn-signup { @apply bg-green-600 text-white px-3 py-1 rounded-s font-button-02 no-underline transition-colors duration-200 hover:bg-green-700; }
-
+  .btn-signup { @apply bg-green-600 text-white px-3 py-1 rounded-[var(--radius-s)] font-button-02 no-underline transition-colors duration-200 hover:bg-green-700; }
+  
   /* Dropdown & Cards */
-  .card { @apply bg-gray-0 border border-gray-100 rounded-l p-8 shadow-std; }
+  .card { @apply bg-gray-0 border border-gray-100 rounded-[var(--radius-l)] p-8 shadow-std; }
+  .dropdown-wrapper { @apply relative inline-block; }
   .dropdown-content {
-    @apply hidden absolute top-[calc(100%+12px)] right-0 bg-white min-w-[180px] shadow-std rounded-s py-2 z-[1000];
+    @apply hidden absolute top-[calc(100%+12px)] right-0 bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] py-2 z-[1000];
     @apply after:content-[''] after:absolute after:-top-2 after:right-3 after:border-l-8 after:border-l-transparent after:border-r-8 after:border-r-transparent after:border-b-8 after:border-b-white;
   }
-  .show { @apply !block; }
 
-  /* Footer */
-  .main-footer { @apply w-full py-20 bg-white border-t border-gray-100; }
-  .sns-icon { @apply w-6 h-6 grayscale opacity-60 transition-all duration-200 hover:grayscale-0 hover:opacity-100; }
+  /* Profile Menu */
+  .profile-menu { @apply flex flex-col w-full; }
+  .profile-menu a, 
+  .profile-menu button {
+    @apply block w-full text-left px-4 py-[10px] text-gray-700 no-underline font-caption-01 transition-colors duration-200;
+  }
+  .profile-menu a:hover,
+  .profile-menu button:hover {
+    @apply bg-gray-50 text-green-600;
+  }
+  .profile-menu .logout-text { @apply !text-red-500 font-bold hover:bg-red-50 hover:text-red-700 ; }
 
   /* Loading */
-  .mlf-spinner { @apply w-10 h-10 border-4 border-gray-100 border-t-green-600 rounded-full animate-spin; }
+  .mlf-spinner { @apply w-10 h-10 border-4 border-gray-100 border-t-green-600 rounded-[var(--radius-full)] animate-spin; }
   .mlf-loading-overlay { @apply absolute inset-0 flex items-center justify-center z-[100] rounded-[inherit]; }
   .mlf-loading-overlay.global { @apply fixed z-[10000] bg-black/20; }
 }

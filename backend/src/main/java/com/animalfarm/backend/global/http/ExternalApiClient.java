@@ -1,5 +1,6 @@
 package com.animalfarm.backend.global.http;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -23,53 +24,35 @@ public class ExternalApiClient {
 
 	private final WebClient webClient;
 
-	// 강황증권 API 호출 메서드 - 멱등성 키 X
+	/* 강황증권 API 호출 메서드
+	 **
+	 */
+
+	// 헤더 X
 	public <T> T callApi(String url, HttpMethod method, Object body,
 		ParameterizedTypeReference<ExternalApiResponseDTO<T>> responseType) {
 		return callApi(url, method, body, responseType, null);
 	}
 
-	// 강황증권 API 호출 메서드 - 멱등성 키 O
+	/*
+	// 헤더 O (멱등성 키)
 	public <T> T callApi(String url, HttpMethod method, Object body,
 		ParameterizedTypeReference<ExternalApiResponseDTO<T>> responseType, String idempotencyKey) {
 
-		// 1. 요청 준비 (Request Spec 설정)
-		WebClient.RequestBodySpec requestSpec = webClient.method(method)
-			.uri(url)
-			.headers(headers -> {
-				headers.setContentType(MediaType.APPLICATION_JSON);
-				if (idempotencyKey != null && !idempotencyKey.isEmpty()) {
-					headers.set("X-Idempotency-Key", idempotencyKey);
-				}
-			});
-
-		// 2. 바디 설정 (null이면 세팅 안 함)
-		if (body != null) {
-			requestSpec.bodyValue(body);
+		// 멱등성 키가 있다면 헤더에 추가
+		Map<String, String> headers = new HashMap<>();
+		if (idempotencyKey != null && !idempotencyKey.isEmpty()) {
+			headers.put("X-Idempotency-Key", idempotencyKey);
 		}
 
-		// 3. 요청 전송 및 응답 처리
-		ExternalApiResponseDTO<T> response = requestSpec
-			.retrieve()
-			.onStatus(HttpStatusCode::isError, clientResponse ->
-				clientResponse.bodyToMono(String.class)
-					.flatMap(errorBody -> Mono.error(new ExternalApiException(
-						clientResponse.statusCode().value(),
-						errorBody
-					)))
-			)
-			.bodyToMono(responseType) // 응답값을 responseType 형태로 변환
-			.block(); // 동기
-		if (response == null) {
-			throw new RuntimeException("API 응답이 비어있습니다.");
-		}
-
-		log.info("[API Success] URL: {}, Msg: {}", url, response.getMessage());
-		return response.getPayload();
+		// 공통 메서드 호출
+		return callApi(url, method, body, responseType, headers);
 	}
+	 */
 
-	public <T> T callExternalApi(String url, HttpMethod method, Object body,
-		ParameterizedTypeReference<T> responseType, Map<String, String> customHeaders) {
+	// 헤더 O (멱등성 키 포함)
+	public <T> T callApi(String url, HttpMethod method, Object body,
+		ParameterizedTypeReference<ExternalApiResponseDTO<T>> responseType, Map<String, String> customHeaders) {
 
 		// 1. 요청 준비 (WebClient 방식)
 		WebClient.RequestBodySpec requestSpec = webClient.method(method)
@@ -89,23 +72,29 @@ public class ExternalApiClient {
 
 		// 3. 실행 및 예외 처리
 		try {
-			return requestSpec
+			// 3. 요청 전송 및 응답 처리
+			ExternalApiResponseDTO<T> response = requestSpec
 				.retrieve()
 				// API 응답 에러 처리 (4xx, 5xx)
 				.onStatus(HttpStatusCode::isError, clientResponse ->
 					clientResponse.bodyToMono(String.class)
 						.flatMap(errorBody -> {
-							log.error("[External API Fail] Status: {}, Body: {}", clientResponse.statusCode(),
-								errorBody);
+							log.error("[External API Fail] Status: {}, Body: {}", clientResponse.statusCode(), errorBody);
 							return Mono.error(new ExternalApiException(
 								clientResponse.statusCode().value(),
 								errorBody
 							));
 						})
 				)
-				// 이 메서드는 DTO로 감싸지 않고 바로 T 타입을 반환함
-				.bodyToMono(responseType)
+				.bodyToMono(responseType) // 응답값을 responseType 형태로 변환
 				.block(); // 동기식으로 결과 대기
+
+			if (response == null) {
+				throw new RuntimeException("API 응답이 비어있습니다.");
+			}
+
+			log.info("[External API Success] URL: {}, Msg: {}", url, response.getMessage());
+			return response.getPayload();
 
 		} catch (ExternalApiException e) {
 			// 비즈니스 에러는 그대로 던짐

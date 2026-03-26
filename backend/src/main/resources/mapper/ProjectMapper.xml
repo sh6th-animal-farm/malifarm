@@ -103,7 +103,7 @@
         JOIN farms f on
         p.farm_id = f.farm_id
         AND p.project_status = 'SUBSCRIPTION'
-        LIMIT 3
+        LIMIT 10
     </select>
 
     <!-- 관심프로젝트 조회 -->

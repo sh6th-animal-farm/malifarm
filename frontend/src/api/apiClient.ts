@@ -4,7 +4,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL; // 백엔드 API 주소
 
 // 1. 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: `${baseURL}/api`,
+  baseURL: `${baseURL}`,
   timeout: 10000, // 10초
   headers: {
     'Content-Type': 'application/json',

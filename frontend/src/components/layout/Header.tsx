@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { authApi } from "../../api/authApi.ts";
-import Icon from "../icon/index.tsx";
+import { authApi } from "@/api/authApi.ts";
+import Icon from "@/components/icon";
 
 export default function Header() {
   const location = useLocation();
@@ -79,16 +79,27 @@ export default function Header() {
   };
 
   // 메뉴 활성화 체크 함수
-  const isActive = (path: string) =>
-    location.pathname.includes(path) ? "active" : "";
+  // const isActive = (path: string) =>
+  //   location.pathname.includes(path) ? "active" : "";
+
+  // 활성화 체크 및 Tailwind 클래스 반환
+  const getNavItemClass = (path: string) => {
+    const baseClass =
+      "relative inline-flex flex-col items-center font-body-03 px-5 py-1 text-gray-600 transition-all duration-200 hover:text-gray-900 no-underline";
+    const activeClass =
+      "text-gray-900 -translate-y-[2px] after:content-[''] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-green-600 after:rounded-[var(--radius-xl)]";
+    return location.pathname.includes(path)
+      ? `${baseClass} ${activeClass}`
+      : baseClass;
+  };
 
   return (
     <header className="h-header-height bg-white/85 border-b border-gray-100 sticky top-0 z-[1000] flex items-center">
-      <div className="container flex items-center justify-between h-full px-gutter">
+      <div className="container flex items-center justify-between w-full h-full">
         {/* 로고 영역 */}
         <Link
           to="/"
-          className="logo-text font-subtitle-01 text-gray-900 flex items-center overflow-hidden whitespace-nowrap cursor-pointer"
+          className="font-subtitle-01 text-gray-900 flex items-center overflow-hidden whitespace-nowrap cursor-pointer"
         >
           <Icon
             name="leaf"
@@ -102,27 +113,24 @@ export default function Header() {
 
         {/* 네비게이션 영역 */}
         <nav>
-          <ul className="nav-list flex list-none gap-1">
+          <ul className="flex list-none gap-1">
             <li>
-              <Link
-                to="/project"
-                className={`nav-item ${isActive("/project")}`}
-              >
+              <Link to="/project" className={getNavItemClass("/project")}>
                 프로젝트 목록
               </Link>
             </li>
             <li>
-              <Link to="/token" className={`nav-item ${isActive("/token")}`}>
+              <Link to="/token" className={getNavItemClass("/token")}>
                 토큰 거래소
               </Link>
             </li>
             <li>
-              <Link to="/carbon" className={`nav-item ${isActive("/carbon")}`}>
+              <Link to="/carbon" className={getNavItemClass("/carbon")}>
                 탄소 마켓
               </Link>
             </li>
             <li>
-              <Link to="/notice" className={`nav-item ${isActive("/notice")}`}>
+              <Link to="/notice" className={getNavItemClass("/notice")}>
                 공지사항
               </Link>
             </li>
@@ -130,77 +138,71 @@ export default function Header() {
         </nav>
 
         {/* 로그인/회원가입 또는 알림/프로필 영역 */}
-        <div className="auth-group flex items-center gap-4" ref={dropdownRef}>
+        <div className="flex items-center gap-6" ref={dropdownRef}>
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
             <div className="flex items-center gap-6">
-              <Link
-                to="/auth/login"
-                className="btn-login font-button-02 text-gray-900 no-underline"
-              >
+              <Link to="/auth/login" className="btn-login">
                 로그인
               </Link>
-              <Link
-                to="/auth/signup"
-                className="btn-signup bg-green-600 text-white px-3 py-1 rounded-s font-button-02 no-underline transition-colors duration-200 hover:bg-green-700"
-              >
+              <Link to="/auth/signup" className="btn-signup">
                 회원가입
               </Link>
             </div>
           ) : (
             /* 로그인 한 사용자 */
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-[18px] relative">
               {/* 알림 드롭다운 */}
-              <div className="relative">
+              <div className="dropdown-wrapper">
                 <button
                   type="button"
-                  className="p-2 text-gray-400 hover:text-gray-900"
+                  className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
                   onClick={(e) => toggleDropdown("noti", e)}
                 >
                   <Icon name="bell_on" />
                 </button>
                 <div
-                  className={`dropdown-content w-64 ${openDropdown === "noti" ? "show" : ""}`}
+                  className={`dropdown-content w-[200px] py-5 text-center flex flex-col items-center justify-center ${openDropdown === "noti" ? "!block" : ""}`}
                 >
-                  <p className="py-4 text-center text-gray-400 font-caption-01">
+                  <p className="text-[#999] text-sm m-0 font-body-04">
                     알림이 없습니다.
                   </p>
                 </div>
               </div>
 
               {/* 프로필 드롭다운 */}
-              <div className="relative">
+              <div className="drop-down-wrapper">
                 <button
                   type="button"
-                  className="p-2 text-gray-400 hover:text-gray-900"
+                  className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
                   onClick={(e) => toggleDropdown("profile", e)}
                 >
                   <Icon name="profile" />
                 </button>
                 <div
-                  className={`dropdown-content ${openDropdown === "profile" ? "show" : ""}`}
+                  className={`dropdown-content flex flex-col w-full ${openDropdown === "profile" ? "!block" : ""}`}
                 >
                   <Link
                     to="/mypage/profile"
-                    className="block px-4 py-2 hover:bg-gray-50"
+                    className="hover:bg-gray-50 hover:text-green-600"
                   >
                     내 정보
                   </Link>
                   <Link
                     to="/mypage/project-history"
-                    className="block px-4 py-2 hover:bg-gray-50"
+                    className="hover:bg-gray-50 hover:text-green-600"
                   >
                     나의 프로젝트
                   </Link>
                   <Link
                     to="/mypage/wallet"
-                    className="block px-4 py-2 hover:bg-gray-50"
+                    className="hover:bg-gray-50 hover:text-green-600"
                   >
                     나의 전자지갑
                   </Link>
                   <Link
                     to="/mypage/transaction-history"
-                    className="block px-4 py-2 hover:bg-gray-50"
+                    className="hover:bg-gray-50 hover:text-green-600"
                   >
                     거래 내역
                   </Link>
@@ -209,7 +211,7 @@ export default function Header() {
                   {userRole === "ADMIN" && (
                     <Link
                       to="/admin"
-                      className="block px-4 py-2 text-blue-600 hover:bg-gray-50 border-t border-gray-100 mt-1"
+                      className="hover:bg-gray-50 hover:text-green-600"
                     >
                       관리자 페이지
                     </Link>
@@ -218,24 +220,23 @@ export default function Header() {
                   {userRole === "ENTERPRISE" && (
                     <Link
                       to="/mypage/carbon-history"
-                      className="block px-4 py-2 text-blue-600 hover:bg-gray-50 border-t border-gray-100 mt-1"
+                      className="hover:bg-gray-50 hover:text-green-600"
                     >
                       탄소 배출권 구매 내역
                     </Link>
                   )}
 
-                  <button
+                  <Link
+                    to="/"
+                    className="!text-red-500 font-bold hover:bg-red-50 hover:text-red-700"
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-error hover:bg-gray-50 border-t border-gray-100 mt-1"
                   >
                     로그아웃
-                  </button>
+                  </Link>
                 </div>
               </div>
 
-              <span className="font-body-03 text-gray-800 ml-2">
-                {userName} 님
-              </span>
+              <span className="font-button-01">{userName} 님</span>
             </div>
           )}
         </div>
