@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
+import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.http.ExternalApiClient;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class FarmService {
 	private String kakaoApiKey;
 
 	private final FarmRepository farmRepository;
-	private final ExternalApiClient apiUtil;
+	private final ExternalApiClient externalApiClient;
 
 	public List<FarmDTO> selectAllFarm() {
 		return farmRepository.selectAllFarm();
@@ -39,12 +40,11 @@ public class FarmService {
 		System.out.println(kakaoApiKey);
 
 		// 이제 제네릭 타입을 사용하여 안전하게 호출할 수 있습니다.
-		ParameterizedTypeReference<Map<String, Object>> typeRef =
-			new ParameterizedTypeReference<Map<String, Object>>() {
-			};
+		ParameterizedTypeReference<ExternalApiResponseDTO<Map<String, Object>>> typeRef =
+			new ParameterizedTypeReference<ExternalApiResponseDTO<Map<String, Object>>>() {};
 
 		// API 응답에서 x(경도), y(위도) 추출 로직 (간략화)
-		Map<String, Object> fullResponse = apiUtil.callExternalApi(url, HttpMethod.GET, null, typeRef, customHeaders);
+		Map<String, Object> fullResponse = externalApiClient.callApi(url, HttpMethod.GET, null, typeRef, customHeaders);
 		System.out.println(fullResponse);
 		if (fullResponse != null && fullResponse.containsKey("documents")) {
 			List<Map<String, Object>> documents = (List<Map<String, Object>>)fullResponse.get("documents");

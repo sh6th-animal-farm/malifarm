@@ -59,7 +59,6 @@ public class ProjectController {
 
 	@GetMapping("/{projectId}")
 	public ResponseEntity<?> selectDetail(@PathVariable("projectId") Long projectId) {
-		System.out.println("aaaa");
 		ProjectDetailDTO data = projectService.selectDetail(projectId);
 
 		// apiClient가 에러를 던지지 않도록 규격(success, status 등)을 맞춰줍니다.
