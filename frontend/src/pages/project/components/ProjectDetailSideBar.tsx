@@ -1,5 +1,4 @@
-import React from 'react';
-import Button from './Button';
+import Button from '@/components/common/Button';
 
 interface SideBarProps {
   projectData: {

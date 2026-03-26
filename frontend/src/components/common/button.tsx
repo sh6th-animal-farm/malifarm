@@ -12,7 +12,9 @@ type ButtonVariant =
   | "subscriptionCheck" // 초록 / 진한 초록 - 청약 체크 전용
   | "subscriptionCancel"  // 흰색 배경 / 빨간 테두리 / 청약 취소 전용
   | "subscriptionDisabled" // 회색 배경 / 호버 없음 / 청약 종료
-  | "subscriptionEnd"; // 연한 회색 배경 / 회색 테두리 / 프로젝트 종료 전용
+  | "subscriptionEnd" // 연한 회색 배경 / 회색 테두리 / 프로젝트 종료 전용
+  | "sub_modalFirst" // 회색 (nohover) / 모달 내 버튼
+  | "sub_modalSecond"; // 초록 테두리 / 흰색 배경 (nohover) / 모달 내 버튼
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   width?: number | string; // 가로 크기 (예: 200 또는 "100%")
@@ -56,6 +58,10 @@ export default function Button({
       "bg-gray-400 border-gray-400 text-white cursor-not-allowed",
     subscriptionEnd:
       "bg-gray-200 border-gray-200 text-white cursor-not-allowed",
+    sub_modalFirst: 
+      "bg-gray-900 border-gray-900 text-white font-button-02", 
+    sub_modalSecond: 
+      "bg-white border-green-600 text-green-600 font-button-02",
   };
 
   // 💡 인라인 스타일로 가로/세로 크기 결정
