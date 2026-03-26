@@ -1,4 +1,4 @@
-import { kocPoints } from "@/pages/Home/data/data";
+import { kocPoints } from "@/pages/home/data/data";
 
 function CarbonChart() {
   const maxValue = Math.max(...kocPoints.map((point) => point.value));

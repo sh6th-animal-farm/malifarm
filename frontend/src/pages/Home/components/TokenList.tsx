@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { topTokens } from "@/pages/Home/data/data";
+import { topTokens } from "@/pages/home/data/data";
 
 export default function TokenList() {
   return (

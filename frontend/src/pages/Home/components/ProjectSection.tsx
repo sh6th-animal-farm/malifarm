@@ -1,7 +1,7 @@
 import ProjectCard from "@/components/common/ProjectCard";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { projects } from "@/pages/Home/data/data";
+import { projects } from "@/pages/home/data/data";
 
 export default function ProjectSection() {
 

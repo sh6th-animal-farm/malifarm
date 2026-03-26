@@ -1,4 +1,4 @@
-import type { Project } from "@/pages/Home/types/type";
+import type { Project } from "@/pages/home/types/type";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/common/button";
 import Badge from "@/components/common/tag";

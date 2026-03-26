@@ -1,4 +1,4 @@
-import type { ProjectStatus } from "@/pages/Home/types/type";
+import type { ProjectStatus } from "@/pages/home/types/type";
 
 function StatusBadge({ status }: { status: ProjectStatus }) {
   const badgeMap: Record<ProjectStatus, string> = {

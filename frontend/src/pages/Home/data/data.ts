@@ -1,4 +1,4 @@
-import type { Project, Token } from "@/pages/Home/types/type";
+import type { Project, Token } from "@/pages/home/types/type";
 
 const stats = [
   { label: "누적 투자금", value: "149.8억" },
