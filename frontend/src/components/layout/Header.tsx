@@ -52,7 +52,7 @@ export default function Header() {
     };
 
     fetchUserData();
-  }, []);
+  }, [location.pathname]); // 경로 변경 시마다 로그인 상태 및 사용자 정보 재확인
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -142,10 +142,13 @@ export default function Header() {
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
             <div className="flex items-center gap-6">
-              <Link to="/auth/login" className="btn-login">
+              <Link to="/auth/login" className="text-gray-900 font-button-01">
                 로그인
               </Link>
-              <Link to="/auth/signup" className="btn-signup">
+              <Link
+                to="/auth/signup"
+                className="px-3 py-1 width-[72px] height-[32px] bg-green-600 text-white inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap"
+              >
                 회원가입
               </Link>
             </div>
@@ -153,25 +156,27 @@ export default function Header() {
             /* 로그인 한 사용자 */
             <div className="flex items-center gap-[18px] relative">
               {/* 알림 드롭다운 */}
-              <div className="dropdown-wrapper">
+              <div className="relative inline-block">
                 <button
                   type="button"
                   className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
                   onClick={(e) => toggleDropdown("noti", e)}
                 >
-                  <Icon name="bell_on" />
+                  <Icon name="bell_off" />
                 </button>
                 <div
-                  className={`dropdown-content w-[200px] py-5 text-center flex flex-col items-center justify-center ${openDropdown === "noti" ? "!block" : ""}`}
+                  className={`
+                    absolute top-[calc(100%+12px)] right-0 flex w-full px-6 py-3 text-center
+                    bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] z-[1000]
+                    ${openDropdown === "noti" ? "!block" : "hidden"}
+                  `}
                 >
-                  <p className="text-[#999] text-sm m-0 font-body-04">
-                    알림이 없습니다.
-                  </p>
+                  <p className="font-body-01 text-gray-300">알림이 없습니다.</p>
                 </div>
               </div>
 
               {/* 프로필 드롭다운 */}
-              <div className="drop-down-wrapper">
+              <div className="relative inline-block">
                 <button
                   type="button"
                   className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
@@ -180,59 +185,43 @@ export default function Header() {
                   <Icon name="profile" />
                 </button>
                 <div
-                  className={`dropdown-content flex flex-col w-full ${openDropdown === "profile" ? "!block" : ""}`}
+                  className={`
+                    absolute top-[calc(100%+12px)] right-0 flex flex-col w-full py-2 
+                    bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] z-[1000]
+                    ${openDropdown === "profile" ? "block" : "hidden"}
+                  `}
                 >
-                  <Link
-                    to="/mypage/profile"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    내 정보
-                  </Link>
-                  <Link
-                    to="/mypage/project-history"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    나의 프로젝트
-                  </Link>
-                  <Link
-                    to="/mypage/wallet"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    나의 전자지갑
-                  </Link>
-                  <Link
-                    to="/mypage/transaction-history"
-                    className="hover:bg-gray-50 hover:text-green-600"
-                  >
-                    거래 내역
-                  </Link>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/profile">내 정보</Link>
+                  </div>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/project-history">나의 프로젝트</Link>
+                  </div>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/wallet">나의 전자지갑</Link>
+                  </div>
+                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                    <Link to="/mypage/transaction-history">거래 내역</Link>
+                  </div>
 
                   {/* ADMIN 권한인 사용자만 표시 */}
                   {userRole === "ADMIN" && (
-                    <Link
-                      to="/admin"
-                      className="hover:bg-gray-50 hover:text-green-600"
-                    >
-                      관리자 페이지
-                    </Link>
+                    <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                      <Link to="/admin">관리자 페이지</Link>
+                    </div>
                   )}
 
                   {userRole === "ENTERPRISE" && (
-                    <Link
-                      to="/mypage/carbon-history"
-                      className="hover:bg-gray-50 hover:text-green-600"
-                    >
-                      탄소 배출권 구매 내역
-                    </Link>
+                    <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
+                      <Link to="/mypage/carbon-history">
+                        탄소 배출권 구매 내역
+                      </Link>
+                    </div>
                   )}
 
-                  <Link
-                    to="/"
-                    className="!text-red-500 font-bold hover:bg-red-50 hover:text-red-700"
-                    onClick={handleLogout}
-                  >
-                    로그아웃
-                  </Link>
+                  <div className="px-4 py-2.5 font-caption-01 text-error hover:bg-gray-50 hover:text-error">
+                    <button onClick={handleLogout}>로그아웃</button>
+                  </div>
                 </div>
               </div>
 
