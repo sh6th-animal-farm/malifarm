@@ -7,7 +7,7 @@ import HeroSection from "./components/HeroSection";
 
 function Home() {
   return (
-    <div className="flex flex-col gap-24">
+    <div className="flex flex-col">
       <HeroSection />
       <StatusSection />
       <ProjectSection />

@@ -5,10 +5,10 @@ function Partner() {
   const duplicatedPartners = useMemo(() => [...partners, ...partners, ...partners, ...partners], []);
 
   return (
-    <section className="bg-gray-50 py-20">
-      <div className="layout-container">
-        <h3 className="mb-10 font-header-02 text-gray-900">함께하는 파트너사</h3>
-      </div>
+    <section className="bg-gray-50 py-14 md:py-20 lg:py-24">
+      {/* <div className="layout-container">
+        <h3 className="mb-10 font-header-00 text-gray-900">함께하는 파트너사</h3>
+      </div> */}
       <div
         className="relative flex overflow-hidden mask-fade"
         onMouseEnter={(e) => {

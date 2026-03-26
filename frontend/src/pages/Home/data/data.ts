@@ -1,45 +1,9 @@
-import type { Project, Token } from "@/pages/home/types/type";
+import type { Token } from "@/types/projectType";
 
 const stats = [
   { label: "누적 투자금", value: "149.8억" },
   { label: "탄소 저감량", value: "3,420", suffix: "tCO2" },
   { label: "연 평균 수익률", value: "14.2%" },
-];
-
-const projects: Project[] = [
-  {
-    id: 101,
-    title: "청양 스마트팜 토마토 3회차",
-    status: "SUBSCRIPTION",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1461354464878-ad92f492a5a0?q=80&w=1200&auto=format&fit=crop",
-    upperDate: "2026-03-20 ~ 2026-04-02",
-    lowerDate: "청약률 82%",
-    percent: 82,
-    dDay: "D-9",
-  },
-  {
-    id: 102,
-    title: "논산 딸기 스마트온실 1회차",
-    status: "ANNOUNCEMENT",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?q=80&w=1200&auto=format&fit=crop",
-    upperDate: "2026-03-25 ~ 2026-04-10",
-    lowerDate: "청약 예정 2026-04-12 ~ 2026-04-19",
-    percent: 0,
-    dDay: "공고중",
-  },
-  {
-    id: 103,
-    title: "제주 바질 수직농장 2회차",
-    status: "INPROGRESS",
-    thumbnailUrl:
-      "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=1200&auto=format&fit=crop",
-    upperDate: "운영중 프로젝트",
-    lowerDate: "2026-01-10 ~ 2026-10-30",
-    percent: 64,
-    dDay: "운영중",
-  },
 ];
 
 const topTokens: Token[] = [
@@ -73,4 +37,4 @@ const partners = [
   { name: "Intel", src: "https://img.icons8.com/?size=100&id=TaJZJbJzrhhN&format=png&color=000000"},
 ];
 
-export { stats, projects, topTokens, kocPoints, partners };
+export { stats, topTokens, kocPoints, partners };

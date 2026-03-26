@@ -43,7 +43,7 @@ export default function Button({
     disabled:
       "bg-gray-500 border-gray-500 text-white cursor-not-allowed opacity-70",
     "outline-default":
-      "bg-white border-green-600 text-green-600 hover:bg-green-0",
+      "border-green-600 text-green-600 hover:bg-green-0",
     "outline-disabled":
       "bg-white border-gray-300 text-gray-300 cursor-not-allowed",
     check:

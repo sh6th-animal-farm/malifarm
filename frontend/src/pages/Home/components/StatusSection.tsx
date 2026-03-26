@@ -1,10 +1,11 @@
-import { stats } from '@/pages/home/data/data'
+import { stats } from "@/pages/home/data/data";
 
 export default function StatusSection() {
   return (
-    <section className="layout-container">
-        <div className="grid rounded-lg shadow-std md:grid-cols-3">
-          {stats.map((stat, index) => (
+    <section className="bg-gray-50 py-14 md:py-20 lg:py-24">
+      <div className="layout-container">
+        <div className="grid rounded-lg bg-white shadow-std md:grid-cols-3">
+          {stats.map((stat) => (
             <div
               className="flex flex-col md:flex-row md:items-center"
               key={stat.label}
@@ -22,12 +23,13 @@ export default function StatusSection() {
                   ) : null}
                 </span>
               </div>
-              {index < stats.length - 1 ? (
+              {/* {index < stats.length - 1 ? (
                 <div className="h-px w-full bg-gray-100 md:h-full md:w-px" />
-              ) : null}
+              ) : null} */}
             </div>
           ))}
         </div>
-      </section>
-  )
+      </div>
+    </section>
+  );
 }

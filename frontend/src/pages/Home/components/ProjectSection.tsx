@@ -1,11 +1,29 @@
 import ProjectCard from "@/components/common/ProjectCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { projects } from "@/pages/home/data/data";
+import { homeApi } from "@/api/homeApi";
+import type { Project } from "@/types/projectType";
+import { toCardModel } from "@/utils/projectMapper";
 
 export default function ProjectSection() {
-
+  const [loading, setLoading] = useState(true);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [starredProjects, setStarredProjects] = useState<number[]>([101]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await homeApi.getMainProjects();
+        setProjects(data.map(toCardModel));
+      } catch (e) {
+        console.error("프로젝트 목록 로드 실패", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const toggleStar = (projectId: number) => {
     setStarredProjects((prev) =>
@@ -15,17 +33,21 @@ export default function ProjectSection() {
     );
   };
 
+  if (loading)
+    return (
+      <section>
+        <div className="layout-container">로딩중...</div>
+      </section>
+    );
+
   return (
-    <section className="">
+    <section className="py-14 md:py-20 lg:py-24">
       <div className="layout-container">
         <div className="mb-7 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-          <h2 className="font-header-01 text-gray-900">
+          <h2 className="font-header-00 text-gray-900">
             청약 진행 중인 프로젝트
           </h2>
-          <Link
-            to="/project/list"
-            className="font-caption-01 text-gray-500"
-          >
+          <Link to="/project/list" className="font-caption-01 text-gray-500">
             전체보기 &gt;
           </Link>
         </div>

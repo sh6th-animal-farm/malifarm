@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Chart, registerables } from 'chart.js';
 import { projectApi } from '@/api/projectApi';
-import type { ProjectData } from '@/types/project';
 import InfoGrid from '@/components/common/InfoGrid';
 import ProjectDetailSideBar from '@/components/common/ProjectDetailSideBar';
+import type { ProjectData } from '@/types/projectType';
 
 Chart.register(...registerables);
 
