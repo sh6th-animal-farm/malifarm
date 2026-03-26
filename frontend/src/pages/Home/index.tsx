@@ -7,12 +7,18 @@ import FilterGroup from "@/components/common/FilterGroup";
 import TabMenu from "@/components/common/TabMenu";
 import { CheckCircle, WarningCircle } from "@/components/icon/Icons";
 import Modal from "@/components/common/Modal";
+import Toast from "@/components/common/Toast";
 
 export default function Home() {
   const [tokenId, setTokenId] = React.useState<number | "">("");
   const [tokenData, setTokenData] = React.useState<Token | null>(null);
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [selectedTab, setselectedTab] = useState("token");
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMsg(msg);
+  };
 
   const handleTokenBtn = async (tokenId: number) => {
     try {
@@ -59,13 +65,26 @@ export default function Home() {
 
         <Button
           variant="check"
-          children="로그인"
+          children="버튼테스트"
           onClick={() => {
             if (tokenId !== "") {
               handleTokenBtn(tokenId);
             }
           }}
         />
+
+        <div className="p-10">
+          <button
+            onClick={() => showToast("성공적으로 저장되었습니다!")}
+            className="bg-green-600 text-white px-4 py-2 rounded"
+          >
+            토스트 띄우기
+          </button>
+
+          {toastMsg && (
+            <Toast message={toastMsg} onClose={() => setToastMsg(null)} />
+          )}
+        </div>
 
         <Tag variant="info">공고중</Tag>
 
