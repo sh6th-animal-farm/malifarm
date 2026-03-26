@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import apiClient from "../../api/apiClient";
+import apiClient from "@/api/apiClient";
 import LoginForm from "./components/LoginForm";
 
 type LoginResponse = {
@@ -20,12 +20,10 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await apiClient.post("/api/auth/login", {
+      const loginData = await apiClient.post("/api/auth/login", {
         email,
         password,
-      });
-
-      const loginData = response.data as LoginResponse;
+      }) as LoginResponse;
 
       localStorage.setItem("accessToken", loginData.accessToken);
       localStorage.setItem("refreshToken", loginData.refreshToken);
