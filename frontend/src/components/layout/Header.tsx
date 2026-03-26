@@ -52,7 +52,7 @@ export default function Header() {
     };
 
     fetchUserData();
-  }, []);
+  }, [location.pathname]); // 경로 변경 시마다 로그인 상태 및 사용자 정보 재확인
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -142,10 +142,13 @@ export default function Header() {
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
             <div className="flex items-center gap-6">
-              <Link to="/auth/login" className="btn-login">
+              <Link to="/auth/login" className="text-gray-900 font-button-01">
                 로그인
               </Link>
-              <Link to="/auth/signup" className="btn-signup">
+              <Link
+                to="/auth/signup"
+                className="px-3 py-1 width-[72px] height-[32px] bg-green-600 text-white inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap"
+              >
                 회원가입
               </Link>
             </div>
@@ -217,9 +220,7 @@ export default function Header() {
                   )}
 
                   <div className="px-4 py-2.5 font-caption-01 text-error hover:bg-gray-50 hover:text-error">
-                    <Link to="/" onClick={handleLogout}>
-                      로그아웃
-                    </Link>
+                    <button onClick={handleLogout}>로그아웃</button>
                   </div>
                 </div>
               </div>
