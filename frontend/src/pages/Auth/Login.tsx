@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "@/api/apiClient";
 import LoginForm from "./components/LoginForm";
+import { authApi } from "@/api/authApi";
 
 type LoginResponse = {
   accessToken: string;
@@ -20,13 +21,19 @@ export default function Login() {
     setError("");
 
     try {
-      const loginData = await apiClient.post("/api/auth/login", {
+      const loginData = (await apiClient.post("/api/auth/login", {
         email,
         password,
-      }) as LoginResponse;
+      })) as LoginResponse;
 
       localStorage.setItem("accessToken", loginData.accessToken);
       localStorage.setItem("refreshToken", loginData.refreshToken);
+
+      const userName = await authApi.getUserName();
+      const userRole = await authApi.getUserRole();
+
+      localStorage.setItem("userName", userName);
+      localStorage.setItem("userRole", userRole);
 
       const now = Date.now().toString();
       localStorage.setItem("loginStartTime", now);
