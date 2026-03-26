@@ -1,5 +1,13 @@
-import {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import apiClient from "@/api/apiClient";
+import LoginForm from "./components/LoginForm";
+import { authApi } from "@/api/authApi";
+
+type LoginResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
 
 export default function Login() {
     const navigate = useNavigate();
@@ -12,36 +20,31 @@ export default function Login() {
         e.preventDefault();
         setError("");
 
-        try {
-            const res = await fetch("http://localhost:8080/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({email, password}),
-            });
+    try {
+      const loginData = (await apiClient.post("/api/auth/login", {
+        email,
+        password,
+      })) as LoginResponse;
 
-            if (!res.ok) {
-                setError("이메일 또는 비밀번호를 확인하세요.");
-                return;
-            }
+      localStorage.setItem("accessToken", loginData.accessToken);
+      localStorage.setItem("refreshToken", loginData.refreshToken);
 
-            const data = await res.json();
+      const userName = await authApi.getUserName();
+      const userRole = await authApi.getUserRole();
 
-            localStorage.clear();
-            localStorage.setItem("accessToken", data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
+      localStorage.setItem("userName", userName);
+      localStorage.setItem("userRole", userRole);
 
             const now = Date.now().toString();
             localStorage.setItem("loginStartTime", now);
             localStorage.setItem("lastActivityTime", now);
 
-            navigate("/");
-        } catch (err) {
-            console.error("로그인 중 에러 발생:", err);
-            setError("서버와 통신할 수 없습니다.");
-        }
-    };
+      navigate("/");
+    } catch (err) {
+      console.error("로그인 실패:", err);
+      setError("이메일 또는 비밀번호를 확인하세요.");
+    }
+  };
 
     return (
         <div className="flex flex-col items-center px-6 pt-10 pb-20 min-h-[calc(100vh-var(--spacing-header-height))]">
@@ -110,4 +113,14 @@ export default function Login() {
             </div>
         </div>
     );
+  return (
+    <LoginForm
+      email={email}
+      password={password}
+      error={error}
+      onChangeEmail={setEmail}
+      onChangePassword={setPassword}
+      onSubmit={handleLogin}
+    />
+  );
 }

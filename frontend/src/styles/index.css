@@ -93,20 +93,6 @@
 
 
   /* TODO: 아래 내용 컴포넌트로 분리 */
-  /* Buttons */
-  .btn { @apply inline-flex items-center justify-center px-6 py-3 rounded-[var(--radius-s)] font-semibold cursor-pointer transition-all duration-200 border-none font-main; }
-  .btn-primary { @apply bg-green-500 text-white hover:bg-green-400; }
-  .btn-outline { @apply bg-transparent border border-gray-200 text-gray-700 hover:bg-gray-50; }
-  .btn-login { @apply font-button-02 text-gray-900 no-underline; }
-  .btn-signup { @apply bg-green-600 text-white px-3 py-1 rounded-[var(--radius-s)] font-button-02 no-underline transition-colors duration-200 hover:bg-green-700; }
-  
-  /* Dropdown & Cards */
-  .card { @apply bg-gray-0 border border-gray-100 rounded-[var(--radius-l)] p-8 shadow-std; }
-  .dropdown-wrapper { @apply relative inline-block; }
-  .dropdown-content {
-    @apply hidden absolute top-[calc(100%+12px)] right-0 bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] py-2 z-[1000];
-    @apply after:content-[''] after:absolute after:-top-2 after:right-3 after:border-l-8 after:border-l-transparent after:border-r-8 after:border-r-transparent after:border-b-8 after:border-b-white;
-  }
 
   /* Profile Menu */
   .profile-menu { @apply flex flex-col w-full; }
