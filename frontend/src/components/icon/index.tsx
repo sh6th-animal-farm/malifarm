@@ -18,6 +18,8 @@ const ICON_MAP: Record<IconName, React.ComponentType<IconProps>> = {
   check: Icons.Check,
   home: Icons.Home,
   user: Icons.User,
+  check_circle: Icons.CheckCircle,
+  warning_circle: Icons.WarningCircle,
 };
 
 interface FinalIconProps extends IconProps {
