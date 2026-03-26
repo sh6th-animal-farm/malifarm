@@ -36,12 +36,7 @@ public class JwtProvider {
 	public JwtProvider(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
-
-	/*
-	 * [토큰 만료 시간 설정]
-	 * Access Token: 60분 (요구사항 반영)
-	 * Refresh Token: 30일 (Redis 보관 기간과 동일하게 설정)
-	 */
+	
 	private final long accessTokenExp = 60 * 60 * 1000L; //1시간
 	private final long refreshTokenExp = 14L * 24 * 60 * 60 * 1000L; //14일
 
@@ -51,11 +46,14 @@ public class JwtProvider {
 		this.secretKey = Keys.hmacShaKeyFor(salt.getBytes());
 	}
 
-	/**
-	 * [Access Token 발급]
-	 * @param email 토큰의 주체(Subject)가 될 사용자의 이메일
-	 * @param role 사용자 권한 (예: ROLE_USER)
-	 */
+	private Claims parseClaims(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(secretKey) // 기존 키
+			.build()
+			.parseClaimsJws(token)
+			.getBody();
+	}
+
 	public String createAccessToken(String email, String role) {
 
 		//claims: 토큰 안에 담기는 실제 정보 조각들, 토큰의 Payload(내용물) 부분에 저장되는 데이터
@@ -141,4 +139,16 @@ public class JwtProvider {
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
+	public long getRemainingExpiration(String token) {
+		try {
+			Claims claims = parseClaims(token);
+			Date expiration = claims.getExpiration();
+
+			long now = System.currentTimeMillis();
+			return Math.max(expiration.getTime() - now, 0);
+
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 }
