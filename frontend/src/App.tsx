@@ -2,11 +2,12 @@ import { Routes, Route } from "react-router-dom";
 import "./styles/index.css";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import Home from "./pages/Home";
-import Login from "./pages/Auth/Login";
-import NotFound from "./pages/Error/NotFound";
 import CarbonList from "./pages/Carbon/CarbonList";
 import CarbonDetail from "./pages/Carbon/CarbonDetail";
+import Login from "./pages/Auth/Login";
+import ProjectDetail from "./pages/project/ProjectDetail";
+import Home from "./pages/Home";
+import NotFound from "./pages/Error/NotFound";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/carbon/list" element={<CarbonList />} />
           <Route path="/carbon/:id" element={<CarbonDetail />} />
           <Route path="/auth/login" element={<Login />} />
+          <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

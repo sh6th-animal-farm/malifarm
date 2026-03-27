@@ -329,16 +329,16 @@ export const WarningCircle = ({ className, ...props }: IconProps) => (
     <path
       d="M30 25V30"
       stroke="#E53935"
-      stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M30 35H30.0125"
       stroke="#E53935"
-      stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </svg>
 );
