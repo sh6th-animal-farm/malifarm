@@ -6,6 +6,7 @@ import Home from "./pages/home";
 import Login from "./pages/auth/Login";
 import NotFound from "./pages/error/NotFound";
 import ProjectDetail from "./pages/project/ProjectDetail";
+import TokenList from "./pages/Token/TokenList";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="/token" element={<TokenList />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

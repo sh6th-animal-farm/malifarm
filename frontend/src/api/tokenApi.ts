@@ -5,4 +5,5 @@ export const tokenApi = {
     getTokenInfo: (tokenId: number) => {
         return apiClient.get<Token>(`/api/token/${tokenId}`);
     },
+    getTokenList: () => apiClient.get<Token[]>("/api/home/token"),
 }
