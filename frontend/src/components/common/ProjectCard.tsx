@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@/components/common/button";
+import Button from "@/components/common/Button";
 import Badge from "@/components/common/tag";
 import Icon from "@/components/icon";
 import type { Project } from "@/types/projectType";
