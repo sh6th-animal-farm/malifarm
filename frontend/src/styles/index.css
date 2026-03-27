@@ -120,3 +120,23 @@
 @utility text-green { color: var(--color-green-500); }
 @utility text-error { color: var(--color-error); }
 @utility bg-section { background-color: white; } /* 흰 색으로 변경 */
+
+
+@layer components {
+  .layout-container {
+    width: min(100%, var(--max-width-container-max));
+    margin-inline: auto;
+  }
+}
+
+@media (width < 1440px) {
+  .layout-container {
+    width: calc(100% - 80px); /* 좌우 40 임시 사이즈*/
+  }
+}
+
+@media (width < 768px) {
+  .layout-container {
+    width: calc(100% - 40px); /* 좌우 20 임시 사이즈*/
+  }
+}
