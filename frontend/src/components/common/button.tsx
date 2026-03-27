@@ -32,20 +32,20 @@ export default function Button({
 }: ButtonProps) {
   // 공통 스타일
   const baseStyles =
-    "inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap";
+    "inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap cursor-pointer";
 
   // 버튼 타입별 스타일 매핑
   const variants: Record<ButtonVariant, string> = {
     default:
       "bg-gray-900 border-gray-900 text-white hover:bg-green-600 hover:border-green-600",
     "default-warning":
-      "bg-gray-900 border-gray-900 text-white hover:bg-green-600 hover:border-green-600",
+      "bg-gray-900 border-gray-900 text-white hover:bg-warning hover:border-warning",
     "default-info":
-      "bg-gray-900 border-gray-900 text-white hover:bg-green-600 hover:border-green-600",
+      "bg-gray-900 border-gray-900 text-white hover:bg-info hover:border-info",
     disabled:
       "bg-gray-500 border-gray-500 text-white cursor-not-allowed opacity-70",
     "outline-default":
-      "bg-white border-green-600 text-green-600 hover:bg-green-0",
+      "border-green-600 text-green-600 hover:bg-green-0",
     "outline-disabled":
       "bg-white border-gray-300 text-gray-300 cursor-not-allowed",
     check:

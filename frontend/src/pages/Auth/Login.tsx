@@ -20,24 +20,24 @@ export default function Login() {
         e.preventDefault();
         setError("");
 
-        try {
-            const loginData = (await apiClient.post("/api/auth/login", {
-                email,
-                password,
-            })) as LoginResponse;
+    try {
+        const loginData = (await apiClient.post("/api/auth/login", {
+            email,
+            password,
+        })) as LoginResponse;
 
-            localStorage.setItem("accessToken", loginData.accessToken);
-            localStorage.setItem("refreshToken", loginData.refreshToken);
+        localStorage.setItem("accessToken", loginData.accessToken);
+        localStorage.setItem("refreshToken", loginData.refreshToken);
 
-            const userName = await authApi.getUserName();
-            const userRole = await authApi.getUserRole();
+        const userName = await authApi.getUserName();
+        const userRole = await authApi.getUserRole();
 
-            localStorage.setItem("userName", userName);
-            localStorage.setItem("userRole", userRole);
+        localStorage.setItem("userName", userName);
+        localStorage.setItem("userRole", userRole);
 
-            const now = Date.now().toString();
-            localStorage.setItem("loginStartTime", now);
-            localStorage.setItem("lastActivityTime", now);
+        const now = Date.now().toString();
+        localStorage.setItem("loginStartTime", now);
+        localStorage.setItem("lastActivityTime", now);
 
             navigate("/");
         } catch (err) {

@@ -31,8 +31,17 @@
   --leading-std: 1.4;
 
   /* --- 6. Border Radius & Shadow --- */
-  --radius-xs: 4px; --radius-s: 8px; --radius-m: 12px; --radius-l: 16px; --radius-xl: 999px;
+  --radius-xs: 4px; --radius-s: 8px; --radius-m: 12px; 
+  --radius-lg: 16px; --radius-xl: 999px;
   --shadow-std: 0 2px 16px rgba(0, 0, 0, 0.05);
+
+  /* --- 7. Slide Animations --- */
+  --animate-infinite-scroll: scroll 40s linear infinite;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 /* --- Base Reset --- */
@@ -53,6 +62,8 @@
 }
 
 /* --- 7. Typography Utilities --- */
+@utility font-header-hero { font: 900 48px/1.4 var(--font-main); }
+@utility font-header-00 { font: 900 32px/1.4 var(--font-main); }
 @utility font-header-01 { font: 700 32px/1.4 var(--font-main); }
 @utility font-header-02 { font: 600 24px/1.4 var(--font-main); }
 @utility font-header-03 { font: 700 22px/1.4 var(--font-main); }
@@ -100,9 +111,81 @@
   .mlf-spinner { @apply w-10 h-10 border-4 border-gray-100 border-t-green-600 rounded-[var(--radius-full)] animate-spin; }
   .mlf-loading-overlay { @apply absolute inset-0 flex items-center justify-center z-[100] rounded-[inherit]; }
   .mlf-loading-overlay.global { @apply fixed z-[10000] bg-black/20; }
+
 }
 
 /* --- 9. Utility Classes --- */
 @utility text-green { color: var(--color-green-500); }
 @utility text-error { color: var(--color-error); }
 @utility bg-section { background-color: white; } /* 흰 색으로 변경 */
+@utility rounded-hero-image { border-radius: 56px 144px 56px 56px; }
+@utility mask-fade {
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+/* layout-container */
+@layer components {
+  .layout-container {
+    width: min(100%, var(--max-width-container-max));
+    margin-inline: auto;
+  }
+}
+
+@media (width < 1440px) {
+  .layout-container {
+    width: calc(100% - 64px); /* 좌우 40 임시 사이즈*/
+  }
+}
+
+@media (width < 1280px) {
+  .font-header-hero { font: 900 42px/1.4 var(--font-main); }
+  .font-header-00 { font: 900 30px/1.4 var(--font-main); }
+  .font-header-01 { font: 700 30px/1.4 var(--font-main); }
+  .font-header-02 { font: 600 23px/1.4 var(--font-main); }
+  .font-header-03 { font: 700 21px/1.4 var(--font-main); }
+  .font-header-04 { font: 600 19px/1.4 var(--font-main); }
+  .font-subtitle-01 { font: 600 17px/1.4 var(--font-main); }
+  .font-subtitle-02 { font: 500 17px/1.4 var(--font-main); }
+  .font-subtitle-03 { font: 400 17px/1.4 var(--font-main); }
+}
+
+@media (width < 1024px) {
+  .font-header-hero { font: 900 36px/1.4 var(--font-main); }
+  .font-header-00 { font: 900 28px/1.4 var(--font-main); }
+  .font-header-01 { font: 700 28px/1.4 var(--font-main); }
+  .font-header-02 { font: 600 21px/1.4 var(--font-main); }
+  .font-header-03 { font: 700 19px/1.4 var(--font-main); }
+  .font-header-04 { font: 600 17px/1.4 var(--font-main); }
+  .font-subtitle-01 { font: 600 16px/1.4 var(--font-main); }
+  .font-subtitle-02 { font: 500 16px/1.4 var(--font-main); }
+  .font-subtitle-03 { font: 400 16px/1.4 var(--font-main); }
+  .font-body-01 { font: 400 15px/1.4 var(--font-main); }
+  .font-body-02 { font: 500 15px/1.4 var(--font-main); }
+  .font-body-03 { font: 600 15px/1.4 var(--font-main); }
+  .font-body-04 { font: 700 15px/1.4 var(--font-main); }
+}
+
+@media (width < 768px) {
+  .layout-container {
+    width: calc(100% - 40px); /* 좌우 20 임시 사이즈*/
+  }
+
+  .font-header-hero { font: 900 32px/1.35 var(--font-main); }
+  .font-header-00 { font: 900 24px/1.35 var(--font-main); }
+  .font-header-01 { font: 700 24px/1.35 var(--font-main); }
+  .font-header-02 { font: 600 20px/1.35 var(--font-main); }
+  .font-header-03 { font: 700 18px/1.35 var(--font-main); }
+  .font-header-04 { font: 600 16px/1.35 var(--font-main); }
+  .font-subtitle-01 { font: 600 15px/1.4 var(--font-main); }
+  .font-subtitle-02 { font: 500 15px/1.4 var(--font-main); }
+  .font-subtitle-03 { font: 400 15px/1.4 var(--font-main); }
+  .font-body-01 { font: 400 15px/1.45 var(--font-main); }
+  .font-body-02 { font: 500 15px/1.45 var(--font-main); }
+  .font-body-03 { font: 600 15px/1.45 var(--font-main); }
+  .font-body-04 { font: 700 15px/1.45 var(--font-main); }
+  .font-caption-01 { font: 400 13px/1.45 var(--font-main); }
+  .font-caption-02 { font: 500 13px/1.45 var(--font-main); }
+  .font-caption-03 { font: 700 13px/1.45 var(--font-main); }
+  .font-button-01 { font: 600 14px/1.4 var(--font-main); }
+  .font-button-02 { font: 600 14px/1.4 var(--font-main); }
+}
