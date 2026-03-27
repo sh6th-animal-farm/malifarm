@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import apiClient from "@/api/apiClient";
 import LoginForm from "./components/LoginForm";
+import { authApi } from "@/api/authApi";
 
 type LoginResponse = {
   accessToken: string;
@@ -9,28 +10,34 @@ type LoginResponse = {
 };
 
 export default function Login() {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError("");
 
     try {
-      const loginData = await apiClient.post("/api/auth/login", {
+      const loginData = (await apiClient.post("/api/auth/login", {
         email,
         password,
-      }) as LoginResponse;
+      })) as LoginResponse;
 
       localStorage.setItem("accessToken", loginData.accessToken);
       localStorage.setItem("refreshToken", loginData.refreshToken);
 
-      const now = Date.now().toString();
-      localStorage.setItem("loginStartTime", now);
-      localStorage.setItem("lastActivityTime", now);
+      const userName = await authApi.getUserName();
+      const userRole = await authApi.getUserRole();
+
+      localStorage.setItem("userName", userName);
+      localStorage.setItem("userRole", userRole);
+
+            const now = Date.now().toString();
+            localStorage.setItem("loginStartTime", now);
+            localStorage.setItem("lastActivityTime", now);
 
       navigate("/");
     } catch (err) {

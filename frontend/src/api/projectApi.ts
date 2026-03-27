@@ -1,5 +1,5 @@
+import type { ProjectData } from "@/types/projectType";
 import apiClient from "./apiClient";
-import type { ProjectData } from "@/types/project";
 
 export const projectApi = {
     getProjectDetail: (projectId: string | number) => {
