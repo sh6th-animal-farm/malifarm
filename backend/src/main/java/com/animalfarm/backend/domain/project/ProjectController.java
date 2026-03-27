@@ -27,6 +27,8 @@ import com.animalfarm.backend.domain.project.dto.ProjectListDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectPictureDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectSearchReqDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectStarredDTO;
+import com.animalfarm.backend.domain.user.dto.WalletDTO;
+import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -168,8 +170,19 @@ public class ProjectController {
 	}
 
 	@GetMapping("/checkAccount")
-	public boolean checkAccount(Long userId) {
-		return projectService.checkAccount();
+	public ResponseEntity<ApiResponseDTO<Boolean>> checkAccount(Long userId) {
+		boolean hasAccount = projectService.checkAccount();
+		return ResponseEntity.ok(ApiResponseDTO.success(hasAccount));
+	}
+
+	@GetMapping("/walletInto")
+	public ResponseEntity<ApiResponseDTO<WalletDTO>> getMyWallet(Long userId) {
+		WalletDTO wallet = projectService.selectMyWalletInfo(userId);
+		if (wallet == null) {
+			// 지갑 정보가 없을 경우 처리 (빈 객체 혹은 에러)
+			return ResponseEntity.ok(ApiResponseDTO.success(new WalletDTO()));
+		}
+		return ResponseEntity.ok(ApiResponseDTO.success(wallet));
 	}
 
 	@GetMapping("/farm/all")

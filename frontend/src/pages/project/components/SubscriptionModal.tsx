@@ -1,4 +1,7 @@
 import { useSubscription } from '@/pages/project/hook/useSubscription'; // 1. Hook 임포트
+import { SubscriptionSummary } from './SubscriptionSummary';
+import { InvestmentLimitBar } from './InvestmentLimitBar';
+import { SubscriptionModalInput } from './SubscriptionModalInput';
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -45,58 +48,34 @@ export default function SubscriptionModal({ isOpen, onClose, projectData }: Subs
       >
         {/* 헤더 */}
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-lg font-bold text-gray-900">청약 신청하기</h3>
+          <h3 className="font-subtitle-01 text-gray-900">청약 신청하기</h3>
           <button className="text-2xl text-gray-900 hover:opacity-70" onClick={onClose}>&times;</button>
         </div>
 
         {/* 프로젝트 요약 카드 */}
-        <div className="flex items-center gap-3.5 bg-gray-50 rounded-[12px] p-3.5 mb-5">
-          <img src={projectData.thumbnail || "/default-thumb.png"} className="w-16 h-16 rounded-lg object-cover" alt="thumb" />
-          <div className="flex flex-col">
-            <div className="text-sm font-semibold text-gray-800">{projectData.title}</div>
-            <div className="text-green-600 text-sm font-bold">1 토큰 당 {projectData.price.toLocaleString()}원</div>
-          </div>
-        </div>
+        <SubscriptionSummary 
+          thumbnail={projectData.thumbnail}
+          title={projectData.title}
+          labelText={`1 토큰 당 ${projectData.price.toLocaleString()}원`}
+        />
 
         {/* 투자 한도 섹션 - 3. usagePercent 연결 */}
-        <div className="mb-6">
-          <div className="flex justify-between text-xs text-gray-500 mb-2">
-            <span>나의 연간 투자 한도 잔여</span>
-            <span className="text-green-600 font-medium">{Math.floor(usagePercent)}% 사용</span>
-          </div>
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-green-600 transition-all duration-300" 
-              style={{ width: `${usagePercent}%` }} 
-            ></div>
-          </div>
-          <div className="text-right mt-2 text-xs font-medium text-gray-700">
-            {projectData.userLimit.toLocaleString()}원
-          </div>
-        </div>
+        <InvestmentLimitBar 
+            label="나의 연간 투자 한도 잔여"
+            usagePercent={usagePercent}
+            usageText={`${Math.floor(usagePercent)}% 사용`}
+            amountText={`${projectData.userLimit.toLocaleString()}원`}
+        />
 
         {/* 수량 입력 섹션 - 4. value와 onChange 연결 */}
-        <div className="mb-1">
-          <label className="block text-sm font-semibold text-gray-800 mb-2.5">청약 수량 입력</label>
-          <div className={`flex items-center gap-2 border-[1.5px] h-[60px] rounded-[12px] px-4 transition-all ${errorMsg ? 'border-red-500 bg-red-50' : 'border-gray-900'}`}>
-            <input 
-              type="number" 
-              className="flex-1 text-right text-xl font-bold bg-transparent outline-none"
-              value={quantity} // Hook의 상태값
-              onChange={(e) => handleQuantityChange(e.target.value)} // Hook의 핸들러
-              step="0.0001"
-            />
-            <span className="text-sm font-semibold text-gray-800 shrink-0">토큰</span>
-          </div>
-          <div className="mt-1 text-right min-h-[20px]">
-            {/* 5. 에러 메시지 조건부 렌더링 */}
-            {errorMsg ? (
-              <p className="text-[11px] text-red-500 font-medium">{errorMsg}</p>
-            ) : (
-              <p className="text-[11px] text-gray-400">* 최소 청약 금액: {projectData.minAmountPerInvestor.toLocaleString()}원</p>
-            )}
-          </div>
-        </div>
+        <SubscriptionModalInput 
+            label="청약 수량 입력"
+            unit="토큰"
+            minAmountText={`* 최소 청약 금액: ${projectData.minAmountPerInvestor.toLocaleString()}원`}
+            value={quantity}
+            onChange={handleQuantityChange}
+            errorMsg={errorMsg}
+        />
 
         {/* 지갑 정보 */}
         <div className="flex justify-between text-[13px] mb-5">
@@ -107,12 +86,12 @@ export default function SubscriptionModal({ isOpen, onClose, projectData }: Subs
         {/* 최종 결제 정보 - 6. totalPrice 연결 */}
         <div className="bg-gray-50 rounded-[12px] p-4 mb-5">
           <div className="flex justify-between text-xs text-gray-500 mb-3">
-            <span>청약 수량</span>
-            <span className="text-gray-700 font-medium">{quantity.toLocaleString(undefined, {maximumFractionDigits: 4})} 토큰</span>
+            <span className="font-caption-01">청약 수량</span>
+            <span className="text-gray-700 font-caption-01">{quantity.toLocaleString(undefined, {maximumFractionDigits: 4})} 토큰</span>
           </div>
           <div className="pt-3 border-t border-gray-200 flex justify-between items-center">
-            <span className="text-xs font-bold text-gray-900">총 청약 금액</span>
-            <span className="text-green-600 text-lg font-bold">{totalPrice.toLocaleString()} 원</span>
+            <span className="text-xs font-caption-02 text-gray-900">총 청약 금액</span>
+            <span className="text-green-600 text-lg font-subtitle-01">{totalPrice.toLocaleString()} 원</span>
           </div>
         </div>
 
