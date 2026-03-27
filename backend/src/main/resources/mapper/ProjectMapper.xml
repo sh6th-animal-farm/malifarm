@@ -102,7 +102,8 @@
         FROM projects p
         JOIN farms f on
         p.farm_id = f.farm_id
-        AND p.project_status = 'SUBSCRIPTION'
+        AND p.project_status IN ('SUBSCRIPTION', 'ANNOUNCEMENT')
+        ORDER BY p.created_at DESC
         LIMIT 10
     </select>
 

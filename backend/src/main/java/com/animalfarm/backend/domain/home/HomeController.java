@@ -1,4 +1,4 @@
-package com.animalfarm.backend.domain.main;
+package com.animalfarm.backend.domain.home;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,8 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/main")
-public class MainController {
+@RequestMapping("/api/home")
+public class HomeController {
 
 	private final TokenService tokenService;
 	private final ProjectService projectService;
