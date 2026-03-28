@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
-import Badge from "@/components/common/Tag";
 import Icon from "@/components/icon";
 import type { Project } from "@/types/projectType";
 
@@ -25,9 +25,17 @@ function ProjectCard({
     : isAnnouncement
       ? "info"
       : "success";
-  const badgeLabel = isSubscription ? "청약중" : isAnnouncement ? "공고중" : "진행중";
+  const badgeLabel = isSubscription
+    ? "청약중"
+    : isAnnouncement
+      ? "공고중"
+      : "진행중";
 
-  const timerLabel = isSubscription ? "마감까지" : isAnnouncement ? "시작까지" : "";
+  const timerLabel = isSubscription
+    ? "마감까지"
+    : isAnnouncement
+      ? "시작까지"
+      : "";
   const shouldShowTimer = isSubscription || isAnnouncement;
 
   const buttonVariant = isSubscription
@@ -119,7 +127,9 @@ function ProjectCard({
         }`}
       >
         <div>
-          <h3 className="font-subtitle-01 text-gray-900 mb-1">{project.title}</h3>
+          <h3 className="font-subtitle-01 text-gray-900 mb-1">
+            {project.title}
+          </h3>
           {!isInProgress ? (
             <div className="flex items-start justify-between gap-3 font-caption-01 text-gray-500">
               <span>{project.upperDate}</span>
@@ -132,13 +142,16 @@ function ProjectCard({
             </div>
           ) : null}
         </div>
-        
+
         {isSubscription ? (
           <div>
             <div className="mb-2 inline-flex items-end gap-1 text-green-600">
               <strong className="font-body-03">{project.percent}% 모집</strong>
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-gray-100" aria-hidden="true">
+            <div
+              className="h-1.5 overflow-hidden rounded-full bg-gray-100"
+              aria-hidden="true"
+            >
               <div
                 className="h-full rounded-full bg-green-600"
                 style={{ width: `${project.percent}%` }}
@@ -149,7 +162,9 @@ function ProjectCard({
           <div className="flex flex-col gap-2 font-caption-01 text-gray-500">
             <p className="flex items-start justify-between gap-3">
               <span>{isAnnouncement ? "청약 예정일" : "운영 기간"}</span>
-              <strong className="text-right text-gray-800">{project.lowerDate}</strong>
+              <strong className="text-right text-gray-800">
+                {project.lowerDate}
+              </strong>
             </p>
             <p className="flex items-start justify-between gap-3">
               <span>{isAnnouncement ? "예상 수익률" : "현재 수익률"}</span>

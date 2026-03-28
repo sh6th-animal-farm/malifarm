@@ -6,7 +6,7 @@ import BottomTabBar from "./components/layout/BottomTabBar";
 import CarbonList from "./pages/Carbon/CarbonList";
 import CarbonDetail from "./pages/Carbon/CarbonDetail";
 import ProjectDetail from "./pages/project/ProjectDetail";
-import Home from "./pages/home";
+import TokenList from "./pages/Token/TokenList";
 import Login from "./pages/auth/Login";
 import NotFound from "./pages/error/NotFound";
 import MyPage from "./pages/mypage";
@@ -15,6 +15,7 @@ import ProjectLayout from "./pages/mypage/components/myProject/ProjectLayout";
 import WalletLayout from "./pages/mypage/components/myWallet/WalletLayout";
 import TransactionLayout from "./pages/mypage/components/myTransaction/TransactionLayout";
 import CarbonLayout from "./pages/mypage/components/myCarbon/CarbonLayout";
+import Home from "./pages/home";
 
 function App() {
   return (
@@ -38,6 +39,9 @@ function App() {
           <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/carbon/list" element={<CarbonList />} />
           <Route path="/carbon/:id" element={<CarbonDetail />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="/token" element={<TokenList />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

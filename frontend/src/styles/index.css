@@ -84,7 +84,7 @@
 /* --- 8. UI Components Layer --- */
 @layer components {
   /* Layout */
-  .container { @apply w-full max-w-container-max mx-auto px-gutter; }
+  .container { @apply w-full max-w-container-max mx-auto px-gutter py-8; }
   .content-wrapper { @apply flex-1 w-full; }
   .row { @apply flex flex-wrap -mx-[calc(var(--spacing-gutter)/2)]; }
   [class*="col-"] { @apply px-[calc(var(--spacing-gutter)/2)]; }
