@@ -1,29 +1,31 @@
 import SectionHeader from "@/components/layout/SectionHeader";
 import TokenListTable from "./components/TokenListTable";
-import TokenSummaryChart from "./components/TokenSummaryChart";
+import TokenSummaryCard from "./components/TokenSummaryCard";
 import { tokenApi } from "@/api/tokenApi";
 import { useEffect, useState } from "react";
-import type { TokenListItem } from "@/types/tokenType";
+import type { TokenListItem, TokenSummaryInfo } from "@/types/tokenType";
+import { useDebounce } from "@/hooks/useDebounce";
 
 export default function TokenList() {
   const [tokenList, setTokenList] = useState<TokenListItem[]>([]);
-  const [activeTokenId, setActiveTokenId] = useState<number | null>(null);
+  const [hoveredTokenId, setHoveredTokenId] = useState<number | null>(null);
+  const debouncedId = useDebounce(hoveredTokenId, 300); // 0.3초 동안 hover 상태가 유지될 때만 debouncedId 업데이트
 
   useEffect(() => {
-    const fetchTokens = async () => {
+    const fetchAllToken = async () => {
       try {
         const data = await tokenApi.getTokenList();
         setTokenList(data);
 
         if (data.length > 0) {
-          setActiveTokenId(data[0].tokenId);
+          setHoveredTokenId(data[0].tokenId);
         }
       } catch (e) {
         console.error("토큰 목록 로드 실패", e);
       }
     };
 
-    fetchTokens();
+    fetchAllToken();
   }, []);
 
   return (
@@ -35,10 +37,14 @@ export default function TokenList() {
       <div className="flex gap-4">
         <TokenListTable
           tokenList={tokenList}
-          onRowClick={setActiveTokenId}
-          activeTokenId={activeTokenId}
+          onHover={setHoveredTokenId}
+          hoveredTokenId={hoveredTokenId}
         />
-        <TokenSummaryChart />
+        {debouncedId !== null ? (
+          <TokenSummaryCard tokenId={debouncedId} />
+        ) : (
+          <div className="w-[432px] h-[468px] bg-gray-50 animate-pulse rounded-[var(--radius-m)]" />
+        )}
       </div>
     </div>
   );

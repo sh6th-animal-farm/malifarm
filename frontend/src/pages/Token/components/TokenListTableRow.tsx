@@ -4,14 +4,14 @@ interface TokenRowProps {
   token: TokenListItem;
   index: number;
   isActive: boolean;
-  onClick: (tokenId: number) => void;
+  onHover: (tokenId: number) => void;
 }
 
-export default function TokenRow({
+export default function TokenListTableRow({
   token,
   index,
   isActive,
-  onClick,
+  onHover,
 }: TokenRowProps) {
   const formatNum = (num: number) => new Intl.NumberFormat().format(num); // 천 단위 구분 쉼표 추가
 
@@ -34,30 +34,28 @@ export default function TokenRow({
 
   return (
     <tr
-      onClick={() => onClick(token.tokenId)}
+      onMouseOver={() => onHover(token.tokenId)}
       className={`
-        flex items-center w-full py-4 px-2 border-bottom border-gray-50 cursor-pointer transition-colors duration-200
+        flex items-center w-full py-4 px-2 border-bottom border-gray-50 cursor-pointer transition-colors duration-500
         ${isActive ? "bg-gray-50" : "bg-white hover:bg-gray-50"}
       `}
     >
       {/* 순위 */}
-      <td className="w-[80px] text-center text-gray-900 font-body-02">
+      <td className="w-[80px] text-center text-gray-900 font-body-01">
         {index + 1}
       </td>
 
       {/* 종목 */}
       <td className="flex-1 min-w-[150px] text-left">
-        <div className="font-body-03 text-gray-900 font-body-03">
-          {token.tokenName}
-        </div>
-        <div className="font-caption-01 text-gray-400 uppercase font-body-04">
+        <div className="text-gray-900 font-body-03">{token.tokenName}</div>
+        <div className="text-gray-400 uppercase font-caption-01">
           {token.tickerSymbol}
         </div>
       </td>
 
       {/* 현재가 */}
       <td className="w-[160px] text-right">
-        <div className="font-body-03 font-bold text-gray-900">
+        <div className="text-gray-900 font-body-03">
           {formatNum(token.marketPrice)}
         </div>
       </td>
@@ -66,14 +64,14 @@ export default function TokenRow({
       <td
         className={`w-[160px] text-right ${isPlus ? "text-error" : isMinus ? "text-info" : "text-gray-900"}`}
       >
-        <span className="inline-block px-2 py-0.5 rounded-[4px] min-w-[80px] text-right font-body-03 font-bold">
+        <span className="inline-block px-2 py-0.5 rounded-[var(--radius-s)] min-w-[80px] text-right font-body-03">
           {isPlus && "+"}
           {token.changeRate.toFixed(2)}%
         </span>
       </td>
 
       {/* 거래대금 */}
-      <td className="w-[180px] pr-6 text-right text-gray-900 font-body-">
+      <td className="w-[180px] pr-6 text-right text-gray-900 font-body-01">
         {formatVolume(token.dailyTradeVolume)}
       </td>
     </tr>

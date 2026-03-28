@@ -3,14 +3,14 @@ import TokenListTableRow from "./TokenListTableRow";
 
 interface TokenTableMainProps {
   tokenList: TokenListItem[];
-  onRowClick: (id: number) => void;
-  activeTokenId: number | null;
+  onHover: (id: number) => void;
+  hoveredTokenId: number | null;
 }
 
 export default function TokenListTable({
   tokenList,
-  onRowClick,
-  activeTokenId,
+  onHover,
+  hoveredTokenId,
 }: TokenTableMainProps) {
   return (
     <div className="flex-1 max-h-screen overflow-y-auto rounded-[var(--radius-m)] shadow-std bg-white relative scrollbar-thin scrollbar-thumb-gray-300">
@@ -31,8 +31,8 @@ export default function TokenListTable({
                 key={token.tokenId}
                 token={token}
                 index={index}
-                isActive={activeTokenId === token.tokenId}
-                onClick={onRowClick}
+                isActive={hoveredTokenId === token.tokenId}
+                onHover={onHover}
               />
             ))
           ) : (

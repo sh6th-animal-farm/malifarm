@@ -19,3 +19,15 @@ export interface TokenListItem {
   lowPrice: number;
   changeRate: number;
 }
+
+// 토큰 거래소 요약 차트
+export interface TokenSummaryInfo {
+  tickerSymbol: string; // 토큰 코드
+  tokenName: string; // 토큰 이름
+  marketPrice: number; // 현재가
+  changeRate: number; // 등락률
+  openPrice: number; // 시가
+  highPrice: number; // 고가
+  lowPrice: number; // 저가
+  dailyTradeVolume: number; // 거래대금
+}
