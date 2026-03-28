@@ -125,7 +125,7 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link to="/carbon" className={getNavItemClass("/carbon")}>
+              <Link to="/carbon/list" className={getNavItemClass("/carbon")}>
                 탄소 마켓
               </Link>
             </li>
