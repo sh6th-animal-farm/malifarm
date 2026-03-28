@@ -1,4 +1,4 @@
-import Tag from "@/components/common/Tag";
+import Tag from "@/components/common/Badge";
 import type { CarbonHistoryDTO } from "@/types/myPageType";
 import { formatTco2e, formatWon, normalizeDate, typeBadge } from "./carbonFormatters";
 

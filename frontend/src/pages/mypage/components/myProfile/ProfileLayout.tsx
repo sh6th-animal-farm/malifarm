@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Button from "@/components/common/Button";
-import Tag from "@/components/common/Tag";
+import Tag from "@/components/common/Badge";
 import Toggle from "@/components/common/Toggle";
 import PageHeader from "@/pages/mypage/components/PageHeader";
 import { myPageApi } from "@/api/myPageApi";

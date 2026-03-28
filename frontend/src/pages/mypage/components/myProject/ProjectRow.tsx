@@ -1,4 +1,4 @@
-import Tag from "@/components/common/Tag";
+import Tag from "@/components/common/Badge";
 import Icon from "@/components/icon";
 import type { MyPageProjectDTO } from "@/types/myPageType";
 import {
