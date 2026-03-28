@@ -5,7 +5,7 @@ export default function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-gray-50 pt-14 md:pt-20 lg:pt-24">
+    <section className="bg-gray-50 pt-14 md:pt-20">
       <div className="layout-container">
         <div className="grid items-center gap-10 lg:grid-cols-2">
           <div>

@@ -167,7 +167,7 @@
 
 @media (width < 768px) {
   .layout-container {
-    width: calc(100% - 40px); /* 좌우 20 임시 사이즈*/
+    width: calc(100% - 32px); /* 좌우 20 임시 사이즈*/
   }
 
   .font-header-hero { font: 900 32px/1.35 var(--font-main); }
@@ -183,9 +183,9 @@
   .font-body-02 { font: 500 15px/1.45 var(--font-main); }
   .font-body-03 { font: 600 15px/1.45 var(--font-main); }
   .font-body-04 { font: 700 15px/1.45 var(--font-main); }
-  .font-caption-01 { font: 400 13px/1.45 var(--font-main); }
-  .font-caption-02 { font: 500 13px/1.45 var(--font-main); }
-  .font-caption-03 { font: 700 13px/1.45 var(--font-main); }
+  .font-caption-01 { font: 400 12px/1.45 var(--font-main); }
+  .font-caption-02 { font: 500 12px/1.45 var(--font-main); }
+  .font-caption-03 { font: 700 12px/1.45 var(--font-main); }
   .font-button-01 { font: 600 14px/1.4 var(--font-main); }
   .font-button-02 { font: 600 14px/1.4 var(--font-main); }
 }
