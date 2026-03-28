@@ -1,4 +1,4 @@
-import Tag from "@/components/common/Badge";
+import Badge from "@/components/common/Badge";
 import Icon from "@/components/icon";
 import type { MyPageProjectDTO } from "@/types/myPageType";
 import {
@@ -57,9 +57,9 @@ export default function ProjectRow({
           />
           <div className="hidden w-32 items-center justify-center sm:flex">
             <div className="flex items-center gap-1.5">
-              <Tag variant={statusVariant} width="auto">{statusLabel}</Tag>
+              <Badge variant={statusVariant} width="auto">{statusLabel}</Badge>
               {subStatusLabel ? (
-                <Tag variant={subStatusVariant} width="auto">{subStatusLabel}</Tag>
+                <Badge variant={subStatusVariant} width="auto">{subStatusLabel}</Badge>
               ) : null}
             </div>
           </div>

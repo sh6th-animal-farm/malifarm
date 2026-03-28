@@ -6,7 +6,7 @@ import LoadMoreButton from "@/components/common/LoadMoreButton";
 import PageHeader from "@/pages/mypage/components/PageHeader";
 import { myPageApi } from "@/api/myPageApi";
 import type { MyPageProjectDTO, ProjectTabsDTO } from "@/types/myPageType";
-import ProjectList from "./ProjectList";
+import ProjectTable from "./ProjectTable";
 
 type ProjectTab = "JOIN" | "STAR";
 type ProjectFilter = "ALL" | "SUBSCRIPTION" | "ANNOUNCEMENT" | "ENDED";
@@ -124,7 +124,7 @@ export default function ProjectLayout() {
         />
       </div>
 
-      <ProjectList
+      <ProjectTable
         loading={loading}
         projects={projects}
         onMove={moveToProjectDetail}

@@ -3,6 +3,7 @@ import "./styles/index.css";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import BottomTabBar from "./components/layout/BottomTabBar";
+import ScrollToTop from "./components/layout/ScrollToTop";
 import CarbonList from "./pages/Carbon/CarbonList";
 import CarbonDetail from "./pages/Carbon/CarbonDetail";
 import ProjectDetail from "./pages/project/ProjectDetail";
@@ -23,10 +24,11 @@ function App() {
       <Header />
 
       <main className="content-wrapper pb-16 md:pb-0">
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/project" element={<NotFound />} />
-          <Route path="/token" element={<NotFound />} />
+          <Route path="/token" element={<TokenList />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/mypage" element={<MyPage />}>
             <Route index element={<Navigate to="profile" replace />} />

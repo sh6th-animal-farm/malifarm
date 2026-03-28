@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Button from "@/components/common/Button";
-import Tag from "@/components/common/Badge";
+import Badge from "@/components/common/Badge";
 import Toggle from "@/components/common/Toggle";
 import PageHeader from "@/pages/mypage/components/PageHeader";
 import { myPageApi } from "@/api/myPageApi";
@@ -183,9 +183,9 @@ export default function ProfileLayout() {
             <strong className="font-header-03 text-gray-900">
               {loading ? "불러오는 중..." : profile?.userName ?? "-"}
             </strong>
-            <Tag variant="info" width="auto" height={28} className="cursor-default select-none rounded-full">
+            <Badge variant="info" width="auto" height={28} className="cursor-default select-none rounded-full">
               {profile?.investorType ?? "General Investor"}
-            </Tag>
+            </Badge>
           </div>
           <p className="mt-2 font-caption-01 text-gray-500">
             가입일: {profile?.createdAt ? profile.createdAt.slice(0, 10) : "-"}

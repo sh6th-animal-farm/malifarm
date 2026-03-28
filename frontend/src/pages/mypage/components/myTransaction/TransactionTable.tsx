@@ -7,16 +7,16 @@ import {
   typeLabelMap,
 } from "./transactionFormatters";
 
-interface HistoryTableProps {
+interface TransactionTableProps {
   loading: boolean;
   transactions: MyTransactionHistDTO[];
 }
 
-export default function HistoryTable({ loading, transactions }: HistoryTableProps) {
+export default function TransactionTable({ loading, transactions }: TransactionTableProps) {
   return (
     <section className="rounded-lg bg-white shadow-std">
       <div className="overflow-x-auto">
-        <div className="min-w-full">
+        <div className="min-w-max md:min-w-full">
           <div className="grid grid-cols-[1.4fr_0.7fr_1.8fr_0.9fr_0.9fr_1.4fr] gap-2 bg-gray-50 px-4 py-3 font-body-02 text-gray-500 md:px-6 md:py-4">
             <span>거래일시</span>
             <span>구분</span>

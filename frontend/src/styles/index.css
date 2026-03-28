@@ -63,7 +63,7 @@
 
 /* --- 7. Typography Utilities --- */
 @utility font-header-hero { font: 900 48px/1.4 var(--font-main); }
-@utility font-header-00 { font: 700 32px/1.4 var(--font-main); }
+@utility font-header-00 { font: 900 32px/1.4 var(--font-main); }
 @utility font-header-01 { font: 700 32px/1.4 var(--font-main); }
 @utility font-header-02 { font: 600 24px/1.4 var(--font-main); }
 @utility font-header-03 { font: 700 22px/1.4 var(--font-main); }

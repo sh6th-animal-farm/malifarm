@@ -1,13 +1,13 @@
 import type { MyPageProjectDTO } from "@/types/myPageType";
 import ProjectRow from "./ProjectRow";
 
-interface ProjectListProps {
+interface ProjectTableProps {
   loading: boolean;
   projects: MyPageProjectDTO[];
   onMove: (projectId: number) => void;
 }
 
-export default function ProjectList({ loading, projects, onMove }: ProjectListProps) {
+export default function ProjectTable({ loading, projects, onMove }: ProjectTableProps) {
   return (
     <section className="overflow-hidden rounded-lg bg-white shadow-std">
       <div>

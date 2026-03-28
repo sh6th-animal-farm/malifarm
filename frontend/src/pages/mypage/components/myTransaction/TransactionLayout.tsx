@@ -6,7 +6,7 @@ import PageHeader from "@/pages/mypage/components/PageHeader";
 import { myPageApi } from "@/api/myPageApi";
 import type { MyTransactionHistDTO } from "@/types/myPageType";
 import { toCategory } from "./transactionFormatters";
-import HistoryTable from "./HistoryTable";
+import TransactionTable from "./TransactionTable";
 
 const tabs = [
   { text: "토큰", value: "TOKEN" },
@@ -137,7 +137,7 @@ export default function TransactionLayout() {
         </select>
       </div>
 
-      <HistoryTable loading={loading} transactions={transactions} />
+      <TransactionTable loading={loading} transactions={transactions} />
 
       {!loading && transactions.length > 0 && hasNext ? (
         <div className="mt-6">
