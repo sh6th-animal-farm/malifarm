@@ -113,7 +113,7 @@ public class SecurityConfig {
 		// 프론트엔드 도메인 허용
 		configuration.setAllowedOrigins(
 			List.of("https://mlfarm.3jun.store", "http://localhost:9999", "http://localhost:5173"));
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);
 
