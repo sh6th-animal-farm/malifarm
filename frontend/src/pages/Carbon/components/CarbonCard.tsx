@@ -1,7 +1,7 @@
-// src/components/carbon/CarbonCard.tsx
-import React from "react";
+// src/pages/Carbon/components/CarbonCard.tsx
 import { useNavigate } from "react-router-dom";
-import type { CarbonListDTO } from "../../../types/carbonType";
+import type { CarbonListDTO } from "@/types/carbonType";
+import CarbonBadge from "./CarbonBadget";
 
 interface CarbonCardProps {
   item: CarbonListDTO;
@@ -12,73 +12,79 @@ export default function CarbonCard({ item }: CarbonCardProps) {
   const isRemoval = item.category === "REMOVAL";
 
   return (
-    <div className="bg-white rounded-[var(--radius-l)] overflow-hidden border border-gray-100 shadow-[var(--shadow-std)]">
-      {/* 썸네일 & 배지 */}
-      <div className="relative h-[170px] bg-gray-100 overflow-hidden">
+    // 🌟 카드 전체 크기 및 비율: flex와 h-full을 주어 그리드 내에서 높이가 꽉 차고 일정하게 맞도록 설정
+    <article className="font-main tracking-std bg-white rounded-(--radius-lg) overflow-hidden border border-(--color-gray-100) shadow-(--shadow-std) box-border flex flex-col h-full">
+      {/* 1. 상단 이미지 영역 */}
+      {/* 🌟 썸네일 높이를 피그마 비율에 맞게 220px로 시원하게 키웠습니다. */}
+      <div className="relative h-55 bg-(--color-gray-100) overflow-hidden shrink-0">
         <img
           src={item.thumbnailUrl || "/resources/img/carbon_sample.jpg"}
           alt={item.cpTitle}
           className="w-full h-full object-cover block"
         />
-        <div
-          className={`absolute left-3 top-3 inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-black border border-black/5 backdrop-blur-md bg-white/90 ${
-            isRemoval ? "text-[#2E7127]" : "text-[#1F76D2]"
-          }`}
-        >
-          {isRemoval ? "제거형" : "감축형"} · {item.vintageYear}
+        
+        {/* 🌟 뱃지 위치: 피그마 시안처럼 안쪽 여백과 동일한 라인에 맞추기 위해 16px로 조정 */}
+        <div className="absolute left-4 top-4">
+          <CarbonBadge 
+            type={item.category} 
+            vintageYear={item.vintageYear} 
+          />
         </div>
       </div>
 
-      {/* 본문 영역 */}
-      <div className="px-[18px] pt-[18px] pb-4">
-        <h3 className="text-[18px] font-black leading-tight mt-0.5 mb-3.5 text-gray-900 truncate">
+      {/* 2. 본문 및 가격 영역 통합 박스 */}
+      {/* 🌟 상하좌우 24px 패딩 완벽 적용 */}
+      <div className="p-[24px] flex-1 flex flex-col">
+        
+        {/* 🌟 진짜 데이터 연동: 탄소배출권 이름 (subtitle01) */}
+        <div className="font-subtitle-01 leading-[1.3] text-(--color-gray-900) line-clamp-2">
           {item.cpTitle}
-        </h3>
-        <div className="h-px bg-black/5 my-2.5" />
+        </div>
 
-        {/* 수량 정보 */}
-        <div className="flex justify-between items-baseline gap-2.5 text-[13px] text-gray-500 mb-2">
-          <span>잔여 수량</span>
-          <span className="text-gray-900 font-extrabold">
-            {Number(item.cpAmount || 0).toLocaleString()} tCO2e
+        {/* 구분선 (이름과 24px 띄움) */}
+        <div className="h-px bg-(--color-gray-100) mt-[24px] mb-4" />
+
+        {/* 🌟 진짜 데이터 연동: 수량 정보 */}
+        <div className="flex justify-between items-baseline gap-2.5">
+          <span className="font-caption-01 text-(--color-gray-500)">구매 가능 수량</span>
+          <span className="text-(--color-gray-900) font-caption-03">
+            {item.cpAmount ? Number(item.cpAmount).toLocaleString() : "-"} tCO2e
           </span>
         </div>
 
-        {/* 가격 & 혜택 */}
-        <div className="mt-2.5 text-right">
-          {item.userBenefit ? (
-            <>
-              <div className="text-[13px] mb-1">
-                <span className="line-through text-gray-400 mr-2">
+        {/* 🌟 진짜 데이터 연동: 가격 & 할인 정보 (flex-1로 하단으로 쫙 밀어냄) */}
+        <div className="mt-4 text-right flex-1 flex flex-col justify-end">
+          <div className="min-h-4.75 mb-1.25">
+            {item.userBenefit && (
+              <>
+                <span className="font-caption-01 text-(--color-gray-400) line-through mr-2">
                   {Number(item.cpPrice).toLocaleString()} P
                 </span>
-                <span className="text-error font-extrabold">
+                <span className="font-caption-02 text-error">
                   {item.userBenefit.discountRate}% 할인
                 </span>
-              </div>
-              <div className="mt-1.5 text-[26px] font-black text-gray-900">
-                {Number(item.userBenefit.currentPrice).toLocaleString()} P
-              </div>
-            </>
-          ) : (
-            <div className="mt-1.5 text-[26px] font-black text-gray-900">
-              {Number(item.cpPrice).toLocaleString()} P
-            </div>
-          )}
+              </>
+            )}
+          </div>
+          <div className="font-header-02 text-(--color-gray-900)">
+            {item.userBenefit 
+              ? Number(item.userBenefit.currentPrice).toLocaleString() 
+              : Number(item.cpPrice).toLocaleString()} P
+          </div>
         </div>
-      </div>
 
-      {/* 액션 버튼 */}
-      <div className="px-[18px] pb-[18px]">
+        {/* 3. 하단 액션 버튼 */}
+        {/* 버튼 위쪽 마진 24px 완벽 적용 */}
         <button
           onClick={() => navigate(`/carbon/${item.cpId}`)}
-          className={`w-full h-[56px] rounded-[var(--radius-m)] border-0 font-black text-white cursor-pointer transition-colors bg-[#1f1f1f] ${
-            isRemoval ? "hover:bg-[#4A9F2E]" : "hover:bg-[#1F76D2]"
+          className={`font-button-01 mt-[24px] w-full h-14 rounded-m border-0 text-white cursor-pointer bg-(--color-gray-900) transition-colors duration-300 shrink-0 ${
+            isRemoval ? "hover:bg-(--color-green-600)" : "hover:bg-(--color-info)"
           }`}
         >
-          구매하기
+          상세 보기 및 주문
         </button>
       </div>
-    </div>
+
+    </article>
   );
 }
