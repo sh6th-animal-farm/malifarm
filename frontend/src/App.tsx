@@ -1,22 +1,23 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import "./styles/index.css";
-import Header from "./components/layout/Header";
-import Footer from "./components/layout/Footer";
-import BottomTabBar from "./components/layout/BottomTabBar";
-import ScrollToTop from "./components/layout/ScrollToTop";
-import CarbonList from "./pages/Carbon/CarbonList";
-import CarbonDetail from "./pages/Carbon/CarbonDetail";
-import ProjectDetail from "./pages/project/ProjectDetail";
-import TokenList from "./pages/Token/TokenList";
-import Login from "./pages/auth/Login";
-import NotFound from "./pages/error/NotFound";
-import MyPage from "./pages/mypage";
-import ProfileLayout from "./pages/mypage/components/myProfile/ProfileLayout";
-import ProjectLayout from "./pages/mypage/components/myProject/ProjectLayout";
-import WalletLayout from "./pages/mypage/components/myWallet/WalletLayout";
-import TransactionLayout from "./pages/mypage/components/myTransaction/TransactionLayout";
-import CarbonLayout from "./pages/mypage/components/myCarbon/CarbonLayout";
-import Home from "./pages/home";
+import { Routes, Route, Navigate } from 'react-router-dom';
+import './styles/index.css';
+import Header from './components/layout/Header';
+import Footer from './components/layout/Footer';
+import BottomTabBar from './components/layout/BottomTabBar';
+import ScrollToTop from './components/layout/ScrollToTop';
+import Home from './pages/Home';
+import Login from './pages/Auth/Login';
+import NotFound from './pages/Error/NotFound';
+import ProjectDetail from './pages/project/ProjectDetail';
+import TokenList from './pages/Token/TokenList';
+import TokenDetail from './pages/Token/TokenDetail';
+import CarbonList from './pages/Carbon/CarbonList';
+import CarbonDetail from './pages/Carbon/CarbonDetail';
+import MyPage from './pages/mypage';
+import ProfileLayout from './pages/mypage/components/myProfile/ProfileLayout';
+import ProjectLayout from './pages/mypage/components/myProject/ProjectLayout';
+import WalletLayout from './pages/mypage/components/myWallet/WalletLayout';
+import TransactionLayout from './pages/mypage/components/myTransaction/TransactionLayout';
+import CarbonLayout from './pages/mypage/components/myCarbon/CarbonLayout';
 
 function App() {
   return (
@@ -27,23 +28,21 @@ function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/project" element={<NotFound />} />
-          <Route path="/token" element={<TokenList />} />
           <Route path="/auth/login" element={<Login />} />
+          <Route path="/project" element={<NotFound />} />
+          <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="/token" element={<TokenList />} />
+          <Route path="/token/:id" element={<TokenDetail />} />
+          <Route path="/carbon/list" element={<CarbonList />} />
+          <Route path="/carbon/:id" element={<CarbonDetail />} />
           <Route path="/mypage" element={<MyPage />}>
             <Route index element={<Navigate to="profile" replace />} />
             <Route path="profile" element={<ProfileLayout />} />
             <Route path="project-history" element={<ProjectLayout />} />
-          <Route path="wallet" element={<WalletLayout />} />
+            <Route path="wallet" element={<WalletLayout />} />
             <Route path="transaction-history" element={<TransactionLayout />} />
             <Route path="carbon-history" element={<CarbonLayout />} />
           </Route>
-          <Route path="/project/:id" element={<ProjectDetail />} />
-          <Route path="/carbon/list" element={<CarbonList />} />
-          <Route path="/carbon/:id" element={<CarbonDetail />} />
-          <Route path="/auth/login" element={<Login />} />
-          <Route path="/project/:id" element={<ProjectDetail />} />
-          <Route path="/token" element={<TokenList />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

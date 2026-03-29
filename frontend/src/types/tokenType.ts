@@ -1,4 +1,5 @@
-// 메인페이지 토큰 거래소 TOP10
+/* 1. 메인 페이지 */
+// 토큰 거래소 TOP10
 export interface Token {
   tokenId: number;
   projectId: number;
@@ -7,7 +8,8 @@ export interface Token {
   totalSupply: number;
 }
 
-// 토큰 거래소 목록
+/* 2. 토큰 거래소 목록 페이지 */
+// 목록
 export interface TokenListItem {
   tokenId: number;
   tokenName: string;
@@ -20,14 +22,49 @@ export interface TokenListItem {
   changeRate: number;
 }
 
-// 토큰 거래소 요약 차트
+// 요약 차트
 export interface TokenSummaryInfo {
-  tickerSymbol: string; // 토큰 코드
-  tokenName: string; // 토큰 이름
-  marketPrice: number; // 현재가
-  changeRate: number; // 등락률
-  openPrice: number; // 시가
-  highPrice: number; // 고가
-  lowPrice: number; // 저가
-  dailyTradeVolume: number; // 거래대금
+  tickerSymbol: string;
+  tokenName: string;
+  marketPrice: number;
+  changeRate: number;
+  openPrice: number;
+  highPrice: number;
+  lowPrice: number;
+  dailyTradeVolume: number;
+}
+
+// 캔들 정보
+export interface CandleStick {
+  tokenId: number;
+  unit: number;
+  candleTime: string;
+  openingPrice: string;
+  highPrice: string;
+  lowPrice: string;
+  closingPrice: string;
+  tradeVolume: string;
+  tradeAmount: string;
+}
+
+/* 3. 토큰 거래소 상세 페이지 */
+// 미체결 내역
+export interface TokenPendingItem {
+  orderId: number;
+  orderSide: 'BUY' | 'SELL';
+  orderPrice: string;
+  orderVolume: string;
+  remainingToken: string;
+  createdAt: string;
+}
+
+// 주문
+export interface Order {
+  walletId?: number;
+  tokenId: number;
+  orderSide: 'BUY' | 'SELL';
+  orderType: 'LIMIT' | 'MARKET';
+  orderPrice: string; // 시장가는 "0"
+  orderVolume: string; // 시장가 매수는 "0"
+  totalPrice: string; // 매도는 "0"
 }

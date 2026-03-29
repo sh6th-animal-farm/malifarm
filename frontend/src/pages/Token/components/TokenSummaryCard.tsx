@@ -1,20 +1,20 @@
-import { tokenApi } from "@/api/tokenApi";
-import Badge from "@/components/common/Badge";
-import type { TokenSummaryInfo } from "@/types/tokenType";
+import { tokenApi } from '@/api/tokenApi';
+import Badge from '@/components/common/Badge';
+import type { TokenSummaryInfo } from '@/types/tokenType';
 import {
   createChart,
   CandlestickSeries,
   type IChartApi,
   type ISeriesApi,
-} from "lightweight-charts";
-import { useEffect, useRef, useState } from "react";
+} from 'lightweight-charts';
+import { useEffect, useRef, useState } from 'react';
 
 export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
   // 1. OHLCV 데이터와 차트 데이터를 내부 상태로 관리
   const [tokenInfo, setTokenInfo] = useState<TokenSummaryInfo | null>(null); // 토큰 OHLCV 정보
   const chartContainerRef = useRef<HTMLDivElement>(null); // 차트 컨테이너
   const chartRef = useRef<IChartApi | null>(null); // 차트 인스턴스
-  const seriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null); // 차트 시리즈 (캔들스틱)
+  const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null); // 차트 시리즈 (캔들스틱)
 
   const formatNum = (num: number) => new Intl.NumberFormat().format(num);
 
@@ -29,7 +29,7 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
       height: 180,
-      layout: { background: { color: "transparent" }, textColor: "#999" },
+      layout: { background: { color: 'transparent' }, textColor: '#999' },
       grid: { vertLines: { visible: false }, horzLines: { visible: false } },
       rightPriceScale: { visible: false, borderVisible: false },
       timeScale: { borderVisible: false, visible: false },
@@ -39,12 +39,12 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
 
     // 캔들스틱 시리즈 생성
     const series = chart.addSeries(CandlestickSeries, {
-      upColor: "#d32f2f", // --color-error
-      downColor: "#1976d2", // --color-info
-      borderUpColor: "#d32f2f",
-      borderDownColor: "#1976d2",
-      wickUpColor: "#d32f2f",
-      wickDownColor: "#1976d2",
+      upColor: '#d32f2f', // --color-error
+      downColor: '#1976d2', // --color-info
+      borderUpColor: '#d32f2f',
+      borderDownColor: '#1976d2',
+      wickUpColor: '#d32f2f',
+      wickDownColor: '#1976d2',
     });
 
     chartRef.current = chart;
@@ -81,7 +81,7 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
           chartRef.current?.timeScale().fitContent();
         }
       } catch (e) {
-        console.error("데이터 로드 실패", e);
+        console.error('데이터 로드 실패', e);
       }
     };
 
@@ -89,7 +89,7 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
   }, [tokenId]);
 
   return (
-    <div className="w-[432px] h-[468px] bg-white rounded-[var(--radius-m)] p-6 shadow-std tracking-tight">
+    <div className="w-[432px] h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight">
       {/* 헤더 */}
       <div className="flex justify-between items-start">
         <div>
@@ -103,9 +103,9 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
             {formatNum(tokenInfo?.marketPrice || 0)}
           </div>
           <div
-            className={`font-body-02 ${isPlus ? "text-red-500" : isMinus ? "text-blue-500" : "text-gray-600"}`}
+            className={`font-body-02 ${isPlus ? 'text-red-500' : isMinus ? 'text-blue-500' : 'text-gray-600'}`}
           >
-            {isPlus ? "+" : ""}
+            {isPlus ? '+' : ''}
             {tokenInfo?.changeRate?.toFixed(2)}%
           </div>
         </div>

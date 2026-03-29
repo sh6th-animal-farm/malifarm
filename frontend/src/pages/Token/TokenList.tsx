@@ -1,10 +1,10 @@
-import SectionHeader from "@/components/layout/SectionHeader";
-import TokenListTable from "./components/TokenListTable";
-import TokenSummaryCard from "./components/TokenSummaryCard";
-import { tokenApi } from "@/api/tokenApi";
-import { useEffect, useState } from "react";
-import type { TokenListItem, TokenSummaryInfo } from "@/types/tokenType";
-import { useDebounce } from "@/hooks/useDebounce";
+import SectionHeader from '@/components/layout/SectionHeader';
+import TokenListTable from './components/TokenListTable';
+import TokenSummaryCard from './components/TokenSummaryCard';
+import { tokenApi } from '@/api/tokenApi';
+import { useEffect, useState } from 'react';
+import type { TokenListItem } from '@/types/tokenType';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export default function TokenList() {
   const [tokenList, setTokenList] = useState<TokenListItem[]>([]);
@@ -21,7 +21,7 @@ export default function TokenList() {
           setHoveredTokenId(data[0].tokenId);
         }
       } catch (e) {
-        console.error("토큰 목록 로드 실패", e);
+        console.error('토큰 목록 로드 실패', e);
       }
     };
 
@@ -37,8 +37,8 @@ export default function TokenList() {
       <div className="flex gap-4">
         <TokenListTable
           tokenList={tokenList}
-          onHover={setHoveredTokenId}
           hoveredTokenId={hoveredTokenId}
+          onHover={setHoveredTokenId}
         />
         {debouncedId !== null ? (
           <TokenSummaryCard tokenId={debouncedId} />

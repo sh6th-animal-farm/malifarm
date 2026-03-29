@@ -1,10 +1,11 @@
-import type { TokenListItem } from "@/types/tokenType";
+import type { TokenListItem } from '@/types/tokenType';
 
 interface TokenRowProps {
   token: TokenListItem;
   index: number;
   isActive: boolean;
   onHover: (tokenId: number) => void;
+  onClick: () => void;
 }
 
 export default function TokenListTableRow({
@@ -12,6 +13,7 @@ export default function TokenListTableRow({
   index,
   isActive,
   onHover,
+  onClick,
 }: TokenRowProps) {
   const formatNum = (num: number) => new Intl.NumberFormat().format(num); // 천 단위 구분 쉼표 추가
 
@@ -35,9 +37,10 @@ export default function TokenListTableRow({
   return (
     <tr
       onMouseOver={() => onHover(token.tokenId)}
+      onClick={onClick}
       className={`
         flex items-center w-full py-4 px-2 border-bottom border-gray-50 cursor-pointer transition-colors duration-500
-        ${isActive ? "bg-gray-50" : "bg-white hover:bg-gray-50"}
+        ${isActive ? 'bg-gray-50' : 'bg-white hover:bg-gray-50'}
       `}
     >
       {/* 순위 */}
@@ -62,10 +65,10 @@ export default function TokenListTableRow({
 
       {/* 등락률 */}
       <td
-        className={`w-[160px] text-right ${isPlus ? "text-error" : isMinus ? "text-info" : "text-gray-900"}`}
+        className={`w-[160px] text-right ${isPlus ? 'text-error' : isMinus ? 'text-info' : 'text-gray-900'}`}
       >
         <span className="inline-block px-2 py-0.5 rounded-[var(--radius-s)] min-w-[80px] text-right font-body-03">
-          {isPlus && "+"}
+          {isPlus && '+'}
           {token.changeRate.toFixed(2)}%
         </span>
       </td>
