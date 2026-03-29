@@ -1,8 +1,8 @@
 import { PriceUp, PriceDown } from '@/components/icon/Icons';
-import type { TokenListItem } from '@/types/tokenType';
+import type { Token } from '@/types/tokenType';
 
 interface TokenRowProps {
-  token: TokenListItem;
+  token: Token;
   index: number;
   isActive: boolean;
   onHover: (tokenId: number) => void;

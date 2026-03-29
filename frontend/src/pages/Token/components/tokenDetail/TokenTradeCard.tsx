@@ -1,18 +1,24 @@
 import { useState, useEffect, useCallback } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import Input from '@/components/common/Input';
-import Button from '@/components/common/button';
+import Button from '@/components/common/Button';
 import PercentageBtn from './PercentageBtn';
 import { tokenApi } from '@/api/tokenApi';
 import Toast from '@/components/common/Toast';
-import type { TokenPendingItem, Order } from '@/types/tokenType';
+import type { TokenPending, Order } from '@/types/tokenType';
 import { Trashcan } from '@/components/icon/Icons';
 
 interface TokenTradeCardProps {
   tokenId: number;
+  marketPrice: number;
+  tickerSymbol: string;
 }
 
-export default function TokenTradeCard({ tokenId }: TokenTradeCardProps) {
+export default function TokenTradeCard({
+  tokenId,
+  marketPrice,
+  tickerSymbol,
+}: TokenTradeCardProps) {
   const tabs = [
     { id: 'buy', label: '매수' },
     { id: 'sell', label: '매도' },
@@ -21,10 +27,12 @@ export default function TokenTradeCard({ tokenId }: TokenTradeCardProps) {
 
   const [activeTab, setActiveTab] = useState('buy'); // buy | sell | pending
   const [orderType, setOrderType] = useState('LIMIT'); // LIMIT | MARKET
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(
+    marketPrice ? marketPrice.toLocaleString() : '',
+  );
   const [volume, setVolume] = useState('');
   const [amount, setAmount] = useState('');
-  const [pendingList, setPendingList] = useState<TokenPendingItem[]>([]);
+  const [pendingList, setPendingList] = useState<TokenPending[]>([]);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const getNumPrice = () => Number(price.replace(/,/g, '')) || 0;
@@ -220,9 +228,8 @@ export default function TokenTradeCard({ tokenId }: TokenTradeCardProps) {
                   <div className="flex flex-col gap-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-2">
-                        {/* TODO: ticker symbol */}
                         <span className="text-gray-900 font-body-04">
-                          HSSJ01/KRW
+                          {tickerSymbol}/KRW
                         </span>
                         <span
                           className={`font-body-04 ${item.orderSide === 'BUY' ? 'text-error' : 'text-info'}`}
@@ -300,7 +307,7 @@ export default function TokenTradeCard({ tokenId }: TokenTradeCardProps) {
                 height={42}
                 value={price}
                 onChange={(e) => handleInputChange(e, setPrice)}
-                placeholder="0"
+                placeholder="예: 100,000"
               />
             </div>
           )}

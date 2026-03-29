@@ -1,9 +1,11 @@
 import type {
   CandleStick,
   Order,
+  OrderInfo,
   Token,
   TokenOhlcv,
-  TokenPendingItem,
+  TokenPending,
+  TradeInfo,
 } from '@/types/tokenType';
 import apiClient from '@/api/apiClient';
 
@@ -23,5 +25,11 @@ export const tokenApi = {
   cancelOrder: (tokenId: number, orderId: number) =>
     apiClient.post<void>(`/api/token/order-cancel/${tokenId}/${orderId}`),
   getPendingList: (tokenId: number) =>
-    apiClient.get<TokenPendingItem[]>(`/api/token/pending/${tokenId}`),
+    apiClient.get<TokenPending[]>(`/api/token/pending/${tokenId}`),
+  getBuyList: (tokenId: number) =>
+    apiClient.get<OrderInfo[]>(`/api/token/buy/${tokenId}`),
+  getSellList: (tokenId: number) =>
+    apiClient.get<OrderInfo[]>(`/api/token/sell/${tokenId}`),
+  getTradeList: (tokenId: number) =>
+    apiClient.get<TradeInfo[]>(`/api/token/trade/${tokenId}`),
 };

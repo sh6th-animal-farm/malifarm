@@ -1,8 +1,8 @@
 import { PriceUp, PriceDown } from '@/components/icon/Icons';
-import type { TokenListItem } from '@/types/tokenType';
+import type { Token } from '@/types/tokenType';
 
 interface TokenListCardProps {
-  tokenList: TokenListItem[];
+  tokenList: Token[];
   onTokenClick?: (tokenId: number) => void;
   activeTokenId?: number;
 }

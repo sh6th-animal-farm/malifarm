@@ -1,16 +1,15 @@
 /* 1. 메인 페이지 */
 // 토큰 거래소 TOP10
-export interface Token {
+export interface TokenShort {
   tokenId: number;
-  projectId: number;
   tokenName: string;
-  tickerSymbol: string;
-  totalSupply: number;
+  marketPrice: number;
+  changeRate: number;
 }
 
 /* 2. 토큰 거래소 목록 페이지 */
 // 목록
-export interface TokenListItem {
+export interface Token {
   tokenId: number;
   tokenName: string;
   tickerSymbol: string;
@@ -50,7 +49,7 @@ export interface CandleStick {
 
 /* 3. 토큰 거래소 상세 페이지 */
 // 미체결 내역
-export interface TokenPendingItem {
+export interface TokenPending {
   orderId: number;
   orderSide: 'BUY' | 'SELL';
   orderPrice: string;
@@ -68,4 +67,19 @@ export interface Order {
   orderPrice: string; // 시장가는 "0"
   orderVolume: string; // 시장가 매수는 "0"
   totalPrice: string; // 매도는 "0"
+}
+
+// 호가 정보
+export interface OrderInfo {
+  price: string;
+  volume: string;
+  side: 'BUY' | 'SELL';
+}
+
+// 체결 정보
+export interface TradeInfo {
+  price: string;
+  volume: string;
+  takerSide: 'BUY' | 'SELL';
+  createdAt: string;
 }

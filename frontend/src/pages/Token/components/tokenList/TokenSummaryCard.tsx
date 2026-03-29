@@ -20,7 +20,6 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
   const formatNum = (num: number) => new Intl.NumberFormat().format(num);
 
   const isPlus = tokenInfo?.changeRate && tokenInfo.changeRate > 0;
-  const isMinus = tokenInfo?.changeRate && tokenInfo.changeRate < 0;
 
   // 2. 차트 초기화 (마운트 시 딱 한 번만)
   useEffect(() => {

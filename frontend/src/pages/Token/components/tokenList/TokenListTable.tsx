@@ -1,9 +1,9 @@
-import type { TokenListItem } from '@/types/tokenType';
+import type { Token } from '@/types/tokenType';
 import TokenListTableRow from './TokenListTableRow';
 import { useNavigate } from 'react-router';
 
 interface TokenTableMainProps {
-  tokenList: TokenListItem[];
+  tokenList: Token[];
   hoveredTokenId: number | null;
   onHover: (id: number) => void;
 }
