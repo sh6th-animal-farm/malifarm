@@ -9,6 +9,9 @@ interface AccountProps {
 
 export default function Account({ walletInfo, loading = false }: AccountProps) {
   const hasLinkedAccount = Boolean(walletInfo?.accountNo);
+  const availableAmount = walletInfo
+    ? toNumber(walletInfo.cashBalance) - toNumber(walletInfo.frozenAmount)
+    : 0;
 
   return (
     <section className="mb-5 rounded-lg bg-white p-4 shadow-std md:p-6">
@@ -35,10 +38,9 @@ export default function Account({ walletInfo, loading = false }: AccountProps) {
           </div>
         </div>
         <div className="shrink-0 text-right">
+          <p className="mb-1 font-caption-01 text-gray-400">사용 가능 금액</p>
           <p className="font-header-03 text-gray-900">
-            {walletInfo
-              ? numberFormatter.format(toNumber(walletInfo.cashBalance))
-              : "0"}
+            {numberFormatter.format(availableAmount)}
             <span className="ml-1 font-caption-01 text-gray-500">원</span>
           </p>
         </div>

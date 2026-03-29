@@ -14,7 +14,7 @@ export default function TokenTable({ loading, holdings }: TokenTableProps) {
     <section className="rounded-lg bg-white shadow-std">
       <div className="overflow-x-auto">
         <div className="min-w-max">
-          <div className="grid grid-cols-[2.2fr_1.4fr_1.4fr_1fr] gap-2 bg-gray-50 px-4 py-4 font-body-02 text-gray-500 md:px-6">
+          <div className="grid grid-cols-[1.8fr_1.5fr_1.5fr_1fr] gap-2 bg-gray-50 px-4 py-4 font-body-02 text-gray-500 md:px-6">
             <span>토큰명</span>
             <span className="text-right">평가손익 / 수익률</span>
             <span className="text-right">평가금액 / 매입금액</span>
