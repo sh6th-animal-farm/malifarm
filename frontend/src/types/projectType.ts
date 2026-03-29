@@ -8,7 +8,12 @@ interface ProjectData {
   targetAmount: number;
   totalSupply: number;
   minAmountPerInvestor: number;
-  projectStatus: 'ANNOUNCEMENT' | 'SUBSCRIPTION' | 'INPROGRESS' | 'CANCELED' | 'COMPLETED';
+  projectStatus:
+    | 'ANNOUNCEMENT'
+    | 'SUBSCRIPTION'
+    | 'INPROGRESS'
+    | 'CANCELED'
+    | 'COMPLETED';
   managerCount: number;
   method: string;
   projectDescription: string;
@@ -21,7 +26,7 @@ interface ProjectData {
   };
 }
 
-type ProjectStatus = "SUBSCRIPTION" | "ANNOUNCEMENT" | "INPROGRESS";
+type ProjectStatus = 'SUBSCRIPTION' | 'ANNOUNCEMENT' | 'INPROGRESS';
 
 type ProjectDTO = {
   projectId: number;
@@ -64,9 +69,64 @@ interface Wallet {
   frozenAmount: number;
   totalPurchasedValue: number;
   totalMarketValue: number;
-  totalBalance: number; 
-  profitLoss: number; 
-  profitLossRate: number; 
+  totalBalance: number;
+  profitLoss: number;
+  profitLossRate: number;
 }
 
-export type { ProjectData, ProjectDTO, Project, Token, ProjectStatus, Wallet };
+interface ProjectList {
+  projectId: number;
+  projectName: string;
+  projectRound: number;
+  subscriptionRate: number;
+  projectStatus:
+    | 'PREPARING'
+    | 'ANNOUNCEMENT'
+    | 'SUBSCRIPTION'
+    | 'INPROGRESS'
+    | 'DONE'
+    | 'CANCELED';
+
+  announcementStartDate: string;
+  announcementEndDate: string;
+  subscriptionStartDate: string;
+  subscriptionEndDate: string;
+  projectStartDate: string;
+  projectEndDate: string;
+  expectedReturn: number;
+  isStarred: boolean;
+
+  // ===== 농가 정보 =====
+  farmId: number;
+  farmName: string;
+  addressSido: string;
+  addressSigungu: string;
+  addressStreet: string;
+  addressDetails: string;
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  farmType: string;
+  area: number;
+  description: string;
+  thumbnailUrl: string;
+
+  openAt: string;
+  id?: number;
+  title?: string;
+  status?: string;
+  countdownTarget?: string | null;
+  upperDate?: string;
+  lowerDate?: string;
+  percent?: number;
+}
+
+export type {
+  ProjectData,
+  ProjectDTO,
+  Project,
+  Token,
+  ProjectStatus,
+  Wallet,
+  ProjectList,
+};

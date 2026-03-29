@@ -80,8 +80,9 @@ public class ProjectController {
 		}
 	*/
 	@GetMapping("/all")
-	public List<ProjectDTO> selectAll() {
-		return projectService.selectAll();
+	public ResponseEntity<ApiResponseDTO<List<ProjectDTO>>> selectAll() {
+		List<ProjectDTO> data = projectService.selectAll();
+		return ResponseEntity.ok(ApiResponseDTO.success(data));
 	}
 
 	@GetMapping("/")
