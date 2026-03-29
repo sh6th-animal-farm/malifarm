@@ -255,7 +255,9 @@ export default function TokenTradeCard({ tokenId }: TokenTradeCardProps) {
                         <span className="text-gray-400 font-caption-02">
                           미체결량
                         </span>
-                        <span className="font-caption-03 text-error">
+                        <span
+                          className={`font-caption-03 ${item.orderSide === 'BUY' ? 'text-error' : 'text-info'}`}
+                        >
                           {Number(item.remainingToken).toFixed(4)}
                         </span>
                       </div>

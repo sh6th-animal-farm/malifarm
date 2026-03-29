@@ -1,5 +1,5 @@
-import type { IconName, IconProps } from "./iconTypes";
-import * as Icons from "./Icons";
+import type { IconName, IconProps } from './iconTypes';
+import * as Icons from './Icons';
 
 const ICON_MAP: Record<IconName, React.ComponentType<IconProps>> = {
   heart_filled: Icons.HeartFilled,
@@ -20,6 +20,8 @@ const ICON_MAP: Record<IconName, React.ComponentType<IconProps>> = {
   user: Icons.User,
   check_circle: Icons.CheckCircle,
   warning_circle: Icons.WarningCircle,
+  price_up: Icons.PriceUp,
+  price_down: Icons.PriceDown,
 };
 
 interface FinalIconProps extends IconProps {
@@ -29,8 +31,8 @@ interface FinalIconProps extends IconProps {
 export default function Icon({
   name,
   size = 24,
-  color = "currentColor",
-  className = "",
+  color = 'currentColor',
+  className = '',
   ...props
 }: FinalIconProps) {
   const IconComponent = ICON_MAP[name];

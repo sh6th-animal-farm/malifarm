@@ -2,8 +2,8 @@ import type {
   CandleStick,
   Order,
   Token,
+  TokenOhlcv,
   TokenPendingItem,
-  TokenSummaryInfo,
 } from '@/types/tokenType';
 import apiClient from '@/api/apiClient';
 
@@ -12,7 +12,7 @@ export const tokenApi = {
     apiClient.get<Token>(`/api/token/${tokenId}`),
   getTokenList: () => apiClient.get<Token[]>('/api/home/token'),
   getOhlcv: (tokenId: number) =>
-    apiClient.get<TokenSummaryInfo>(`/api/token/ohlcv/${tokenId}`),
+    apiClient.get<TokenOhlcv>(`/api/token/ohlcv/${tokenId}`),
   getCandles: (tokenId: number, unit: number = 1) =>
     apiClient.get<CandleStick[]>(`/api/market/candles/${tokenId}?unit=${unit}`),
   getCashBalance: () => apiClient.get<string>('/api/account/balance'),

@@ -342,3 +342,37 @@ export const WarningCircle = ({ className, ...props }: IconProps) => (
     />
   </svg>
 );
+
+export const PriceUp = ({ className, ...props }: IconProps) => (
+  <svg
+    width="9"
+    height="24"
+    viewBox="0 0 9 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    {...props}
+  >
+    <path
+      d="M7.875 14.375H0.847656C0.355469 14.375 0.109375 13.8008 0.464844 13.4453L3.96484 9.94531C4.18359 9.72656 4.53906 9.72656 4.75781 9.94531L8.25781 13.4453C8.61328 13.8008 8.36719 14.375 7.875 14.375Z"
+      fill="#E53935"
+    />
+  </svg>
+);
+
+export const PriceDown = ({ className, ...props }: IconProps) => (
+  <svg
+    width="9"
+    height="24"
+    viewBox="0 0 9 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    {...props}
+  >
+    <path
+      d="M1.125 9.625L8.15234 9.625C8.64453 9.625 8.89063 10.1992 8.53516 10.5547L5.03516 14.0547C4.81641 14.2734 4.46094 14.2734 4.24219 14.0547L0.742188 10.5547C0.386719 10.1992 0.632813 9.625 1.125 9.625Z"
+      fill="#1976D2"
+    />
+  </svg>
+);

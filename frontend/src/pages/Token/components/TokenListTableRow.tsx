@@ -1,3 +1,4 @@
+import { PriceUp, PriceDown } from '@/components/icon/Icons';
 import type { TokenListItem } from '@/types/tokenType';
 
 interface TokenRowProps {
@@ -32,7 +33,6 @@ export default function TokenListTableRow({
   };
 
   const isPlus = token.changeRate > 0;
-  const isMinus = token.changeRate < 0;
 
   return (
     <tr
@@ -65,12 +65,14 @@ export default function TokenListTableRow({
 
       {/* 등락률 */}
       <td
-        className={`w-[160px] text-right ${isPlus ? 'text-error' : isMinus ? 'text-info' : 'text-gray-900'}`}
+        className={`w-[160px] font-body-03 ${isPlus ? 'text-error' : 'text-info'}`}
       >
-        <span className="inline-block px-2 py-0.5 rounded-[var(--radius-s)] min-w-[80px] text-right font-body-03">
-          {isPlus && '+'}
-          {token.changeRate.toFixed(2)}%
-        </span>
+        <div className="flex items-center justify-end gap-1 w-full">
+          <span className="flex items-center">
+            {isPlus ? <PriceUp /> : <PriceDown />}
+          </span>
+          <span className="font-semibold">{token.changeRate.toFixed(2)}%</span>
+        </div>
       </td>
 
       {/* 거래대금 */}
