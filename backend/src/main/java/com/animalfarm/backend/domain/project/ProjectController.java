@@ -175,7 +175,7 @@ public class ProjectController {
 		return ResponseEntity.ok(ApiResponseDTO.success(hasAccount));
 	}
 
-	@GetMapping("/walletInto")
+	@GetMapping("/walletInfo")
 	public ResponseEntity<ApiResponseDTO<WalletDTO>> getMyWallet(Long userId) {
 		WalletDTO wallet = projectService.selectMyWalletInfo(userId);
 		if (wallet == null) {

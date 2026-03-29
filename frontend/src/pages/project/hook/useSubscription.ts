@@ -16,12 +16,12 @@ export const useSubscription = ({
   walletBalance,
   minAmountPerInvestor,
   projectId,
-  tokenId
+  tokenId,
 }: UseSubscriptionProps) => {
   const [quantity, setQuantity] = useState<number>(1); // 청약 수량
   const [totalPrice, setTotalPrice] = useState<number>(price); // 총 금액
   const [usagePercent, setUsagePercent] = useState<number>(0); // 한도 사용률
-  const [errorMsg, setErrorMsg] = useState<string>(""); // 에러 메시지
+  const [errorMsg, setErrorMsg] = useState<string>(''); // 에러 메시지
   const [isSubmitting, setIsSubmitting] = useState(false); // 로딩 상태
 
   // 1. 수량이 변할 때마다 금액 및 한도 계산 (Side Effect)
@@ -40,25 +40,23 @@ export const useSubscription = ({
     const maxQuantity = maxAvailableAmount / price;
 
     if (total < minAmountPerInvestor) {
-      setErrorMsg(`최소 청약 금액은 ${minAmountPerInvestor.toLocaleString()}원 입니다.`);
+      setErrorMsg(
+        `최소 청약 금액은 ${minAmountPerInvestor.toLocaleString()}원 입니다.`,
+      );
     } else if (quantity > maxQuantity) {
-      setErrorMsg("신청 가능한 최대 수량을 초과할 수 없습니다.");
+      setErrorMsg('신청 가능한 최대 수량을 초과할 수 없습니다.');
     } else {
-      setErrorMsg("");
+      setErrorMsg('');
     }
   }, [quantity, price, userLimit, walletBalance, minAmountPerInvestor]);
 
   // 2. 수량 입력 핸들러 (소수점 4자리 제한 포함)
   const handleQuantityChange = (val: string) => {
-    let numStr = val;
-    if (numStr.includes('.')) {
-      const parts = numStr.split('.');
-      if (parts[1].length > 4) {
-        numStr = parseFloat(numStr).toFixed(4);
-      }
+    if (val === '') {
+      setQuantity('' as any);
+      return;
     }
-    const num = parseFloat(numStr);
-    setQuantity(isNaN(num) ? 0 : num);
+    setQuantity(val as any);
   };
 
   // 3. 청약 신청 서버 전송
@@ -67,8 +65,8 @@ export const useSubscription = ({
 
     try {
       setIsSubmitting(true);
-      const token = localStorage.getItem("accessToken");
-      
+      const token = localStorage.getItem('accessToken');
+
       const payload = {
         tokenId,
         projectId,
@@ -77,19 +75,19 @@ export const useSubscription = ({
       };
 
       // 기존 fetch 로직을 projectApi 등으로 대체 가능
-      const response = await fetch("/api/subscription/application", {
-        method: "POST",
+      const response = await fetch('/api/subscription/application', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": token ? `Bearer ${token}` : ""
+          'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const result = await response.text();
       return result.trim(); // "success" 등 결과 반환
     } catch (error) {
-      console.error("Subscription Error:", error);
+      console.error('Subscription Error:', error);
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -103,6 +101,6 @@ export const useSubscription = ({
     errorMsg,
     isSubmitting,
     handleQuantityChange,
-    submitSubscription
+    submitSubscription,
   };
 };
