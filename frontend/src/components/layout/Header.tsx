@@ -88,18 +88,40 @@ export default function Header() {
       "relative inline-flex flex-col items-center font-body-03 px-5 py-1 text-gray-600 transition-all duration-200 hover:text-gray-900 no-underline";
     const activeClass =
       "text-gray-900 -translate-y-[2px] after:content-[''] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-green-600 after:rounded-[var(--radius-xl)]";
-    return location.pathname.includes(path)
+
+    const isActive =
+      location.pathname === path || location.pathname.startsWith(`${path}/`);
+
+    return isActive
       ? `${baseClass} ${activeClass}`
       : baseClass;
   };
 
+  const getMobileHeaderTitle = () => {
+    const path = location.pathname;
+    if (path === "/") return "홈";
+    if (path.startsWith("/project")) return "프로젝트";
+    if (path.startsWith("/token")) return "토큰 거래소";
+    if (path.startsWith("/carbon")) return "탄소 마켓";
+    if (path.startsWith("/notice")) return "공지사항";
+    if (path.startsWith("/auth/login")) return "로그인";
+    if (path.startsWith("/mypage/profile")) return "내 정보";
+    if (path.startsWith("/mypage/project-history")) return "나의 프로젝트";
+    if (path.startsWith("/mypage/wallet")) return "나의 전자지갑";
+    if (path.startsWith("/mypage/transaction-history")) return "거래 내역";
+    if (path.startsWith("/mypage/carbon-history")) return "탄소 배출권 구매 내역";
+    return "마이리틀스마트팜";
+  };
+
   return (
-    <header className="h-header-height bg-white/85 border-b border-gray-100 sticky top-0 z-[1000] flex items-center">
-      <div className="container flex items-center justify-between w-full h-full">
+    <header className="h-14 md:h-header-height bg-white/85 border-b border-gray-100 sticky top-0 z-[1000] flex items-center">
+      <div className="layout-container relative flex h-full items-center justify-between">
         {/* 로고 영역 */}
         <Link
           to="/"
-          className="font-subtitle-01 text-gray-900 flex items-center overflow-hidden whitespace-nowrap cursor-pointer"
+          className={`font-header-03 md:font-subtitle-01 text-gray-900 items-center overflow-hidden whitespace-nowrap cursor-pointer ${
+            location.pathname === "/" ? "flex" : "hidden md:flex"
+          }`}
         >
           <Icon
             name="leaf"
@@ -111,8 +133,12 @@ export default function Header() {
           <span className="text-green-600">스마트팜</span>
         </Link>
 
+        <div className={`${location.pathname === "/" ? "hidden" : "block"} font-header-03 text-gray-900 md:hidden`}>
+          {getMobileHeaderTitle()}
+        </div>
+
         {/* 네비게이션 영역 */}
-        <nav>
+        <nav className="hidden lg:block">
           <ul className="flex list-none gap-1">
             <li>
               <Link to="/project" className={getNavItemClass("/project")}>
@@ -138,10 +164,10 @@ export default function Header() {
         </nav>
 
         {/* 로그인/회원가입 또는 알림/프로필 영역 */}
-        <div className="flex items-center gap-6" ref={dropdownRef}>
+        <div className="hidden items-center gap-5 lg:flex" ref={dropdownRef}>
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-5">
               <Link to="/auth/login" className="text-gray-900 font-button-01">
                 로그인
               </Link>
@@ -171,7 +197,7 @@ export default function Header() {
                     ${openDropdown === "noti" ? "!block" : "hidden"}
                   `}
                 >
-                  <p className="font-body-01 text-gray-300">알림이 없습니다.</p>
+                  <p className="font-caption-01 text-gray-300">알림이 없습니다.</p>
                 </div>
               </div>
 
@@ -186,49 +212,69 @@ export default function Header() {
                 </button>
                 <div
                   className={`
-                    absolute top-[calc(100%+12px)] right-0 flex flex-col w-full py-2 
+                    absolute top-[calc(100%+12px)] right-0 flex w-full flex-col overflow-hidden
                     bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] z-[1000]
                     ${openDropdown === "profile" ? "block" : "hidden"}
                   `}
                 >
-                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
-                    <Link to="/mypage/profile">내 정보</Link>
-                  </div>
-                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
-                    <Link to="/mypage/project-history">나의 프로젝트</Link>
-                  </div>
-                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
-                    <Link to="/mypage/wallet">나의 전자지갑</Link>
-                  </div>
-                  <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
-                    <Link to="/mypage/transaction-history">거래 내역</Link>
-                  </div>
+                  <Link
+                    to="/mypage/profile"
+                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                  >
+                    내 정보
+                  </Link>
+                  <Link
+                    to="/mypage/project-history"
+                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                  >
+                    나의 프로젝트
+                  </Link>
+                  <Link
+                    to="/mypage/wallet"
+                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                  >
+                    나의 전자지갑
+                  </Link>
+                  <Link
+                    to="/mypage/transaction-history"
+                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                  >
+                    거래 내역
+                  </Link>
 
                   {/* ADMIN 권한인 사용자만 표시 */}
                   {userRole === "ADMIN" && (
-                    <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
-                      <Link to="/admin">관리자 페이지</Link>
-                    </div>
+                    <Link
+                      to="/admin"
+                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    >
+                      관리자 페이지
+                    </Link>
                   )}
 
                   {userRole === "ENTERPRISE" && (
-                    <div className="px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600">
-                      <Link to="/mypage/carbon-history">
-                        탄소 배출권 구매 내역
-                      </Link>
-                    </div>
+                    <Link
+                      to="/mypage/carbon-history"
+                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    >
+                      탄소 배출권 구매 내역
+                    </Link>
                   )}
 
-                  <div className="px-4 py-2.5 font-caption-01 text-error hover:bg-gray-50 hover:text-error">
-                    <button onClick={handleLogout}>로그아웃</button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="block w-full cursor-pointer px-4 py-2.5 text-left font-caption-01 text-error hover:bg-gray-50 hover:text-red-700"
+                  >
+                    로그아웃
+                  </button>
                 </div>
               </div>
-
-              <span className="font-button-01">{userName} 님</span>
+              <span className="font-button-02 text-gray-700">{userName} 님</span>
             </div>
           )}
         </div>
+
       </div>
     </header>
   );

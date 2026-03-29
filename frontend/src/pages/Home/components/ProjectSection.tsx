@@ -44,7 +44,7 @@ export default function ProjectSection() {
     <section className="py-14 md:py-20 lg:py-24">
       <div className="layout-container">
         <div className="mb-7 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-          <h2 className="font-header-00 text-gray-900">
+          <h2 className="font-header-01 text-gray-900">
             청약 진행 중인 프로젝트
           </h2>
           <Link to="/project/list" className="font-caption-01 text-gray-500">
