@@ -25,19 +25,21 @@ export default function ImageCarousel({ images }: { images: string[] }) {
         </div>
       </div>
       {/* 슬라이드 컨트롤 */}
-      <div className="flex items-center justify-center gap-[12px] mt-[24px]">
-        <button onClick={() => moveSlide(-1)} className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-50 shadow-sm">❮</button>
-        <div className="flex gap-2">
-          {images.map((_, i) => (
-            <button 
-              key={i} 
-              onClick={() => setCurrentIdx(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${currentIdx === i ? 'w-6 bg-green-600' : 'w-2 bg-gray-200'}`} 
-            />
-          ))}
+      {images.length > 1 && (
+        <div className="flex items-center justify-center gap-[12px] mt-[24px]">
+          <button onClick={() => moveSlide(-1)} className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-50 shadow-sm">❮</button>
+          <div className="flex gap-2">
+            {images.map((_, i) => (
+              <button 
+                key={i} 
+                onClick={() => setCurrentIdx(i)}
+                className={`h-2 rounded-full transition-all duration-300 ${currentIdx === i ? 'w-6 bg-green-600' : 'w-2 bg-gray-200'}`} 
+              />
+            ))}
+          </div>
+          <button onClick={() => moveSlide(1)} className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-50 shadow-sm">❯</button>
         </div>
-        <button onClick={() => moveSlide(1)} className="w-10 h-10 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-50 shadow-sm">❯</button>
-      </div>
+    )}
     </div>
   );
 }
