@@ -13,8 +13,10 @@ export const toTagVariant = (status: string) => {
 export const toStatusLabel = (project: MyPageProjectDTO) => {
   if (project.statusText1) {
     if (project.statusText1 === "종료") return "종료됨";
+    if (project.statusText1 === "CANCELED" || project.statusText1 === "CANCELLED") return "";
     return project.statusText1;
   }
+  if (project.projectStatus === "CANCELED" || project.projectStatus === "CANCELLED") return "";
   if (project.projectStatus === "SUBSCRIPTION") return "청약중";
   if (project.projectStatus === "ANNOUNCEMENT") return "공고중";
   if (project.projectStatus === "INPROGRESS") return "진행중";
@@ -24,6 +26,14 @@ export const toStatusLabel = (project: MyPageProjectDTO) => {
 
 export const toSubStatusLabel = (project: MyPageProjectDTO) => {
   if (!project.statusText2) return "";
+  if (project.statusText2 === "당첨" || project.statusText2 === "APPROVED") return "";
+  if (
+    project.statusText2 === "취소" ||
+    project.statusText2 === "CANCELED" ||
+    project.statusText2 === "CANCELLED"
+  ) {
+    return "낙첨";
+  }
   if (project.statusText2 === "종료") return "종료됨";
   return project.statusText2;
 };

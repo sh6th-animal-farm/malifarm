@@ -15,7 +15,7 @@ interface TokenRowProps {
 
 export default function TokenRow({ holding }: TokenRowProps) {
   return (
-    <div className="grid grid-cols-[2.2fr_1.4fr_1.4fr_1fr] gap-2 px-4 py-3 font-body-01 text-gray-700 md:px-6 md:py-4">
+    <div className="grid grid-cols-[1.8fr_1.5fr_1.5fr_1fr] gap-2 px-4 py-3 font-body-01 text-gray-700 md:px-6 md:py-4">
       <div>
         <p className="font-body-03 text-gray-900">{holding.tokenName}</p>
         <p className="mt-1 font-caption-01 text-gray-400">{holding.tickerSymbol}</p>
