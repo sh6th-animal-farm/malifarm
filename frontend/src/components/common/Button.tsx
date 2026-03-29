@@ -58,7 +58,7 @@ export default function Button({
     subscriptionDisabled:
       'bg-gray-400 border-gray-400 text-white cursor-not-allowed',
     subscriptionEnd:
-      'bg-gray-200 border-gray-200 text-white cursor-not-allowed',
+      'bg-gray-100 border-gray-100 text-gray-600 cursor-not-allowed',
     sub_modalFirst: 'bg-gray-900 border-gray-900 text-white font-button-02',
     sub_modalSecond: 'bg-white border-green-600 text-green-600 font-button-02',
     buy: 'bg-error border-error text-white font-button-02',

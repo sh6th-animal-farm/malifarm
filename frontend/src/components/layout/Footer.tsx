@@ -3,7 +3,7 @@ import Icon from "@/components/icon";
 
 export default function Footer() {
   return (
-    <footer className="py-20 bg-white border-t border-gray-100">
+    <footer className="py-20 bg-white border-t border-gray-100 hidden md:block">
       <div className="container">
         <div className="flex flex-wrap">
           {/* 왼쪽 영역: 메뉴 및 기업 정보 */}

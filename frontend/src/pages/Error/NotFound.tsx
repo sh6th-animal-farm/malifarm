@@ -1,4 +1,4 @@
-export default function Home() {
+export default function NotFound() {
   return (
     <div className="container">
       <h1 className="font-header-01 text-green-600">404 Not Found</h1>
