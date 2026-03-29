@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import type { Token } from "@/types/projectType";
+import { Link } from 'react-router-dom';
+import type { TokenShort } from '@/types/tokenType';
 
-export default function TokenList({ tokens }: { tokens: Token[] }) {
+export default function TokenTopTen({ tokens }: { tokens: TokenShort[] }) {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {tokens.map((token, index) => (
@@ -14,7 +14,9 @@ export default function TokenList({ tokens }: { tokens: Token[] }) {
             <span className="w-6 font-header-04 text-green-600">
               {index + 1}
             </span>
-            <span className="font-body-03 text-gray-900">{token.tokenName}</span>
+            <span className="font-body-03 text-gray-900">
+              {token.tokenName}
+            </span>
           </div>
 
           <div className="text-right">
@@ -24,13 +26,13 @@ export default function TokenList({ tokens }: { tokens: Token[] }) {
             <div
               className={`mt-1 font-body-02 ${
                 token.changeRate > 0
-                  ? "text-error"
+                  ? 'text-error'
                   : token.changeRate < 0
-                    ? "text-info"
-                    : "text-gray-900"
+                    ? 'text-info'
+                    : 'text-gray-900'
               }`}
             >
-              {token.changeRate > 0 ? "+" : ""}
+              {token.changeRate > 0 ? '+' : ''}
               {token.changeRate.toFixed(2)}%
             </div>
           </div>

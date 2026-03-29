@@ -1,13 +1,13 @@
 import SectionHeader from '@/components/layout/SectionHeader';
-import TokenListTable from './components/TokenListTable';
-import TokenSummaryCard from './components/TokenSummaryCard';
+import TokenListTable from './components/tokenList/TokenListTable';
+import TokenSummaryCard from './components/tokenList/TokenSummaryCard';
 import { tokenApi } from '@/api/tokenApi';
 import { useEffect, useState } from 'react';
-import type { TokenListItem } from '@/types/tokenType';
+import type { Token } from '@/types/tokenType';
 import { useDebounce } from '@/hooks/useDebounce';
 
 export default function TokenList() {
-  const [tokenList, setTokenList] = useState<TokenListItem[]>([]);
+  const [tokenList, setTokenList] = useState<Token[]>([]);
   const [hoveredTokenId, setHoveredTokenId] = useState<number | null>(null);
   const debouncedId = useDebounce(hoveredTokenId, 300); // 0.3초 동안 hover 상태가 유지될 때만 debouncedId 업데이트
 
