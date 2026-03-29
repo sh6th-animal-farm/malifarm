@@ -50,7 +50,7 @@ export default function TokenChartCard({
       rightPriceScale: { borderVisible: false },
       localization: { locale: 'ko-KR' },
       width: chartContainerRef.current.clientWidth,
-      height: 350,
+      height: 450,
     });
 
     const candleSeries = chart.addSeries(CandlestickSeries, {
@@ -210,7 +210,7 @@ export default function TokenChartCard({
       </div>
 
       {/* 차트 영역 컨테이너 */}
-      <div ref={chartContainerRef} className="w-full h-[350px] [&_a]:hidden" />
+      <div ref={chartContainerRef} className="w-full h-[450px] [&_a]:hidden" />
     </div>
   );
 }
