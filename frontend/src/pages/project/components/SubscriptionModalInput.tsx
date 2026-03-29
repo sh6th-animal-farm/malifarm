@@ -2,10 +2,9 @@ interface InputProps {
   value: number | string;
   onChange: (val: string) => void;
   errorMsg: string | null;
-  // --- 새로 추가된 Props (텍스트 주입용) ---
-  label: string; // 예: "청약 수량 입력", "매수 수량"
-  unit: string; // 예: "토큰", "주", "ETH"
-  minAmountText: string; // 예: "* 최소 청약 금액: 10,000원" (통째로 주입)
+  label: string;
+  unit: string;
+  minAmountText: string;
 }
 
 export const SubscriptionModalInput = ({
