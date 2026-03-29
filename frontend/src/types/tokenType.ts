@@ -22,16 +22,17 @@ export interface TokenListItem {
   changeRate: number;
 }
 
-// 요약 차트
-export interface TokenSummaryInfo {
-  tickerSymbol: string;
+// 토큰 Ohlcv 정보
+export interface TokenOhlcv {
+  tokenId: number;
   tokenName: string;
+  tickerSymbol: string;
   marketPrice: number;
-  changeRate: number;
+  dailyTradeVolume: number;
   openPrice: number;
   highPrice: number;
   lowPrice: number;
-  dailyTradeVolume: number;
+  changeRate: number;
 }
 
 // 캔들 정보

@@ -1,6 +1,7 @@
 import { tokenApi } from '@/api/tokenApi';
 import Badge from '@/components/common/Badge';
-import type { TokenSummaryInfo } from '@/types/tokenType';
+import { PriceUp, PriceDown } from '@/components/icon/Icons';
+import type { TokenOhlcv } from '@/types/tokenType';
 import {
   createChart,
   CandlestickSeries,
@@ -11,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
   // 1. OHLCV 데이터와 차트 데이터를 내부 상태로 관리
-  const [tokenInfo, setTokenInfo] = useState<TokenSummaryInfo | null>(null); // 토큰 OHLCV 정보
+  const [tokenInfo, setTokenInfo] = useState<TokenOhlcv | null>(null); // 토큰 OHLCV 정보
   const chartContainerRef = useRef<HTMLDivElement>(null); // 차트 컨테이너
   const chartRef = useRef<IChartApi | null>(null); // 차트 인스턴스
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null); // 차트 시리즈 (캔들스틱)
@@ -103,10 +104,10 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
             {formatNum(tokenInfo?.marketPrice || 0)}
           </div>
           <div
-            className={`font-body-02 ${isPlus ? 'text-red-500' : isMinus ? 'text-blue-500' : 'text-gray-600'}`}
+            className={`flex items-center mt-1 gap-1 font-body-03 ${isPlus ? 'text-error' : 'text-info'}`}
           >
-            {isPlus ? '+' : ''}
-            {tokenInfo?.changeRate?.toFixed(2)}%
+            {isPlus ? <PriceUp /> : <PriceDown />}
+            {tokenInfo?.changeRate ? tokenInfo.changeRate.toFixed(2) : '0.00'}%
           </div>
         </div>
       </div>
