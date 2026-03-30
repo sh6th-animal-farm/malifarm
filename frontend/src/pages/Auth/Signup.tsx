@@ -2,7 +2,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import apiClient from "@/api/apiClient";
 import Button from "@/components/common/Button";
-
+import Input from "@/components/common/Input";
+import {
+  CheckCircle,
+  WarningCircle,
+  PersonalUser,
+  EnterpriseUser,
+} from "@/components/icon/Icons";
 
 type SignUpType = "PERSONAL" | "ENTERPRISE" | null;
 
@@ -36,29 +42,36 @@ export default function Signup() {
 
   const [bNo, setBNo] = useState("");
   const [bNoVerified, setBNoVerified] = useState(false);
-  const [bNoStatus, setBNoStatus] = useState<{ msg: string; ok: boolean | null }>(
-    { msg: "", ok: null }
-  );
+  const [bNoStatus, setBNoStatus] = useState<{ msg: string; ok: boolean | null }>({
+    msg: "",
+    ok: null,
+  });
 
   const [cautionAgreed, setCautionAgreed] = useState(false);
-  const [cautionStatus, setCautionStatus] = useState<{ msg: string; ok: boolean | null }>(
-    { msg: "", ok: null }
-  );
+  const [cautionStatus, setCautionStatus] = useState<{ msg: string; ok: boolean | null }>({
+    msg: "",
+    ok: null,
+  });
 
   const [phone, setPhone] = useState("");
   const [phoneVerified, setPhoneVerified] = useState(false);
-  const [phoneStatus, setPhoneStatus] = useState<{ msg: string; ok: boolean | null }>(
-    { msg: "", ok: null }
-  );
+  const [phoneStatus, setPhoneStatus] = useState<{ msg: string; ok: boolean | null }>({
+    msg: "",
+    ok: null,
+  });
 
   const [email, setEmail] = useState("");
   const [emailCode, setEmailCode] = useState("");
   const [emailVerified, setEmailVerified] = useState(false);
-  const [emailSendStatus, setEmailSendStatus] = useState<{ msg: string; ok: boolean | null }>(
-    { msg: "", ok: null }
-  );
+  const [emailSendStatus, setEmailSendStatus] = useState<{ msg: string; ok: boolean | null }>({
+    msg: "",
+    ok: null,
+  });
   const [emailVerifyStatus, setEmailVerifyStatus] = useState<{ msg: string; ok: boolean | null }>(
-    { msg: "", ok: null }
+    {
+      msg: "",
+      ok: null,
+    }
   );
   const [emailRemainSec, setEmailRemainSec] = useState(0);
   const emailTimerRef = useRef<number | null>(null);
@@ -66,9 +79,10 @@ export default function Signup() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
-  const [signupStatus, setSignupStatus] = useState<{ msg: string; ok: boolean | null }>(
-    { msg: "", ok: null }
-  );
+  const [signupStatus, setSignupStatus] = useState<{ msg: string; ok: boolean | null }>({
+    msg: "",
+    ok: null,
+  });
 
   const [loading, setLoading] = useState({
     enterpriseVerify: false,
@@ -323,8 +337,14 @@ export default function Signup() {
         code: emailCode.trim(),
       });
 
+      if (emailTimerRef.current) {
+        window.clearInterval(emailTimerRef.current);
+        emailTimerRef.current = null;
+      }
+
       setEmailVerified(true);
       setEmailVerifyStatus({ msg: "인증되었습니다.", ok: true });
+      setEmailSendStatus({ msg: "", ok: null }); // 만료 문구 제거
       setEmailRemainSec(0);
     } catch (error) {
       console.error("이메일 인증 확인 실패:", error);
@@ -375,6 +395,8 @@ export default function Signup() {
   };
 
   const renderStatus = (status: { msg: string; ok: boolean | null }) => {
+    if (!status.msg) return <div className="min-h-[20px] mt-2" />;
+
     const color =
       status.ok === true
         ? "text-[var(--color-success)]"
@@ -382,13 +404,21 @@ export default function Signup() {
           ? "text-[var(--color-error)]"
           : "text-gray-500";
 
-    return <div className={`min-h-[18px] mt-1 text-[13px] font-medium ${color}`}>{status.msg}</div>;
+    return (
+      <div className={`min-h-[20px] mt-2 flex items-center gap-2 text-[13px] font-medium ${color}`}>
+        {status.ok === true && <CheckCircle className="w-4 h-4 shrink-0" />}
+        {status.ok === false && <WarningCircle className="w-4 h-4 shrink-0" />}
+        <span>{status.msg}</span>
+      </div>
+    );
   };
+
+  const labelClassName = "block mb-2 text-[14px] font-semibold text-gray-900";
 
   if (!signUpType) {
     return (
       <main className="flex-1 flex flex-col min-h-[calc(80vh-var(--spacing-header-height))] items-center py-10 pt-30 bg-gray-50">
-        <div className="w-full max-w-[520px] bg-white p-10 rounded-[var(--radius-m)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100 ">
+        <div className="w-full max-w-[520px] bg-white p-10 rounded-[var(--radius-m)] shadow-[0_4px_24px_rgba(0,0,0,0.06)] border border-gray-100">
           <h2 className="text-center text-[24px] font-bold text-gray-900 mb-3">회원가입</h2>
           <p className="text-center text-[14px] text-gray-500 mb-8">
             가입하실 회원 유형을 선택해주세요
@@ -399,8 +429,8 @@ export default function Signup() {
             onClick={() => startSignupFlow("PERSONAL")}
             className="w-full p-6 border border-gray-200 rounded-[12px] flex items-center gap-5 bg-white mb-4 text-left hover:border-green-500 transition-colors"
           >
-            <div className="text-[24px] w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center">
-              👤
+            <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center">
+              <PersonalUser className="w-8 h-8" />
             </div>
             <div>
               <h4 className="text-[17px] font-bold text-gray-900 mb-1">개인 회원</h4>
@@ -413,8 +443,8 @@ export default function Signup() {
             onClick={() => startSignupFlow("ENTERPRISE")}
             className="w-full p-6 border border-gray-200 rounded-[12px] flex items-center gap-5 bg-white text-left hover:border-green-500 transition-colors"
           >
-            <div className="text-[24px] w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center">
-              🏢
+            <div className="w-14 h-14 bg-gray-50 rounded-full flex items-center justify-center">
+              <EnterpriseUser className="w-8 h-8" />
             </div>
             <div>
               <h4 className="text-[17px] font-bold text-gray-900 mb-1">기업 회원</h4>
@@ -509,13 +539,9 @@ export default function Signup() {
                 </label>
               </div>
 
-              <Button
-                type="button"
-                variant="check"
-                width="100%"
-                height={50}
-                onClick={goToNext}
-              >
+              <div className="pb-10" />
+
+              <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
                 다음으로
               </Button>
             </section>
@@ -529,14 +555,15 @@ export default function Signup() {
               </p>
 
               <div className="mb-5">
-                <label>사업자 등록번호</label>
+                <label className={labelClassName}>사업자 등록번호</label>
                 <div className="flex gap-2">
-                  <input
+                  <Input
                     type="text"
                     value={bNo}
                     onChange={(e) => onBnoChange(e.target.value)}
                     placeholder="숫자만 입력 (10자리)"
                     maxLength={10}
+                    height={50}
                   />
                   <button
                     type="button"
@@ -550,13 +577,7 @@ export default function Signup() {
                 {renderStatus(bNoStatus)}
               </div>
 
-              <Button
-                type="button"
-                variant="check"
-                width="100%"
-                height={50}
-                onClick={goToNext}
-              >
+              <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
                 다음으로
               </Button>
             </section>
@@ -594,13 +615,7 @@ export default function Signup() {
 
               {renderStatus(cautionStatus)}
 
-              <Button
-                type="button"
-                variant="check"
-                width="100%"
-                height={50}
-                onClick={goToNext}
-              >
+              <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
                 다음으로
               </Button>
             </section>
@@ -613,9 +628,9 @@ export default function Signup() {
                 휴대폰 본인인증을 진행합니다
               </p>
 
-              <div className="mb-5">
-                <label>휴대폰 번호</label>
-                <input
+              <div className="mb-3">
+                <label className={labelClassName}>휴대폰 번호</label>
+                <Input
                   type="text"
                   value={phone}
                   onChange={(e) => {
@@ -624,11 +639,12 @@ export default function Signup() {
                     setPhoneStatus({ msg: "", ok: null });
                   }}
                   placeholder="01012345678"
+                  height={50}
                 />
                 {renderStatus(phoneStatus)}
               </div>
 
-              <div className="mt-6">
+              <div className="mb-4">
                 <button
                   type="button"
                   className="w-full h-[50px] rounded-[8px] font-semibold border border-green-600 text-green-600"
@@ -641,13 +657,7 @@ export default function Signup() {
                 </p>
               </div>
 
-              <Button
-                type="button"
-                variant="check"
-                width="100%"
-                height={50}
-                onClick={goToNext}
-              >
+              <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
                 다음으로
               </Button>
             </section>
@@ -661,10 +671,10 @@ export default function Signup() {
               </p>
 
               <div className="mb-5">
-                <label>이메일 주소 (ID)</label>
+                <label className={labelClassName}>이메일 주소 (ID)</label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <input
+                    <Input
                       type="email"
                       value={email}
                       onChange={(e) => {
@@ -675,6 +685,7 @@ export default function Signup() {
                       }}
                       placeholder="example@farm.com"
                       className="pr-20"
+                      height={50}
                     />
                     {emailRemainSec > 0 && (
                       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[14px] text-red-500 font-semibold">
@@ -695,9 +706,9 @@ export default function Signup() {
               </div>
 
               <div className="mb-5">
-                <label>인증번호</label>
+                <label className={labelClassName}>인증번호</label>
                 <div className="flex gap-2">
-                  <input
+                  <Input
                     type="text"
                     value={emailCode}
                     onChange={(e) => {
@@ -705,6 +716,7 @@ export default function Signup() {
                       setEmailVerifyStatus({ msg: "", ok: null });
                     }}
                     placeholder="인증번호 6자리"
+                    height={50}
                   />
                   <button
                     type="button"
@@ -718,13 +730,7 @@ export default function Signup() {
                 {renderStatus(emailVerifyStatus)}
               </div>
 
-              <Button
-                type="button"
-                variant="check"
-                width="100%"
-                height={50}
-                onClick={goToNext}
-              >
+              <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
                 다음으로
               </Button>
             </section>
@@ -738,8 +744,8 @@ export default function Signup() {
               </p>
 
               <div className="mb-5">
-                <label>이름</label>
-                <input
+                <label className={labelClassName}>이름</label>
+                <Input
                   type="text"
                   value={userName}
                   onChange={(e) => {
@@ -747,24 +753,25 @@ export default function Signup() {
                     setSignupStatus({ msg: "", ok: null });
                   }}
                   placeholder="이름 입력"
+                  height={50}
                 />
               </div>
 
               <div className="mb-5">
-                <label>이메일 (ID)</label>
-                <input type="text" value={email} readOnly className="!bg-gray-100" />
+                <label className={labelClassName}>이메일 (ID)</label>
+                <Input type="text" value={email} readOnly className="!bg-gray-100" height={50} />
               </div>
 
               {signUpType === "ENTERPRISE" && (
                 <div className="mb-5">
-                  <label>사업자 등록번호</label>
-                  <input type="text" value={bNo} readOnly className="!bg-gray-100" />
+                  <label className={labelClassName}>사업자 등록번호</label>
+                  <Input type="text" value={bNo} readOnly className="!bg-gray-100" height={50} />
                 </div>
               )}
 
               <div className="mb-5">
-                <label>비밀번호</label>
-                <input
+                <label className={labelClassName}>비밀번호</label>
+                <Input
                   type="password"
                   value={password}
                   onChange={(e) => {
@@ -772,12 +779,13 @@ export default function Signup() {
                     setSignupStatus({ msg: "", ok: null });
                   }}
                   placeholder="비밀번호"
+                  height={50}
                 />
               </div>
 
               <div className="mb-5">
-                <label>비밀번호 확인</label>
-                <input
+                <label className={labelClassName}>비밀번호 확인</label>
+                <Input
                   type="password"
                   value={password2}
                   onChange={(e) => {
@@ -785,6 +793,7 @@ export default function Signup() {
                     setSignupStatus({ msg: "", ok: null });
                   }}
                   placeholder="비밀번호 재입력"
+                  height={50}
                 />
                 {renderStatus(
                   passwordMatched === null
@@ -802,7 +811,8 @@ export default function Signup() {
                 variant="check"
                 width="100%"
                 height={50}
-                onClick={goToNext}
+                onClick={submitSignUp}
+                disabled={loading.signup}
               >
                 {loading.signup ? "가입 처리 중..." : "가입 완료하기"}
               </Button>
@@ -818,7 +828,11 @@ export default function Signup() {
               <p className="text-center text-[14px] text-gray-500 mb-8">
                 로그인 페이지로 이동하여 서비스를 이용해보세요.
               </p>
-              <button type="button" className="btn-main" onClick={() => navigate("/login")}>
+              <button
+                type="button"
+                className="w-full h-[50px] rounded-[8px] bg-green-600 text-white font-semibold"
+                onClick={() => navigate("/auth/login")}
+              >
                 로그인하러 가기
               </button>
             </section>

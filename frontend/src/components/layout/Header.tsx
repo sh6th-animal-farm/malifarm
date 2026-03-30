@@ -105,6 +105,7 @@ export default function Header() {
     if (path.startsWith("/carbon")) return "탄소 마켓";
     if (path.startsWith("/notice")) return "공지사항";
     if (path.startsWith("/auth/login")) return "로그인";
+    if (path.startsWith("/auth/signup")) return "회원가입";
     if (path.startsWith("/mypage/profile")) return "내 정보";
     if (path.startsWith("/mypage/project-history")) return "나의 프로젝트";
     if (path.startsWith("/mypage/wallet")) return "나의 전자지갑";
