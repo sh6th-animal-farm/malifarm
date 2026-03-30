@@ -11,16 +11,18 @@ import TokenChartCard from './components/tokenDetail/TokenChartCard';
 import TokenListCard from './components/tokenDetail/TokenListCard';
 import TokenTradeCard from './components/tokenDetail/TokenTradeCard';
 import TokenPriceCard from './components/tokenDetail/TokenPriceCard';
+import { useOrderbook } from '@/hooks/useOrderbook.ts';
 
 export default function TokenDetail() {
   const { id } = useParams(); // URL 파라미터에서 토큰 ID 추출
+  const navigate = useNavigate();
   const [tokenOhlcv, setTokenOhlcv] = useState<TokenOhlcv | null>(null);
   const [tokenList, setTokenList] = useState<Token[]>([]);
-  const [buyList, setBuyList] = useState<OrderInfo[]>([]);
-  const [sellList, setSellList] = useState<OrderInfo[]>([]);
   const [tradeList, setTradeList] = useState<TradeInfo[]>([]);
-  const navigate = useNavigate();
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+  const [initialBuyList, setInitialBuyList] = useState<OrderInfo[]>([]);
+  const [initialSellList, setInitialSellList] = useState<OrderInfo[]>([]);
+  const { sortedBuys, sortedSells } = useOrderbook(id!, initialBuyList, initialSellList);
 
   useEffect(() => {
     setSelectedPrice(null);
@@ -35,6 +37,10 @@ export default function TokenDetail() {
   const fetchTokenData = async () => {
     if (!id) return;
 
+    // 토큰 변경 시 기존 리스트를 비움
+    setInitialBuyList([]);
+    setInitialSellList([]);
+
     const tokenId = Number(id);
     const [ohlcvRes, buyRes, sellRes, tradeRes] = await Promise.all([
       tokenApi.getOhlcv(tokenId),
@@ -44,8 +50,8 @@ export default function TokenDetail() {
     ]);
 
     setTokenOhlcv(ohlcvRes);
-    setBuyList(buyRes);
-    setSellList(sellRes);
+    setInitialBuyList(buyRes);
+    setInitialSellList(sellRes);
     setTradeList(tradeRes);
   };
 
@@ -86,8 +92,8 @@ export default function TokenDetail() {
             />
             <TokenPriceCard
               ohlcv={tokenOhlcv}
-              buyList={buyList}
-              sellList={sellList}
+              buyList={sortedBuys}
+              sellList={sortedSells}
               tradeList={tradeList}
               onPriceClick={(price) => setSelectedPrice(price)}
             />

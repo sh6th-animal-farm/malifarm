@@ -83,3 +83,11 @@ export interface TradeInfo {
   takerSide: 'BUY' | 'SELL';
   createdAt: string;
 }
+
+// 웹소켓 호가 정보
+export interface LiveOrderInfo {
+  price: string,
+  updatedVolume: string,
+  side: 'BUY' | 'SELL',
+  action: 'UPDATE' | 'DELETE'
+}
