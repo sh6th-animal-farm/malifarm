@@ -1,5 +1,6 @@
 import { PriceUp, PriceDown } from '@/components/icon/Icons';
 import type { Token } from '@/types/tokenType';
+import { useEffect, useRef, useState } from 'react';
 
 interface TokenRowProps {
   token: Token;
@@ -16,8 +17,34 @@ export default function TokenListTableRow({
   onHover,
   onClick,
 }: TokenRowProps) {
-  const formatNum = (num: number) => new Intl.NumberFormat().format(num); // 천 단위 구분 쉼표 추가
 
+  const isPlus = token.changeRate > 0;
+  const [flashClass, setFlashClass] = useState('');
+  const prevRateRef = useRef(token.changeRate);
+
+  // 등락률 변화 시, 깜빡임 효과
+  useEffect(() => {
+    if (prevRateRef.current !== token.changeRate) {
+
+      if (token.changeRate > 0) {
+        setFlashClass('bg-error-light');
+      } else if (token.changeRate < 0) {
+        setFlashClass('bg-info-light');
+      }
+
+      // 0.8초 후 배경색 제거
+      const timer = setTimeout(() => setFlashClass(''), 800);
+
+      // 변화된 등락률 업데이트
+      prevRateRef.current = token.changeRate;
+      return () => clearTimeout(timer);
+    }
+  }, [token.changeRate]);
+
+  // 천 단위 구분 쉼표 추가
+  const formatNum = (num: number) => new Intl.NumberFormat().format(num);
+
+  // 거래대금이 백만 이상일 때, 'O백 O만'으로 수정
   const formatVolume = (vol: number) => {
     if (vol >= 1000000) {
       const millionPart = Math.floor(vol / 1000000);
@@ -31,8 +58,6 @@ export default function TokenListTableRow({
     }
     return formatNum(vol);
   };
-
-  const isPlus = token.changeRate > 0;
 
   return (
     <tr
@@ -64,10 +89,15 @@ export default function TokenListTableRow({
       </td>
 
       {/* 등락률 */}
-      <td
-        className={`w-[160px] font-body-03 ${isPlus ? 'text-error' : 'text-info'}`}
-      >
-        <div className="flex items-center justify-end gap-1 w-full">
+      <td className="w-[160px] font-body-03 px-2">
+        <div
+          className={`
+            flex items-center justify-end gap-1 w-full px-2 py-1 
+            rounded-[var(--radius-s)] transition-colors duration-700 ease-out
+            ${isPlus ? 'text-error' : 'text-info'}
+            ${flashClass} 
+          `}
+        >
           <span className="flex items-center">
             {isPlus ? <PriceUp /> : <PriceDown />}
           </span>
