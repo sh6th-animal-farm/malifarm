@@ -1,5 +1,6 @@
 import type { Project, ProjectData } from '@/types/projectType';
 import apiClient from './apiClient';
+import type { FarmDTO } from '@/types/farmType';
 
 export const projectApi = {
   getProjectDetail: (projectId: string | number) => {
