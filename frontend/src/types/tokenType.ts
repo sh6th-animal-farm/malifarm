@@ -72,7 +72,7 @@ export interface Order {
 // 호가 정보
 export interface OrderInfo {
   price: string;
-  volume: string;
+  totalVolume: string;
   side: 'BUY' | 'SELL';
 }
 

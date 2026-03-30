@@ -20,6 +20,11 @@ export default function TokenDetail() {
   const [sellList, setSellList] = useState<OrderInfo[]>([]);
   const [tradeList, setTradeList] = useState<TradeInfo[]>([]);
   const navigate = useNavigate();
+  const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    setSelectedPrice(null);
+  }, [id]);
 
   // 1. 토큰 목록 조회 (마운트 시 1회)
   useEffect(() => {
@@ -42,11 +47,6 @@ export default function TokenDetail() {
     setBuyList(buyRes);
     setSellList(sellRes);
     setTradeList(tradeRes);
-
-    console.log('Token Ohlcv:', ohlcvRes);
-    console.log('Buy List:', buyRes);
-    console.log('Sell List:', sellRes);
-    console.log('Trade List:', tradeRes);
   };
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function TokenDetail() {
           <div className="flex flex-col gap-6">
             <TokenTradeCard
               tokenId={Number(id)}
-              marketPrice={tokenOhlcv?.marketPrice || 0}
+              marketPrice={selectedPrice || tokenOhlcv?.marketPrice || 0}
               tickerSymbol={tokenOhlcv?.tickerSymbol || '-'}
             />
             <TokenPriceCard
@@ -89,6 +89,7 @@ export default function TokenDetail() {
               buyList={buyList}
               sellList={sellList}
               tradeList={tradeList}
+              onPriceClick={(price) => setSelectedPrice(price)}
             />
           </div>
         </div>

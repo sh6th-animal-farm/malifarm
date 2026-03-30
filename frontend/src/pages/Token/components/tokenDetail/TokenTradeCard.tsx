@@ -27,9 +27,7 @@ export default function TokenTradeCard({
 
   const [activeTab, setActiveTab] = useState('buy'); // buy | sell | pending
   const [orderType, setOrderType] = useState('LIMIT'); // LIMIT | MARKET
-  const [price, setPrice] = useState(
-    marketPrice ? marketPrice.toLocaleString() : '',
-  );
+  const [price, setPrice] = useState('');
   const [volume, setVolume] = useState('');
   const [amount, setAmount] = useState('');
   const [pendingList, setPendingList] = useState<TokenPending[]>([]);
@@ -38,6 +36,12 @@ export default function TokenTradeCard({
   const getNumPrice = () => Number(price.replace(/,/g, '')) || 0;
   const getNumVolume = () => Number(volume) || 0;
   const getNumAmount = () => Number(amount.replace(/,/g, '')) || 0;
+
+  useEffect(() => {
+    if (marketPrice && marketPrice > 0) {
+      setPrice(marketPrice.toLocaleString());
+    }
+  }, [marketPrice]);
 
   // 1. 숫자 포맷팅 함수 (천단위 콤마 및 커서 제어)
   const formatNumber = (val: string) => {
