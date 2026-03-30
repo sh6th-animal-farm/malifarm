@@ -11,16 +11,22 @@ import TokenChartCard from './components/tokenDetail/TokenChartCard';
 import TokenListCard from './components/tokenDetail/TokenListCard';
 import TokenTradeCard from './components/tokenDetail/TokenTradeCard';
 import TokenPriceCard from './components/tokenDetail/TokenPriceCard';
+import { useOrderbook } from '@/hooks/useOrderbook.ts';
+import { useTradeHistory } from '@/hooks/useTradeHistory.ts';
 
 export default function TokenDetail() {
   const { id } = useParams(); // URL 파라미터에서 토큰 ID 추출
+  const navigate = useNavigate();
   const [tokenOhlcv, setTokenOhlcv] = useState<TokenOhlcv | null>(null);
   const [tokenList, setTokenList] = useState<Token[]>([]);
-  const [buyList, setBuyList] = useState<OrderInfo[]>([]);
-  const [sellList, setSellList] = useState<OrderInfo[]>([]);
-  const [tradeList, setTradeList] = useState<TradeInfo[]>([]);
-  const navigate = useNavigate();
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+  const [initialBuyList, setInitialBuyList] = useState<OrderInfo[]>([]);
+  const [initialSellList, setInitialSellList] = useState<OrderInfo[]>([]);
+  const [initialTradeList, setInitialTradeList] = useState<TradeInfo[]>([]);
+
+  // 웹소켓
+  const { sortedBuys, sortedSells } = useOrderbook(id!, initialBuyList, initialSellList);
+  const { trades: sortedTrades } = useTradeHistory(id!, initialTradeList);
 
   useEffect(() => {
     setSelectedPrice(null);
@@ -35,7 +41,13 @@ export default function TokenDetail() {
   const fetchTokenData = async () => {
     if (!id) return;
 
+    // 토큰 변경 시 기존 리스트를 비움
+    setInitialBuyList([]);
+    setInitialSellList([]);
+
     const tokenId = Number(id);
+
+    // DB, Redis
     const [ohlcvRes, buyRes, sellRes, tradeRes] = await Promise.all([
       tokenApi.getOhlcv(tokenId),
       tokenApi.getBuyList(tokenId),
@@ -44,9 +56,9 @@ export default function TokenDetail() {
     ]);
 
     setTokenOhlcv(ohlcvRes);
-    setBuyList(buyRes);
-    setSellList(sellRes);
-    setTradeList(tradeRes);
+    setInitialBuyList(buyRes);
+    setInitialSellList(sellRes);
+    setInitialTradeList(tradeRes);
   };
 
   useEffect(() => {
@@ -86,9 +98,9 @@ export default function TokenDetail() {
             />
             <TokenPriceCard
               ohlcv={tokenOhlcv}
-              buyList={buyList}
-              sellList={sellList}
-              tradeList={tradeList}
+              buyList={sortedBuys}
+              sellList={sortedSells}
+              tradeList={sortedTrades}
               onPriceClick={(price) => setSelectedPrice(price)}
             />
           </div>
