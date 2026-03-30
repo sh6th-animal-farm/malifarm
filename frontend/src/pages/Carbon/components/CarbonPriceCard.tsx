@@ -13,11 +13,18 @@ export default function CarbonPriceCard({
   currentPrice,
   onOrderClick,
 }: CarbonPriceCardProps) {
+  // 할인 여부 체크
+  const hasDiscount = discountRate > 0;
+  // 실제 표시할 최종 가격
+  const finalPrice = hasDiscount ? currentPrice : originalPrice;
+
   return (
-    <div className="w-[416px] min-h-[261px] p-[32px] bg-white border border-[var(--color-gray-0)] rounded-[var(--radius-m)] shadow-[var(--shadow-std)] box-border flex flex-col">
-      
-      {/* 1. 현재 단가 텍스트 */}
-      <p className="text-[var(--color-gray-500)] font-caption-02 mb-[8px] m-0">
+    // 🌟 1. 카드 전체 배경, 그림자, 패딩 (피그마 시안 기준 넉넉한 안쪽 여백 32px 적용)
+    <div className="w-[416px] h-[261px] bg-white rounded-(--radius-lg) shadow-(--shadow-std) p-[24px] box-border flex flex-col justify-between">
+      {/* 🌟 2. 텍스트 그룹 (내부 요소 갭 13px 고정) */}
+      <div className="flex flex-col gap-[13px]">
+        {/* 🌟 2. 상단 타이틀 */}
+        <div className="font-caption-01 text-(--color-gray-600)">
         현재 단가 (1 tCO2e)
       </p>
 

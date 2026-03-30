@@ -32,7 +32,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
-          <Route path="/project" element={<NotFound />} />
           <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/project" element={<ProjectList />} />
           <Route path="/token" element={<TokenList />} />
