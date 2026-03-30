@@ -29,7 +29,7 @@ export const useTradeHistory = (
 
     const url = import.meta.env.VITE_WS_URL;
     const topic = `/topic/trades/${tokenId}`;
-    const subId = `trade-${tokenId}`;
+    const subId = `tradehist-${tokenId}`;
 
     WebSocketManager.connect(url, () => {
       WebSocketManager.subscribe(subId, topic, (data: TradeInfo) => {

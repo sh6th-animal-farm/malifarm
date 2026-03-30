@@ -20,6 +20,8 @@ const WebSocketManager = {
       const socket = new SockJS(url);
       stompClient = Stomp.over(socket);
 
+      stompClient.debug = () => {};
+
       stompClient.connect(
         {},
         (frame) => {
@@ -49,7 +51,7 @@ const WebSocketManager = {
       });
 
       subscriptions[id] = subscription;
-      console.log(`Subscribed to ${topic} (id: ${id})`);
+      console.log(`[WebSocket - 구독] ${topic} (id: ${id})`);
     },
 
     // 3. 특정 채널 구독 해제
@@ -57,7 +59,7 @@ const WebSocketManager = {
       if (subscriptions[id]) {
         subscriptions[id].unsubscribe();
         delete subscriptions[id];
-        console.log(`Unsubscribed: ${id}`);
+        console.log(`[WebSocket - 구독 해제] ${id}`);
       }
     },
 
