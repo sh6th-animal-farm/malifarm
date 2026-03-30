@@ -103,7 +103,7 @@
         updated_at = NOW()
     </insert>
 
-    <select id="selectJoinedProjectCards" resultType="ProjectDTO">
+    <select id="selectJoinedProjectCards" resultType="MypageProjectDTO">
         SELECT
         p.project_id AS projectId,
         p.project_name AS projectName,

@@ -57,4 +57,16 @@ type Token = {
   changeRate: number;
 };
 
-export type { ProjectData, ProjectDTO, Project, Token, ProjectStatus };
+interface Wallet {
+  accountNo: string;
+  bankName: string;
+  cashBalance: number;
+  frozenAmount: number;
+  totalPurchasedValue: number;
+  totalMarketValue: number;
+  totalBalance: number; 
+  profitLoss: number; 
+  profitLossRate: number; 
+}
+
+export type { ProjectData, ProjectDTO, Project, Token, ProjectStatus, Wallet };
