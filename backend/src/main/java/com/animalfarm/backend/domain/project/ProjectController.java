@@ -29,8 +29,11 @@ import com.animalfarm.backend.domain.project.dto.ProjectSearchReqDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectStarredDTO;
 import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
+import com.animalfarm.backend.global.exception.ErrorCode;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -100,32 +103,59 @@ public class ProjectController {
 
 	//관심 프로젝트인지 조회
 	@GetMapping("/starred")
-	public boolean getStarredStatus(@RequestParam Long projectId) {
+	@Operation(summary = "관심 프로젝트 상태 조회", description = "특정 프로젝트의 관심 등록 여부를 반환")
+	public ResponseEntity<ApiResponseDTO<Boolean>> getStarredStatus(
+		@Parameter(description = "프로젝트 ID", required = true)
+		@RequestParam Long projectId) {
 		try {
 			Long userId = SecurityUtil.getCurrentUserId();
 			ProjectStarredDTO projectStarredDTO = ProjectStarredDTO.builder()
 				.userId(userId)
 				.projectId(projectId)
 				.build();
-			return projectService.getStarredStatus(projectStarredDTO);
+
+			boolean isStarred = projectService.getStarredStatus(projectStarredDTO);
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(isStarred, "관심 상태 조회 성공")
+			);
 		} catch (Exception e) {
-			return false;
+			log.error("관심 상태 조회 실패: {}", e.getMessage());
+			return ResponseEntity
+				.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+				.body(ApiResponseDTO.fail(
+					ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
+					ErrorCode.INTERNAL_SERVER_ERROR.getMessage()
+				));
 		}
 	}
 
-	//관심 프로젝트 신규 등록
+	// 관심 프로젝트 등록 및 해제 (Upsert)
 	@PostMapping("/starred")
-	public Boolean upsertStrarredProject(@RequestBody Long projectId) {
+	@Operation(summary = "관심 프로젝트 등록/해제", description = "관심 프로젝트를 토글(등록<->해제) 처리")
+	public ResponseEntity<ApiResponseDTO<Boolean>> upsertStarredProject(
+		@Parameter(description = "프로젝트 ID", required = true)
+		@RequestBody Long projectId) {
 		try {
+			log.info("관심 프로젝트 요청 - 프로젝트 ID: {}", projectId);
 			Long userId = SecurityUtil.getCurrentUserId();
 			ProjectStarredDTO projectStarredDTO = ProjectStarredDTO.builder()
 				.userId(userId)
 				.projectId(projectId)
 				.build();
 			projectService.upsertStrarredProject(projectStarredDTO);
-			return projectService.getStarredStatus(projectStarredDTO);
+			boolean currentStatus = projectService.getStarredStatus(projectStarredDTO);
+
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(currentStatus, "관심 프로젝트 처리 성공")
+			);
 		} catch (Exception e) {
-			return false;
+			log.error("관심 프로젝트 처리 실패: {}", e.getMessage(), e);
+			return ResponseEntity
+				.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+				.body(ApiResponseDTO.fail(
+					ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
+					"관심 프로젝트 처리 중 오류가 발생했습니다."
+				));
 		}
 	}
 

@@ -84,7 +84,7 @@ interface ProjectList {
     | 'ANNOUNCEMENT'
     | 'SUBSCRIPTION'
     | 'INPROGRESS'
-    | 'DONE'
+    | 'COMPLETED'
     | 'CANCELED';
 
   announcementStartDate: string;

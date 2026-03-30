@@ -1,24 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { ProjectList } from '@/types/projectType';
 import ProjectCard from '@/components/common/ProjectCard';
 import RegionAccordion from '@/pages/project/components/RegionAccordion';
 import { projectApi } from '@/api/projectApi';
+import FilterGroup from '@/components/common/FilterGroup';
+import SectionHeader from '@/components/layout/SectionHeader';
 
 // --- 내부 컴포넌트: 섹션 헤더 ---
-const SectionHeader = ({
-  title,
-  subtitle,
-}: {
-  title: string;
-  subtitle: string;
-}) => (
-  <div className="mb-8">
-    <h2 className="text-[28px] font-bold text-gray-900 mb-2">{title}</h2>
-    <p className="text-gray-500 font-medium text-lg">{subtitle}</p>
-    <div className="w-12 h-1.5 bg-green-600 mt-4 rounded-full" />
-  </div>
-);
+
+declare global {
+  interface Window {
+    kakao: any;
+  }
+}
 
 export default function ProjectList() {
   // 1. 상태 관리
@@ -88,36 +83,99 @@ export default function ProjectList() {
   }, []);
 
   useEffect(() => {
+    const KAKAO_KEY = import.meta.env.VITE_KAKAO_MAP_KEY;
+
+    if (!KAKAO_KEY) {
+      console.error(
+        '카카오 맵 API 키가 설정되지 않았습니다. .env 파일을 확인하세요.',
+      );
+      return;
+    }
+
+    // 이미 스크립트가 로드되어 있는지 확인
     if (window.kakao && window.kakao.maps) {
-      window.kakao.maps.load(() => {
-        const container = document.getElementById('map');
-        const options = {
-          center: new window.kakao.maps.LatLng(36.3504, 127.3845),
-          level: 8,
-        };
-        const map = new window.kakao.maps.Map(container, options);
-        setMapInstance(map);
-      });
+      initMap();
+    } else {
+      const script = document.createElement('script');
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&libraries=services&autoload=false`;
+      script.async = true;
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        window.kakao.maps.load(() => {
+          initMap();
+        });
+      };
+
+      script.onerror = () => {
+        console.error(
+          '스크립트 로드 자체에 실패했습니다. 네트워크 상태나 도메인 제한을 확인하세요.',
+        );
+      };
+
+      document.head.appendChild(script);
     }
   }, []);
 
-  const moveToRegion = useCallback(
-    (lat: number, lng: number, level: number) => {
-      if (mapInstance) {
-        const moveLatLon = new window.kakao.maps.LatLng(lat, lng);
-        mapInstance.setCenter(moveLatLon);
-        mapInstance.setLevel(level);
-      }
-    },
-    [mapInstance],
-  );
+  const initMap = () => {
+    const container = document.getElementById('map');
+    if (!container) return;
 
-  const handleToggleStar = (projectId: number) => {
-    setStarredIds((prev) =>
-      prev.includes(projectId)
-        ? prev.filter((id) => id !== projectId)
-        : [...prev, projectId],
-    );
+    const options = {
+      center: new window.kakao.maps.LatLng(36.3504, 127.3845),
+      level: 10,
+    };
+    const map = new window.kakao.maps.Map(container, options);
+    setMapInstance(map);
+  };
+
+  useEffect(() => {
+    if (!mapInstance || projects.length === 0) return;
+    console.log(projects);
+    // 1. 기존에 찍힌 마커가 있다면 지워주는 로직이 필요할 수 있지만,
+    // 초기 로드 시에는 아래와 같이 바로 생성합니다.
+    projects.forEach((project) => {
+      // 백엔드에서 내려주는 위도/경도 필드명을 확인하세요 (예: latitude, longitude)
+      if (project.latitude && project.longitude) {
+        const position = new window.kakao.maps.LatLng(
+          project.latitude,
+          project.longitude,
+        );
+
+        // 마커 생성 및 지도 표시
+        const marker = new window.kakao.maps.Marker({
+          position: position,
+          map: mapInstance,
+          title: project.projectName,
+        });
+
+        // (옵션) 마커 클릭 시 해당 프로젝트 카드로 스크롤하거나 정보를 띄울 수 있습니다.
+        window.kakao.maps.event.addListener(marker, 'click', () => {
+          mapInstance.panTo(position);
+        });
+      }
+    });
+  }, [mapInstance, projects]);
+
+  const handleToggleStar = async (projectId: number) => {
+    try {
+      const response = await projectApi.toggleStar(projectId);
+
+      // 200 OK가 떴다면 response.data 안에 우리가 만든 ApiResponseDTO가 있습니다.
+      // 여기서 실제 불리언 값은 response.data.data에 들어있을 확률이 높습니다.
+      const isStarred = response.data.data;
+
+      console.log('서버가 알려준 최종 상태:', isStarred);
+
+      setStarredIds((prev) =>
+        isStarred
+          ? [...prev, projectId]
+          : prev.filter((id) => id !== projectId),
+      );
+    } catch (error: any) {
+      // 200 OK인데 catch로 왔다면, 위쪽 try문 내부의 코드(isStarred 정의 등)에서 오타가 난 것입니다.
+      console.error('데이터 처리 중 에러 발생:', error);
+    }
   };
 
   const handleFilter = (status: string) => {
@@ -131,10 +189,30 @@ export default function ProjectList() {
   };
 
   const filteredProjects = projects.filter((p) => {
+    const isHiddenStatus =
+      p.projectStatus === 'CANCELED' || p.projectStatus === 'COMPLETED';
+    if (isHiddenStatus) return false;
     if (activeStatus === 'ALL') return true;
     return p.projectStatus === activeStatus;
   });
 
+  const filterItems = [
+    { text: '전체보기', value: 'ALL' },
+    { text: '청약중', value: 'SUBSCRIPTION' },
+    { text: '공고중', value: 'ANNOUNCEMENT' },
+    { text: '진행중', value: 'INPROGRESS' },
+  ];
+
+  // 2. 필터 변경 핸들러
+  const handleFilterChange = (value: string) => {
+    setActiveStatus(value);
+    if (value === 'ALL') {
+      searchParams.delete('projectStatus');
+    } else {
+      searchParams.set('projectStatus', value);
+    }
+    setSearchParams(searchParams);
+  };
   return (
     <div className="min-h-screen bg-white font-main antialiased">
       <div className="max-w-[1200px] mx-auto p-4 py-16">
@@ -143,15 +221,29 @@ export default function ProjectList() {
           title="프로젝트 지도"
           subtitle="진행중인 프로젝트를 지도에서 확인하세요"
         />
-        <div className="flex flex-col lg:flex-row gap-6 h-[560px] mb-24">
-          <div className="w-full lg:w-[320px] h-full">
-            {/* 자식 컴포넌트: 아코디언 */}
-            <RegionAccordion onRegionSelect={moveToRegion} />
+        <div className="flex flex-col lg:flex-row gap-[24px] h-[400px] mb-20 items-stretch">
+          <div className="w-full lg:w-[320px] h-full flex-shrink-0">
+            <RegionAccordion
+              onRegionSelect={(lat: number, lng: number, lvl: number) => {
+                if (mapInstance) {
+                  // STS에서 가져온 위경도로 지도를 이동시킴
+                  const moveLatLon = new window.kakao.maps.LatLng(lat, lng);
+                  mapInstance.setCenter(moveLatLon);
+                  mapInstance.setLevel(lvl);
+                }
+              }}
+            />
           </div>
-          <div
-            id="map"
-            className="flex-1 rounded-[20px] border border-gray-200 bg-gray-50 shadow-sm overflow-hidden"
-          />
+
+          {/* 지도가 그려질 영역: 반드시 h-full과 min-height가 보장되어야 함 */}
+          <div className="flex-1 h-full relative">
+            <div
+              id="map"
+              className="w-full h-full rounded-[20px] border border-gray-200 bg-gray-50 shadow-sm"
+              // Kakao Map API는 내부적으로 height: 100%가 보장되어야 하므로 인라인 스타일 유지
+              style={{ height: '100%' }}
+            />
+          </div>
         </div>
 
         {/* [목록 섹션] */}
@@ -162,36 +254,12 @@ export default function ProjectList() {
 
         {/* 필터 컨트롤바 */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
-          <div className="flex items-center gap-2 p-1.5 bg-gray-100 rounded-2xl">
-            {[
-              { label: '전체보기', value: 'ALL' },
-              { label: '청약중', value: 'SUBSCRIPTION' },
-              { label: '공고중', value: 'ANNOUNCEMENT' },
-              { label: '진행중', value: 'INPROGRESS' },
-            ].map((item) => (
-              <button
-                key={item.value}
-                onClick={() => handleFilter(item.value)}
-                className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                  activeStatus === item.value
-                    ? 'bg-white text-green-600 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="relative w-full md:w-[360px]">
-            <input
-              type="text"
-              placeholder="프로젝트명을 검색하세요"
-              className="w-full h-[54px] pl-12 pr-6 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
+          <div className="p-1.5 rounded-2xl">
+            <FilterGroup
+              items={filterItems}
+              currentValue={activeStatus}
+              onFilterChange={handleFilter} // 기존 handleFilter 함수 그대로 사용
             />
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl">
-              🔍
-            </span>
           </div>
         </div>
 
@@ -206,7 +274,7 @@ export default function ProjectList() {
               filteredProjects.map((project) => (
                 <ProjectCard
                   key={project.projectId}
-                  project={project} // 가공된 project 객체 전달
+                  project={project}
                   starred={starredIds.includes(project.projectId)}
                   onToggleStar={handleToggleStar}
                 />
