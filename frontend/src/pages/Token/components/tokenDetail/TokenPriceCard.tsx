@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import type { OrderInfo, TokenOhlcv, TradeInfo } from '@/types/tokenType';
 
@@ -7,6 +7,7 @@ interface TokenPriceCardProps {
   buyList: OrderInfo[];
   sellList: OrderInfo[];
   tradeList: TradeInfo[];
+  onPriceClick: (price: number) => void;
 }
 
 export default function TokenPriceCard({
@@ -14,6 +15,7 @@ export default function TokenPriceCard({
   buyList,
   sellList,
   tradeList,
+  onPriceClick
 }: TokenPriceCardProps) {
   const [activeTab, setActiveTab] = useState('order');
   const tabs = [
@@ -40,51 +42,56 @@ export default function TokenPriceCard({
     const tickSize = getTickSize(marketPrice);
     const basePrice = Math.round(marketPrice / tickSize) * tickSize; // 현재가를 호가 단위에 맞춰 보정
 
-    const sellMap = new Map<string, number>();
-    sellList.forEach((s) =>
+    const sellMap = new Map<number, number>(); // <가격, 수량>
+    sellList.forEach((s) => {
+      const priceNum = Number(s.price);
       sellMap.set(
-        Number(s.price).toFixed(2),
-        (sellMap.get(Number(s.price).toFixed(2)) || 0) + Number(s.volume),
-      ),
-    );
+        priceNum,
+        (sellMap.get(priceNum) || 0) + Number(s.totalVolume)
+      );
+    });
 
-    const buyMap = new Map<string, number>();
-    buyList.forEach((b) =>
+    const buyMap = new Map<number, number>(); // <가격, 수량>
+    buyList.forEach((b) => {
+      const priceNum = Number(b.price);
       buyMap.set(
-        Number(b.price).toFixed(2),
-        (buyMap.get(Number(b.price).toFixed(2)) || 0) + Number(b.volume),
-      ),
-    );
+        priceNum,
+        (buyMap.get(priceNum) || 0) + Number(b.totalVolume)
+      );
+    });
 
     const rows = [];
 
-    // 매도 10개 (위로)
+    // 1. 매도 10개 (위로)
     for (let i = 10; i >= 1; i--) {
       const p = basePrice + i * tickSize;
       rows.push({
         price: p,
-        volume: sellMap.get(p.toFixed(2)) || 0,
-        type: 'SELL' as const,
+        volume: sellMap.get(p) || 0,
+        side: 'SELL',
+        isCurrent: false
       });
     }
 
-    // 현재가
+    // 2. 현재가
+    const sVol = sellMap.get(basePrice) || 0;
+    const bVol = buyMap.get(basePrice) || 0;
+
     rows.push({
       price: basePrice,
-      volume:
-        sellMap.get(basePrice.toFixed(2)) ||
-        buyMap.get(basePrice.toFixed(2)) ||
-        0,
-      type: 'CURRENT' as const,
+      volume: sVol > 0 ? sVol : bVol,
+      side: sVol > 0 ? 'SELL' : 'BUY',
+      isCurrent: true
     });
 
-    // 매수 10개 (아래로)
+    // 3. 매수 10개 (아래로)
     for (let i = 1; i <= 10; i++) {
       const p = basePrice - i * tickSize;
       rows.push({
         price: p,
-        volume: buyMap.get(p.toFixed(2)) || 0,
-        type: 'BUY' as const,
+        volume: buyMap.get(p) || 0,
+        side: 'BUY',
+        isCurrent: false
       });
     }
 
@@ -120,30 +127,24 @@ export default function TokenPriceCard({
             </thead>
             <tbody>
               {ladder.map((row, idx) => {
-                const isCurrent = row.type === 'CURRENT';
-                const priceColor =
-                  row.type === 'SELL'
-                    ? 'text-info'
-                    : row.type === 'BUY'
-                      ? 'text-error'
-                      : 'text-gray-900';
+                const priceColor = row.side === 'SELL' ? 'text-info' : 'text-error';
 
                 return (
                   <tr
                     key={idx}
                     className={
-                      'h-10 hover:bg-gray-50 transition-colors cursor-pointer'
+                      'h-10'
                     }
                   >
                     {/* 매도 물량 바 */}
                     <td className="relative py-3 text-right text-[12px] font-medium text-gray-500">
-                      {row.type === 'SELL' && row.volume > 0 && (
+                      {row.side === 'SELL' && row.volume > 0 && (
                         <>
                           <div
-                            className="absolute right-0 top-1 bottom-1 bg-info/10 rounded-l-sm transition-all duration-500"
-                            style={{ width: `${row.ratio}%` }}
+                            className="absolute right-0 top-1 bottom-1 bg-info-light rounded-l-[var(--radius-s)] transition-all duration-500"
+                            style={{ width: `${row.ratio}%`, zIndex: 1 }}
                           />
-                          <span className="relative z-10">
+                          <span className="relative z-10 pr-1">
                             {Number(row.volume).toFixed(4)}
                           </span>
                         </>
@@ -152,20 +153,21 @@ export default function TokenPriceCard({
 
                     {/* 가격 */}
                     <td
-                      className={`py-3 text-center font-body-03 border-x border-gray-50/10 ${priceColor} ${isCurrent ? 'border border-[${priceColor}]' : ''}`}
+                      onClick={() => onPriceClick(row.price)}
+                      className={`py-3 text-center font-body-03 hover:bg-gray-50 transition-colors cursor-pointer ${priceColor} ${row.isCurrent ? 'border-2 border-[${priceColor}]' : ''}`}
                     >
                       {row.price?.toLocaleString()}
                     </td>
 
                     {/* 매수 물량 바 */}
                     <td className="relative py-3 text-left text-[12px] font-medium text-gray-500">
-                      {row.type === 'BUY' && row.volume > 0 && (
+                      {row.side === 'BUY' && row.volume > 0 && (
                         <>
                           <div
-                            className="absolute left-0 top-1 bottom-1 bg-error/10 rounded-r-sm transition-all duration-500"
+                            className="absolute left-0 top-1 bottom-1 bg-error-light rounded-r-[var(--radius-s)] transition-all duration-500"
                             style={{ width: `${row.ratio}%` }}
                           />
-                          <span className="relative z-10">
+                          <span className="relative z-10 pl-1">
                             {Number(row.volume).toFixed(4)}
                           </span>
                         </>
@@ -195,7 +197,7 @@ export default function TokenPriceCard({
                 // );
 
                 return (
-                  <tr key={idx} className="h-10 hover:bg-gray-50">
+                  <tr key={idx} className="h-10">
                     <td className="py-3 pl-4 font-body-03">
                       {/* 
                       <span className="text-gray-400 mr-2 text-[10px]">

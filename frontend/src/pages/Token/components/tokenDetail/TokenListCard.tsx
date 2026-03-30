@@ -16,7 +16,7 @@ export default function TokenListCard({
     <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std overflow-hidden">
       <div className="overflow-y-auto max-h-[600px] scrollbar-hide">
         <table className="w-full border-collapse text-left font-body-03">
-          <thead className="sticky top-0 bg-white z-10">
+          <thead className="bg-gray-50">
             <tr>
               <th className="pl-6 font-body-02 text-gray-400 border-bottom border-gray-200">
                 종목
