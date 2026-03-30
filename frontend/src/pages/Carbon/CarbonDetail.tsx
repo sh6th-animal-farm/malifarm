@@ -5,6 +5,10 @@ import { carbonApi } from "../../api/carbonApi";
 import type { CarbonDetailDTO } from "../../types/carbonType";
 import CarbonOrderModal from "./components/CarbonOrderModal";
 import CarbonPriceCard from "./components/CarbonPriceCard";
+import InfoGrid from "../project/components/DetailInfoCard";
+import ImageCarousel from "../project/components/ImageCarousel";
+import TabMenu from "@/components/common/TabMenu";
+
 
 export default function CarbonDetail() {
   const { id } = useParams<{ id: string }>();
@@ -13,6 +17,7 @@ export default function CarbonDetail() {
   const [detailData, setDetailData] = useState<CarbonDetailDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [currentTab, setCurrentTab] = useState("info");
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -43,7 +48,30 @@ export default function CarbonDetail() {
   }
 
   const { carbonInfo, userBenefit } = detailData;
+
+  // 썸네일 주소를 대괄호[]로 감싸서 '무조건 1개짜리 배열'로 만듭니다.
+  const imageList = [detailData.thumbnailUrl || "/resources/img/carbon_sample.jpg"];
+
+
   const locationStr = `위치: ${detailData.addressSido || ""} ${detailData.addressSigungu || ""} ${detailData.addressStreet || ""} ${detailData.addressDetails || ""} ${detailData.farmName || ""} 일대`.trim();
+  
+  const infoItems = [
+    { label: "발급 주체", value: "마이리틀 스마트팜 협회" },
+    { label: "인증기관", value: carbonInfo.productCertificate },
+    { label: "상품 유형", value: carbonInfo.cpType },
+    { label: "발급 수량", value: `${Number(carbonInfo.initAmount || 0).toLocaleString()} tCO2e` },
+    { label: "재고 수량", value: `${Number(carbonInfo.cpAmount || 0).toLocaleString()} tCO2e` },
+    { label: "최소 주문 단위", value: "1 tCO2e" },
+    // 설명 부분은 가로로 꽉 차야 하므로 fullWidth: true 속성을 줍니다.
+    { label: "설명", value: carbonInfo.cpDetail, fullWidth: true },
+  ];
+
+  // 🌟 TabMenu용 데이터
+  const tabItems = [
+    { text: "주요 정보 및 기대 효과", value: "info" }
+    // 필요 시 여기에 다른 탭("프로젝트 진행 상황" 등)을 추가할 수 있습니다.
+  ];
+
 
   return (
     // 🌟 화면 전체(w-full)를 덮는 연회색 배경(bg-gray-50) 래퍼 추가!
@@ -55,13 +83,7 @@ export default function CarbonDetail() {
           <main className="flex-1 min-w-0 p-0 m-0">
             
             {/* 상단 이미지 */}
-            <div className="w-full h-[420px] rounded-[12px] overflow-hidden mb-[24px] bg-[var(--color-gray-100)]">
-              <img
-                src={detailData.thumbnailUrl || "/resources/img/carbon_sample.jpg"}
-                alt="프로젝트 이미지"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <ImageCarousel images={imageList} />
 
             {/* 프로젝트 헤더 */}
             <div className="mt-[48px] p-0 ml-0">
@@ -75,49 +97,23 @@ export default function CarbonDetail() {
             </div>
 
             {/* 상세 정보 섹션 */}
-            {/* 배경색이 전체 페이지 배경과 똑같이 gray-50으로 자연스럽게 녹아듭니다 */}
-            <div className="bg-[var(--color-gray-50)] rounded-[var(--radius-l)] mt-[48px] w-full box-border ml-0">
-              <h2 className="font-header-02 text-[var(--color-green-600)] border-b-2 border-[var(--color-green-100)] pb-[16px] m-0">
-                주요 정보 및 기대 효과
-              </h2>
+            {/* 🌟 탭 및 하단 상세 정보 영역 */}
+            <div className="mt-[64px] w-full box-border ml-0">
               
-              {/* 흰색 카드들이 입체적으로 떠오릅니다! */}
-              <div className="grid grid-cols-2 gap-[16px] mt-[24px]">
-                <div className="bg-white p-[24px] rounded-[var(--radius-m)] border border-[var(--color-gray-100)]">
-                  <label className="block font-caption-02 text-[var(--color-gray-500)] mb-[8px] font-medium">발급 주체</label>
-                  <p className="font-subtitle-01 text-[var(--color-gray-900)] font-semibold m-0">마이리틀 스마트팜 협회</p>
+              {/* 기존 h2 태그 대신 TabMenu 컴포넌트 삽입! */}
+              <TabMenu 
+                items={tabItems}
+                currentValue={currentTab}
+                onTabChange={setCurrentTab}
+              />
+              
+              {/* 탭이 'info'일 때만 InfoGrid 렌더링 */}
+              {currentTab === "info" && (
+                <div className="mt-[32px]">
+                  <InfoGrid items={infoItems} />
                 </div>
-                <div className="bg-white p-[24px] rounded-[var(--radius-m)] border border-[var(--color-gray-100)]">
-                  <label className="block font-caption-02 text-[var(--color-gray-500)] mb-[8px] font-medium">인증기관</label>
-                  <p className="font-subtitle-01 text-[var(--color-gray-900)] font-semibold m-0">{carbonInfo.productCertificate}</p>
-                </div>
-                <div className="bg-white p-[24px] rounded-[var(--radius-m)] border border-[var(--color-gray-100)]">
-                  <label className="block font-caption-02 text-[var(--color-gray-500)] mb-[8px] font-medium">상품 유형</label>
-                  <p className="font-subtitle-01 text-[var(--color-gray-900)] font-semibold m-0">{carbonInfo.cpType}</p>
-                </div>
-                <div className="bg-white p-[24px] rounded-[var(--radius-m)] border border-[var(--color-gray-100)]">
-                  <label className="block font-caption-02 text-[var(--color-gray-500)] mb-[8px] font-medium">발급 수량</label>
-                  <p className="font-subtitle-01 text-[var(--color-gray-900)] font-semibold m-0">
-                    {Number(carbonInfo.initAmount || 0).toLocaleString()} tCO2e
-                  </p>
-                </div>
-                <div className="bg-white p-[24px] rounded-[var(--radius-m)] border border-[var(--color-gray-100)]">
-                  <label className="block font-caption-02 text-[var(--color-gray-500)] mb-[8px] font-medium">재고 수량</label>
-                  <p className="font-subtitle-01 text-[var(--color-gray-900)] font-semibold m-0">
-                    {Number(carbonInfo.cpAmount || 0).toLocaleString()} tCO2e
-                  </p>
-                </div>
-                <div className="bg-white p-[24px] rounded-[var(--radius-m)] border border-[var(--color-gray-100)]">
-                  <label className="block font-caption-02 text-[var(--color-gray-500)] mb-[8px] font-medium">최소 주문 단위</label>
-                  <p className="font-subtitle-01 text-[var(--color-gray-900)] font-semibold m-0">1 tCO2e</p>
-                </div>
-                <div className="col-span-2 bg-white p-[24px] rounded-[var(--radius-m)] border border-[var(--color-gray-100)]">
-                  <label className="block font-caption-02 text-[var(--color-gray-500)] mb-[8px] font-medium">설명</label>
-                  <p className="font-subtitle-01 text-[var(--color-gray-900)] font-semibold m-0 leading-[1.6]">
-                    {carbonInfo.cpDetail}
-                  </p>
-                </div>
-              </div>
+              )}
+              
             </div>
 
             {/* 프로젝트 보러가기 버튼 */}

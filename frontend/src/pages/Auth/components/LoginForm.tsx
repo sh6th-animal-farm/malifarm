@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import Button from "@/components/common/button";
+import Button from "@/components/common/Button";
 import Input from "@/components/common/Input";
 import AuthCard from "@/components/common/AuthCard";
 
@@ -21,7 +21,7 @@ export default function LoginForm({
   onSubmit,
 }: LoginFormProps) {
   return (
-    <div className="flex flex-col items-center px-6 pt-20 pb-20 min-h-[calc(80vh-var(--spacing-header-height))]">
+    <div className="flex flex-col items-center px-6 pt-30 min-h-[calc(80vh-var(--spacing-header-height))] bg-gray-50">
       
       <AuthCard
         title="로그인"

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import Button from "@/components/common/button";
+import Button from "@/components/common/Button";
 import CarbonChart from "./CarbonChart";
 
 export default function CarbonSection() {
@@ -10,7 +10,7 @@ export default function CarbonSection() {
       <div className="layout-container">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <h2 className="font-header-00 text-gray-900">
+            <h2 className="font-header-01 text-gray-900">
               투명한 탄소 배출권
               <br />
               수익 증명
