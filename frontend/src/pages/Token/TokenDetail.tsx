@@ -12,17 +12,21 @@ import TokenListCard from './components/tokenDetail/TokenListCard';
 import TokenTradeCard from './components/tokenDetail/TokenTradeCard';
 import TokenPriceCard from './components/tokenDetail/TokenPriceCard';
 import { useOrderbook } from '@/hooks/useOrderbook.ts';
+import { useTradeHistory } from '@/hooks/useTradeHistory.ts';
 
 export default function TokenDetail() {
   const { id } = useParams(); // URL 파라미터에서 토큰 ID 추출
   const navigate = useNavigate();
   const [tokenOhlcv, setTokenOhlcv] = useState<TokenOhlcv | null>(null);
   const [tokenList, setTokenList] = useState<Token[]>([]);
-  const [tradeList, setTradeList] = useState<TradeInfo[]>([]);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
   const [initialBuyList, setInitialBuyList] = useState<OrderInfo[]>([]);
   const [initialSellList, setInitialSellList] = useState<OrderInfo[]>([]);
+  const [initialTradeList, setInitialTradeList] = useState<TradeInfo[]>([]);
+
+  // 웹소켓
   const { sortedBuys, sortedSells } = useOrderbook(id!, initialBuyList, initialSellList);
+  const { trades: sortedTrades } = useTradeHistory(id!, initialTradeList);
 
   useEffect(() => {
     setSelectedPrice(null);
@@ -42,6 +46,8 @@ export default function TokenDetail() {
     setInitialSellList([]);
 
     const tokenId = Number(id);
+
+    // DB, Redis
     const [ohlcvRes, buyRes, sellRes, tradeRes] = await Promise.all([
       tokenApi.getOhlcv(tokenId),
       tokenApi.getBuyList(tokenId),
@@ -52,7 +58,7 @@ export default function TokenDetail() {
     setTokenOhlcv(ohlcvRes);
     setInitialBuyList(buyRes);
     setInitialSellList(sellRes);
-    setTradeList(tradeRes);
+    setInitialTradeList(tradeRes);
   };
 
   useEffect(() => {
@@ -94,7 +100,7 @@ export default function TokenDetail() {
               ohlcv={tokenOhlcv}
               buyList={sortedBuys}
               sellList={sortedSells}
-              tradeList={tradeList}
+              tradeList={sortedTrades}
               onPriceClick={(price) => setSelectedPrice(price)}
             />
           </div>

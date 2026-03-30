@@ -10,7 +10,7 @@ export const useOrderbook = (
   const [buys, setBuys] = useState<Record<string, number>>({}); // <가격, 수량>
   const [sells, setSells] = useState<Record<string, number>>({}); // <가격, 수량>
 
-  // 1. API로 DB+Redis에서 가져온 초기 리스트가 바뀔 때(토큰 변경 시 등) 상태 초기화
+  // 1. API로 가져온 초기 리스트가 바뀔 때(토큰 변경 시 등) 상태 초기화
   useEffect(() => {
     // tokenId가 없으면 바로 종료
     if (!tokenId) return;
@@ -50,6 +50,7 @@ export const useOrderbook = (
 
     WebSocketManager.connect(url, () => {
       WebSocketManager.subscribe(subId, topic, (data) => {
+        console.log('[WebSocket - 호가]', data);
         updateOrderbook(data);
       });
     });
