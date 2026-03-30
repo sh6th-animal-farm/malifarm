@@ -1,4 +1,5 @@
 // src/pages/Carbon/components/CarbonPriceCard.tsx
+import React from 'react';
 
 interface CarbonPriceCardProps {
   originalPrice: number;
@@ -25,37 +26,40 @@ export default function CarbonPriceCard({
       <div className="flex flex-col gap-[13px]">
         {/* 🌟 2. 상단 타이틀 */}
         <div className="font-caption-01 text-(--color-gray-600)">
-        현재 단가 (1 tCO2e)
-      </p>
+          현재 단가 (1 tCO2e)
+        </div>
 
-      {/* 2. 취소선 가격 & 할인율 */}
-      <div className="flex items-center gap-[8px] mb-[12px]">
-        <span className="text-[var(--color-gray-400)] font-caption-01 line-through">
-          {(originalPrice || 0).toLocaleString()} KRW
-        </span>
-        <span className="text-[var(--color-error)] font-caption-03 !font-bold">
-          {discountRate || 0}% 할인
-        </span>
+        {/* 🌟 3. 할인 정보 영역 (할인이 있을 때만 표시) */}
+        <div className="min-h-[25px] flex items-center gap-[8px]">
+          {hasDiscount && (
+            <>
+              <span className="font-caption-01 text-(--color-gray-400) line-through">
+                {originalPrice.toLocaleString()} KRW
+              </span>
+              <span className="font-caption-02 text-error">
+                {discountRate}% 할인
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* 🌟 4. 최종 가격 영역 (가장 큰 폰트 header-02 적용) */}
+        <div className="font-header-02 text-(--color-gray-900)">
+          {finalPrice.toLocaleString()}원
+        </div>
+
+        {/* 🌟 5. 부가세 안내 문구 */}
+        <div className="font-caption-01 text-(--color-gray-500)">
+          * 부가세(VAT) 별도 금액
+        </div>
       </div>
-
-      {/* 3. 최종 가격 (크기 32px 강제 고정) */}
-      <strong className="font-header-01 text-[var(--color-gray-900)] block mb-[8px] !text-[32px] leading-tight m-0">
-        {(currentPrice || 0).toLocaleString()}원
-      </strong>
-
-      {/* 4. 부가세 안내 문구 (아래 여백 32px) */}
-      <p className="text-[var(--color-gray-400)] font-caption-01 mb-[32px] m-0">
-        * 부가세(VAT) 별도 금액
-      </p>
-
-      {/* 5. 주문 버튼 (🌟 뚱뚱했던 패딩을 지우고 h-[56px]로 규격 완벽 고정!) */}
+      {/* 🌟 6. 주문 버튼 (피그마 시안의 버튼 색상과 높이 56px 적용) */}
       <button
         onClick={onOrderClick}
-        className="w-full h-[56px] flex items-center justify-center bg-[var(--color-green-600)] text-white font-button-01 !font-bold rounded-[var(--radius-s)] border-none cursor-pointer transition-colors duration-200 hover:bg-[var(--color-green-700)] p-0 m-0"
+        className="w-full h-[56px] bg-(--color-green-600) hover:bg-(--color-green-700) text-white font-button-01 rounded-(--radius-m) border-0 cursor-pointer transition-colors duration-200 shrink-0"
       >
         주문 신청하기
       </button>
-
     </div>
   );
 }
