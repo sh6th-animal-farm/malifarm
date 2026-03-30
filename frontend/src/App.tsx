@@ -4,6 +4,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import BottomTabBar from './components/layout/BottomTabBar';
 import ScrollToTop from './components/layout/ScrollToTop';
+import Home from './pages/Home'
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 import NotFound from './pages/Error/NotFound';
@@ -27,6 +28,7 @@ function App() {
             <main className="content-wrapper pb-16 md:pb-0">
                 <ScrollToTop/>
                 <Routes>
+                    <Route path='/' element={<Home />} />
                     <Route path="/auth/login" element={<Login/>}/>
                     <Route path='/auth/signup' element={<Signup/>}/>
                     <Route path="/project" element={<NotFound/>}/>
