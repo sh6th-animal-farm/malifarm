@@ -15,7 +15,7 @@ export const useTokenChart = (
   // 실시간 캔들 업데이트
   const updateCandle = useCallback(
     (data: CandleStick) => {
-      if (!candleSeriesRef.current || !volumeSeriesRef.current) {
+      if (!candleSeriesRef.current) {
         return;
       }
 
