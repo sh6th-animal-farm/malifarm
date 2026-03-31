@@ -5,7 +5,6 @@ interface ProjectGridProps {
   projects: ProjectType[];
   activeStatus: string;
   isLoading: boolean;
-  starredIds: number[];
   onToggleStar: (projectId: number) => void;
 }
 
@@ -13,7 +12,6 @@ export default function ProjectGrid({
   projects,
   activeStatus,
   isLoading,
-  starredIds,
   onToggleStar,
 }: ProjectGridProps) {
   // 1. 로딩 중 UI
@@ -42,6 +40,7 @@ export default function ProjectGrid({
       // 카드 컴포넌트가 기대하는 필드로 매핑
       return {
         ...p,
+        isFavorite: p.isStarred,
         id: p.projectId,
         title: p.projectName,
         status: p.projectStatus,
@@ -76,7 +75,7 @@ export default function ProjectGrid({
         <ProjectCard
           key={project.id}
           project={project}
-          starred={starredIds.includes(project.id)}
+          starred={project.isFavorite}
           onToggleStar={onToggleStar}
         />
       ))}

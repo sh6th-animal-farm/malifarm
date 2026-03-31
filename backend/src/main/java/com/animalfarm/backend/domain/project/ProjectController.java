@@ -29,6 +29,7 @@ import com.animalfarm.backend.domain.project.dto.ProjectSearchReqDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectStarredDTO;
 import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
+import com.animalfarm.backend.global.exception.BusinessException;
 import com.animalfarm.backend.global.exception.ErrorCode;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
@@ -101,7 +102,25 @@ public class ProjectController {
 		return projectService.selectByCondition(searchDTO);
 	}
 
-	//관심 프로젝트인지 조회
+	@GetMapping("/list")
+	public ResponseEntity<ApiResponseDTO<List<ProjectListDTO>>> getProjectList(ProjectSearchReqDTO searchReqDTO) {
+		Long userId = null;
+		try {
+			userId = SecurityUtil.getCurrentUserId();
+		} catch (Exception e) {
+			userId = null;
+		}
+		try {
+			searchReqDTO.setUserId(userId);
+			List<ProjectListDTO> list = projectService.selectByCondition(searchReqDTO);
+			return ResponseEntity.ok(ApiResponseDTO.success(list));
+		} catch (Exception e) {
+			log.error("프로젝트 목록 조회 중 서버 오류 발생: ", e);
+			throw new BusinessException(ErrorCode.PROJECT_LIST_FETCH_ERROR);
+		}
+	}
+
+	//프로젝트 목록 조회
 	@GetMapping("/starred")
 	@Operation(summary = "관심 프로젝트 상태 조회", description = "특정 프로젝트의 관심 등록 여부를 반환")
 	public ResponseEntity<ApiResponseDTO<Boolean>> getStarredStatus(
@@ -109,6 +128,9 @@ public class ProjectController {
 		@RequestParam Long projectId) {
 		try {
 			Long userId = SecurityUtil.getCurrentUserId();
+			if (userId == null) {
+				return ResponseEntity.ok(ApiResponseDTO.success(false, null));
+			}
 			ProjectStarredDTO projectStarredDTO = ProjectStarredDTO.builder()
 				.userId(userId)
 				.projectId(projectId)
@@ -116,7 +138,7 @@ public class ProjectController {
 
 			boolean isStarred = projectService.getStarredStatus(projectStarredDTO);
 			return ResponseEntity.ok(
-				ApiResponseDTO.success(isStarred, "관심 상태 조회 성공")
+				ApiResponseDTO.success(isStarred, "null")
 			);
 		} catch (Exception e) {
 			log.error("관심 상태 조회 실패: {}", e.getMessage());

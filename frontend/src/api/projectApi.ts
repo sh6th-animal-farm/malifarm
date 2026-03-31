@@ -1,4 +1,4 @@
-import type { Project, ProjectData } from '@/types/projectType';
+import type { Project, ProjectData, ProjectList } from '@/types/projectType';
 import apiClient from './apiClient';
 import type { FarmDTO } from '@/types/farmType';
 
@@ -21,12 +21,10 @@ export const projectApi = {
   },
   getStarredStatus: (projectId: number) => {
     return apiClient.get(`/api/project/starred`, {
-      params: { projectId }, // @RequestParam Long projectId 대응
+      params: { projectId },
     });
   },
   toggleStar: (projectId: number) => {
-    // 백엔드 @RequestBody Long projectId 대응
-    // 두 번째 인자로 데이터(projectId)를 보내고, 숫자를 그대로 보내기 위해 타입을 명시합니다.
     return apiClient.post(`/api/project/starred`, projectId, {
       headers: {
         'Content-Type': 'application/json',
@@ -36,5 +34,15 @@ export const projectApi = {
   getAllFarms: () => {
     // 컨트롤러의 RequestMapping 경로에 따라 수정이 필요할 수 있습니다.
     return apiClient.get<FarmDTO[]>(`/api/project/farm/all`);
+  },
+  getProjectsByCondition: async (params: {
+    projectStatus?: string;
+    keyword?: string;
+    userId?: number | null;
+  }) => {
+    const response = await apiClient.get<ProjectList[]>(`/api/project/list`, {
+      params: params,
+    });
+    return response;
   },
 };

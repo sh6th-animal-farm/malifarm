@@ -10,34 +10,40 @@ import MapSection from './hook/MapSection';
 
 export default function ProjectList() {
   const [projects, setProjects] = useState<any[]>([]);
-  const [starredIds, setStarredIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeStatus = searchParams.get('projectStatus') || 'ALL';
 
-  // [Hook] 지도 인스턴스 관리
+  // [Hook] 지도 인스턴스 관리 - projects 데이터가 바뀌면 마커도 자동 갱신
   const mapInstance = useKakaoMap('map', projects);
 
-  // [Effect] 초기 데이터 로딩
+  // [Effect] 데이터 로딩 - 필터가 변경될 때마다 실행
   useEffect(() => {
     const initData = async () => {
       try {
         setIsLoading(true);
-        const data = await projectApi.getAllProjects();
-        // 데이터 가공 로직이 필요하다면 여기서 수행 (상태값 포맷팅 등)
-        setProjects(data || []);
+        // API 하나로 목록, 농장 좌표, 하트 상태를 한꺼번에 가져옵니다.
+        const response = await projectApi.getProjectsByCondition({
+          projectStatus: activeStatus === 'ALL' ? '' : activeStatus,
+        });
+        console.log('API 응답:', response);
+        setProjects(response || []);
+      } catch (error) {
+        console.error('데이터 로딩 실패:', error);
       } finally {
         setIsLoading(false);
       }
     };
     initData();
-  }, []);
+  }, [activeStatus]);
 
   // [Handlers]
   const handleFilterChange = (status: string) => {
-    status === 'ALL'
-      ? searchParams.delete('projectStatus')
-      : searchParams.set('projectStatus', status);
+    if (status === 'ALL') {
+      searchParams.delete('projectStatus');
+    } else {
+      searchParams.set('projectStatus', status);
+    }
     setSearchParams(searchParams);
   };
 
@@ -49,11 +55,17 @@ export default function ProjectList() {
   };
 
   const handleToggleStar = async (projectId: number) => {
-    const res = await projectApi.toggleStar(projectId);
-    const isStarred = res.data.data;
-    setStarredIds((prev) =>
-      isStarred ? [...prev, projectId] : prev.filter((id) => id !== projectId),
-    );
+    try {
+      await projectApi.toggleStar(projectId);
+      // 서버에서 새로 고침하지 않고, 현재 projects 배열에서 해당 아이템의 하트 상태만 반전
+      setProjects((prev) =>
+        prev.map((p) =>
+          p.projectId === projectId ? { ...p, isStarred: !p.isStarred } : p,
+        ),
+      );
+    } catch (error) {
+      console.error('하트 토글 실패', error);
+    }
   };
 
   return (
@@ -63,6 +75,7 @@ export default function ProjectList() {
           title="프로젝트 지도"
           subtitle="진행중인 프로젝트를 지도에서 확인하세요"
         />
+
         <MapSection
           mapInstance={mapInstance}
           onRegionSelect={handleRegionSelect}
@@ -90,7 +103,6 @@ export default function ProjectList() {
           projects={projects}
           activeStatus={activeStatus}
           isLoading={isLoading}
-          starredIds={starredIds}
           onToggleStar={handleToggleStar}
         />
       </div>

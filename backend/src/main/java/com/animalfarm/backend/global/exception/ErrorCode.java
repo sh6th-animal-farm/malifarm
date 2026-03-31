@@ -40,8 +40,8 @@ public enum ErrorCode {
 
 	// 프로젝트 에러
 	PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_001", "존재하지 않는 프로젝트입니다."),
-	STARRED_PROCESS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_002", "관심 프로젝트 처리 중 오류가 발생했습니다.");
-
+	STARRED_PROCESS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_002", "관심 프로젝트 처리 중 오류가 발생했습니다."),
+	PROJECT_LIST_FETCH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_003", "프로젝트 목록을 불러오는 중 오류가 발생했습니다.");
 	private final HttpStatus httpStatus;
 	private final String code;
 	private final String message;
