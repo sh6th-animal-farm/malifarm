@@ -16,7 +16,7 @@ export default function TokenListCard({
     <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std overflow-hidden">
       <div className="overflow-y-auto max-h-[600px] scrollbar-hide">
         <table className="w-full border-collapse text-left font-body-03">
-          <thead className="bg-gray-50">
+          <thead className="sticky top-0 z-10 bg-gray-50">
             <tr>
               <th className="pl-6 font-body-02 text-gray-400 border-bottom border-gray-200">
                 종목
@@ -31,9 +31,6 @@ export default function TokenListCard({
           </thead>
           <tbody className="divide-y divide-gray-100">
             {tokenList.map((token) => {
-              const isPositive = token.changeRate > 0;
-              const rateColor = isPositive ? 'text-error' : 'text-info';
-
               return (
                 <tr
                   key={token.tokenId}
@@ -59,10 +56,24 @@ export default function TokenListCard({
                   </td>
 
                   {/* 등락률 */}
-                  <td className={`pr-6 text-right font-body-03 ${rateColor}`}>
+                  <td className="pr-6 text-right">
                     <div className="flex items-center justify-end gap-0.5">
-                      {isPositive ? <PriceUp /> : <PriceDown />}
-                      {token.changeRate?.toFixed(2) || '0.00'}%
+                      {token.changeRate > 0 && <PriceUp />}
+                      {token.changeRate < 0 && <PriceDown />}
+                      <span
+                        className={`
+                         font-body-03
+                        ${
+                          token.changeRate > 0
+                            ? 'text-error'
+                            : token.changeRate < 0
+                              ? 'text-info'
+                              : 'text-gray-900'
+                        }
+                      `}
+                      >
+                        {token.changeRate.toFixed(2) || '0.00'}%
+                      </span>
                     </div>
                   </td>
                 </tr>

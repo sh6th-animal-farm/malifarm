@@ -2,6 +2,7 @@ package com.animalfarm.backend.domain.token;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,14 @@ public class TokenController {
 	@Autowired
 	TokenService tokenService;
 
+	// 전체 목록 조회
+	@GetMapping("/api/token")
+	public ResponseEntity<ApiResponseDTO<List<TokenSummaryDTO>>> getTokenList() {
+		List<TokenSummaryDTO> list = tokenService.selectAll();
+		return ResponseEntity.ok(ApiResponseDTO.success(list));
+	}
+
+	// 특정 토큰 조회
 	@GetMapping("/api/token/{projectId}")
 	public ResponseEntity<ApiResponseDTO<TokenDTO>> selectDetail(@PathVariable("projectId") Long projectId) {
 		TokenDTO data = tokenService.selectByProjectId(projectId);
