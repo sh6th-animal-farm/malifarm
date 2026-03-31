@@ -19,7 +19,9 @@ export const useTokenList = () => {
   // 실시간 업데이트 로직
   const updateTokenList = useCallback((updatedToken: Token) => {
     setTokenList((prevList) => {
-      const index = prevList.findIndex((t) => t.tokenId === updatedToken.tokenId);
+      const index = prevList.findIndex(
+        (t) => t.tokenId === updatedToken.tokenId,
+      );
       let newList = [...prevList];
 
       if (index !== -1) {
@@ -55,11 +57,11 @@ export const useTokenList = () => {
   useEffect(() => {
     const url = import.meta.env.VITE_WS_URL;
     const topic = '/topic/tokenList';
-    const subId = 'main-tokenlist';
+    const subId = 'tokenlist';
 
     WebSocketManager.connect(url, () => {
       WebSocketManager.subscribe(subId, topic, (data: Token) => {
-        console.log('[WebSocket - 종목]', data);
+        console.log('[WebSocket - 목록]', data);
         updateTokenList(data);
       });
     });

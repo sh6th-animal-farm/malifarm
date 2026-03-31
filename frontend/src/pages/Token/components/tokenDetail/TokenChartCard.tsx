@@ -1,7 +1,7 @@
-import { tokenApi } from '@/api/tokenApi';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import { PriceDown, PriceUp } from '@/components/icon/Icons';
-import type { CandleStick, TokenOhlcv } from '@/types/tokenType';
+import { useChart } from '@/hooks/useTokenChart';
+import type { TokenOhlcv } from '@/types/tokenType';
 import {
   CandlestickSeries,
   createChart,
@@ -16,7 +16,6 @@ export default function TokenChartCard({
 }: {
   tokenOhlcv: TokenOhlcv;
 }) {
-  const tokenId = tokenOhlcv.tokenId;
   const isPositive = tokenOhlcv.changeRate > 0;
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -32,7 +31,7 @@ export default function TokenChartCard({
     { id: '60', label: '1h' },
   ];
 
-  // 1. 차트 초기화 (마운트 시 1회 실행)
+  // 차트 초기화 (마운트 시 1회 실행)
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
@@ -89,45 +88,8 @@ export default function TokenChartCard({
     };
   }, []);
 
-  // 2. 탭 변경 시 데이터 요청 및 업데이트
-  useEffect(() => {
-    const fetchChartData = async () => {
-      if (!candleSeriesRef.current || !volumeSeriesRef.current) return;
-
-      try {
-        const response = await tokenApi.getCandles(tokenId, Number(activeUnit));
-
-        const KST_OFFSET = 9 * 60 * 60; // 한국 시간은 UTC보다 9시간 빠름 (초 단위로 환산)
-
-        const candleData = response.map((d: CandleStick) => ({
-          time: (Number(d.candleTime) + KST_OFFSET) as any,
-          open: Number(d.openingPrice),
-          high: Number(d.highPrice),
-          low: Number(d.lowPrice),
-          close: Number(d.closingPrice),
-        }));
-
-        const volumeData = response.map((d: CandleStick) => ({
-          time: (Number(d.candleTime) + KST_OFFSET) as any,
-          value: Number(d.tradeVolume || 0),
-          color:
-            Number(d.closingPrice) >= Number(d.openingPrice)
-              ? 'rgba(239, 68, 68, 0.3)'
-              : 'rgba(59, 130, 246, 0.3)',
-        }));
-
-        candleSeriesRef.current.setData(candleData);
-        volumeSeriesRef.current.setData(volumeData);
-
-        // 데이터 로드 후 차트 범위를 데이터에 맞게 자동 조정
-        chartRef.current?.timeScale().fitContent();
-      } catch (error) {
-        console.error('차트 데이터 로드 실패:', error);
-      }
-    };
-
-    fetchChartData();
-  }, [tokenId, activeUnit]); // tokenId나 탭이 바뀔 때마다 실행
+  // 과거 데이터 요청 및 실시간 업데이트
+  useChart(tokenOhlcv.tokenId, activeUnit, candleSeriesRef, volumeSeriesRef);
 
   return (
     <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std">
