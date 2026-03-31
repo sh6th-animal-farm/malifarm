@@ -1,5 +1,5 @@
 // src/pages/Carbon/components/CarbonPriceCard.tsx
-import React from "react";
+import React from 'react';
 
 interface CarbonPriceCardProps {
   originalPrice: number;
@@ -22,10 +22,8 @@ export default function CarbonPriceCard({
   return (
     // 🌟 1. 카드 전체 배경, 그림자, 패딩 (피그마 시안 기준 넉넉한 안쪽 여백 32px 적용)
     <div className="w-[416px] h-[261px] bg-white rounded-(--radius-lg) shadow-(--shadow-std) p-[24px] box-border flex flex-col justify-between">
-      
       {/* 🌟 2. 텍스트 그룹 (내부 요소 갭 13px 고정) */}
       <div className="flex flex-col gap-[13px]">
-
         {/* 🌟 2. 상단 타이틀 */}
         <div className="font-caption-01 text-(--color-gray-600)">
           현재 단가 (1 tCO2e)
@@ -62,7 +60,6 @@ export default function CarbonPriceCard({
       >
         주문 신청하기
       </button>
-
     </div>
   );
 }

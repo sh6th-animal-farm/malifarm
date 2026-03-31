@@ -12,6 +12,7 @@ import InvestTabContent from './components/InvestTabContent';
 import SubscriptionModal from './components/SubscriptionModal';
 import AccountCheckFailModal from './components/AccountCheckFailModal';
 import { authApi } from '@/api/authApi';
+import { subscriptionApi } from '@/api/subscriptionApi';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string | undefined }>();
@@ -25,47 +26,77 @@ export default function ProjectDetail() {
     string | number | undefined
   >(undefined);
 
+  const [isApplied, setIsApplied] = useState(false);
+
   useEffect(() => {
-    const fetchDetail = async (projectId: string) => {
+    const fetchData = async (projectId: string) => {
       try {
         setLoading(true);
-        const response = await projectApi.getProjectDetail(projectId);
-        setProjectData(response.data || response);
+        const projectRes = await projectApi.getProjectDetail(projectId);
+        setProjectData(projectRes.data || projectRes);
+
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          try {
+            // apiClient가 이미 res.data를 반환하므로 바로 꺼내 씁니다.
+            const statusData = await subscriptionApi.checkStatus(
+              Number(projectId),
+            );
+
+            // 백엔드 Map<String, Object> data에 넣은 'isApplied'를 바로 참조
+            // 만약 statusData 자체가 boolean이라면 setIsApplied(statusData)
+            setIsApplied(statusData.isApplied);
+          } catch (err) {
+            console.error('청약 상태 조회 실패:', err);
+            setIsApplied(false);
+          }
+        }
       } catch (error) {
-        console.error('에러:', error);
+        console.error('데이터 로딩 실패:', error);
       } finally {
         setLoading(false);
       }
     };
-    if (id) fetchDetail(id);
+    if (id) fetchData(id);
   }, [id]);
 
   // ✅ 사이드바 버튼 클릭 시 실행될 함수
   const handleAction = async () => {
-    const token = localStorage.getItem('accessToken');
+    if (isApplied) {
+      if (window.confirm('청약을 취소하시겠습니까?')) {
+        try {
+          await subscriptionApi.cancelSubscription(Number(id));
+          setIsApplied(false);
+        } catch (error: any) {
+          const errorMsg = error.message || String(error);
+          if (errorMsg.includes('청약 취소가 완료되었습니다')) {
+            setIsApplied(false);
+          } else {
+            console.error('실제 취소 오류 발생:', errorMsg);
+          }
+        }
+      }
+      return;
+    }
 
-    // 1. 로그인 여부 확인
+    // 2. 청약이 안 된 상태라면 기존 로그인/계좌 체크 후 모달 오픈
+    const token = localStorage.getItem('accessToken');
     if (!token) {
       alert('로그인이 필요한 서비스입니다.');
       return;
     }
+
     try {
-      // 2. 계좌 연동 여부 확인 (authApi 사용)
       const user = (await authApi.getUser()) as any;
       setCurrentUserId(user.userId);
-      const checkacc = (await projectApi.getCheckAccount(
-        user.userId,
-      )) as unknown as boolean;
+      const checkacc = await projectApi.getCheckAccount(user.userId);
 
-      // 서버 응답 구조에 따라 userData.hasAccount 또는 userData.accountNo 등을 체크
       if (checkacc === true) {
         setActiveModal('subscription');
       } else {
         setActiveModal('accountFail');
       }
     } catch (error) {
-      // 에러 처리는 apiClient 인터셉터에서 수행하지만,
-      // 추가적인 로직이 필요하다면 여기서 처리합니다.
       console.error('사용자 정보 조회 실패:', error);
     }
   };
@@ -113,7 +144,7 @@ export default function ProjectDetail() {
 
           <ProjectDetailSideBar
             projectData={projectData}
-            isApplied={false}
+            isApplied={isApplied}
             onAction={handleAction}
           />
         </div>
@@ -131,7 +162,7 @@ export default function ProjectDetail() {
             price: Math.floor(
               projectData.targetAmount / projectData.totalSupply,
             ),
-            userLimit: 50000000, // API 연결 시 실제 값으로 대체
+            userLimit: 500000000, // API 연결 시 실제 값으로 대체
             walletBalance: 0, // API 연결 시 실제 값으로 대체
             minAmountPerInvestor: 10000, // 예시
           }}
