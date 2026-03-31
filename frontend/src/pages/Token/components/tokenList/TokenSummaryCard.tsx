@@ -54,7 +54,7 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
     candleSeriesRef.current = candleSeries;
 
     return () => chart.remove(); // 컴포넌트 언마운트 시 차트 제거 (메모리 누수 방지)
-  }, []);
+  }, [tokenOhlcv]);
 
   return (
     <div className="w-[432px] h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight">
