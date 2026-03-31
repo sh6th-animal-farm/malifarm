@@ -90,11 +90,13 @@ public class ProjectViewController {
 		return "project/project_card_list";
 	}
 
+/*
 	@GetMapping("/list/fragment/main")
 	public String projectListFragmentForMain(Model model) {
 		model.addAttribute("projectList", projectService.selectByConditionForMain());
 		return "project/project_card_list";
 	}
+*/
 
 	@GetMapping("/dividend/poll")
 	public String pollDividendType(Model model, @RequestParam
