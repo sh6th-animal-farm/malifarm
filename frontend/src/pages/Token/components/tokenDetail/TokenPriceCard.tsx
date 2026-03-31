@@ -15,7 +15,7 @@ export default function TokenPriceCard({
   buyList,
   sellList,
   tradeList,
-  onPriceClick
+  onPriceClick,
 }: TokenPriceCardProps) {
   const [activeTab, setActiveTab] = useState('order');
   const tabs = [
@@ -47,17 +47,14 @@ export default function TokenPriceCard({
       const priceNum = Number(s.price);
       sellMap.set(
         priceNum,
-        (sellMap.get(priceNum) || 0) + Number(s.totalVolume)
+        (sellMap.get(priceNum) || 0) + Number(s.totalVolume),
       );
     });
 
     const buyMap = new Map<number, number>(); // <가격, 수량>
     buyList.forEach((b) => {
       const priceNum = Number(b.price);
-      buyMap.set(
-        priceNum,
-        (buyMap.get(priceNum) || 0) + Number(b.totalVolume)
-      );
+      buyMap.set(priceNum, (buyMap.get(priceNum) || 0) + Number(b.totalVolume));
     });
 
     const rows = [];
@@ -69,7 +66,7 @@ export default function TokenPriceCard({
         price: p,
         volume: sellMap.get(p) || 0,
         side: 'SELL',
-        isCurrent: false
+        isCurrent: false,
       });
     }
 
@@ -81,7 +78,7 @@ export default function TokenPriceCard({
       price: basePrice,
       volume: sVol > 0 ? sVol : bVol,
       side: sVol > 0 ? 'SELL' : 'BUY',
-      isCurrent: true
+      isCurrent: true,
     });
 
     // 3. 매수 10개 (아래로)
@@ -91,7 +88,7 @@ export default function TokenPriceCard({
         price: p,
         volume: buyMap.get(p) || 0,
         side: 'BUY',
-        isCurrent: false
+        isCurrent: false,
       });
     }
 
@@ -118,7 +115,7 @@ export default function TokenPriceCard({
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {activeTab === 'order' ? (
           <table className="w-full table-fixed border-collapse select-none">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-white">
               <tr className="text-gray-400 border-b border-gray-100">
                 <th className="p-2 font-caption-02">매도잔량</th>
                 <th className="p-2 font-caption-02">가격</th>
@@ -127,15 +124,11 @@ export default function TokenPriceCard({
             </thead>
             <tbody>
               {ladder.map((row, idx) => {
-                const priceColor = row.side === 'SELL' ? 'text-info' : 'text-error';
+                const priceColor =
+                  row.side === 'SELL' ? 'text-info' : 'text-error';
 
                 return (
-                  <tr
-                    key={idx}
-                    className={
-                      'h-10'
-                    }
-                  >
+                  <tr key={idx} className={'h-10'}>
                     {/* 매도 물량 바 */}
                     <td className="relative py-3 text-right text-[12px] font-medium text-gray-500">
                       {row.side === 'SELL' && row.volume > 0 && (
@@ -180,7 +173,7 @@ export default function TokenPriceCard({
           </table>
         ) : (
           <table className="w-full">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-white">
               <tr className="text-gray-400 border-b border-gray-100">
                 <th className="py-2 pl-4 text-left font-caption-02">구분</th>
                 <th className="py-2 text-right font-caption-02">가격</th>

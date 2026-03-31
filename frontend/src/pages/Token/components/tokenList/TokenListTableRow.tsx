@@ -17,23 +17,20 @@ export default function TokenListTableRow({
   onHover,
   onClick,
 }: TokenRowProps) {
-
-  const isPlus = token.changeRate > 0;
   const [flashClass, setFlashClass] = useState('');
   const prevRateRef = useRef(token.changeRate);
 
   // 등락률 변화 시, 깜빡임 효과
   useEffect(() => {
     if (prevRateRef.current !== token.changeRate) {
-
       if (token.changeRate > 0) {
         setFlashClass('bg-error-light');
       } else if (token.changeRate < 0) {
         setFlashClass('bg-info-light');
       }
 
-      // 0.8초 후 배경색 제거
-      const timer = setTimeout(() => setFlashClass(''), 800);
+      // 0.5초 후 배경색 제거
+      const timer = setTimeout(() => setFlashClass(''), 500);
 
       // 변화된 등락률 업데이트
       prevRateRef.current = token.changeRate;
@@ -89,24 +86,37 @@ export default function TokenListTableRow({
       </td>
 
       {/* 등락률 */}
-      <td className="w-[160px] font-body-03 px-2">
-        <div
-          className={`
-            flex items-center justify-end gap-1 w-full px-2 py-1 
-            rounded-[var(--radius-s)] transition-colors duration-700 ease-out
-            ${isPlus ? 'text-error' : 'text-info'}
+      <td className="w-[180px] text-right">
+        <div className="flex justify-end">
+          <div
+            className={`
+            flex items-center justify-end gap-1 px-3 py-1
+            rounded-[var(--radius-s)] transition-colors duration-500 ease-out
             ${flashClass} 
           `}
-        >
-          <span className="flex items-center">
-            {isPlus ? <PriceUp /> : <PriceDown />}
-          </span>
-          <span className="font-semibold">{token.changeRate.toFixed(2)}%</span>
+          >
+            {token.changeRate > 0 && <PriceUp />}
+            {token.changeRate < 0 && <PriceDown />}
+            <span
+              className={`
+                         font-body-03
+                        ${
+                          token.changeRate > 0
+                            ? 'text-error'
+                            : token.changeRate < 0
+                              ? 'text-info'
+                              : 'text-gray-900'
+                        }
+                      `}
+            >
+              {token.changeRate.toFixed(2) || '0.00'}%
+            </span>
+          </div>
         </div>
       </td>
 
       {/* 거래대금 */}
-      <td className="w-[180px] pr-6 text-right text-gray-900 font-body-01">
+      <td className="w-[160px] pr-4 text-right text-gray-900 font-body-01">
         {formatVolume(token.dailyTradeVolume)}
       </td>
     </tr>

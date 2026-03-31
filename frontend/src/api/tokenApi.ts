@@ -12,7 +12,7 @@ import apiClient from '@/api/apiClient';
 export const tokenApi = {
   getTokenInfo: (tokenId: number) =>
     apiClient.get<Token>(`/api/token/${tokenId}`),
-  getTokenList: () => apiClient.get<Token[]>('/api/home/token'),
+  getTokenList: () => apiClient.get<Token[]>('/api/token'),
   getOhlcv: (tokenId: number) =>
     apiClient.get<TokenOhlcv>(`/api/token/ohlcv/${tokenId}`),
   getCandles: (tokenId: number, unit: number = 1) =>

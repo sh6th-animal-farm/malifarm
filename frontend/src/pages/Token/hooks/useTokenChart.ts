@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback } from 'react';
 import { tokenApi } from '@/api/tokenApi';
 import WebSocketManager from '@/utils/WebSocketManager';
 import type { CandleStick } from '@/types/tokenType';
@@ -15,7 +15,9 @@ export const useTokenChart = (
   // 실시간 캔들 업데이트
   const updateCandle = useCallback(
     (data: CandleStick) => {
-      if (!candleSeriesRef.current || !volumeSeriesRef.current) return;
+      if (!candleSeriesRef.current || !volumeSeriesRef.current) {
+        return;
+      }
 
       const {
         candleTime,

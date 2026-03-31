@@ -1,6 +1,6 @@
 import ToggleGroup from '@/components/common/ToggleGroup';
 import { PriceDown, PriceUp } from '@/components/icon/Icons';
-import { useTokenChart } from '@/hooks/useTokenChart';
+import { useTokenChart } from '@/pages/Token/hooks/useTokenChart';
 import type { TokenOhlcv } from '@/types/tokenType';
 import {
   CandlestickSeries,
@@ -16,7 +16,6 @@ export default function TokenChartCard({
 }: {
   tokenOhlcv: TokenOhlcv;
 }) {
-  const isPositive = tokenOhlcv.changeRate > 0;
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -33,7 +32,10 @@ export default function TokenChartCard({
 
   // 차트 초기화 (마운트 시 1회 실행)
   useEffect(() => {
-    if (!chartContainerRef.current) return;
+    if (!chartContainerRef.current) {
+      console.error('차트 컨테이너를 찾을 수 없습니다.');
+      return;
+    }
 
     const chart = createChart(chartContainerRef.current, {
       layout: { backgroundColor: '#ffffff', textColor: '#333' },
@@ -124,14 +126,21 @@ export default function TokenChartCard({
 
               {/* 전일대비 등락률 */}
               <div className="flex items-center gap-1 pt-2">
-                {isPositive ? <PriceUp /> : <PriceDown />}
+                {tokenOhlcv.changeRate > 0 && <PriceUp />}
+                {tokenOhlcv.changeRate < 0 && <PriceDown />}
                 <span
-                  className={`flex font-body-03 ${isPositive ? 'text-error' : 'text-info'}`}
+                  className={`
+                         font-body-03
+                        ${
+                          tokenOhlcv.changeRate > 0
+                            ? 'text-error'
+                            : tokenOhlcv.changeRate < 0
+                              ? 'text-info'
+                              : 'text-gray-900'
+                        }
+                      `}
                 >
-                  {tokenOhlcv.changeRate
-                    ? tokenOhlcv.changeRate.toFixed(2)
-                    : '0.00'}
-                  % 전일대비
+                  {tokenOhlcv.changeRate?.toFixed(2) || '0.00'}% 전일대비
                 </span>
               </div>
             </div>

@@ -3,7 +3,7 @@ import TokenListTable from './components/tokenList/TokenListTable';
 import TokenSummaryCard from './components/tokenList/TokenSummaryCard';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useTokenList } from '@/hooks/useTokenList.ts';
+import { useTokenList } from '@/pages/Token/hooks/useTokenList';
 
 export default function TokenList() {
   // 훅으로 초기 데이터 + 실시간 업데이트 + 정렬된 리스트를 한 번에 가져옴
