@@ -89,7 +89,7 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
                   }
                 `}
               >
-                {tokenOhlcv?.changeRate.toFixed(2) || '0.00'}% 전일대비
+                {tokenOhlcv?.changeRate?.toFixed(2) || '0.00'}% 전일대비
               </span>
             </div>
           </div>
