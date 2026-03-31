@@ -1,10 +1,10 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { tokenApi } from '@/api/tokenApi';
 import WebSocketManager from '@/utils/WebSocketManager';
 import type { CandleStick } from '@/types/tokenType';
-import { type ISeriesApi, type UTCTimestamp } from 'lightweight-charts';
+import type { ISeriesApi, UTCTimestamp } from 'lightweight-charts';
 
-export const useChart = (
+export const useTokenChart = (
   tokenId: string | number | undefined,
   activeUnit: string | number,
   candleSeriesRef: React.MutableRefObject<ISeriesApi<'Candlestick'> | null>,
@@ -18,45 +18,59 @@ export const useChart = (
       if (!candleSeriesRef.current || !volumeSeriesRef.current) return;
 
       const {
-        tokenId,
-        unit,
         candleTime,
         openingPrice,
         highPrice,
         lowPrice,
         closingPrice,
         tradeVolume,
-        tradeAmount,
       } = data;
 
-      // 한국 시간으로 보정
-      const time = (Number(candleTime) + KST_OFFSET) as UTCTimestamp;
+      const rawTime = Number(candleTime); // 시간을 문자열에서 숫자로 변환
+      const timeValue =
+        rawTime > 10000000000 ? Math.floor(rawTime / 1000) : rawTime; // 만약 데이터가 밀리초(13자리)라면 초로 변환
+      const finalTime = (timeValue + KST_OFFSET) as UTCTimestamp; // 한국 시간으로 보정
+
+      // 차트 인스턴스에서 직접 마지막 데이터의 시간을 가져오는 게 가장 정확합니다.
+      const lastData = (candleSeriesRef.current as any)._internal_series
+        ?.data()
+        .last();
+      const lastTime = lastData ? lastData.time : 0;
+
+      // 새 데이터의 시간이 마지막 데이터 시간보다 작으면(과거라면) 업데이트하지 않음
+      if (finalTime < lastTime) return;
 
       // 캔들 업데이트
       candleSeriesRef.current.update({
-        time,
+        time: finalTime,
         open: Number(openingPrice),
         high: Number(highPrice),
         low: Number(lowPrice),
         close: Number(closingPrice),
       });
 
-      // 거래량 업데이트
-      volumeSeriesRef.current.update({
-        time,
-        value: Number(tradeVolume || 0),
-        color:
-          Number(closingPrice) >= Number(openingPrice) ? '#ffebee' : '#e8f1fa',
-      });
+      // 거래량이 있는 경우에만 업데이트
+      if (volumeSeriesRef.current) {
+        volumeSeriesRef.current.update({
+          time: finalTime,
+          value: Number(tradeVolume || 0),
+          color:
+            Number(closingPrice) >= Number(openingPrice)
+              ? '#ffebee'
+              : '#e8f1fa',
+        });
+      }
     },
     [candleSeriesRef, volumeSeriesRef],
   );
 
   // 초기 데이터 로드 및 웹소켓 연결
   useEffect(() => {
+    let currentSubId: string | undefined;
+
     const fetchAndSubscribe = async () => {
-      if (!tokenId || !candleSeriesRef.current || !volumeSeriesRef.current)
-        return;
+      // tokenId와 candleSeries가 존재할 때만 실행
+      if (!tokenId || !candleSeriesRef.current) return;
 
       try {
         // 과거 데이터 로드
@@ -73,17 +87,20 @@ export const useChart = (
           close: Number(d.closingPrice),
         }));
 
-        const volumeData = response.map((d: CandleStick) => ({
-          time: (Number(d.candleTime) + KST_OFFSET) as UTCTimestamp,
-          value: Number(d.tradeVolume || 0),
-          color:
-            Number(d.closingPrice) >= Number(d.openingPrice)
-              ? '#ffebee'
-              : '#e8f1fa',
-        }));
-
         candleSeriesRef.current.setData(candleData);
-        volumeSeriesRef.current.setData(volumeData);
+
+        if (volumeSeriesRef.current) {
+          const volumeData = response.map((d: CandleStick) => ({
+            time: (Number(d.candleTime) + KST_OFFSET) as UTCTimestamp,
+            value: Number(d.tradeVolume || 0),
+            color:
+              Number(d.closingPrice) >= Number(d.openingPrice)
+                ? '#ffebee'
+                : '#e8f1fa',
+          }));
+
+          volumeSeriesRef.current.setData(volumeData);
+        }
 
         // 웹소켓 실시간 구독
         const url = import.meta.env.VITE_WS_URL;
@@ -103,7 +120,6 @@ export const useChart = (
       }
     };
 
-    let currentSubId: string | undefined;
     fetchAndSubscribe().then((id) => (currentSubId = id));
 
     return () => {

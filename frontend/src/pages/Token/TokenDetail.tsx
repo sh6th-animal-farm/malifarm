@@ -1,12 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import type {
-  OrderInfo,
-  Token,
-  TokenOhlcv,
-  TradeInfo,
-} from '@/types/tokenType';
-import { tokenApi } from '@/api/tokenApi';
 import TokenChartCard from './components/tokenDetail/TokenChartCard';
 import TokenListCard from './components/tokenDetail/TokenListCard';
 import TokenTradeCard from './components/tokenDetail/TokenTradeCard';
@@ -14,24 +7,22 @@ import TokenPriceCard from './components/tokenDetail/TokenPriceCard';
 import { useOrderbook } from '@/hooks/useOrderbook.ts';
 import { useTradeHistory } from '@/hooks/useTradeHistory.ts';
 import { useTokenList } from '@/hooks/useTokenList';
+import { useTokenOhlcv } from '@/hooks/useTokenOhlcv';
 
 export default function TokenDetail() {
   const { id } = useParams(); // URL 파라미터에서 토큰 ID 추출
   const navigate = useNavigate();
-  const [tokenOhlcv, setTokenOhlcv] = useState<TokenOhlcv | null>(null);
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
 
   // 훅을 통한 데이터 관리
   const { tokenList } = useTokenList(); // 토큰 목록
+  const { tokenOhlcv } = useTokenOhlcv(id); // 토큰 OHLCV
   const { buyList, sellList } = useOrderbook(id); // 호가 (매수, 매도)
   const { trades: tradeList } = useTradeHistory(id); // 체결
 
-  // id가 변경될 때마다 OHLCV 데이터 로드 및 선택된 가격 초기화
+  // id가 변경될 때마다 선택된 가격 초기화
   useEffect(() => {
     setSelectedPrice(null);
-    if (id) {
-      tokenApi.getOhlcv(Number(id)).then(setTokenOhlcv);
-    }
   }, [id]);
 
   // 클릭 시 페이지 이동

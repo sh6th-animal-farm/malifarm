@@ -38,6 +38,7 @@ export const useOrderbook = (tokenId: string | number | undefined) => {
 
         WebSocketManager.connect(url, () => {
           WebSocketManager.subscribe(subId, topic, (data: LiveOrderInfo) => {
+            console.log('[WebSocket - 호가]', data);
             const { price, updatedVolume, side, action } = data;
             const isBuy = side === 'BUY';
 

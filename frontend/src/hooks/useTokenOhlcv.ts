@@ -16,14 +16,13 @@ export const useTokenOhlcv = (tokenId: string | number | undefined) => {
         setTokenOhlcv(initialData);
 
         // 2. 실시간 시세 업데이트 구독
-        // 백엔드에서 "/topic/tokenList/{id}"로 보내주는 데이터를 수신
         const url = import.meta.env.VITE_WS_URL;
         const topic = `/topic/tokenList/${tokenId}`;
         const subId = `ohlcv-${tokenId}`;
 
         WebSocketManager.connect(url, () => {
           WebSocketManager.subscribe(subId, topic, (data: TokenOhlcv) => {
-            // 실시간으로 들어오는 DTO 데이터로 교체
+            console.log('[WebSocket - OHLCV]', data);
             setTokenOhlcv(data);
           });
         });

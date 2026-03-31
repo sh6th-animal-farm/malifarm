@@ -22,6 +22,7 @@ export const useTradeHistory = (tokenId: string | number | undefined) => {
 
         WebSocketManager.connect(url, () => {
           WebSocketManager.subscribe(subId, topic, (data: TradeInfo) => {
+            console.log('[WebSocket - 체결]', data);
             setTrades((prev) => [data, ...prev].slice(0, 50));
           });
         });

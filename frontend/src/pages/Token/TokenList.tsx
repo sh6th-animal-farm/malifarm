@@ -1,9 +1,7 @@
 import SectionHeader from '@/components/layout/SectionHeader';
 import TokenListTable from './components/tokenList/TokenListTable';
 import TokenSummaryCard from './components/tokenList/TokenSummaryCard';
-import { tokenApi } from '@/api/tokenApi';
 import { useEffect, useState } from 'react';
-import type { Token } from '@/types/tokenType';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useTokenList } from '@/hooks/useTokenList.ts';
 
@@ -23,7 +21,9 @@ export default function TokenList() {
 
   // 로딩 상태 처리
   if (isLoading && tokenList.length === 0) {
-    return <div className="p-10 text-center">토큰 목록을 불러오는 중입니다.</div>;
+    return (
+      <div className="p-10 text-center">토큰 목록을 불러오는 중입니다.</div>
+    );
   }
 
   return (

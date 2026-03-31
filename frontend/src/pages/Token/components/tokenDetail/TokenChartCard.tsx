@@ -1,6 +1,6 @@
 import ToggleGroup from '@/components/common/ToggleGroup';
 import { PriceDown, PriceUp } from '@/components/icon/Icons';
-import { useChart } from '@/hooks/useTokenChart';
+import { useTokenChart } from '@/hooks/useTokenChart';
 import type { TokenOhlcv } from '@/types/tokenType';
 import {
   CandlestickSeries,
@@ -89,7 +89,12 @@ export default function TokenChartCard({
   }, []);
 
   // 과거 데이터 요청 및 실시간 업데이트
-  useChart(tokenOhlcv.tokenId, activeUnit, candleSeriesRef, volumeSeriesRef);
+  useTokenChart(
+    tokenOhlcv.tokenId,
+    activeUnit,
+    candleSeriesRef,
+    volumeSeriesRef,
+  );
 
   return (
     <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std">

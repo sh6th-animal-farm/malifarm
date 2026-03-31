@@ -1,27 +1,24 @@
-import { tokenApi } from '@/api/tokenApi';
 import Badge from '@/components/common/Badge';
 import { PriceUp, PriceDown } from '@/components/icon/Icons';
-import type { TokenOhlcv } from '@/types/tokenType';
+import { useTokenChart } from '@/hooks/useTokenChart';
+import { useTokenOhlcv } from '@/hooks/useTokenOhlcv';
 import {
   createChart,
   CandlestickSeries,
   type IChartApi,
   type ISeriesApi,
 } from 'lightweight-charts';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
-  // 1. OHLCV 데이터와 차트 데이터를 내부 상태로 관리
-  const [tokenInfo, setTokenInfo] = useState<TokenOhlcv | null>(null); // 토큰 OHLCV 정보
   const chartContainerRef = useRef<HTMLDivElement>(null); // 차트 컨테이너
   const chartRef = useRef<IChartApi | null>(null); // 차트 인스턴스
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null); // 차트 시리즈 (캔들스틱)
+  const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null); // 거래량 시리즈
 
   const formatNum = (num: number) => new Intl.NumberFormat().format(num);
 
-  const isPlus = tokenInfo?.changeRate && tokenInfo.changeRate > 0;
-
-  // 2. 차트 초기화 (마운트 시 딱 한 번만)
+  // 차트 초기화 (마운트 시 딱 한 번만)
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
@@ -53,40 +50,10 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
     return () => chart.remove(); // 컴포넌트 언마운트 시 차트 제거 (메모리 누수 방지)
   }, []);
 
-  // 3. tokenId가 바뀔 때마다 토큰 OHLCV 정보와 차트 데이터 fetch
-  useEffect(() => {
-    if (!tokenId) return;
+  useTokenChart(tokenId, '1', seriesRef, volumeSeriesRef);
 
-    const loadData = async () => {
-      try {
-        // 토큰 OHLCV 정보와 캔들 데이터를 병렬로 호출 (속도 향상)
-        const [infoData, candleData] = await Promise.all([
-          tokenApi.getOhlcv(tokenId),
-          tokenApi.getCandles(tokenId, 1),
-        ]);
-
-        // OHLCV 정보 업데이트
-        setTokenInfo(infoData);
-
-        // 캔들 데이터 업데이트
-        if (seriesRef.current && candleData.length > 0) {
-          const formatted = candleData.map((d) => ({
-            time: Number(d.candleTime) / 1000,
-            open: Number(d.openingPrice),
-            high: Number(d.highPrice),
-            low: Number(d.lowPrice),
-            close: Number(d.closingPrice),
-          }));
-          seriesRef.current.setData(formatted);
-          chartRef.current?.timeScale().fitContent();
-        }
-      } catch (e) {
-        console.error('데이터 로드 실패', e);
-      }
-    };
-
-    loadData();
-  }, [tokenId]);
+  const { tokenOhlcv } = useTokenOhlcv(tokenId);
+  const isPlus = tokenOhlcv?.changeRate && tokenOhlcv.changeRate > 0;
 
   return (
     <div className="w-[432px] h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight">
@@ -94,19 +61,20 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
       <div className="flex justify-between items-start">
         <div>
           <h3 className="font-subtitle-01 text-gray-900 mb-1">
-            {tokenInfo?.tickerSymbol}
+            {tokenOhlcv?.tickerSymbol}
           </h3>
-          <p className="font-body-02 text-gray-600">{tokenInfo?.tokenName}</p>
+          <p className="font-body-02 text-gray-600">{tokenOhlcv?.tokenName}</p>
         </div>
         <div className="text-right">
           <div className="font-subtitle-01 text-gray-900">
-            {formatNum(tokenInfo?.marketPrice || 0)}
+            {formatNum(tokenOhlcv?.marketPrice || 0)}
           </div>
           <div
             className={`flex items-center mt-1 gap-1 font-body-03 ${isPlus ? 'text-error' : 'text-info'}`}
           >
             {isPlus ? <PriceUp /> : <PriceDown />}
-            {tokenInfo?.changeRate ? tokenInfo.changeRate.toFixed(2) : '0.00'}%
+            {tokenOhlcv?.changeRate ? tokenOhlcv.changeRate.toFixed(2) : '0.00'}
+            %
           </div>
         </div>
       </div>
@@ -129,25 +97,25 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
         <div className="flex justify-between items-center">
           <span className="font-caption-01 text-gray-400">시가</span>
           <span className="font-caption-02 text-gray-900">
-            {formatNum(tokenInfo?.openPrice || 0)}
+            {formatNum(tokenOhlcv?.openPrice || 0)}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="font-caption-01 text-gray-400">고가</span>
           <span className="font-caption-02 text-gray-900">
-            {formatNum(tokenInfo?.highPrice || 0)}
+            {formatNum(tokenOhlcv?.highPrice || 0)}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="font-caption-01 text-gray-400">저가</span>
           <span className="font-caption-02 text-gray-900">
-            {formatNum(tokenInfo?.lowPrice || 0)}
+            {formatNum(tokenOhlcv?.lowPrice || 0)}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="font-caption-01 text-gray-400">거래대금</span>
           <span className="font-caption-02 text-gray-900">
-            {formatNum(tokenInfo?.dailyTradeVolume || 0)}
+            {formatNum(tokenOhlcv?.dailyTradeVolume || 0)}
           </span>
         </div>
       </div>
