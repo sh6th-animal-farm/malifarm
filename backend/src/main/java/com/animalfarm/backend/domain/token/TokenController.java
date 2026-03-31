@@ -34,9 +34,7 @@ public class TokenController {
 	// 전체 목록 조회
 	@GetMapping("/api/token")
 	public ResponseEntity<ApiResponseDTO<List<TokenSummaryDTO>>> getTokenList() {
-		List<TokenSummaryDTO> tokenAllList = tokenService.selectAll();
-		List<TokenSummaryDTO> list = tokenAllList.stream()
-			.collect(Collectors.toList());
+		List<TokenSummaryDTO> list = tokenService.selectAll();
 		return ResponseEntity.ok(ApiResponseDTO.success(list));
 	}
 
