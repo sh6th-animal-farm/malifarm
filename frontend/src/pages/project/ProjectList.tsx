@@ -71,7 +71,7 @@ export default function ProjectList() {
     setCurrentPage(pageNum);
     if (listRef.current) {
       listRef.current.scrollIntoView({
-        behavior: 'smooth',
+        behavior: 'auto',
         block: 'start',
       });
     }
