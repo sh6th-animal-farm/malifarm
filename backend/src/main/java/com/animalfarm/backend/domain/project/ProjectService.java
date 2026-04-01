@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.animalfarm.backend.domain.accounting.dto.SnapshotResponseDTO;
-import com.animalfarm.backend.domain.mypage.dto.WalletDTO;
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
 import com.animalfarm.backend.domain.project.dto.ImgEditable;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
@@ -31,6 +30,7 @@ import com.animalfarm.backend.domain.project.dto.ProjectStatusDTO;
 import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
 import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.domain.token.dto.TokenIssueDTO;
+import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.HashManager;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.http.ApiResponse;
@@ -72,8 +72,8 @@ public class ProjectService {
 		return projectRepository.selectByCondition(searchDTO);
 	}
 
-	public List<ProjectListDTO> selectByConditionForMain() {
-		return projectRepository.selectByConditionForMain();
+	public List<ProjectListDTO> selectByConditionForMain(ProjectSearchReqDTO searchDTO) {
+		return projectRepository.selectByConditionForMain(searchDTO);
 	}
 
 	public boolean getStarredStatus(ProjectStarredDTO projectStarredDTO) {

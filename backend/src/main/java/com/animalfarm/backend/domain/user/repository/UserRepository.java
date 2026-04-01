@@ -16,16 +16,13 @@ public interface UserRepository {
 
 	String selectAddress(Long userId);
 
-	int updateAddress(@Param("address")
-	String address, @Param("userId")
-	Long userId);
+	int updateAddress(String address, Long userId);
 
 	UserDTO getUserById(Long userId);
 
 	Long selectUserIdByUclId(Long walletId);
 
-	String selectUserNameById(@Param("userId")
-	Long userId);
+	String selectUserNameById(Long userId);
 
 	String selectUserRoleById(Long userId);
 }

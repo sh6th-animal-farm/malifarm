@@ -34,7 +34,7 @@
 
     <select id="selectAll" resultType="projectDTO">
         select * from projects
-        order by created_at
+        order by created_at desc
     </select>
 
     <select id="selectDetail" parameterType="long"
@@ -102,8 +102,9 @@
         FROM projects p
         JOIN farms f on
         p.farm_id = f.farm_id
-        AND p.project_status = 'SUBSCRIPTION'
-        LIMIT 3
+        AND p.project_status IN ('SUBSCRIPTION', 'ANNOUNCEMENT')
+        ORDER BY p.created_at DESC
+        LIMIT 10
     </select>
 
     <!-- 관심프로젝트 조회 -->

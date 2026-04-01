@@ -3,6 +3,7 @@ package com.animalfarm.backend.global.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -50,7 +51,16 @@ public class GlobalExceptionHandler {
 
 		return ResponseEntity
 			.status(e.getStatusCode())
-			.body(ApiResponseDTO.fail("EXTERNAL_API_ERROR", message));
+			.body(ApiResponseDTO.fail(ErrorCode.EXTERNAL_API_ERROR.getCode(), message)); // 외부 API 응답에서 추출한 메시지 전달
+	}
+
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ApiResponseDTO<Void>> handleException(Exception e) {
+		log.error("[Unexpected System Error] ", e);
+
+		return ResponseEntity
+			.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			.body(ApiResponseDTO.fail(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
 	}
 
 	private String extractMessage(String errorBody) {

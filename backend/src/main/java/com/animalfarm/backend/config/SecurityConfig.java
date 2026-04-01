@@ -15,9 +15,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.animalfarm.backend.global.JwtProvider;
 import com.animalfarm.backend.global.RedisUtil;
 import com.animalfarm.backend.global.security.JwtAuthenticationFilter;
-import com.animalfarm.backend.global.security.JwtProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -113,7 +113,7 @@ public class SecurityConfig {
 		// 프론트엔드 도메인 허용
 		configuration.setAllowedOrigins(
 			List.of("https://mlfarm.3jun.store", "http://localhost:9999", "http://localhost:5173"));
-		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);
 

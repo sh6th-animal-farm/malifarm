@@ -1,0 +1,28 @@
+import React from 'react';
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  height?: number;
+}
+
+export default function Input({
+  className = '',
+  height = 50, // 기본값 50
+  ...props
+}: InputProps) {
+  const heightMap = {
+    42: 'h-[42px]',
+    48: 'h-[48px]',
+    50: 'h-[50px]',
+  };
+
+  const selectedHeight = heightMap[height as keyof typeof heightMap];
+
+  return (
+    <input
+      {...props}
+      className={`w-full ${selectedHeight} px-4 border border-gray-200
+        rounded-[var(--radius-s)] font-caption-02 text-gray-900 bg-white
+        transition-colors focus:outline-none focus:border-green-600 ${className}`}
+    />
+  );
+}
