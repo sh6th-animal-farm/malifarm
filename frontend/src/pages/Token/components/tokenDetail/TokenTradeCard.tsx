@@ -100,11 +100,11 @@ export default function TokenTradeCard({
     try {
       let balanceStr = '0';
       if (activeTab === 'buy') {
-        const res = await tokenApi.getCashBalance();
-        balanceStr = res.balance;
+        const data = await tokenApi.getCashBalance();
+        balanceStr = String(data);
       } else {
-        const res = await tokenApi.getTokenBalance(tokenId);
-        balanceStr = res.balance;
+        const data = await tokenApi.getTokenBalance(tokenId);
+        balanceStr = String(data);
       }
 
       const balance = Number(balanceStr);
