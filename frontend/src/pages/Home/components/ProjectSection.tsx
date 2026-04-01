@@ -1,22 +1,22 @@
-import ProjectCard from "@/components/common/ProjectCard";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { homeApi } from "@/api/homeApi";
-import type { Project } from "@/types/projectType";
-import { toCardModel } from "@/utils/projectMapper";
+import ProjectCard from '@/components/common/ProjectCard';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { homeApi } from '@/api/homeApi';
+import { toCardModel } from '@/utils/projectMapper';
+import { useStarreds } from '@/pages/project/hook/useStarreds';
 
 export default function ProjectSection() {
   const [loading, setLoading] = useState(true);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [starredProjects, setStarredProjects] = useState<number[]>([101]);
+  const { projects, setProjects, handleToggleStar } = useStarreds([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const data = await homeApi.getMainProjects();
+        console.log('메인 프로젝트 데이터:', data);
         setProjects(data.map(toCardModel));
       } catch (e) {
-        console.error("프로젝트 목록 로드 실패", e);
+        console.error('프로젝트 목록 로드 실패', e);
       } finally {
         setLoading(false);
       }
@@ -24,14 +24,6 @@ export default function ProjectSection() {
 
     fetchProjects();
   }, []);
-
-  const toggleStar = (projectId: number) => {
-    setStarredProjects((prev) =>
-      prev.includes(projectId)
-        ? prev.filter((id) => id !== projectId)
-        : [...prev, projectId],
-    );
-  };
 
   if (loading)
     return (
@@ -57,8 +49,8 @@ export default function ProjectSection() {
             <ProjectCard
               key={project.id}
               project={project}
-              starred={starredProjects.includes(project.id)}
-              onToggleStar={toggleStar}
+              starred={project.isStarred}
+              onToggleStar={handleToggleStar}
             />
           ))}
         </div>

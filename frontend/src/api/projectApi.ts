@@ -25,14 +25,9 @@ export const projectApi = {
     });
   },
   toggleStar: (projectId: number) => {
-    return apiClient.post(`/api/project/starred`, projectId, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    return apiClient.post(`/api/project/starred`, projectId, {});
   },
   getAllFarms: () => {
-    // 컨트롤러의 RequestMapping 경로에 따라 수정이 필요할 수 있습니다.
     return apiClient.get<FarmDTO[]>(`/api/project/farm/all`);
   },
   getProjectsByCondition: async (params: {

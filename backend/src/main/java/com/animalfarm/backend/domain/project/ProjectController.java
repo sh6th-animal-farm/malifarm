@@ -142,12 +142,7 @@ public class ProjectController {
 			);
 		} catch (Exception e) {
 			log.error("관심 상태 조회 실패: {}", e.getMessage());
-			return ResponseEntity
-				.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
-				.body(ApiResponseDTO.fail(
-					ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
-					ErrorCode.INTERNAL_SERVER_ERROR.getMessage()
-				));
+			throw new BusinessException(ErrorCode.STARRED_PROCESS_FAILED);
 		}
 	}
 
@@ -172,12 +167,7 @@ public class ProjectController {
 			);
 		} catch (Exception e) {
 			log.error("관심 프로젝트 처리 실패: {}", e.getMessage(), e);
-			return ResponseEntity
-				.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
-				.body(ApiResponseDTO.fail(
-					ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
-					"관심 프로젝트 처리 중 오류가 발생했습니다."
-				));
+			throw new BusinessException(ErrorCode.STARRED_PROCESS_FAILED);
 		}
 	}
 

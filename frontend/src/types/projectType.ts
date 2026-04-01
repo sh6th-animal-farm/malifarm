@@ -53,6 +53,7 @@ type Project = {
   percent: number;
   dDay: string;
   countdownTarget?: string | null;
+  isStarred?: boolean;
 };
 
 type Token = {

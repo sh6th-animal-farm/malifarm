@@ -64,6 +64,10 @@ apiClient.interceptors.response.use(
           alert(errorMsg);
           break;
 
+        case 'PROJECT_002': // 별(하트) 처리 실패 ("별(하트) 처리 중 오류가 발생했습니다.")
+          console.error('관심 프로젝트 처리 실패:', errorMsg);
+          break;
+
         default:
           // 그 외 에러
           alert(errorMsg);

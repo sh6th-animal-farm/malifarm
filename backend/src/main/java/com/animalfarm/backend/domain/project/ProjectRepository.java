@@ -21,7 +21,7 @@ public interface ProjectRepository {
 
 	List<ProjectListDTO> selectByCondition(ProjectSearchReqDTO projectSearchDTO);
 
-	List<ProjectListDTO> selectByConditionForMain();
+	List<ProjectListDTO> selectByConditionForMain(ProjectSearchReqDTO projectSearchDTO);
 
 	ProjectDetailDTO selectDetail(Long projectId);
 
