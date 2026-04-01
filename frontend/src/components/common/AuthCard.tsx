@@ -13,7 +13,7 @@ export default function AuthCard({
 }: AuthCardProps) {
   return (
     <div className="w-full max-w-lg">
-      <div className="bg-white p-10 rounded-2xl border border-gray-100 shadow-2xs">
+      <div className="bg-white p-10 rounded-2xl border border-gray-100 shadow-std">
         
         <h2 className="font-header-02 text-center mb-3">
           {title}
