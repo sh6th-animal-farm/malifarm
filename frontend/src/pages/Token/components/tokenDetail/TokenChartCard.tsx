@@ -24,10 +24,10 @@ export default function TokenChartCard({
   const [activeUnit, setActiveUnit] = useState('1');
 
   const units = [
-    { id: '1', label: '1m' },
-    { id: '5', label: '5m' },
-    { id: '15', label: '15m' },
-    { id: '60', label: '1h' },
+    { id: '1', label: '1M' },
+    { id: '5', label: '5M' },
+    { id: '15', label: '15M' },
+    { id: '60', label: '1H' },
   ];
 
   // 차트 초기화 (마운트 시 1회 실행)

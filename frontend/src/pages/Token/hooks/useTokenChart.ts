@@ -75,6 +75,10 @@ export const useTokenChart = (
       if (!tokenId || !candleSeriesRef.current) return;
 
       try {
+        // 이전 단위 데이터 삭제
+        candleSeriesRef.current?.setData([]);
+        volumeSeriesRef.current?.setData([]);
+
         // 과거 데이터 로드
         const response = await tokenApi.getCandles(
           Number(tokenId),
@@ -106,12 +110,12 @@ export const useTokenChart = (
 
         // 웹소켓 실시간 구독
         const url = import.meta.env.VITE_WS_URL;
-        const topic = `/topic/candles/${tokenId}`;
+        const topic = `/topic/candles/${tokenId}/${activeUnit}`;
         const subId = `candle-${tokenId}/${activeUnit}`;
 
         WebSocketManager.connect(url, () => {
           WebSocketManager.subscribe(subId, topic, (data) => {
-            console.log('[WebSocket - 캔들]', data);
+            console.log(`[WebSocket - 캔들(${activeUnit})]`, data);
             updateCandle(data);
           });
         });
