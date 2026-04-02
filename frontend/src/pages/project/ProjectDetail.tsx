@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/projectType';
 
@@ -25,7 +25,7 @@ export default function ProjectDetail() {
   const [currentUserId, setCurrentUserId] = useState<
     string | number | undefined
   >(undefined);
-
+  const navigate = useNavigate();
   const [isApplied, setIsApplied] = useState(false);
 
   useEffect(() => {
@@ -183,7 +183,7 @@ export default function ProjectDetail() {
         }
         primaryButtonText="계좌 연동하러 가기"
         secondaryButtonText="다음에 하기"
-        onPrimaryClick={() => Navigate('/mypage/account')} // 마이페이지 계좌연동으로 이동
+        onPrimaryClick={() => navigate('/mypage/wallet')}
       />
     </div>
   );
