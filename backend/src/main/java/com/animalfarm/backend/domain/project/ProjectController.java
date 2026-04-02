@@ -1,8 +1,6 @@
 package com.animalfarm.backend.domain.project;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,25 +62,11 @@ public class ProjectController {
 	}
 
 	@GetMapping("/{projectId}")
-	public ResponseEntity<?> selectDetail(@PathVariable("projectId") Long projectId) {
+	public ResponseEntity<ApiResponseDTO<ProjectDetailDTO>> selectDetail(@PathVariable("projectId") Long projectId) {
 		ProjectDetailDTO data = projectService.selectDetail(projectId);
-
-		// apiClient가 에러를 던지지 않도록 규격(success, status 등)을 맞춰줍니다.
-		Map<String, Object> response = new HashMap<>();
-		response.put("success", true); // apiClient가 이 필드를 검사할 확률이 높습니다.
-		response.put("status", 200);
-		response.put("data", data);    // 실제 데이터는 data 키에 담습니다.
-
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(ApiResponseDTO.success(data));
 	}
-
-	/*
-		@GetMapping("/{projectId}")
-		public ProjectDetailDTO selectDetail(@PathVariable("projectId")
-		Long projectId) {
-			return projectService.selectDetail(projectId);
-		}
-	*/
+	
 	@GetMapping("/all")
 	public ResponseEntity<ApiResponseDTO<List<ProjectDTO>>> selectAll() {
 		List<ProjectDTO> data = projectService.selectAll();

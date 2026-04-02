@@ -17,9 +17,9 @@ export const tokenApi = {
     apiClient.get<TokenOhlcv>(`/api/token/ohlcv/${tokenId}`),
   getCandles: (tokenId: number, unit: number = 1) =>
     apiClient.get<CandleStick[]>(`/api/market/candles/${tokenId}?unit=${unit}`),
-  getCashBalance: () => apiClient.get<string>('/api/account/balance'),
+  getCashBalance: () => apiClient.get<number>('/api/account/balance'),
   getTokenBalance: (tokenId: number) =>
-    apiClient.get<string>(`/api/account/balance/${tokenId}`),
+    apiClient.get<number>(`/api/account/balance/${tokenId}`),
   createOrder: (tokenId: number, order: Order) =>
     apiClient.post<Order>(`/api/token/order/${tokenId}`, order),
   cancelOrder: (tokenId: number, orderId: number) =>
