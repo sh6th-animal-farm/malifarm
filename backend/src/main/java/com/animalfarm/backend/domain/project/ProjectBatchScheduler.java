@@ -8,6 +8,7 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@EnableScheduling
 public class ProjectBatchScheduler {
 	@Autowired
 	ProjectService projectService;
@@ -39,6 +41,8 @@ public class ProjectBatchScheduler {
 	// 1분마다 실행
 	@Scheduled(cron = "0 * * * * *")
 	public void runBatch() {
+		log.info(">>>>>> [TEST] 스케줄러 살아있음! <<<<<<");
+		System.out.println("스케줄러 시작");
 		projectService.selectStatus();
 		subscriptionService.projectStartCheck();
 	}
