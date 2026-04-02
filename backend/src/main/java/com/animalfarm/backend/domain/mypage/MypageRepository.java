@@ -10,6 +10,7 @@ import com.animalfarm.backend.domain.mypage.dto.MypageProjectDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.TokenInfoDTO;
+import com.animalfarm.backend.domain.mypage.dto.UserInfoDTO;
 
 @Mapper
 public interface MypageRepository {
@@ -68,4 +69,7 @@ public interface MypageRepository {
 
 	// 거래 번호로 토큰 이름 및 종목 코드 조회
 	List<TokenInfoDTO> findTokenInfoByTxId(@Param("txIdList") List<Long> txIdList);
+
+	// 사용자 정보 받아오기
+	UserInfoDTO getUserInfoById(Long userId);
 }
