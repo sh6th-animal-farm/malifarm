@@ -107,7 +107,6 @@ public class AllocationBatchWriter implements ItemWriter<AllocationIntermediateR
 
 	public List<AllocationResultDTO> resultAllocation(Long tokenId, List<AllocationRequestDTO> allocationTokenDTO) {
 		String url = KH_BASE_URL + "api/project/result/" + tokenId;
-		System.out.println("khAPI 호출");
 		return externalApiUtil.callApi(url, HttpMethod.POST, allocationTokenDTO,
 			new ParameterizedTypeReference<ExternalApiResponseDTO<List<AllocationResultDTO>>>() {
 			});
