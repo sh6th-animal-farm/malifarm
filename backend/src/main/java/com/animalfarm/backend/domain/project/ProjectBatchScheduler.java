@@ -41,8 +41,6 @@ public class ProjectBatchScheduler {
 	// 1분마다 실행
 	@Scheduled(cron = "0 * * * * *")
 	public void runBatch() {
-		log.info(">>>>>> [TEST] 스케줄러 살아있음! <<<<<<");
-		System.out.println("스케줄러 시작");
 		projectService.selectStatus();
 		subscriptionService.projectStartCheck();
 	}

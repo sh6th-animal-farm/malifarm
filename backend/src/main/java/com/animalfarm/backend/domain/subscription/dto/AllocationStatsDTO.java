@@ -18,6 +18,7 @@ import lombok.ToString;
 public class AllocationStatsDTO {
 	private BigDecimal maxAmount;           // 최대 신청 금액
 	private BigDecimal minAmount;           // 최소 신청 금액
+	private BigDecimal minorTotalAmount;    // 기준액 미만(미달자) 신청 금액의 총합
 	private BigDecimal totalExcessAmount;    // (Case 2용) 기준액 초과분 총합
 	private Long highValueCount;             // (Case 2용) 기준액 이상 신청자 수
 	private Long totalCount;                 // 전체 신청자 수

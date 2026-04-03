@@ -1,10 +1,12 @@
 package com.animalfarm.backend.domain.subscription;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.animalfarm.backend.domain.subscription.dto.AllocationStatsDTO;
 import com.animalfarm.backend.domain.subscription.dto.AllocationTokenDTO;
 import com.animalfarm.backend.domain.subscription.dto.ProjectStartCheckDTO;
 import com.animalfarm.backend.domain.subscription.dto.SubscriptionApplicationDTO;
@@ -32,6 +34,8 @@ public interface SubscriptionRepository {
 	public abstract Long selectUclId(SubscriptionApplicationDTO subscriptionInsertDTO);
 
 	public abstract List<ProjectStartCheckDTO> selectExpiredSubscriptions();
+
+	public abstract AllocationStatsDTO selectAllocationStats(Long projectId, BigDecimal standardAmount);
 
 	public abstract boolean updateTokenDelete(Long tokenId);
 

@@ -3,11 +3,9 @@ package com.animalfarm.backend.domain.subscription;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.animalfarm.backend.batch.AllocationBatchService;
 import com.animalfarm.backend.domain.project.ProjectService;
-import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
 import com.animalfarm.backend.domain.refund.RefundDTO;
 import com.animalfarm.backend.domain.refund.RefundRepository;
 import com.animalfarm.backend.domain.refund.RefundService;
@@ -30,16 +28,12 @@ import com.animalfarm.backend.domain.retry.ApiRetryService;
 import com.animalfarm.backend.domain.retry.ApiType;
 import com.animalfarm.backend.domain.subscription.dto.AllocationRequestDTO;
 import com.animalfarm.backend.domain.subscription.dto.AllocationResultDTO;
-import com.animalfarm.backend.domain.subscription.dto.AllocationTokenDTO;
-import com.animalfarm.backend.domain.subscription.dto.InvestorDTO;
 import com.animalfarm.backend.domain.subscription.dto.ProjectStartCheckDTO;
 import com.animalfarm.backend.domain.subscription.dto.SubscriptionApplicationDTO;
 import com.animalfarm.backend.domain.subscription.dto.SubscriptionHistDTO;
 import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.domain.token.TokenService;
-import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.ApiResponseDTO;
-import com.animalfarm.backend.global.HashManager;
 import com.animalfarm.backend.global.MailService;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.http.ExternalApiClient;
@@ -55,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SubscriptionService {
 	private final ApplicationContext applicationContext;
 	private final SubscriptionRepository subscriptionRepository;
+	private final AllocationBatchService allocationBatchService;
 	private final RefundRepository refundRepository;
 	private final ExternalApiClient externalApiUtil;
 	private final RestTemplate restTemplate;
@@ -203,8 +198,10 @@ public class SubscriptionService {
 	}
 
 	public boolean subscriptionApplication(SubscriptionApplicationDTO subscriptionInsertDTO) {
-		Long userId = SecurityUtil.getCurrentUserId();
-		subscriptionInsertDTO.setUserId(userId);
+		if (subscriptionInsertDTO.getUserId() == null) {
+			Long userId = SecurityUtil.getCurrentUserId();
+			subscriptionInsertDTO.setUserId(userId);
+		}
 		return subscriptionRepository.subscriptionApplication(subscriptionInsertDTO);
 	}
 
@@ -212,6 +209,7 @@ public class SubscriptionService {
 	public void postApplication(SubscriptionApplicationDTO dto) {
 		Long uclId = subscriptionRepository.selectUclId(dto.getUserId());
 		dto.setUclId(uclId);
+		System.out.println("dto   " + dto);
 		String targetUrl = KH_BASE_URL + "api/project/application/" + dto.getTokenId() + "?subscriptionId="
 			+ dto.getShId() + "&walletId=" + dto.getUclId() + "&amount=" + dto.getSubscriptionAmount();
 
@@ -260,12 +258,12 @@ public class SubscriptionService {
 				// 핵심: 각 프로젝트 처리를 개별 트랜잭션으로 묶은 메서드로 넘김
 				self.processIndividualProject(data);
 			} catch (Exception e) {
-				log.error("[프로젝트 {} 처리 중 전면 롤백] 사유: {}", data.getProjectId(), e.getMessage());
+				log.error("[프로젝트 {} 처리 중 전면 롤백] 사유: {}", data.getProjectId(), e.getMessage(), e);
 			}
 		}
 	}
 
-	@Transactional(rollbackFor = Exception.class)
+	//@Transactional(rollbackFor = Exception.class)
 	public void processIndividualProject(ProjectStartCheckDTO data) throws Exception {
 		BigDecimal rate70 = new BigDecimal("70");
 		BigDecimal rate90 = new BigDecimal("90");
@@ -293,11 +291,15 @@ public class SubscriptionService {
 			}
 		} else if (rate.compareTo(rate90) >= 0 && rate.compareTo(rate100) < 0) {
 			// 마리팜이 충당할 가격
-			BigDecimal leftAmount = data.getTargetAmount().subtract(data.getActualAmount());
+			BigDecimal leftAmount = data.getTargetAmount()
+				.subtract(data.getActualAmount())
+				.setScale(0, RoundingMode.DOWN);
 			SubscriptionApplicationDTO applicationDTO = new SubscriptionApplicationDTO();
 			applicationDTO.setProjectId(data.getProjectId());
 			applicationDTO.setSubscriptionAmount(leftAmount);
 			applicationDTO.setTokenId(tokenId);
+			applicationDTO.setUserId(1L);
+			System.out.println(applicationDTO);
 			subscriptionApplication(applicationDTO);
 			System.out.println(applicationDTO);
 			postApplication(applicationDTO);
@@ -305,7 +307,8 @@ public class SubscriptionService {
 			subscriptionRepository.updateProjectInProgress(projectId);
 		} else {
 			subscriptionRepository.updateProjectInProgress(projectId);
-			self.selectAllocationInfo(projectId);
+			//self.selectAllocationInfo(projectId);
+			allocationBatchService.runAllocationBatch(data.getProjectId());
 			System.out.println(rate + " 그대로 진행");
 		}
 	}
@@ -416,13 +419,15 @@ public class SubscriptionService {
 		self.updateRefundAndSubsTable(refundDTO, subscriptionHistDTO);
 	}
 
+
+	/*
 	public void selectAllocationInfo(Long inprogressProjectId) {
 		System.out.println("배정 로직 진입 확인");
 		AllocationTokenDTO dto = subscriptionRepository.selectAllocationInfo(inprogressProjectId);
-		List<InvestorDTO> investors = dto.getInvestors();
-		List<AllocationRequestDTO> requestList = new ArrayList<AllocationRequestDTO>();
-		List<TokenLedgerDTO> newTokenList = new ArrayList<TokenLedgerDTO>();
-		List<Long> shIdList = new ArrayList<Long>();
+		//List<InvestorDTO> investors = dto.getInvestors();
+		//List<AllocationRequestDTO> requestList = new ArrayList<AllocationRequestDTO>();
+		//List<TokenLedgerDTO> newTokenList = new ArrayList<TokenLedgerDTO>();
+		//List<Long> shIdList = new ArrayList<Long>();
 		Long tokenId = dto.getTokenId();
 		Long projectId = dto.getProjectId();
 		String lastPrevHash = tokenReopsitory.selectLastHash();
@@ -433,19 +438,18 @@ public class SubscriptionService {
 		final int TOKEN_SCALE = 4;
 		BigDecimal standardAmount = ((dto.getTargetAmount().divide(dto.getSubscriberCount(), MONEY_SCALE,
 			RoundingMode.FLOOR)).max(dto.getMinAmountPerInvestor()));
-		BigDecimal maxAmount = investors.stream().map(investor -> investor.getSubscriptionAmount())
-			.max((a, b) -> a.compareTo(b)).orElse(BigDecimal.ZERO);
-
-		BigDecimal minAmount = investors.stream().map(investor -> investor.getSubscriptionAmount())
-			.min((a, b) -> a.compareTo(b)).orElse(BigDecimal.ZERO);
+		AllocationStatsDTO status = subscriptionRepository.selectAllocationStats(inprogressProjectId, standardAmount);
+		BigDecimal bonusPie = dto.getTargetAmount()
+			.subtract(status.getMinorTotalAmount())
+			.subtract(standardAmount.multiply(new BigDecimal(status.getHighValueCount())));
 		System.out.println("standardAmount : " + standardAmount);
-		if (minAmount.compareTo(standardAmount) >= 0) {
+		if (status.getMinAmount().compareTo(standardAmount) >= 0) {
 			// [Case 01] 모든 참여자가 '기준 금액' 이상 신청
 			// 모든 참여자에게 **[기준 금액]**만큼만 동일하게 배분합니다
-			lastPrevHash = processCase1(dto, investors, TOKEN_SCALE, standardAmount, requestList, newTokenList,
-				projectId, tokenId,
-				adminTotalBalance, lastPrevHash);
-		} else if (minAmount.compareTo(standardAmount) < 0 && maxAmount.compareTo(standardAmount) >= 0) {
+			lastPrevHash = processCase1(dto, status, TOKEN_SCALE, standardAmount, projectId, tokenId, adminTotalBalance,
+				lastPrevHash);
+		} else if (status.getMinAmount().compareTo(standardAmount) < 0
+			&& status.getMaxAmount().compareTo(standardAmount) >= 0) {
 			// [Case 02] 일부만 '기준 금액' 이상 신청 (핵심 로직)
 			lastPrevHash = processCase2(dto, investors, TOKEN_SCALE, MONEY_SCALE, standardAmount, requestList,
 				newTokenList, projectId, tokenId, adminTotalBalance,
@@ -519,6 +523,7 @@ public class SubscriptionService {
 			log.info("환불 데이터 생성 완료: {}건", refundList.size());
 		}
 	}
+	*/
 
 	// 강황증권에 토큰 배정 보내기
 	public List<AllocationResultDTO> resultAllocation(Long tokenId, List<AllocationRequestDTO> allocationTokenDTO) {
@@ -535,22 +540,25 @@ public class SubscriptionService {
 		}
 	}
 
+	/*
 	private String processCase1(AllocationTokenDTO dto,
-		List<InvestorDTO> investors,
+		AllocationStatsDTO stats,
 		int TOKEN_SCALE,
 		BigDecimal standardAmount,
-		List<AllocationRequestDTO> requestList,
-		List<TokenLedgerDTO> newTokenList,
 		Long projectId,
 		Long tokenId,
 		BigDecimal adminTotalBalance,
 		String lastPrevHash) {
+
+		int pageSize = 1000;
+		int offset = 0;
+		BigDecimal pricePerToken = dto.getTargetAmount().divide(dto.getTotalSupply(), 10,
+			RoundingMode.FLOOR);
+
 		for (InvestorDTO sendData : investors) {
 			Long shId = sendData.getShId();
 			Long userId = sendData.getUserId();
 			BigDecimal subscriptionAmount = sendData.getSubscriptionAmount();
-			BigDecimal pricePerToken = dto.getTargetAmount().divide(dto.getTotalSupply(), 10,
-				RoundingMode.FLOOR);
 			Long uclId = subscriptionRepository.selectUclId(userId);
 			BigDecimal resultTokenCount = standardAmount.divide(pricePerToken, TOKEN_SCALE, RoundingMode.FLOOR);
 			BigDecimal subscriptionTokenCount = subscriptionAmount.divide(pricePerToken, TOKEN_SCALE,
@@ -672,11 +680,6 @@ public class SubscriptionService {
 				// 총 초과 금액 += 개별 신청액 - 기준 금액
 				totalExcessAmount = totalExcessAmount.add(subscriptionAmount.subtract(standardAmount));
 				// 남은 토큰 발행량
-				/*
-				 * remainingTokens = remainingTokens
-				 * .subtract(standardAmount.divide(pricePerToken, TOKEN_SCALE,
-				 * RoundingMode.FLOOR));
-				 */
 				highValueInvestors.add(sendData);
 			}
 		}
@@ -803,4 +806,5 @@ public class SubscriptionService {
 		}
 		return lastPrevHash;
 	}
+	*/
 }

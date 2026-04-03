@@ -182,7 +182,7 @@
         p.target_amount, t.token_id, t.total_supply;
     </select>
 
-    <select id="selectAllocationStats" resultType="com.yourpackage.AllocationStatsDTO">
+    <select id="selectAllocationStats" resultType="AllocationStatsDTO">
         <![CDATA[
             SELECT
                 MAX(subscription_amount) as maxAmount,
@@ -196,7 +196,7 @@
                          THEN (subscription_amount - #{standardAmount}) ELSE 0 END) as totalExcessAmount,
 
                 COUNT(CASE WHEN subscription_amount > #{standardAmount} THEN 1 END) as highValueCount
-            FROM subscription
+            FROM subscription_hists
             WHERE project_id = #{projectId}
     ]]>
     </select>
