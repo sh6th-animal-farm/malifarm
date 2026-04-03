@@ -322,9 +322,9 @@ export const WarningCircle = ({ className, ...props }: IconProps) => (
     <path
       d="M30 42.5C36.9036 42.5 42.5 36.9036 42.5 30C42.5 23.0964 36.9036 17.5 30 17.5C23.0964 17.5 17.5 23.0964 17.5 30C17.5 36.9036 23.0964 42.5 30 42.5Z"
       stroke="#E53935"
-      stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M30 25V30"
@@ -343,7 +343,12 @@ export const WarningCircle = ({ className, ...props }: IconProps) => (
   </svg>
 );
 
-export const PersonalUser = ({ size = 60, color = "#000000", className, ...props }: IconProps) => (
+export const PersonalUser = ({
+  size = 60,
+  color = '#000000',
+  className,
+  ...props
+}: IconProps) => (
   <svg
     width={size}
     height={size}
@@ -354,12 +359,18 @@ export const PersonalUser = ({ size = 60, color = "#000000", className, ...props
     {...props}
   >
     <path
-    fill={color}
-     d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"/>
+      fill={color}
+      d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"
+    />
   </svg>
 );
 
-export const EnterpriseUser = ({ size = 60, color = "#000000", className, ...props }: IconProps) => (
+export const EnterpriseUser = ({
+  size = 60,
+  color = '#000000',
+  className,
+  ...props
+}: IconProps) => (
   <svg
     width={size}
     height={size}
@@ -409,3 +420,48 @@ export const PriceDown = ({ className, ...props }: IconProps) => (
     />
   </svg>
 );
+
+export const CircularProgress = ({ percent }: { percent: number }) => {
+  const size = 100;
+  const center = size / 2;
+  const strokeWidth = 10;
+  const radius = (size - strokeWidth) / 2;
+
+  const circumference = 2 * Math.PI * radius; // 약 276.46
+  const offset = circumference - (percent / 100) * circumference;
+
+  return (
+    <div className="flex items-center justify-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {/* 1. 배경 */}
+        <circle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          stroke="#4A9F2E"
+          strokeOpacity="0.2"
+          strokeWidth={strokeWidth}
+        />
+
+        {/* 2. 진행 */}
+        <circle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          stroke="#4A9F2E"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          style={{
+            strokeDashoffset: offset,
+            transition: 'stroke-dashoffset 0.5s ease-out', // 차오를 때 부드러운 효과
+            transform: 'rotate(-90deg)',
+            transformOrigin: 'center',
+          }}
+        />
+      </svg>
+    </div>
+  );
+};

@@ -203,4 +203,14 @@
         JOIN tokens t ON th.token_id = t.token_id
     </select>
 
+    <select id="getUserInfoById" parameterType="long" resultType="UserInfoDTO">
+        SELECT
+            user_id AS userId,
+            user_name AS username,
+            role,
+            investor_type AS type
+        FROM users
+        WHERE user_id = #{userId}
+    </select>
+
 </mapper>

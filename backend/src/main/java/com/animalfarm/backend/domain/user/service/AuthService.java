@@ -2,6 +2,7 @@ package com.animalfarm.backend.domain.user.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,12 +32,42 @@ public class AuthService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	private static final Pattern LETTER_PATTERN = Pattern.compile("[A-Za-z]");
+	private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]");
+	private static final Pattern SPECIAL_PATTERN = Pattern.compile("[^A-Za-z0-9]");
+
 	private boolean isBlank(String s) {
 		return s == null || s.isBlank();
 	}
 
 	private String emailVerifiedKey(String email) {
 		return "EMAIL_VERIFIED:" + email;
+	}
+
+	private void validatePasswordRule(String password) {
+		boolean hasLetter = LETTER_PATTERN.matcher(password).find();
+		boolean hasNumber = NUMBER_PATTERN.matcher(password).find();
+		boolean hasSpecial = SPECIAL_PATTERN.matcher(password).find();
+
+		int combinationCount = 0;
+		if (hasLetter)
+			combinationCount++;
+		if (hasNumber)
+			combinationCount++;
+		if (hasSpecial)
+			combinationCount++;
+
+		if (combinationCount < 2) {
+			throw new IllegalArgumentException("비밀번호는 영문, 숫자, 특수문자 중 2종류 이상을 조합해야 합니다.");
+		}
+
+		if (combinationCount == 2 && password.length() < 10) {
+			throw new IllegalArgumentException("비밀번호는 영문, 숫자, 특수문자 중 2종류 조합 시 10자 이상이어야 합니다.");
+		}
+
+		if (combinationCount >= 3 && password.length() < 8) {
+			throw new IllegalArgumentException("비밀번호는 영문, 숫자, 특수문자 중 3종류 이상 조합 시 8자 이상이어야 합니다.");
+		}
 	}
 
 	// 로그인
@@ -113,6 +144,9 @@ public class AuthService {
 		if (isBlank(req.getUserName())) {
 			throw new IllegalArgumentException("이름이 필요합니다.");
 		}
+		if (isBlank(req.getPhoneNumber())) {
+			throw new IllegalArgumentException("휴대폰 번호가 필요합니다.");
+		}
 
 		if (userRepository.findByEmail(req.getEmail()) != null) {
 			throw new IllegalArgumentException("이미 가입된 이메일입니다.");
@@ -122,6 +156,8 @@ public class AuthService {
 		if (verified == null) {
 			throw new IllegalStateException("이메일 인증이 완료되지 않았습니다.");
 		}
+
+		validatePasswordRule(req.getPassword());
 
 		UserDTO user = new UserDTO();
 		user.setEmail(req.getEmail());

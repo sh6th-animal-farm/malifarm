@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -28,8 +29,10 @@ import com.animalfarm.backend.domain.mypage.dto.ProfileDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProfileUpdateRequestDTO;
 import com.animalfarm.backend.domain.mypage.dto.ProjectTabsDTO;
 import com.animalfarm.backend.domain.mypage.dto.TokenInfoDTO;
+import com.animalfarm.backend.domain.mypage.dto.UserInfoDTO;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
 import com.animalfarm.backend.global.dto.PagedResponseDTO;
+import com.animalfarm.backend.global.http.ExternalApiClient;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -47,6 +50,9 @@ public class MypageService {
 	// 강황증권 API 서버 주소
 	@Value("${api.kh-stock.url}")
 	private String khUrl;
+
+	@Autowired
+	ExternalApiClient externalApiClient;
 
 	// ---------------------------------------------------------
 	// 거래 내역 조회
@@ -194,7 +200,7 @@ public class MypageService {
 
 	// 계좌 연동하기
 	@Transactional
-	public Long linkGangHwangAccount() {
+	public Long linkKangHwangAccount() {
 		Long userId = SecurityUtil.getCurrentUserId();
 		if (userId == null) {
 			return null;
@@ -208,19 +214,17 @@ public class MypageService {
 		}
 
 		try {
-			// 1. 강황증권 API로 {userId}에 해당하는 지갑 정보 조회 (GET 방식)
+			// 1. 강황증권 API로 {userId}에 해당하는 지갑 연결
 			String url = khUrl + "api/my/account/" + userId;
 
-			ResponseEntity<ExternalApiResponseDTO<Long>> response = restTemplate.exchange(
+			Long walletId = externalApiClient.callApi(
 				url,
 				HttpMethod.GET,
 				null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<Long>>() {
-				});
+				new ParameterizedTypeReference<ExternalApiResponseDTO<Long>>() {}
+			);
 
-			Long walletId = (response.getBody() != null) ? response.getBody().getPayload() : null;
-
-			// 2. 결과가 있으면 우리 DB(user_certificate_links)에 저장
+			// 2. 연동할 지갑이 있으면, 우리 DB(user_certificate_links)에 저장
 			if (walletId != null) {
 				// 랜덤 토큰 및 만료 시간 생성 (테이블 NOT NULL 제약 조건 대응)
 				String randomAccessToken = UUID.randomUUID().toString();
@@ -235,7 +239,48 @@ public class MypageService {
 				return walletId;
 			}
 		} catch (Exception e) {
-			System.err.println("[ERROR] 계좌 연동 실패 (계좌 없음 또는 통신 오류): " + e.getMessage());
+			System.err.println("[ERROR] 계좌 연동 실패: " + e.getMessage());
+		}
+		return null; // 계좌가 없으면 null 반환
+	}
+
+	// 계좌 생성 및 연동하기
+	@Transactional
+	public Long craeteLinkAccount() {
+		Long userId = SecurityUtil.getCurrentUserId();
+		if (userId != null) {
+			try {
+				// 1. 사용자 정보 받아오기 (강황증권 계정 없을 때 생성하기 위함)
+				UserInfoDTO userInfo = mypageRepository.getUserInfoById(userId);
+
+				// 2. 강황증권 API로 {userId}에 해당하는 지갑 연결
+				String url = khUrl + "api/my/create-account";
+
+				Long walletId = externalApiClient.callApi(
+					url,
+					HttpMethod.POST,
+					userInfo,
+					new ParameterizedTypeReference<ExternalApiResponseDTO<Long>>() {
+					}
+				);
+
+				// 3. 연동할 지갑이 있으면, 우리 DB(user_certificate_links)에 저장
+				if (walletId != null) {
+					// 랜덤 토큰 및 만료 시간 생성 (테이블 NOT NULL 제약 조건 대응)
+					String randomAccessToken = UUID.randomUUID().toString();
+					String randomRefreshToken = UUID.randomUUID().toString();
+
+					// 4. DB 저장 (certificates_id는 1로 고정)
+					mypageRepository.upsertUserWalletLink(
+						userId,
+						walletId,
+						randomAccessToken,
+						randomRefreshToken);
+					return walletId;
+				}
+			} catch (Exception e) {
+				System.err.println("[ERROR] 계좌 생성 및 연동 실패: " + e.getMessage());
+			}
 		}
 		return null; // 계좌가 없으면 null 반환
 	}

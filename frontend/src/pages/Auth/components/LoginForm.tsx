@@ -21,7 +21,7 @@ export default function LoginForm({
   onSubmit,
 }: LoginFormProps) {
   return (
-    <div className="flex flex-col items-center px-6 pt-30 min-h-[calc(80vh-var(--spacing-header-height))] bg-gray-50">
+    <div className="flex flex-col items-center px-6 pt-20 min-h-[calc(75vh-var(--spacing-header-height))] bg-gray-50">
       
       <AuthCard
         title="로그인"
