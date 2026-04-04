@@ -3,30 +3,15 @@ import { Link } from 'react-router-dom';
 import { homeApi } from '@/api/homeApi';
 import type { TokenShort } from '@/types/tokenType';
 import TokenTopTen from './TokenTopTen';
+import { useTokenList } from '@/pages/Token/hooks/useTokenList.ts';
 
 export default function TokenSection() {
-  const [loading, setLoading] = useState(true);
-  const [tokens, setTokens] = useState<TokenShort[]>([]);
+  const { tokenList, isLoading } = useTokenList('CHANGE', 10); // 등락률 높은 순으로 10개 추출
 
-  useEffect(() => {
-    const fetchTokens = async () => {
-      try {
-        const data = await homeApi.getMainTokens();
-        setTokens(data);
-      } catch (e) {
-        console.error('토큰 목록 로드 실패', e);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTokens();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-14 md:py-20 lg:py-24">
-        <div className="layout-container">로딩중...</div>
+        <div className="layout-container">실시간 토큰 정보를 불러오는 중입니다.</div>
       </section>
     );
   }
@@ -42,7 +27,7 @@ export default function TokenSection() {
         </div>
 
         {/* 토큰 거래소 TOP 10 */}
-        <TokenTopTen tokens={tokens} />
+        <TokenTopTen tokens={tokenList} />
       </div>
     </section>
   );
