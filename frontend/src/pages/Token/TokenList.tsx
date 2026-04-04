@@ -7,20 +7,20 @@ import { useTokenList } from '@/pages/Token/hooks/useTokenList';
 
 export default function TokenList() {
   // 훅으로 초기 데이터 + 실시간 업데이트 + 정렬된 리스트를 한 번에 가져옴
-  const { tokenList, isLoading } = useTokenList();
+  const { tokenList = [], isLoading } = useTokenList('VOLUME');
   const [hoveredTokenId, setHoveredTokenId] = useState<number | null>(null);
   // 0.3초 동안 hover 상태가 유지될 때만 debouncedId 업데이트
   const debouncedId = useDebounce(hoveredTokenId, 300);
 
   // 리스트가 로드되었을 때 첫 번째 토큰을 기본으로 보여줌
   useEffect(() => {
-    if (!hoveredTokenId && tokenList.length > 0) {
+    if (!hoveredTokenId && tokenList?.length > 0) {
       setHoveredTokenId(tokenList[0].tokenId);
     }
   }, [tokenList, hoveredTokenId]);
 
   // 로딩 상태 처리
-  if (isLoading && tokenList.length === 0) {
+  if (isLoading && (!tokenList || tokenList.length === 0)) {
     return (
       <div className="p-10 text-center">토큰 목록을 불러오는 중입니다.</div>
     );

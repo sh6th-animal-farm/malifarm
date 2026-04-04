@@ -29,9 +29,19 @@ export default function TokenListCard({
               </th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-gray-100">
-            {tokenList.map((token) => {
-              return (
+            {tokenList.length === 0 ? (
+              <tr>
+                <td colSpan={3} className="py-20 text-center">
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <span className="text-4xl">🔍</span>
+                    <p className="text-gray-400 font-body-02">조회된 토큰이 없습니다.</p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              tokenList.map((token) => (
                 <tr
                   key={token.tokenId}
                   onClick={() => onTokenClick?.(token.tokenId)}
@@ -77,8 +87,8 @@ export default function TokenListCard({
                     </div>
                   </td>
                 </tr>
-              );
-            })}
+              ))
+            )}
           </tbody>
         </table>
       </div>
