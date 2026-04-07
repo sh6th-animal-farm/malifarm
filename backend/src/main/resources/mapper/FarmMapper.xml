@@ -41,4 +41,16 @@
         )
     </insert>
 
+    <insert id="insertFarmEnv">
+        INSERT INTO farm_env_data (
+        farm_id,
+        humidity_inside,
+        temperature_inside
+        ) VALUES (
+        #{farmId},
+        #{humidityInside},
+        #{temperatureInside}
+        )
+    </insert>
+
 </mapper>

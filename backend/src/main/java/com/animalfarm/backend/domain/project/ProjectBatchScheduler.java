@@ -35,12 +35,18 @@ public class ProjectBatchScheduler {
 	private final JobLauncher jobLauncher;
 	private final Job projectClosingJob;
 	private final FinancesRepository financesRepository;
+	private final FarmService farmService;
 
 	// 1분마다 실행
 	@Scheduled(cron = "0 * * * * *")
 	public void runBatch() {
 		projectService.selectStatus();
 		subscriptionService.projectStartCheck();
+	}
+
+	@Scheduled(cron = "0 5 * * * *")
+	public void runFarmBatch() {
+		farmService.saveCurrentHourEnv();
 	}
 
 	// 매일 자정

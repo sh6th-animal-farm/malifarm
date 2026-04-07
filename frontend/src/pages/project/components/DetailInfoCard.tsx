@@ -9,22 +9,29 @@ interface InfoGridProps {
   items: InfoItem[];
 }
 
-const InfoBox = ({ label, value, highlight = false, fullWidth = false }: InfoItem) => (
-  <div className={`
-    /* 패딩 24px, 배경 gray-0, 테두리 gray-100, 라운드 radius-m */
+const InfoBox = ({
+  label,
+  value,
+  highlight = false,
+  fullWidth = false,
+}: InfoItem) => (
+  <div
+    className={`
     p-[24px] bg-white border border-gray-100 rounded-[var(--radius-m)]
-    /* 그림자 테마 적용 및 높이 정렬 */
     shadow-std flex flex-col justify-center min-h-[102px] w-full
     ${fullWidth ? 'md:col-span-2' : 'col-span-1'}
-  `}>
+  `}
+  >
     {/* 테마의 font-caption-02 (500, 14px) 적용 */}
     <label className="font-caption-02 text-gray-400 block mb-2 uppercase tracking-tight">
       {label}
     </label>
     {/* 테마의 font-subtitle-01 (600, 18px) 적용 */}
-    <p className={`font-subtitle-01 whitespace-pre-wrap ${
-      highlight ? 'text-green-500' : 'text-gray-900'
-    }`}>
+    <p
+      className={`font-subtitle-01 whitespace-pre-wrap ${
+        highlight ? 'text-green-500' : 'text-gray-900'
+      }`}
+    >
       {value}
     </p>
   </div>

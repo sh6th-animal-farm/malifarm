@@ -45,6 +45,8 @@ public class ProjectDetailDTO {
 	private FarmDTO farm;
 
 	private List<BigDecimal> temperatureInside; // FarmEnvData 테이블 연관
+	private List<BigDecimal> humidityInside;
+	private OffsetDateTime createdAt;
 
 	private String crop; // Cultivations 테이블 연관
 	private String method;

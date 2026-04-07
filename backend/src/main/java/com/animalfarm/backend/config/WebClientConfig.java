@@ -23,10 +23,10 @@ public class WebClientConfig {
 		// 통신 세부 설정
 		HttpClient httpClient = HttpClient.create()
 			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)              // 연결 타임아웃 5초
-			.responseTimeout(Duration.ofSeconds(10))                         // 응답 타임아웃 10초
+			.responseTimeout(Duration.ofSeconds(30))                         // 응답 타임아웃 30초
 			.doOnConnected(conn -> conn
-				.addHandlerLast(new ReadTimeoutHandler(10))    // 읽기 타임아웃 10초
-				.addHandlerLast(new WriteTimeoutHandler(10))); // 쓰기 타임아웃 10초
+				.addHandlerLast(new ReadTimeoutHandler(30))    // 읽기 타임아웃 30초
+				.addHandlerLast(new WriteTimeoutHandler(30))); // 쓰기 타임아웃 30초
 
 		return WebClient.builder()
 			.clientConnector(new ReactorClientHttpConnector(httpClient))
