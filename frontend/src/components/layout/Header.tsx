@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { authApi } from "@/api/authApi.ts";
 import Icon from "@/components/icon";
+import userSession from "@/pages/Auth/hook/userSession";
 
 export default function Header() {
   const location = useLocation();
@@ -11,6 +12,8 @@ export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  const { sessionExpireText } = userSession();
+
   // 컴포넌트 마운트 시 로그인 상태 및 사용자 정보 초기화
   useEffect(() => {
     // 1. 로컬 스토리지에서 액세스 토큰 불러오기
@@ -19,6 +22,8 @@ export default function Header() {
 
     if (!token) {
       setIsLogIn(false);
+      setUserName("");
+      setUserRole("");
       return;
     }
 
@@ -271,7 +276,14 @@ export default function Header() {
                   </button>
                 </div>
               </div>
-              <span className="font-button-02 text-gray-700">{userName} 님</span>
+              <div className="leading-tight">
+                <span className="pr-2 font-button-02 text-gray-700">
+                  {userName} 님
+                </span>
+                <span className="mt-0.5 text-[14px] text-gray-700">
+                    {sessionExpireText}
+                </span>
+              </div>
             </div>
           )}
         </div>

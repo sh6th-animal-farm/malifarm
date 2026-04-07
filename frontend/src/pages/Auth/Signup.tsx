@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import apiClient from "@/api/apiClient";
-import { CheckCircle, WarningCircle } from "@/components/icon/Icons";
 import SignupAgreeStep from "./components/SignupAgreeStep";
 import SignupProgress from "./components/SignupProgress";
 import SignupSelect from "./components/SignupSelect";
@@ -502,8 +501,6 @@ export default function Signup() {
 
     return (
       <div className={`min-h-[20px] mt-2 flex items-center gap-2 text-[13px] font-medium ${color}`}>
-        {status.ok === true && <CheckCircle className="w-4 h-4 shrink-0" />}
-        {status.ok === false && <WarningCircle className="w-4 h-4 shrink-0" />}
         <span>{status.msg}</span>
       </div>
     );

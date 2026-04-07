@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './styles/index.css';
 import Header from './components/layout/Header';
@@ -22,6 +23,32 @@ import CarbonLayout from './pages/mypage/components/myCarbon/CarbonLayout';
 import ProjectList from './pages/project/ProjectList';
 
 function App() {
+  useEffect(() => {
+    let lastSavedTime = 0;
+
+    const updateActivity = () => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
+
+      const now = Date.now();
+      if (now - lastSavedTime < 30000) return;
+
+      localStorage.setItem("lastActivityTime", String(now));
+      lastSavedTime = now;
+    };
+
+    const events = ["click", "keydown", "scroll"];
+
+    events.forEach((event) => {
+      window.addEventListener(event, updateActivity);
+    });
+
+    return () => {
+      events.forEach((event) => {
+        window.removeEventListener(event, updateActivity);
+      });
+    };
+  }, []);
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
