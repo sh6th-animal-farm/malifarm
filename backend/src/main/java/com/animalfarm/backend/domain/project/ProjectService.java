@@ -148,12 +148,6 @@ public class ProjectService {
 		}
 	}
 
-	// 간단한 해시 계산 예시 메서드
-	public String createHash(String prevHash, Long projectId, BigDecimal amount) {
-		return org.springframework.util.DigestUtils.md5DigestAsHex(
-			(prevHash + projectId + amount.toString()).getBytes());
-	}
-
 	public List<FarmDTO> selectAllFarm() {
 		return projectRepository.selectAllFarm();
 	}
@@ -222,6 +216,10 @@ public class ProjectService {
 		return projectRepository.selectStatus();
 	}
 
+	public Long getUclId(Long userId) {
+		return projectRepository.selectMyWalletId(userId);
+	}
+
 	public boolean checkAccount() {
 		Long userId = SecurityUtil.getCurrentUserId();
 		System.out.println("checkAccount userId  " + userId);
@@ -257,10 +255,9 @@ public class ProjectService {
 
 		if (uclId == null) {
 			log.warn("조회 실패: 사용자 {}의 uclId가 존재하지 않습니다.", userId);
-			return null; // 0.0 대신 null을 주어 '계좌 없음'과 '잔액 0원'을 구분하는 게 좋습니다.
+			return null;
 		}
 		try {
-			// 2. GET 방식으로 데이터 요청 (응답은 String으로 받는 예시)
 			ResponseEntity<ApiResponse> responseEntity = restTemplate.getForEntity(targetUrl, ApiResponse.class);
 			int status = responseEntity.getStatusCodeValue();
 			System.out.println("응답 결과: " + status);
@@ -301,8 +298,6 @@ public class ProjectService {
 	public WalletDTO selectMyWalletInfo(Long uclId) {
 		String targetUrl = khUrl + "api/my/wallet/" + uclId;
 		try {
-			// 2. ExternalApiUtil의 callApi 호출
-			// ParameterizedTypeReference를 사용해 결과 타입을 WalletDTO로 명시합니다.
 			WalletDTO wallet = externalApiClient.callApi(targetUrl, HttpMethod.GET,
 				null, new ParameterizedTypeReference<ExternalApiResponseDTO<WalletDTO>>() {
 				}

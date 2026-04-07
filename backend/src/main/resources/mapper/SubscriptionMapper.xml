@@ -182,6 +182,25 @@
         p.target_amount, t.token_id, t.total_supply;
     </select>
 
+    <select id="selectAllocationStats" resultType="AllocationStatsDTO">
+        <![CDATA[
+            SELECT
+                MAX(subscription_amount) as maxAmount,
+                MIN(subscription_amount) as minAmount,
+                COUNT(*) as totalCount,
+
+                SUM(CASE WHEN subscription_amount <= #{standardAmount}
+                         THEN subscription_amount ELSE 0 END) as minorTotalAmount,
+
+                SUM(CASE WHEN subscription_amount > #{standardAmount}
+                         THEN (subscription_amount - #{standardAmount}) ELSE 0 END) as totalExcessAmount,
+
+                COUNT(CASE WHEN subscription_amount > #{standardAmount} THEN 1 END) as highValueCount
+            FROM subscription_hists
+            WHERE project_id = #{projectId}
+    ]]>
+    </select>
+
     <update id="approveSubscription">
         update subscription_hists
         set subscription_status = 'APPROVED'
