@@ -11,6 +11,61 @@ const apiClient = axios.create({
   },
 });
 
+// refresh 중복 호출 방지용
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+const subscribeTokenRefresh = (callback: (token: string) => void) => {
+  refreshSubscribers.push(callback);
+};
+
+const onRefreshed = (newAccessToken: string) => {
+  refreshSubscribers.forEach((callback) => callback(newAccessToken));
+  refreshSubscribers = [];
+};
+
+const clearAuthStorage = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('loginStartTime');
+  localStorage.removeItem('lastActivityTime');
+  localStorage.removeItem('userName');
+  localStorage.removeItem('userRole');
+};
+
+const moveToLogin = () => {
+  clearAuthStorage();
+  window.location.href = '/auth/login';
+};
+
+const refreshAccessToken = async () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+
+  if (!refreshToken) {
+    throw new Error('리프레시 토큰이 없습니다.');
+  }
+
+  // 같은 apiClient 말고 axios 직접 사용
+  const response = await axios.post(
+    `${baseURL}/api/auth/refresh`,
+    { refreshToken },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 10000,
+    },
+  );
+
+  const res = response.data;
+
+  if (!res.success) {
+    throw new Error(res.message || '토큰 재발급에 실패했습니다.');
+  }
+
+  return res.data;
+};
+
 // 2. 요청 인터셉터
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
@@ -37,33 +92,78 @@ apiClient.interceptors.response.use(
       const errorMsg = res.message || '요청 처리에 실패했습니다.';
       console.error(errorMsg);
 
-      const error = new Error(errorMsg);
-      error.response = response;
-      return Promise.reject(error);
+      const customError = new Error(errorMsg) as Error & {
+        response?: typeof response;
+      };
+      customError.response = response;
+      return Promise.reject(customError);
     }
 
     return res.data;
   },
-  (error) => {
+
+  async (error) => {
     const res = error.response?.data; // ApiResponseDTO { success, message, data, error }
+    const originalRequest = error.config;
 
     if (res && !res.success) {
       const errorCode = res.error.code;
       const errorMsg = res.message;
 
       switch (errorCode) {
-        case 'AUTH_002': // NEED_LOGIN ("로그인이 필요한 서비스입니다.")
-        case 'AUTH_003': // EXPIRED_TOKEN ("로그인 정보가 만료되었습니다. 다시 로그인해주세요.")
+        case 'AUTH_002':
+        case 'AUTH_003': {
+          if (originalRequest?.url?.includes('/api/auth/refresh')) {
+            console.error(errorMsg);
+            moveToLogin();
+            return Promise.reject(error);
+          }
+
+          if (originalRequest?._retry) {
+            console.error(errorMsg);
+            moveToLogin();
+            return Promise.reject(error);
+          }
+
+          originalRequest._retry = true;
+
+          try {
+            if (isRefreshing) {
+              return new Promise((resolve) => {
+                subscribeTokenRefresh((newAccessToken: string) => {
+                  originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                  resolve(apiClient(originalRequest));
+                });
+              });
+            }
+
+            isRefreshing = true;
+
+            const tokenData = await refreshAccessToken();
+
+            localStorage.setItem('accessToken', tokenData.accessToken);
+            localStorage.setItem('refreshToken', tokenData.refreshToken);
+            localStorage.setItem('lastActivityTime', String(Date.now()));
+
+            originalRequest.headers.Authorization = `Bearer ${tokenData.accessToken}`;
+
+            onRefreshed(tokenData.accessToken);
+            return apiClient(originalRequest);
+          } catch (refreshError) {
+            refreshSubscribers = [];
+            console.error('토큰 재발급 실패:', refreshError);
+            moveToLogin();
+            return Promise.reject(refreshError);
+          } finally {
+            isRefreshing = false;
+          }
+        }
+
+        case 'EXTERNAL_001': // 외부 API 에러
           console.error(errorMsg);
-          localStorage.removeItem('accessToken');
-          window.location.href = '/auth/login';
           break;
 
-        case 'EXTERNAL_001': // 외부 API 에러 ("외부 서비스 연동 중 오류가 발생했습니다.")
-          console.error(errorMsg);
-          break;
-
-        case 'PROJECT_002': // 별(하트) 처리 실패 ("별(하트) 처리 중 오류가 발생했습니다.")
+        case 'PROJECT_002': // 별(하트) 처리 실패
           console.error('관심 프로젝트 처리 실패:', errorMsg);
           break;
 
