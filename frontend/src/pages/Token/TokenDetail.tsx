@@ -14,11 +14,11 @@ export default function TokenDetail() {
   const navigate = useNavigate();
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
 
-  // 훅을 통한 데이터 관리
-  const { tokenList } = useTokenList(); // 토큰 목록
+  // 훅을 통한 데이터 관리 (에러 방지를 위해 기본값 [] 설정)
+  const { tokenList = [] } = useTokenList(); // 토큰 목록
   const { tokenOhlcv } = useTokenOhlcv(id); // 토큰 OHLCV
-  const { buyList, sellList } = useOrderbook(id); // 호가 (매수, 매도)
-  const { trades: tradeList } = useTradeHistory(id); // 체결
+  const { buyList = [], sellList = [] } = useOrderbook(id); // 호가 (매수, 매도)
+  const { trades: tradeList = [] } = useTradeHistory(id); // 체결
 
   // id가 변경될 때마다 선택된 가격 초기화
   useEffect(() => {

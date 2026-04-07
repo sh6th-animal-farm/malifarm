@@ -1,9 +1,14 @@
 package com.animalfarm.backend.global.security;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -32,21 +37,65 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final JwtProvider jwtProvider;
 	private final RedisUtil redisUtil;
 
-	public void handle(HttpServletRequest request, HttpServletResponse response,
-		AccessDeniedException accessDeniedException) throws IOException, ServletException {
+	// application.yml에 등록한 암구호 주입
+	@Value("${app.internal.secret}")
+	private String internalSecret;
 
-		log.warn("권한 부족 접근: {}", accessDeniedException.getMessage());
-
-		response.setContentType("application/json;charset=UTF-8");
-		response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
-
-		// 프론트에서 이 메시지를 띄워줄 겁니다.
-		response.getWriter().println("{ \"error\": \"403\", \"message\": \"기업 회원만 이용 가능한 서비스입니다.\" }");
-	}
+	// public void handle(HttpServletRequest request, HttpServletResponse response,
+	// 	AccessDeniedException accessDeniedException) throws IOException, ServletException {
+	//
+	// 	log.warn("권한 부족 접근: {}", accessDeniedException.getMessage());
+	//
+	// 	response.setContentType("application/json;charset=UTF-8");
+	// 	response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
+	//
+	// 	// 프론트에서 이 메시지를 띄워줄 겁니다.
+	// 	response.getWriter().println("{ \"error\": \"403\", \"message\": \"기업 회원만 이용 가능한 서비스입니다.\" }");
+	// }
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 		throws ServletException, IOException {
+		// =========================================================================
+		// 1. [AI 봇 전용 프리패스] 내부 서버 간 통신 확인 (JWT 검증 생략)
+		// =========================================================================
+		String requestSecret = request.getHeader("X-Internal-Secret");
+
+		if (StringUtils.hasText(internalSecret) && internalSecret.equals(requestSecret)) {
+			String botIdStr = request.getHeader("X-Bot-Id"); // ex) "24"
+			String botRole = request.getHeader("X-Bot-Role"); // ex) "MARKET_MAKER" 또는 "AI_BOT"
+
+			if (botIdStr != null && botRole != null) {
+				Long botId = Long.parseLong(botIdStr);
+
+				// ROLE_ 접두사 처리 (CustomUser 생성 로직과 맞추기 위함)
+				String roleName = botRole.startsWith("ROLE_") ? botRole.substring(5) : botRole;
+				List<GrantedAuthority> authorities = Collections.singletonList(
+					new SimpleGrantedAuthority("ROLE_" + roleName));
+
+				// ⭐️ 핵심: SecurityUtil.getCurrentUserId()에서 에러가 나지 않도록 CustomUser 객체로 신분증 생성!
+				CustomUser botUser = new CustomUser(
+					"bot_" + botId, // username(email) 자리에 더미값 주입
+					"", // password
+					authorities,
+					botId,
+					roleName
+				);
+
+				Authentication auth = new UsernamePasswordAuthenticationToken(botUser, null, authorities);
+				SecurityContextHolder.getContext().setAuthentication(auth);
+
+				log.info("🤖 내부 봇 인증 프리패스 통과: ID={}, Role={}", botId, roleName);
+
+				// JWT 로직 타지 않고 바로 다음 필터로 직행!
+				filterChain.doFilter(request, response);
+				return;
+			}
+		}
+
+		// =========================================================================
+		// 2. [일반 유저 로그인] 기존 JWT 검증 로직 (수정 없이 그대로 사용)
+		// =========================================================================
 
 		// 1. [토큰 추출] Authorization 헤더에서 토큰을 꺼내옵니다.
 		String token = resolveToken(request);

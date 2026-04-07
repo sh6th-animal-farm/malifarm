@@ -62,6 +62,10 @@ export default function ProjectDetail() {
 
   // ✅ 사이드바 버튼 클릭 시 실행될 함수
   const handleAction = async () => {
+    if (projectData.projectStatus === 'INPROGRESS') {
+      navigate(`/token/${id}`);
+      return;
+    }
     if (isApplied) {
       if (window.confirm('청약을 취소하시겠습니까?')) {
         try {
@@ -164,7 +168,7 @@ export default function ProjectDetail() {
             ),
             userLimit: 500000000, // API 연결 시 실제 값으로 대체
             walletBalance: 0, // API 연결 시 실제 값으로 대체
-            minAmountPerInvestor: 10000, // 예시
+            minAmountPerInvestor: projectData.minAmountPerInvestor,
           }}
         />
       )}
