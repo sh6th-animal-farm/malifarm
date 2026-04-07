@@ -36,7 +36,6 @@ export default function SubscriptionModal({
     usagePercent,
     errorMsg,
     handleQuantityChange,
-    submitSubscription,
     isSubmitting,
   } = useSubscription({
     price: projectData.price,

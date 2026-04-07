@@ -66,7 +66,7 @@ public class ProjectController {
 		ProjectDetailDTO data = projectService.selectDetail(projectId);
 		return ResponseEntity.ok(ApiResponseDTO.success(data));
 	}
-	
+
 	@GetMapping("/all")
 	public ResponseEntity<ApiResponseDTO<List<ProjectDTO>>> selectAll() {
 		List<ProjectDTO> data = projectService.selectAll();
@@ -204,7 +204,8 @@ public class ProjectController {
 
 	@GetMapping("/walletInfo")
 	public ResponseEntity<ApiResponseDTO<WalletDTO>> getMyWallet(Long userId) {
-		WalletDTO wallet = projectService.selectMyWalletInfo(userId);
+		Long uclId = projectService.getUclId(userId);
+		WalletDTO wallet = projectService.selectMyWalletInfo(uclId);
 		if (wallet == null) {
 			// 지갑 정보가 없을 경우 처리 (빈 객체 혹은 에러)
 			return ResponseEntity.ok(ApiResponseDTO.success(new WalletDTO()));
