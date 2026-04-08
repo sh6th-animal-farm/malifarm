@@ -170,8 +170,6 @@ public class MypageService {
 				new ParameterizedTypeReference<ExternalApiResponseDTO<MypageWalletDTO>>() {
 				});
 
-			System.out.println(response.getBody().getPayload().getAvailableBalance());
-
 			return (response.getBody() != null) ? response.getBody().getPayload() : null;
 		} catch (Exception e) {
 			System.err.println("[ERROR] 지갑 API 호출 실패: " + e.getMessage());
