@@ -1,6 +1,7 @@
 export interface WalletInfoDTO {
   accountNo: string;
   bankName: string;
+  availableBalance: number | string;
   cashBalance: number | string;
   frozenAmount: number | string;
   totalPurchasedValue: number | string;

@@ -10,8 +10,10 @@ interface AccountProps {
 export default function Account({ walletInfo, loading = false }: AccountProps) {
   const hasLinkedAccount = Boolean(walletInfo?.accountNo);
   const availableAmount = walletInfo
-    ? toNumber(walletInfo.cashBalance) - toNumber(walletInfo.frozenAmount)
+    ? toNumber(walletInfo.availableBalance)
     : 0;
+  
+    console.log(walletInfo)
 
   return (
     <section className="mb-5 rounded-lg bg-white p-4 shadow-std md:p-6">
