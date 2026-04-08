@@ -40,7 +40,8 @@ public class SecurityConfig {
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		// 정적 리소스 및 Swagger v3 경로는 필터를 거치지 않도록 설정 (성능 최적화)
 		return (web) -> web.ignoring()
-			.requestMatchers("/swagger-ui/**","/swagger-ui.html","/swagger-resources/**", "/v3/api-docs/**", "/v3/api-docs", "/webjars/**",
+			.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/v3/api-docs/**",
+				"/v3/api-docs", "/webjars/**",
 				"/resources/**", "/favicon.ico", "/error");
 	}
 
@@ -61,15 +62,15 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers("/project/**", "/token/**", "/token", "/carbon/**", "/mypage/**", "/market/**")
 				.permitAll()
-				.requestMatchers("/admin", "/admin/**")
-				.permitAll()
 
 				// [Read-Only] GET 요청에 대해 전역 허용
 				.requestMatchers(HttpMethod.GET, "/api/project/**", "/api/token/**", "/api/token", "/api/accounts/**",
-					"/api/market/**")
+					"/api/market/**", "/api/home/project")
 				.permitAll()
 
 				// [Role: ADMIN] 관리자 전용 기능
+				.requestMatchers("/admin", "/admin/**")
+				.hasRole("ADMIN")
 				.requestMatchers("/api/admin/**")
 				.hasRole("ADMIN")
 				.requestMatchers("/api/project/insert", "/api/project/update")
