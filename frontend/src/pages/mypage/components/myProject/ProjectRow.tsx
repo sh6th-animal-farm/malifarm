@@ -2,9 +2,8 @@ import Badge from "@/components/common/Badge";
 import Icon from "@/components/icon";
 import type { MyPageProjectDTO } from "@/types/myPageType";
 import {
+  toProjectBadgeLabel,
   toPeriodText,
-  toStatusLabel,
-  toSubStatusLabel,
   toTagVariant,
 } from "./projectFormatters";
 
@@ -21,14 +20,8 @@ export default function ProjectRow({
   totalCount,
   onMove,
 }: ProjectRowProps) {
-  const statusLabel = toStatusLabel(project);
-  const statusVariant = toTagVariant(project.projectStatus || statusLabel);
-  const subStatusLabel = toSubStatusLabel(project);
-  const subStatusVariant = toTagVariant(subStatusLabel);
-  const badges = [
-    statusLabel ? { label: statusLabel, variant: statusVariant } : null,
-    subStatusLabel ? { label: subStatusLabel, variant: subStatusVariant } : null,
-  ].filter(Boolean) as { label: string; variant: "warning" | "info" | "success" | "default" }[];
+  const statusLabel = toProjectBadgeLabel(project);
+  const statusVariant = toTagVariant(statusLabel);
 
   const statusDotClassMap = {
     warning: "bg-warning",
@@ -56,20 +49,18 @@ export default function ProjectRow({
           <p className="mt-1.5 truncate font-caption-01 text-gray-500">{toPeriodText(project)}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          {badges[0] ? (
+          {statusLabel ? (
             <span
-              className={`h-2.5 w-2.5 rounded-full sm:hidden ${statusDotClassMap[badges[0].variant]}`}
-              aria-label={badges[0].label}
+              className={`h-2.5 w-2.5 rounded-full sm:hidden ${statusDotClassMap[statusVariant]}`}
+              aria-label={statusLabel}
             />
           ) : null}
           <div className="hidden w-32 items-center justify-center sm:flex">
-            <div className="flex items-center gap-1.5">
-              {badges.map((badge) => (
-                <Badge key={badge.label} variant={badge.variant} width="auto">
-                  {badge.label}
-                </Badge>
-              ))}
-            </div>
+            {statusLabel ? (
+              <Badge variant={statusVariant} width="auto">
+                {statusLabel}
+              </Badge>
+            ) : null}
           </div>
           <button
             type="button"

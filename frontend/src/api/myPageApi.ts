@@ -54,7 +54,13 @@ export const myPageApi = {
     size = 10,
   }: {
     type?: 'JOIN' | 'STAR';
-    status?: 'ALL' | 'SUBSCRIPTION' | 'ANNOUNCEMENT' | 'ENDED';
+    status?:
+      | 'ALL'
+      | 'SUBSCRIPTION'
+      | 'ANNOUNCEMENT'
+      | 'INPROGRESS'
+      | 'COMPLETED'
+      | 'CANCELED';
     page?: number;
     size?: number;
   }) =>

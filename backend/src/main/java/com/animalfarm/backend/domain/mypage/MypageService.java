@@ -285,16 +285,19 @@ public class MypageService {
 		return null; // 계좌가 없으면 null 반환
 	}
 
+	// 내 정보 조회
 	public ProfileDTO getProfile() {
 		Long userId = SecurityUtil.getCurrentUserId();
 		return mypageRepository.selectProfile(userId);
 	}
 
+	// 내 정보 수정
 	public void updateProfile(ProfileUpdateRequestDTO req) {
 		Long userId = SecurityUtil.getCurrentUserId();
 		mypageRepository.updateProfile(userId, req);
 	}
 
+	// 비밀번호 수정
 	@Transactional
 	public void updatePassword(PasswordUpdateRequestDTO dto) {
 
@@ -335,10 +338,10 @@ public class MypageService {
 				return "공고중";
 			case "INPROGRESS":
 				return "진행중";
-			case "ENDED":
+			case "COMPLETED":
 				return "종료";
-			case "PREPARING":
-				return "준비중";
+			case "CANCELED":
+				return "취소"; // 참여자 미달로 인한 프로젝트 취소
 			default:
 				return s;
 		}
@@ -356,7 +359,7 @@ public class MypageService {
 			case "REJECTED":
 				return "낙첨";
 			case "CANCELED":
-				return "취소";
+				return "취소"; // 내가 취소
 			default:
 				return s;
 		}
