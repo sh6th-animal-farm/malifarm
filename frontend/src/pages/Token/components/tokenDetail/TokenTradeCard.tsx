@@ -178,13 +178,13 @@ export default function TokenTradeCard({
 
     try {
       await tokenApi.createOrder(tokenId, order);
-      setToastMsg('주문이 완료되었습니다.');
+      setToastMsg('주문 완료');
       setPrice('');
       setVolume('');
       setAmount('');
     } catch (e) {
       console.error('주문 실패:', e);
-      setToastMsg('주문에 실패하였습니다.');
+      setToastMsg('주문 실패');
     }
   };
 
@@ -192,11 +192,11 @@ export default function TokenTradeCard({
   const cancelOrder = async (orderId: number) => {
     try {
       await tokenApi.cancelOrder(tokenId, orderId);
-      setToastMsg('주문이 취소되었습니다.');
+      setToastMsg('주문 취소');
       fetchPendingOrders();
     } catch (e) {
       console.error('주문 취소 실패:', e);
-      setToastMsg('취소에 실패하였습니다.');
+      setToastMsg('주문 취소 실패');
     }
   };
 

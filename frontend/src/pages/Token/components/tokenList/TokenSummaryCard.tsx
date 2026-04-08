@@ -8,18 +8,19 @@ import {
   type IChartApi,
   type ISeriesApi,
 } from 'lightweight-charts';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
   const chartContainerRef = useRef<HTMLDivElement>(null); // 차트 컨테이너
   const chartRef = useRef<IChartApi | null>(null); // 차트 인스턴스
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null); // 차트 시리즈 (캔들스틱)
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null); // 거래량 시리즈
+  const [isReady, setIsReady] = useState(false); // 차트 객체 생성 완료 여부
   const { tokenOhlcv } = useTokenOhlcv(tokenId);
 
   const formatNum = (num: number) => new Intl.NumberFormat().format(num);
 
-  useTokenChart(tokenId, '1', candleSeriesRef, volumeSeriesRef);
+  useTokenChart(tokenId, '1', candleSeriesRef, volumeSeriesRef, isReady);
 
   // 차트 초기화 (마운트 시 딱 한 번만)
   useEffect(() => {
@@ -30,8 +31,8 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
 
     // 차트 생성
     const chart = createChart(chartContainerRef.current, {
-      width: chartContainerRef.current.clientWidth,
-      height: 180,
+      width: chartContainerRef.current.clientWidth || 382,
+      height: chartContainerRef.current.clientHeight || 180,
       layout: { background: { color: 'transparent' }, textColor: '#999' },
       grid: { vertLines: { visible: false }, horzLines: { visible: false } },
       rightPriceScale: { visible: false, borderVisible: false },
@@ -53,8 +54,10 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
     chartRef.current = chart;
     candleSeriesRef.current = candleSeries;
 
+    setIsReady(true); // 차트 생성 완료 후 리렌더링
+
     return () => chart.remove(); // 컴포넌트 언마운트 시 차트 제거 (메모리 누수 방지)
-  }, [tokenOhlcv]);
+  }, [tokenId]);
 
   return (
     <div className="w-[432px] h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight">
