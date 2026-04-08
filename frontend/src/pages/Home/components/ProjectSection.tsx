@@ -1,12 +1,11 @@
 import ProjectCard from '@/components/common/ProjectCard';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { homeApi } from '@/api/homeApi';
 import { toCardModel } from '@/utils/projectMapper';
 import { useStarreds } from '@/pages/project/hook/useStarreds';
 
 export default function ProjectSection() {
-  const [loading, setLoading] = useState(true);
   const { projects, setProjects, handleToggleStar } = useStarreds([]);
 
   useEffect(() => {
@@ -17,20 +16,11 @@ export default function ProjectSection() {
         setProjects(data.map(toCardModel));
       } catch (e) {
         console.error('프로젝트 목록 로드 실패', e);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchProjects();
-  }, []);
-
-  if (loading)
-    return (
-      <section>
-        <div className="layout-container">로딩중...</div>
-      </section>
-    );
+  }, [setProjects]);
 
   return (
     <section className="py-14 md:py-20 lg:py-24">

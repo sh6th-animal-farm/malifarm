@@ -113,6 +113,10 @@ public class SubscriptionService {
 			log.info("[Service] 증권사 청약 취소 완료");
 
 			afterSubsRefundRequest(subscriptionHistDTO, refundDTO);
+			SubscriptionApplicationDTO cancelApplication = new SubscriptionApplicationDTO();
+			cancelApplication.setSubscriptionAmount(refundDTO.getAmount().multiply(new BigDecimal("-1")));
+			cancelApplication.setProjectId(refundDTO.getProjectId());
+			subscriptionRepository.updatePlusAmount(cancelApplication);
 
 		} catch (RuntimeException e) {
 			// 유틸리티에서 던진 구체적인 에러 메시지("잔액 부족" 등)가 이곳으로 전달됨

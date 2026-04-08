@@ -8,6 +8,7 @@ import { subscriptionApi } from '../../../api/subscriptionApi';
 interface SubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
+  setToastMsg: (msg: string | null) => void;
   projectData: {
     userId: string | number;
     projectId: string | number;
@@ -23,6 +24,8 @@ interface SubscriptionModalProps {
 export default function SubscriptionModal({
   isOpen,
   onClose,
+  setToastMsg,
+  onSuccess,
   projectData,
 }: SubscriptionModalProps) {
   const { walletData, isLoading: isWalletLoading } = useWallet(
@@ -66,9 +69,9 @@ export default function SubscriptionModal({
 
       // 3. 백엔드 리턴값 분기 처리 (ResponseEntity.ok("success") 등)
       if (result === 'success') {
-        alert('청약 신청이 완료되었습니다!');
         onClose();
-        window.location.reload();
+        setToastMsg('청약 신청이 완료되었습니다.');
+        onSuccess();
       } else if (result === 'api_fail') {
         alert(
           'DB 저장은 성공했으나, 증권사 시스템 전송에 실패했습니다. 고객센터로 문의하세요.',

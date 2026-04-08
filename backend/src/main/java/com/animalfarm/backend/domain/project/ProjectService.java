@@ -311,30 +311,7 @@ public class ProjectService {
 		}
 		return null;
 	}
-
-	/* 로직 생각해서 다시 사용할 수 있으니 남겨둘게요.
-	public void postTokenIssue(ProjectInsertDTO projectInsertDTO) {
-		TokenIssueDTO tokenIssueDTO = TokenIssueDTO.builder()
-			.tokenName(projectInsertDTO.getProjectName())
-			.tickerSymbol(projectInsertDTO.getTickerSymbol())
-			.totalSupply(projectInsertDTO.getTotalSupply())
-			.projectId(projectInsertDTO.getProjectId())
-			.issuePrice(projectInsertDTO.getTargetAmount().divide(projectInsertDTO.getTotalSupply()))
-			.createdAt(projectInsertDTO.getCreatedAt())
-			.build();
-
-		String targetUrl = khUrl + "api/project/open";
-		try {
-			TokenIssueDTO result = externalApiUtil.callApi(targetUrl, HttpMethod.POST, tokenIssueDTO,
-				new ParameterizedTypeReference<ApiResponse<TokenIssueDTO>>() {});
-			log.info("증권사 전송 성공 : " + result);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			log.error("실패!!! : " + e.getMessage());
-		}
-	}
-	*/
+	
 	public List<ProjectDTO> selectEndTargetProject() {
 		return projectRepository.selectEndTargetProject();
 	}
