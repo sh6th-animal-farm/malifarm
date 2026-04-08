@@ -20,7 +20,7 @@ export default function TokenChartCard({
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
-
+  const [isReady, setIsReady] = useState(false); // 차트 객체 생성 완료 여부
   const [activeUnit, setActiveUnit] = useState('1');
 
   const units = [
@@ -76,6 +76,8 @@ export default function TokenChartCard({
     candleSeriesRef.current = candleSeries;
     volumeSeriesRef.current = volumeSeries;
 
+    setIsReady(true); // 차트 생성 완료 후 리렌더링
+
     // 윈도우 리사이즈 대응
     const handleResize = () => {
       if (chartContainerRef.current) {
@@ -96,6 +98,7 @@ export default function TokenChartCard({
     activeUnit,
     candleSeriesRef,
     volumeSeriesRef,
+    isReady
   );
 
   return (

@@ -4,6 +4,7 @@ import TokenSummaryCard from './components/tokenList/TokenSummaryCard';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useTokenList } from '@/pages/Token/hooks/useTokenList';
+import { useTokenChart } from '@/pages/Token/hooks/useTokenChart.ts';
 
 export default function TokenList() {
   // 훅으로 초기 데이터 + 실시간 업데이트 + 정렬된 리스트를 한 번에 가져옴
@@ -17,7 +18,9 @@ export default function TokenList() {
     if (!hoveredTokenId && tokenList?.length > 0) {
       setHoveredTokenId(tokenList[0].tokenId);
     }
-  }, [tokenList, hoveredTokenId]);
+  }, [tokenList]);
+
+  const displayId = debouncedId ?? hoveredTokenId ?? tokenList[0]?.tokenId;
 
   // 로딩 상태 처리
   if (isLoading && (!tokenList || tokenList.length === 0)) {
@@ -39,8 +42,8 @@ export default function TokenList() {
           onHover={setHoveredTokenId}
         />
         <aside className="sticky top-20 self-start">
-          {debouncedId !== null ? (
-            <TokenSummaryCard tokenId={debouncedId} />
+          {displayId !== null ? (
+            <TokenSummaryCard tokenId={displayId} />
           ) : (
             <div className="w-[432px] h-[468px] bg-gray-50 animate-pulse rounded-[var(--radius-m)]" />
           )}

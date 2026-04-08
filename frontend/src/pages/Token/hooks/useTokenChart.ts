@@ -9,6 +9,7 @@ export const useTokenChart = (
   activeUnit: string | number,
   candleSeriesRef: React.MutableRefObject<ISeriesApi<'Candlestick'> | null>,
   volumeSeriesRef: React.MutableRefObject<ISeriesApi<'Histogram'> | null>,
+  isReady: boolean,
 ) => {
   const KST_OFFSET = 9 * 60 * 60; // 9시간 (초 단위)
 
@@ -131,5 +132,5 @@ export const useTokenChart = (
     return () => {
       if (currentSubId) WebSocketManager.unsubscribe(currentSubId);
     };
-  }, [tokenId, activeUnit, updateCandle]);
+  }, [tokenId, activeUnit, updateCandle, isReady]);
 };
