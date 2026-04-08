@@ -83,7 +83,6 @@ export default function ProjectDetail() {
       return;
     }
 
-    // 2. 청약이 안 된 상태라면 기존 로그인/계좌 체크 후 모달 오픈
     const token = localStorage.getItem('accessToken');
     if (!token) {
       alert('로그인이 필요한 서비스입니다.');
@@ -123,10 +122,8 @@ export default function ProjectDetail() {
       <div className="max-w-[1200px] mx-auto mt-[40px] mb-[80px]">
         <div className="grid grid-cols-12 gap-[24px]">
           <main className="col-span-12 lg:col-span-8">
-            {/* 1. 이미지 캐러셀 분리 */}
             <ImageCarousel images={projectData.images} />
 
-            {/* 2. 공통 탭 메뉴 컴포넌트 사용 */}
             <TabMenu
               items={[
                 { text: '투자 정보', value: 'invest' },
@@ -136,7 +133,6 @@ export default function ProjectDetail() {
               onTabChange={setActiveTab}
             />
 
-            {/* 3. 탭 콘텐츠 분리 */}
             <div className="w-full">
               {activeTab === 'invest' ? (
                 <InvestTabContent data={projectData} />
@@ -153,7 +149,6 @@ export default function ProjectDetail() {
           />
         </div>
       </div>
-      {/* 1. 청약 신청 모달 */}
       {projectData && (
         <SubscriptionModal
           isOpen={activeModal === 'subscription'}
@@ -166,14 +161,13 @@ export default function ProjectDetail() {
             price: Math.floor(
               projectData.targetAmount / projectData.totalSupply,
             ),
-            userLimit: 500000000, // API 연결 시 실제 값으로 대체
-            walletBalance: 0, // API 연결 시 실제 값으로 대체
+            userLimit: 500000000,
+            walletBalance: 0,
             minAmountPerInvestor: projectData.minAmountPerInvestor,
           }}
         />
       )}
 
-      {/* 2. 계좌 확인 실패 모달 */}
       <AccountCheckFailModal
         isOpen={activeModal === 'accountFail'}
         onClose={() => setActiveModal(null)}

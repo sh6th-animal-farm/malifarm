@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { projectApi } from '@/api/projectApi';
 
@@ -117,7 +117,6 @@ export default function ProjectList() {
           onToggleStar={handleToggleStar}
         />
 
-        {/* --- 페이지네이션 UI --- */}
         {!isLoading && totalPages > 1 && (
           <div className="flex justify-center items-center gap-2 mt-16">
             {Array.from({ length: totalPages }).map((_, i) => {
