@@ -25,6 +25,7 @@ public enum ErrorCode {
 	INVALID_LOGOUT_REQUEST(HttpStatus.BAD_REQUEST, "AUTH_005", "잘못된 로그아웃 요청입니다."),
 	LOGOUT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_006", "로그아웃 처리 중 오류가 발생했습니다."),
 	INVALID_AUTH_CODE(HttpStatus.UNAUTHORIZED, "AUTH_007", "이메일 인증 코드가 올바르지 않습니다."),
+	ACCESS_DENIED(HttpStatus.FORBIDDEN, "AUTH_008", "접근 권한이 없습니다."),
 
 	// 시스템 에러
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "서버 내부 오류가 발생했습니다."),
