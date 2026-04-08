@@ -108,13 +108,14 @@
         p.project_id AS projectId,
         p.project_name AS projectName,
         p.project_status AS projectStatus,
-        sh.subscription_status AS subscriptionStatus,
+        NULL AS subscriptionStatus,
         p.project_start_date AS projectStartDate,
         p.project_end_date AS projectEndDate
         FROM projects p
         JOIN subscription_hists sh
         ON sh.project_id = p.project_id
         WHERE sh.user_id = #{userId}
+        AND COALESCE(sh.subscription_status, '') != 'CANCELED'
         <if test="status != null and status != 'ALL'">
             AND p.project_status = #{status}
         </if>
@@ -128,13 +129,14 @@
         JOIN subscription_hists sh
         ON sh.project_id = p.project_id
         WHERE sh.user_id = #{userId}
+        AND COALESCE(sh.subscription_status, '') != 'CANCELED'
         <if test="status != null and status != 'ALL'">
             AND p.project_status = #{status}
         </if>
     </select>
 
     <!-- STAR 탭: 관심(찜) 프로젝트 목록 -->
-    <select id="selectStarredProjectCards" resultType="ProjectDTO">
+    <select id="selectStarredProjectCards" resultType="MypageProjectDTO">
         SELECT
         p.project_id AS projectId,
         p.project_name AS projectName,
