@@ -1,0 +1,268 @@
+@charset "UTF-8";
+
+:root {
+  --green-600: #4a9f2e;
+  --green-700: #3f8f2d;
+  --gray-900: #191919;
+  --gray-600: #404040;
+  --gray-300: #c6c6c6;
+  --gray-50: #f8fafb;
+  --gray-0: #fcfcfc;
+  --header-height: 72px;
+  --sidebar-width: 240px;
+}
+
+body {
+  font-family: 'Pretendard', sans-serif;
+  margin: 0;
+  display: flex;
+  background-color: var(--gray-50);
+  color: var(--gray-600);
+  letter-spacing: -0.02em;
+}
+
+/* Side Navigation */
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--gray-900);
+  color: white;
+  position: fixed;
+  padding: 24px 0;
+}
+
+.sidebar .logo {
+  padding: 0 24px 32px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green-600);
+}
+
+.menu-item {
+  padding: 14px 24px;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  color: var(--gray-300);
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: rgba(74, 159, 46, 0.1);
+  color: var(--green-600);
+  border-right: 4px solid var(--green-600);
+}
+
+.sidebar-footer {
+  margin-top: auto; /* 핵심: 남은 공간을 다 채워서 푸터를 아래로 보냄 */
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* 구분선 */
+}
+
+.home-link {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.home-link:hover {
+  background-color: var(--green-600) !important; /* 마우스 올리면 메인 컬러로 */
+  color: #fff !important;
+}
+
+.home-link i,
+.home-link svg {
+  opacity: 0.7;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(74, 159, 46, 0.1);
+  border-left-color: var(--green-600);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Main Content */
+.main-content {
+  margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
+  padding: 40px;
+}
+
+.container-1200 {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.page-header h1 {
+  font-size: 32px;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.btn-load {
+  background: white;
+  border: 1px solid var(--green-600);
+  color: var(--green-600);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-load:hover {
+  background: var(--green-600);
+  color: white;
+}
+
+/* Form Style */
+.form-card {
+  background: var(--gray-0);
+  border-radius: 12px; /* Radius L */
+  padding: 32px;
+  margin-bottom: 24px;
+  /* Lines 144-145 omitted */
+}
+
+.section-title {
+  /* Lines 148-154 omitted */
+}
+
+.grid-3 {
+  /* Lines 157-160 omitted */
+}
+
+.grid-2 {
+  /* Lines 163-166 omitted */
+}
+
+.form-group {
+  /* Lines 169-173 omitted */
+}
+
+.full {
+  /* Lines 176-177 omitted */
+}
+
+label {
+  /* Lines 180-183 omitted */
+}
+
+.optional {
+  /* Lines 186-189 omitted */
+}
+
+input,
+select,
+textarea {
+  /* Lines 192-198 omitted */
+}
+
+input:focus {
+  /* Lines 201-202 omitted */
+}
+
+.button-group {
+  /* Lines 205-208 omitted */
+}
+
+.btn-submit {
+  /* Lines 211-221 omitted */
+}
+
+.btn-submit:hover {
+  /* Lines 224-225 omitted */
+}
+
+/* 사진 목록 */
+
+.image-preview-list {
+  /* Lines 230-233 omitted */
+}
+
+.image-upload-box {
+  /* Lines 236-249 omitted */
+}
+
+.image-upload-box:hover {
+  /* Lines 252-254 omitted */
+}
+
+.image-upload-box.add-btn .plus-icon {
+  /* Lines 257-259 omitted */
+}
+
+.image-upload-box img {
+  /* Lines 262-265 omitted */
+}
+
+/* 삭제 버튼 스타일 */
+.btn-remove {
+  /* Lines 269-283 omitted */
+}
+
+.image-upload-box:hover .btn-remove {
+  /* Lines 286-287 omitted */
+}
+
+/* Modal Style  */
+.modal {
+  /* Lines 291-299 omitted */
+}
+
+.modal-content {
+  /* Lines 302-307 omitted */
+}
+
+.modal-header {
+  /* Lines 310-315 omitted */
+}
+
+.project-list {
+  /* Lines 318-322 omitted */
+}
+
+.project-item {
+  /* Lines 325-328 omitted */
+}
+
+.project-item:hover {
+  /* Lines 331-332 omitted */
+}
+
+/* 읽기 전용 입력창 스타일 */
+.readonly-input {
+  /* Lines 336-340 omitted */
+}
+
+.input-with-btn {
+  /* Lines 343-345 omitted */
+}
+
+.btn-search {
+  /* Lines 348-356 omitted */
+}

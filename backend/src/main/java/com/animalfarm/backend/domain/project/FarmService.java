@@ -82,16 +82,13 @@ public class FarmService {
 
 		Map<Long, String[]> farmMapping = new HashMap<>() {{
 			put(3L, new String[] {"PF_0000320_01", "080400"});   // 딸기
-			put(52L, new String[] {"PF_0000320_01", "080400"});
 			put(4L, new String[] {"PF_0022038_01", "061400"});   // 감귤
 			put(23L, new String[] {"PF_0006001_01", "065900"});   // 블루베리
 			put(12L, new String[] {"PF_0006027_01", "060300"});   // 포도
 			put(11L, new String[] {"PF_0006017_01", "120500"});  // 고추(11)
 			put(15L, new String[] {"PF_0006017_01", "120500"});  // 고추(15) - 같은 데이터 활용
-			put(53L, new String[] {"PF_0006017_01", "120500"});
 			put(19L, new String[] {"PF_0024647_01", "132600"});  // 파프리카
 			put(14L, new String[] {"PF_0025312_01", "080100"});   // 수박
-			put(54L, new String[] {"PF_0025312_01", "080100"});
 			put(35L, new String[] {"PFS_0000001_01", "080300"}); // 토마토
 
 			// 매칭 정보가 없는 ??? 농장들 (기본값 설정 - 토마토 데이터 활용 예시)

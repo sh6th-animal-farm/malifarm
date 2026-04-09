@@ -311,7 +311,7 @@ public class ProjectService {
 		}
 		return null;
 	}
-	
+
 	public List<ProjectDTO> selectEndTargetProject() {
 		return projectRepository.selectEndTargetProject();
 	}
@@ -336,6 +336,6 @@ public class ProjectService {
 			new ParameterizedTypeReference<ExternalApiResponseDTO<TokenIssueDTO>>() {
 			});
 
-		log.info("증권사 전송 성공 : " + result);
+		log.info("증권사 전송 성공 : " + tokenIssueDTO);
 	}
 }

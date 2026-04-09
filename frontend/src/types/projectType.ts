@@ -1,22 +1,35 @@
 interface ProjectData {
   projectId: number;
+  farmId: number;
   projectName: string;
-  images: string[];
-  expectedReturn: number;
-  subscriptionRate: number;
-  actualAmount: number;
+  projectRound: number;
+  projectDescription: string;
+  tokenName: string;
+  tickerSymbol: string;
   targetAmount: number;
   totalSupply: number;
   minAmountPerInvestor: number;
+  maxAmountPerInvestor: number;
+  actualAmount: number;
+  expectedReturn: number;
+  roi: number;
+  managerCount: number;
+  announcementStartDate: string;
+  announcementEndDate: string;
+  subscriptionStartDate: string;
+  subscriptionEndDate: string;
+  resultAnnouncementDate: string;
+  projectStartDate: string;
+  projectEndDate: string;
+  images: string[];
+  subscriptionRate: number;
   projectStatus:
     | 'ANNOUNCEMENT'
     | 'SUBSCRIPTION'
     | 'INPROGRESS'
     | 'CANCELED'
     | 'COMPLETED';
-  managerCount: number;
   method: string;
-  projectDescription: string;
   temperatureInside: number[];
   humidityInside: number[];
 
@@ -43,7 +56,7 @@ type ProjectDTO = {
   projectEndDate?: string | null;
 };
 
-type Project = {
+type AdminProject = {
   id: number;
   title: string;
   status: ProjectStatus;
