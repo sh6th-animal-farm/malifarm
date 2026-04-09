@@ -18,6 +18,8 @@ public interface UserRepository {
 
 	int updateAddress(String address, Long userId);
 
+	int updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
+
 	UserDTO getUserById(Long userId);
 
 	Long selectUserIdByUclId(Long walletId);

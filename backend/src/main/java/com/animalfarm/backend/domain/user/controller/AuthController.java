@@ -15,6 +15,7 @@ import com.animalfarm.backend.domain.user.dto.EmailVerifyRequestDTO;
 import com.animalfarm.backend.domain.user.dto.EnterpriseVerifyRequestDTO;
 import com.animalfarm.backend.domain.user.dto.EnterpriseVerifyResponseDTO;
 import com.animalfarm.backend.domain.user.dto.LoginRequestDTO;
+import com.animalfarm.backend.domain.user.dto.PasswordResetRequestDTO;
 import com.animalfarm.backend.domain.user.dto.SignUpRequestDTO;
 import com.animalfarm.backend.domain.user.dto.TokenResponseDTO;
 import com.animalfarm.backend.domain.user.service.AuthService;
@@ -214,4 +215,68 @@ public class AuthController {
 		}
 
 	}
-}
+	@PostMapping(value = "/password/reset/code")
+	public ResponseEntity<ApiResponseDTO<Void>> sendPasswordResetCode(
+		@RequestBody EmailSendRequestDTO request) {
+		try {
+			String email = request.getEmail();
+
+			if (!userEmailService.isDuplicateEmail(email)) {
+				return ResponseEntity.status(ErrorCode.USER_NOT_FOUND.getHttpStatus())
+					.body(ApiResponseDTO.fail(ErrorCode.USER_NOT_FOUND.getCode(),
+						ErrorCode.USER_NOT_FOUND.getMessage()));
+			}
+
+			userEmailService.sendCode(email);
+
+			return ResponseEntity.ok(ApiResponseDTO.success(null, "비밀번호 재설정 코드 발송 완료"));
+		} catch (Exception e) {
+			log.error("비밀번호 재설정 코드 발송 실패 : {}", e.getMessage(), e);
+
+			return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+				.body(ApiResponseDTO.fail(ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
+						ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
+		}
+	}
+
+	@PostMapping(value = "/password/reset/verify")
+	public ResponseEntity<ApiResponseDTO<Void>> verifyPasswordResetCode(
+		@RequestBody EmailVerifyRequestDTO request) {
+		try {
+			boolean ok = userEmailService.verifyCode(request.getEmail(), request.getCode(), false);
+			if (!ok) {
+				return ResponseEntity.status(ErrorCode.INVALID_AUTH_CODE.getHttpStatus())
+					.body(ApiResponseDTO.fail(ErrorCode.INVALID_AUTH_CODE.getCode(),
+						ErrorCode.INVALID_AUTH_CODE.getMessage()));
+			}
+
+			return ResponseEntity.ok(ApiResponseDTO.success(null, "인증 코드 확인 완료"));
+		} catch (Exception e) {
+			log.error("비밀번호 재설정 인증 확인 실패 : {}", e.getMessage(), e);
+
+			return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+				.body(ApiResponseDTO.fail(ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
+						ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
+		}
+	}
+
+	@PostMapping(value = "/password/reset")
+	public ResponseEntity<ApiResponseDTO<Void>> resetPassword(
+		@RequestBody PasswordResetRequestDTO request) {
+		try {
+			authService.resetPassword(request.getEmail(), request.getVerificationCode(),
+				request.getNewPassword(), request.getConfirmPassword());
+
+			return ResponseEntity.ok(ApiResponseDTO.success(null, "비밀번호가 변경되었습니다."));
+		} catch (IllegalArgumentException e) {
+			log.error("비밀번호 재설정 실패 : {}", e.getMessage(), e);
+			return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+				.body(ApiResponseDTO.fail(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), e.getMessage()));
+		} catch (Exception e) {
+			log.error("비밀번호 재설정 실패 : {}", e.getMessage(), e);
+
+			return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+				.body(ApiResponseDTO.fail(ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
+						ErrorCode.INTERNAL_SERVER_ERROR.getMessage()));
+		}
+	}}

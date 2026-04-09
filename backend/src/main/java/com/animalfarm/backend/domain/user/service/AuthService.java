@@ -32,6 +32,9 @@ public class AuthService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private UserEmailService userEmailService;
+
 	private static final Pattern LETTER_PATTERN = Pattern.compile("[A-Za-z]");
 	private static final Pattern NUMBER_PATTERN = Pattern.compile("[0-9]");
 	private static final Pattern SPECIAL_PATTERN = Pattern.compile("[^A-Za-z0-9]");
@@ -129,6 +132,30 @@ public class AuthService {
 
 		long expiration = jwtProvider.getRemainingExpiration(accessToken);
 		redisUtil.setBlackList(accessToken, "logout", expiration / (1000 * 60));
+	}
+
+	public void resetPassword(String email, String verificationCode, String newPassword, String confirmPassword) {
+		if (isBlank(email) || isBlank(verificationCode) || isBlank(newPassword) || isBlank(confirmPassword)) {
+			throw new IllegalArgumentException("이메일, 인증코드, 새 비밀번호를 모두 입력해주세요.");
+		}
+
+		if (!newPassword.equals(confirmPassword)) {
+			throw new IllegalArgumentException("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+		}
+
+		UserDTO user = userRepository.findByEmail(email);
+		if (user == null) {
+			throw new RuntimeException("존재하지 않는 사용자입니다.");
+		}
+
+		boolean validCode = userEmailService.verifyCode(email, verificationCode, true);
+		if (!validCode) {
+			throw new RuntimeException("인증 코드가 올바르지 않습니다.");
+		}
+
+		validatePasswordRule(newPassword);
+
+		userRepository.updatePasswordByEmail(email, passwordEncoder.encode(newPassword));
 	}
 
 	// 회원가입
