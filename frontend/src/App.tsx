@@ -21,6 +21,13 @@ import WalletLayout from './pages/mypage/components/myWallet/WalletLayout';
 import TransactionLayout from './pages/mypage/components/myTransaction/TransactionLayout';
 import CarbonLayout from './pages/mypage/components/myCarbon/CarbonLayout';
 import ProjectList from './pages/project/ProjectList';
+import {
+  CultivationRegister,
+  ExpenseRegister,
+  FarmRegister,
+  ProjectRegister,
+  RevenueRegister,
+} from '@/pages/admin';
 import FindPassword from './pages/Auth/components/FindPassword';
 import ResetPassword from './pages/Auth/components/ResetPassword';
 
@@ -29,17 +36,17 @@ function App() {
     let lastSavedTime = 0;
 
     const updateActivity = () => {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem('accessToken');
       if (!token) return;
 
       const now = Date.now();
       if (now - lastSavedTime < 30000) return;
 
-      localStorage.setItem("lastActivityTime", String(now));
+      localStorage.setItem('lastActivityTime', String(now));
       lastSavedTime = now;
     };
 
-    const events = ["click", "keydown", "scroll"];
+    const events = ['click', 'keydown', 'scroll'];
 
     events.forEach((event) => {
       window.addEventListener(event, updateActivity);
@@ -78,6 +85,11 @@ function App() {
             <Route path="transaction-history" element={<TransactionLayout />} />
             <Route path="carbon-history" element={<CarbonLayout />} />
           </Route>
+          <Route path="/admin/farm" element={<FarmRegister />} />
+          <Route path="/admin/project" element={<ProjectRegister />} />
+          <Route path="/admin/cultivation" element={<CultivationRegister />} />
+          <Route path="/admin/expense" element={<ExpenseRegister />} />
+          <Route path="/admin/revenue" element={<RevenueRegister />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
