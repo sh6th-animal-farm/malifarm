@@ -10,4 +10,23 @@ export const authApi = {
     getUserRole: () => {
         return apiClient.get("/api/user/me/role");
     },
+    sendPasswordResetCode: (email: string) => {
+        return apiClient.post("/api/auth/password/reset/code", { email });
+    },
+    verifyPasswordResetCode: (email: string, code: string) => {
+        return apiClient.post("/api/auth/password/reset/verify", { email, code });
+    },
+    resetPassword: (
+        email: string,
+        verificationCode: string,
+        newPassword: string,
+        confirmPassword: string,
+    ) => {
+        return apiClient.post("/api/auth/password/reset", {
+            email,
+            verificationCode,
+            newPassword,
+            confirmPassword,
+        });
+    },
 }
