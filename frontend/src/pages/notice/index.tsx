@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SectionHeader from "@/components/layout/SectionHeader";
 import Pagination from "@/components/common/Pagination";
 import FilterGroup from "@/components/common/FilterGroup";
@@ -55,8 +56,13 @@ function CategoryBadge({ category }: { category: NoticeItemDTO["category"] }) {
 }
 
 function NoticeRow({ notice }: { notice: NoticeItemDTO }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="group flex cursor-pointer items-center border-b border-gray-50 py-5 transition-colors hover:bg-gray-50/80 md:px-4 md:py-6">
+    <div 
+      className="group flex cursor-pointer items-center border-b border-gray-50 py-5 transition-colors hover:bg-gray-50/80 md:px-4 md:py-6"
+      onClick={() => navigate(`/notice/${notice.id}`)}
+    >
       <div className="flex w-16 shrink-0 justify-center md:w-24">
         <CategoryBadge category={notice.category} />
       </div>

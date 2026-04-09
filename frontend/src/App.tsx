@@ -15,6 +15,7 @@ import TokenDetail from './pages/Token/TokenDetail';
 import CarbonList from './pages/Carbon/CarbonList';
 import CarbonDetail from './pages/Carbon/CarbonDetail';
 import Notice from './pages/notice';
+import NoticeDetail from './pages/notice/Detail';
 import MyPage from './pages/mypage';
 import ProfileLayout from './pages/mypage/components/myProfile/ProfileLayout';
 import ProjectLayout from './pages/mypage/components/myProject/ProjectLayout';
@@ -79,6 +80,7 @@ function App() {
           <Route path="/carbon/list" element={<CarbonList />} />
           <Route path="/carbon/:id" element={<CarbonDetail />} />
           <Route path="/notice" element={<Notice />} />
+          <Route path="/notice/:id" element={<NoticeDetail />} />
           <Route path="/mypage" element={<MyPage />}>
             <Route index element={<Navigate to="profile" replace />} />
             <Route path="profile" element={<ProfileLayout />} />
