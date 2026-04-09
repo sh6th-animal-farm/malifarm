@@ -13,11 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import com.animalfarm.backend.domain.mypage.dto.CarbonHistoryDTO;
 import com.animalfarm.backend.domain.mypage.dto.HoldingDTO;
@@ -44,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MypageService {
 
 	private final MypageRepository mypageRepository;
-	private final RestTemplate restTemplate;
 	private final PasswordEncoder passwordEncoder;
 
 	// 강황증권 API 서버 주소
@@ -81,16 +78,18 @@ public class MypageService {
 				urlBuilder.append("&category=").append(apiCategory);
 			}
 
-			ResponseEntity<ExternalApiResponseDTO<List<MyTransactionHistDTO>>> response = restTemplate.exchange(
-				urlBuilder.toString(), HttpMethod.GET, null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<List<MyTransactionHistDTO>>>() {
-				});
+			List<MyTransactionHistDTO> originalList = externalApiClient.callApi(
+				urlBuilder.toString(),
+				HttpMethod.GET,
+				null,
+				new ParameterizedTypeReference<ExternalApiResponseDTO<List<MyTransactionHistDTO>>>() {}
+			);
 
-			if (response.getBody() != null) {
+			if (originalList == null) {
+				return new ArrayList<>();
+			}
 
-				// 나의 거래내역 원본 리스트
-				List<MyTransactionHistDTO> originalList = response.getBody().getPayload();
-
+			try {
 				// DB 조회가 필요한 유형 정의
 				Set<String> targetTypes = Set.of("PASS", "FAIL", "BURN");
 
@@ -107,7 +106,10 @@ public class MypageService {
 					if (!tokenInfoList.isEmpty()) {
 						// DB에서 조회한 토큰 정보 리스트를 Map으로 변환 (Key: externalRefId, Value: TokenInfoDTO)
 						Map<Long, TokenInfoDTO> tokenMap = tokenInfoList.stream()
-							.collect(Collectors.toMap(TokenInfoDTO::getExternalRefId, info -> info));
+							.collect(Collectors.toMap(
+								TokenInfoDTO::getExternalRefId,
+								info -> info,
+								(existing, replacement) -> existing)); 	// 중복 거래번호가 있어도 원본 리스트 반환을 막지 않도록 첫 값을 유지한다. 이거 codex가 넣어준 거임 확인 필요
 
 						// 원본 리스트를 순회하며 토큰 정보 주입
 						originalList.forEach(txHist -> {
@@ -120,11 +122,11 @@ public class MypageService {
 						});
 					}
 				}
-
-				return originalList;
+			} catch (Exception e) {
+				log.error("거래 내역 토큰 정보 보강 실패: {}", e.getMessage(), e);
 			}
 
-			return new ArrayList<>(); // response body가 null이면 빈 리스트 반환
+			return originalList;
 
 		} catch (Exception e) {
 			System.err.println("[ERROR] API 호출 실패: " + e.getMessage());
@@ -165,12 +167,12 @@ public class MypageService {
 
 		try {
 			String url = khUrl + "api/my/wallet/" + walletId;
-			ResponseEntity<ExternalApiResponseDTO<MypageWalletDTO>> response = restTemplate.exchange(
-				url, HttpMethod.GET, null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<MypageWalletDTO>>() {
-				});
-
-			return (response.getBody() != null) ? response.getBody().getPayload() : null;
+			return externalApiClient.callApi(
+				url,
+				HttpMethod.GET,
+				null,
+				new ParameterizedTypeReference<ExternalApiResponseDTO<MypageWalletDTO>>() {}
+			);
 		} catch (Exception e) {
 			System.err.println("[ERROR] 지갑 API 호출 실패: " + e.getMessage());
 			return null;
@@ -186,12 +188,13 @@ public class MypageService {
 
 		try {
 			String url = khUrl + "api/my/token/" + walletId + "?page=" + page;
-			ResponseEntity<ExternalApiResponseDTO<List<HoldingDTO>>> response = restTemplate.exchange(
-				url, HttpMethod.GET, null,
-				new ParameterizedTypeReference<ExternalApiResponseDTO<List<HoldingDTO>>>() {
-				});
-
-			return (response.getBody() != null) ? response.getBody().getPayload() : new ArrayList<>();
+			List<HoldingDTO> list = externalApiClient.callApi(
+				url,
+				HttpMethod.GET,
+				null,
+				new ParameterizedTypeReference<ExternalApiResponseDTO<List<HoldingDTO>>>() {}
+			);
+			return list != null ? list : new ArrayList<>();
 		} catch (Exception e) {
 			System.err.println("[ERROR] 토큰 API 호출 실패: " + e.getMessage());
 			return new ArrayList<>();

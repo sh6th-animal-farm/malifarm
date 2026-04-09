@@ -8,6 +8,8 @@ import type { ProfileDTO } from "@/types/myPageType";
 import AddressModal from "./AddressModal";
 import PasswordModal from "./PasswordModal";
 
+const ADDRESS_DELIMITER = "|||";
+
 const notificationItems = [
   {
     key: "push",
@@ -56,7 +58,9 @@ export default function ProfileLayout() {
 
   const profileItems = useMemo(
     () => {
-      const address = profile?.address?.trim() ? profile.address : "-";
+      const address = profile?.address?.trim()
+        ? profile.address.replaceAll(ADDRESS_DELIMITER, ", ")
+        : "-";
 
       return [
         { label: "이메일", value: profile?.email ?? "-" },
@@ -114,17 +118,17 @@ export default function ProfileLayout() {
     setIsAddressModalOpen(false);
   };
 
-  const saveAddress = async () => {
+  const saveAddress = async (nextAddress: string) => {
     if (!profile || savingAddress) return;
 
     try {
       setSavingAddress(true);
       await myPageApi.updateProfile({
-        address: addressDraft,
+        address: nextAddress,
         pushYn: pushEnabled,
         receiveEmailYn: emailEnabled,
       });
-      setProfile((prev) => (prev ? { ...prev, address: addressDraft } : prev));
+      setProfile((prev) => (prev ? { ...prev, address: nextAddress } : prev));
       setIsAddressModalOpen(false);
     } catch (error) {
       console.error("주소 수정 실패", error);
@@ -276,7 +280,6 @@ export default function ProfileLayout() {
         isOpen={isAddressModalOpen}
         addressDraft={addressDraft}
         savingAddress={savingAddress}
-        onChangeAddress={setAddressDraft}
         onClose={closeAddressModal}
         onSave={saveAddress}
       />
