@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Icon from "@/components/icon";
 
@@ -10,9 +11,24 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    setUserRole(localStorage.getItem("userRole") ?? "");
+  }, []);
+
+  const visibleMenuItems = useMemo(
+    () =>
+      menuItems.filter((item) => {
+        if (item.to !== "/mypage/carbon-history") return true;
+        return ["SYSTEM", "ADMIN", "ENTERPRISE"].includes(userRole);
+      }),
+    [userRole],
+  );
+
   return (
     <nav className="flex flex-col gap-1">
-      {menuItems.map((item) => (
+      {visibleMenuItems.map((item) => (
         <NavLink
           key={item.to}
           to={item.to}
