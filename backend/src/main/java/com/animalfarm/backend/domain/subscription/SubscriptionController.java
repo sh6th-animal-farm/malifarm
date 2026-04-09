@@ -16,7 +16,6 @@ import com.animalfarm.backend.domain.subscription.dto.SubscriptionApplicationDTO
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.exception.BusinessException;
 import com.animalfarm.backend.global.exception.ErrorCode;
-import com.animalfarm.backend.global.http.ApiResponse;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,20 +30,22 @@ public class SubscriptionController {
 	SubscriptionService subscriptionService;
 
 	@PostMapping("/cancel")
-	public ResponseEntity<ApiResponse<String>> cancelSubscription(@RequestBody
+	public ResponseEntity<ApiResponseDTO<String>> cancelSubscription(@RequestBody
 	Long projectId) {
 		try {
 			boolean isSuccess = subscriptionService.selectAndCancel(projectId);
-
 			if (isSuccess) {
-				// 디자인 가이드에 따른 성공 메시지 반환
-				return ResponseEntity.ok(ApiResponse.message("청약 취소가 완료되었습니다."));
+				return ResponseEntity.ok(ApiResponseDTO.success("success", "청약 취소가 완료되었습니다."));
 			} else {
-				// 실패 시 처리
-				return ResponseEntity.badRequest().body(ApiResponse.message("청약 취소에 실패했습니다. 내역을 확인해주세요."));
+				return ResponseEntity.ok(ApiResponseDTO.success("api_fail", "청약은 취소되었으나 외부 시스템 반영에 실패했습니다."));
 			}
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(ApiResponse.message(e.getMessage()));
+			return ResponseEntity
+				.status(ErrorCode.INTERNAL_SERVER_ERROR.getHttpStatus())
+				.body(ApiResponseDTO.fail(
+					ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
+					"청약 취소 처리 중 서버 오류가 발생했습니다."
+				));
 		}
 	}
 

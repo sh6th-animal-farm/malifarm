@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/projectType';
 
-// 분리한 컴포넌트들 import
 import TabMenu from '@/components/common/TabMenu';
 import ImageCarousel from './components/ImageCarousel';
 import FarmTabContent from './components/FarmTabContent';
@@ -13,11 +12,11 @@ import SubscriptionModal from './components/SubscriptionModal';
 import AccountCheckFailModal from './components/AccountCheckFailModal';
 import { authApi } from '@/api/authApi';
 import { subscriptionApi } from '@/api/subscriptionApi';
+import Toast from '@/components/common/Toast';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string | undefined }>();
   const [projectData, setProjectData] = useState<ProjectData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('invest');
   const [activeModal, setActiveModal] = useState<
     'subscription' | 'accountFail' | null
@@ -27,40 +26,43 @@ export default function ProjectDetail() {
   >(undefined);
   const navigate = useNavigate();
   const [isApplied, setIsApplied] = useState(false);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const handleCloseToast = useCallback(() => {
+    setToastMsg(null);
+  }, []);
+
+  const fetchData = async (projectId: string) => {
+    try {
+      const projectRes = await projectApi.getProjectDetail(projectId);
+      setProjectData(projectRes.data || projectRes);
+
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        try {
+          const res = (await subscriptionApi.checkStatus(
+            Number(projectId),
+          )) as any;
+          const status =
+            res.data?.isApplied !== undefined
+              ? res.data.isApplied
+              : res.isApplied;
+
+          setIsApplied(status);
+        } catch (err) {
+          console.error('청약 상태 조회 실패:', err);
+          setIsApplied(false);
+        }
+      }
+    } catch (error) {
+      console.error('데이터 로딩 실패:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async (projectId: string) => {
-      try {
-        setLoading(true);
-        const projectRes = await projectApi.getProjectDetail(projectId);
-        setProjectData(projectRes.data || projectRes);
-
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-          try {
-            // apiClient가 이미 res.data를 반환하므로 바로 꺼내 씁니다.
-            const statusData = await subscriptionApi.checkStatus(
-              Number(projectId),
-            );
-
-            // 백엔드 Map<String, Object> data에 넣은 'isApplied'를 바로 참조
-            // 만약 statusData 자체가 boolean이라면 setIsApplied(statusData)
-            setIsApplied(statusData.isApplied);
-          } catch (err) {
-            console.error('청약 상태 조회 실패:', err);
-            setIsApplied(false);
-          }
-        }
-      } catch (error) {
-        console.error('데이터 로딩 실패:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     if (id) fetchData(id);
   }, [id]);
 
-  // ✅ 사이드바 버튼 클릭 시 실행될 함수
+  // 사이드바 버튼 클릭 시 실행될 함수
   const handleAction = async () => {
     if (projectData.projectStatus === 'INPROGRESS') {
       navigate(`/token/${id}`);
@@ -70,14 +72,13 @@ export default function ProjectDetail() {
       if (window.confirm('청약을 취소하시겠습니까?')) {
         try {
           await subscriptionApi.cancelSubscription(Number(id));
-          setIsApplied(false);
+          setToastMsg('청약이 취소되었습니다.');
+          if (id) await fetchData(id);
         } catch (error: any) {
-          const errorMsg = error.message || String(error);
-          if (errorMsg.includes('청약 취소가 완료되었습니다')) {
-            setIsApplied(false);
-          } else {
-            console.error('실제 취소 오류 발생:', errorMsg);
-          }
+          const errorMsg =
+            error.response?.data?.message || '취소 중 오류가 발생했습니다.';
+          console.error('실제 취소 오류 발생:', errorMsg);
+          alert(errorMsg);
         }
       }
       return;
@@ -104,18 +105,7 @@ export default function ProjectDetail() {
     }
   };
 
-  if (loading)
-    return (
-      <div className="flex min-h-screen items-center justify-center font-bold text-gray-400">
-        로딩 중...
-      </div>
-    );
-  if (!projectData)
-    return (
-      <div className="flex min-h-screen items-center justify-center text-red-500 font-bold">
-        정보 없음
-      </div>
-    );
+  if (!projectData) return null;
 
   return (
     <div className="min-h-screen font-main antialiased bg-white">
@@ -153,6 +143,10 @@ export default function ProjectDetail() {
         <SubscriptionModal
           isOpen={activeModal === 'subscription'}
           onClose={() => setActiveModal(null)}
+          setToastMsg={setToastMsg}
+          onSuccess={() => {
+            if (id) fetchData(id);
+          }}
           projectData={{
             userId: currentUserId || '',
             projectId: String(projectData.projectId),
@@ -183,6 +177,8 @@ export default function ProjectDetail() {
         secondaryButtonText="다음에 하기"
         onPrimaryClick={() => navigate('/mypage/wallet')}
       />
+
+      {toastMsg && <Toast message={toastMsg} onClose={handleCloseToast} />}
     </div>
   );
 }
