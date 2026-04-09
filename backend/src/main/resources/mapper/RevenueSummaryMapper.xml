@@ -37,7 +37,7 @@
         )
     </insert>
 
-    <select id="selectByProjectId" resultType="revenueSummaryDTO">
+    <select id="selectRevenueSummaryByProjectId" resultType="revenueSummaryDTO">
         SELECT *
         FROM revenue_summary
         WHERE project_id=#{projectId} AND status='READY'
