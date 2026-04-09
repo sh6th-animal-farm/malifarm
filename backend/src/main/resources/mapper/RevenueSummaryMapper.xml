@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.animalfarm.backend.domain.accounting.RevenueSummaryRepository">
+<mapper namespace="com.animalfarm.backend.domain.accounting.FinancesRepository">
 
     <select id="selectSettlementTargets" resultType="map">
         SELECT
@@ -37,7 +37,7 @@
         )
     </insert>
 
-    <select id="selectByProjectId" resultType="revenueSummaryDTO">
+    <select id="selectRevenueSummaryByProjectId" resultType="revenueSummaryDTO">
         SELECT *
         FROM revenue_summary
         WHERE project_id=#{projectId} AND status='READY'
