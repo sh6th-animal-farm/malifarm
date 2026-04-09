@@ -60,12 +60,12 @@ public class SecurityConfig {
 				// [Public] 로그인 없이 접근 가능한 경로
 				.requestMatchers("/api/auth/**", "/", "/main", "/auth/**", "/policy", "/notice/list")
 				.permitAll()
-				.requestMatchers("/project/**", "/token/**", "/token", "/carbon/**", "/mypage/**", "/market/**")
+				.requestMatchers("/project/**", "/token/**", "/token", "/mypage/**", "/market/**")
 				.permitAll()
 
 				// [Read-Only] GET 요청에 대해 전역 허용
-				.requestMatchers(HttpMethod.GET, "/api/project/**", "/api/token/**", "/api/token", "/api/accounts/**",
-					"/api/market/**", "/api/home/project")
+				.requestMatchers(HttpMethod.GET, "/api/project/**", "/api/token/**", "/api/token",
+					"/api/accounts/**", "/api/market/**", "/api/home/project")
 				.permitAll()
 
 				// [Role: ADMIN] 관리자 전용 기능
@@ -79,7 +79,7 @@ public class SecurityConfig {
 				.hasRole("ADMIN")
 
 				// [Role: ENTERPRISE] 기업 회원 전용 (탄소 마켓)
-				.requestMatchers("/api/carbon/**")
+				.requestMatchers("/api/carbon/**", "/carbon/**")
 				.hasRole("ENTERPRISE")
 
 				//  AI 봇과 일반 유저 모두 주문 API에 접근할 수 있도록 권한 확장
