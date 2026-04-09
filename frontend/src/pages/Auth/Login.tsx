@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import apiClient from "@/api/apiClient";
 import {authApi} from "@/api/authApi";
-import LoginForm from "@/pages/auth/components/LoginForm.tsx";
+import LoginForm from "./components/LoginForm.tsx";
 
 type LoginResponse = {
     accessToken: string;

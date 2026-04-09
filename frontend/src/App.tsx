@@ -21,6 +21,8 @@ import WalletLayout from './pages/mypage/components/myWallet/WalletLayout';
 import TransactionLayout from './pages/mypage/components/myTransaction/TransactionLayout';
 import CarbonLayout from './pages/mypage/components/myCarbon/CarbonLayout';
 import ProjectList from './pages/project/ProjectList';
+import FindPassword from './pages/Auth/components/FindPassword';
+import ResetPassword from './pages/Auth/components/ResetPassword';
 
 function App() {
   useEffect(() => {
@@ -56,9 +58,12 @@ function App() {
       <main className="content-wrapper pb-16 md:pb-0">
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/"  element={<Home />} />
+          <Route path="/main"  element={<Navigate to="/" replace />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/find-password" element={<FindPassword/>} />
+          <Route path="/auth/reset-password" element={<ResetPassword/>} />
           <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/project" element={<ProjectList />} />
           <Route path="/token" element={<TokenList />} />

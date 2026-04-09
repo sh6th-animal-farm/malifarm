@@ -21,7 +21,7 @@ export default function LoginForm({
   onSubmit,
 }: LoginFormProps) {
   return (
-    <div className="flex flex-col items-center px-6 pt-20 min-h-[calc(75vh-var(--spacing-header-height))] bg-gray-50">
+    <div className="flex flex-col items-center px-6 py-10 min-h-[calc(75vh-var(--spacing-header-height))] bg-gray-50">
       
       <AuthCard
         title="로그인"
@@ -44,7 +44,7 @@ export default function LoginForm({
           </div>
 
           {/* 비밀번호 */}
-          <div className="mb-8">
+          <div className="mb-5">
             <label className="block text-[14px] font-bold text-gray-900 mb-2">
               비밀번호
             </label>
@@ -55,12 +55,12 @@ export default function LoginForm({
               value={password}
               onChange={(e) => onChangePassword(e.target.value)}
             />
+            <div className="min-h-[24px] mt-2">
+              {error && (
+                <p className="text-[14px] text-[#d32f2f]">{error}</p>
+              )}
+            </div>
           </div>
-
-          {/* 에러 */}
-          {error && (
-            <p className="mt-1 text-[14px] text-[#d32f2f]">{error}</p>
-          )}
 
           {/* 버튼 */}
           <Button variant="check" width="100%" type="submit">
@@ -73,6 +73,12 @@ export default function LoginForm({
           계정이 없으신가요?
           <Link to="/auth/signup" className="ml-1 font-bold text-green-600">
             회원가입
+          </Link>
+        </div>
+        <div className="mt-2 text-center text-[14px] text-gray-500">
+          비밀번호를 잊으셨나요?
+          <Link to="/auth/find-password" className="ml-1 font-bold text-green-600">
+            비밀번호 찾기
           </Link>
         </div>
       </AuthCard>
