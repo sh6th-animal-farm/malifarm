@@ -23,6 +23,7 @@
   --spacing-gutter: 24px;
   --spacing-side-margin: 72px;
   --spacing-header-height: 72px;
+  --spacing-570: 25rem;
   --max-width-container-max: 1296px;
 
   /* --- 5. Typography Defaults --- */
@@ -128,6 +129,18 @@
   .layout-container {
     width: min(100%, var(--max-width-container-max));
     margin-inline: auto;
+  }
+
+  .pagination-nav-button {
+    @apply inline-flex h-10 cursor-pointer items-center gap-1 rounded-full px-3 font-caption-02 text-gray-400 transition-colors duration-200 hover:bg-gray-50 hover:text-gray-700 disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:bg-transparent disabled:hover:text-gray-300;
+  }
+
+  .pagination-page {
+    @apply flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-full px-3 font-body-03 text-gray-400 transition-colors duration-200 hover:bg-gray-50 hover:text-gray-700;
+  }
+
+  .pagination-ellipsis {
+    @apply flex h-10 min-w-8 items-center justify-center font-body-02 text-gray-300;
   }
 }
 

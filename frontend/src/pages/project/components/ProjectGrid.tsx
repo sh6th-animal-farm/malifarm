@@ -1,4 +1,5 @@
 import type { ProjectList as ProjectType } from '@/types/projectType';
+import EmptyState from '@/components/common/EmptyState';
 import ProjectCard from '@/components/common/ProjectCard';
 
 interface ProjectGridProps {
@@ -63,9 +64,7 @@ export default function ProjectGrid({
   // 3. 데이터가 없을 때 UI
   if (filteredAndFormatted.length === 0) {
     return (
-      <div className="col-span-full py-20 text-center text-gray-400 font-medium border-2 border-dashed border-gray-100 rounded-3xl">
-        해당 조건에 맞는 프로젝트가 없습니다.
-      </div>
+      <EmptyState message="해당 조건에 맞는 프로젝트가 없습니다." />
     );
   }
 

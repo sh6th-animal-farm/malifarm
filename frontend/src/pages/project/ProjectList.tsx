@@ -4,10 +4,10 @@ import { projectApi } from '@/api/projectApi';
 
 import ProjectGrid from '@/pages/project/components/ProjectGrid';
 import FilterGroup from '@/components/common/FilterGroup';
+import Pagination from '@/components/common/Pagination';
 import SectionHeader from '@/components/layout/SectionHeader';
 import { useKakaoMap } from '@/pages/project/hook/useKakaoMap';
 import MapSection from '@/pages/project/hook/MapSection';
-import Button from '@/components/common/Button';
 import { useStarreds } from '@/pages/project/hook/useStarreds';
 
 export default function ProjectList() {
@@ -118,28 +118,12 @@ export default function ProjectList() {
         />
 
         {!isLoading && totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-16">
-            {Array.from({ length: totalPages }).map((_, i) => {
-              const pageNum = i + 1;
-              const isActive = currentPage === pageNum;
-              return (
-                <Button
-                  key={i}
-                  variant={isActive ? 'check' : 'outline-disabled'}
-                  width={40}
-                  height={40}
-                  onClick={() => handlePageChange(pageNum)}
-                  disabled={false}
-                  className={`!p-0 flex items-center justify-center font-bold transition-all ${
-                    !isActive &&
-                    'hover:border-green-600 hover:text-green-600 !cursor-pointer'
-                  }`}
-                >
-                  {pageNum}
-                </Button>
-              );
-            })}
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            className="mt-16"
+          />
         )}
       </div>
     </div>

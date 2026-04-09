@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { carbonApi } from "../../api/carbonApi";
 import type { CarbonListDTO } from "../../types/carbonType";
+import EmptyState from "@/components/common/EmptyState";
 import CarbonCard from "./components/CarbonCard";
 import CarbonDiscountRateModal from "./components/CarbonDiscountRateModal";
 
@@ -90,10 +91,10 @@ export default function CarbonList() {
           {isLoading ? (
             <div className="flex justify-center items-center h-full text-[var(--color-gray-400)]">로딩 중...</div>
           ) : carbonList.length === 0 ? (
-            <div className="w-full py-[40px] px-[20px] text-center flex flex-col items-center gap-[16px]">
-              <div className="w-[64px] h-[64px] bg-[var(--color-gray-100)] text-[var(--color-gray-400)] rounded-full flex items-center justify-center text-[32px] font-bold">!</div>
-              <p className="text-[18px] text-[var(--color-gray-400)] font-medium m-0">구매 가능한 상품이 없습니다.</p>
-            </div>
+            <EmptyState
+              message="구매 가능한 상품이 없습니다."
+              className="mb-0 px-5 py-10"
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[26px]">
               {carbonList.map((item) => (
