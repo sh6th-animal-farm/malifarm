@@ -79,7 +79,7 @@ export default function ProjectList() {
 
   return (
     <div>
-      <div className='bg-white'>
+      <div className='bg-gray-50'>
         <section className="layout-container py-20 md:pt-20">
           <SectionHeader
             title="프로젝트 지도"
