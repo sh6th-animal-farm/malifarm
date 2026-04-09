@@ -78,7 +78,7 @@ function ProjectCard({
 
   return (
     <article
-      className="group relative overflow-hidden rounded-lg bg-white shadow-std transition duration-200 hover:-translate-y-1 cursor-pointer"
+      className="group relative overflow-hidden rounded-lg bg-white shadow-weak transition duration-200 hover:-translate-y-1 cursor-pointer"
       role="link"
       tabIndex={0}
       onClick={() => navigate(`/project/${project.id}`)}

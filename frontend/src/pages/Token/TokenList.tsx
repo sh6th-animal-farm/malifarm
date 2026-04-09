@@ -30,25 +30,27 @@ export default function TokenList() {
   }
 
   return (
-    <div className="container">
-      <SectionHeader
-        title="토큰 거래소"
-        subtitle="실시간 차트를 확인해보세요."
-      />
-      <div className="flex items-start gap-4">
-        <TokenListTable
-          tokenList={tokenList}
-          hoveredTokenId={hoveredTokenId}
-          onHover={setHoveredTokenId}
+    <div className="">
+      <section className="layout-container py-15 md:py-20">
+        <SectionHeader
+          title="토큰 거래소"
+          subtitle="실시간 차트를 확인해보세요."
         />
-        <aside className="sticky top-20 self-start">
-          {displayId !== null ? (
-            <TokenSummaryCard tokenId={displayId} />
-          ) : (
-            <div className="w-[432px] h-[468px] bg-gray-50 animate-pulse rounded-[var(--radius-m)]" />
-          )}
-        </aside>
-      </div>
+        <div className="flex items-start gap-4">
+          <TokenListTable
+            tokenList={tokenList}
+            hoveredTokenId={hoveredTokenId}
+            onHover={setHoveredTokenId}
+          />
+          <aside className="sticky top-20 self-start">
+            {displayId !== null ? (
+              <TokenSummaryCard tokenId={displayId} />
+            ) : (
+              <div className="w-[432px] h-[468px] bg-gray-50 animate-pulse rounded-[var(--radius-m)]" />
+            )}
+          </aside>
+        </div>
+      </section>
     </div>
   );
 }

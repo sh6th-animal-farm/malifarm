@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { carbonApi } from "../../api/carbonApi";
 import type { CarbonListDTO } from "../../types/carbonType";
 import EmptyState from "@/components/common/EmptyState";
+import SectionHeader from "@/components/layout/SectionHeader";
 import CarbonCard from "./components/CarbonCard";
 import CarbonDiscountRateModal from "./components/CarbonDiscountRateModal";
 
@@ -32,34 +33,34 @@ export default function CarbonList() {
 
   return (
     // 🌟 화면 전체(w-full)를 덮는 연회색 배경(bg-gray-50) 래퍼 추가!
-    <div className="w-full bg-[var(--color-gray-50)] min-h-screen">
-      <div className="layout-container py-[60px] relative">
+    <div className="w-full bg-gray-50 min-h-screen">
+      <section className="layout-container py-15 md:py-20">
         
         {/* 헤더 상단 정렬 */}
         <div className="flex justify-between items-start mb-[24px] px-5 xl:px-0">
           <div className="relative">
-            <div className="flex items-center">
-              <h1 className="font-header-01 text-[var(--color-gray-900)] m-0">탄소마켓</h1>
-              
-              <div className="relative ml-[10px] inline-flex">
-                <button
-                  className={`w-[24px] h-[24px] rounded-full text-white text-[14px] flex items-center justify-center transition-all cursor-pointer border-none align-middle ${
-                    isGuideOpen ? "bg-[var(--color-green-600)]" : "bg-[var(--color-gray-300)]"
-                  }`}
-                  onClick={() => setIsGuideOpen(!isGuideOpen)}
-                >
-                  ?
-                </button>
-                
-                <CarbonDiscountRateModal 
-                  isOpen={isGuideOpen} 
-                  onClose={() => setIsGuideOpen(false)} 
-                />
-              </div>
-            </div>
-            <p className="font-subtitle-02 text-[var(--color-gray-500)] mt-[8px] mb-0">
-              보유한 포인트를 사용하여 탄소 배출권을 구매하고 ESG 경영을 실천하세요.
-            </p>
+            <SectionHeader
+              title="탄소마켓"
+              subtitle="보유한 포인트를 사용하여 탄소 배출권을 구매하고 ESG 경영을 실천하세요."
+              className="mb-0"
+              titleSuffix={
+                <div className="relative inline-flex">
+                  <button
+                    className={`flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-full border-none align-middle text-[14px] text-white transition-all ${
+                      isGuideOpen ? "bg-[var(--color-green-600)]" : "bg-[var(--color-gray-300)]"
+                    }`}
+                    onClick={() => setIsGuideOpen(!isGuideOpen)}
+                  >
+                    ?
+                  </button>
+
+                  <CarbonDiscountRateModal
+                    isOpen={isGuideOpen}
+                    onClose={() => setIsGuideOpen(false)}
+                  />
+                </div>
+              }
+            />
           </div>
           <button
             onClick={() => navigate("/mypage/carbon-history")}
@@ -103,7 +104,7 @@ export default function CarbonList() {
             </div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
