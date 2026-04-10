@@ -105,8 +105,11 @@
 
     <!-- 토큰 소각일 업데이트 -->
     <update id="updateTokenDelete">
-        update tokens set deleted_at = now()
-        where token_id = #{tokenId}
+        UPDATE tokens
+        SET
+        deleted_at = now(),
+        status = #{status}
+        WHERE token_id = #{tokenId}
     </update>
 
     <!-- 프로젝트 테이블 Canceled 업데이트 -->

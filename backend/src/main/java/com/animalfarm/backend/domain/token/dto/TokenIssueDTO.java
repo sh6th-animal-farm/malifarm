@@ -23,6 +23,8 @@ public class TokenIssueDTO {
 	private BigDecimal totalSupply;
 	private Long projectId;
 	private BigDecimal issuePrice;
+	private BigDecimal targetAmount;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 	private OffsetDateTime createdAt;
+	private String status;
 }

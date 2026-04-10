@@ -37,7 +37,7 @@ public interface SubscriptionRepository {
 
 	public abstract AllocationStatsDTO selectAllocationStats(Long projectId, BigDecimal standardAmount);
 
-	public abstract boolean updateTokenDelete(Long tokenId);
+	public abstract boolean updateTokenDelete(String status, Long tokenId);
 
 	public abstract boolean updateProjectCanceled(Long projectId);
 

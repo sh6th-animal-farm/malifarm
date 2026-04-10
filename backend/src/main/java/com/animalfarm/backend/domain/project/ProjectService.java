@@ -136,14 +136,13 @@ public class ProjectService {
 				.build();
 
 			tokenRepository.insertTokenLedger(projectNewTokenDTO);
-			this.postTokenIssue(projectInsertDTO);
+			//this.postTokenIssue(projectInsertDTO);
 
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			// 여기서 에러 로그를 남겨서 개발자가 알게 함
 			log.error("통합 처리 중 에러 발생! DB 롤백을 시작합니다. 사유: {}", e.getMessage());
-			//// 제일 중요!! 예외를 다시 밖으로 던져야 스프링이 롤백을 해줍니다.
 			throw new RuntimeException("프로젝트 등록 중 오류 발생: " + e.getMessage(), e);
 		}
 	}
@@ -316,26 +315,14 @@ public class ProjectService {
 		return projectRepository.selectEndTargetProject();
 	}
 
-	public void postTokenIssue(ProjectInsertDTO projectInsertDTO) {
-		TokenIssueDTO tokenIssueDTO = TokenIssueDTO.builder()
-			.tokenId(projectInsertDTO.getTokenId())
-			.tokenName(projectInsertDTO.getTokenName())
-			.tickerSymbol(projectInsertDTO.getTickerSymbol())
-			.totalSupply(projectInsertDTO.getTotalSupply())
-			.projectId(projectInsertDTO.getProjectId())
-			.issuePrice(
-				projectInsertDTO.getTargetAmount().divide(projectInsertDTO.getTotalSupply(), 0, RoundingMode.FLOOR))
-			.createdAt(projectInsertDTO.getCreatedAt())
-			.build();
+	public void postTokenIssue(TokenIssueDTO tokenData) {
+		tokenData.setIssuePrice(tokenData.getTargetAmount().divide(tokenData.getTotalSupply(), 0, RoundingMode.FLOOR));
 
 		String targetUrl = khUrl + "api/project/open";
-
-		// externalApiUtil.callApi 내부에서 이미 에러 시 RuntimeException을 던지도록 되어있으니
-		// 그냥 호출만 하면 에러가 상위로 전파됨.
-		TokenIssueDTO result = externalApiClient.callApi(targetUrl, HttpMethod.POST, tokenIssueDTO,
+		TokenIssueDTO result = externalApiClient.callApi(targetUrl, HttpMethod.POST, tokenData,
 			new ParameterizedTypeReference<ExternalApiResponseDTO<TokenIssueDTO>>() {
 			});
 
-		log.info("증권사 전송 성공 : " + tokenIssueDTO);
+		log.info("증권사 전송 성공 : " + tokenData);
 	}
 }
