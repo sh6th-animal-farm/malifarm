@@ -4,10 +4,10 @@ import { projectApi } from '@/api/projectApi';
 
 import ProjectGrid from '@/pages/project/components/ProjectGrid';
 import FilterGroup from '@/components/common/FilterGroup';
+import Pagination from '@/components/common/Pagination';
 import SectionHeader from '@/components/layout/SectionHeader';
 import { useKakaoMap } from '@/pages/project/hook/useKakaoMap';
 import MapSection from '@/pages/project/hook/MapSection';
-import Button from '@/components/common/Button';
 import { useStarreds } from '@/pages/project/hook/useStarreds';
 
 export default function ProjectList() {
@@ -78,69 +78,56 @@ export default function ProjectList() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-main antialiased">
-      <div className="max-w-[1200px] mx-auto p-4 py-16">
-        <SectionHeader
-          title="프로젝트 지도"
-          subtitle="진행중인 프로젝트를 지도에서 확인하세요"
-        />
-
-        <MapSection
-          mapInstance={mapInstance}
-          onRegionSelect={handleRegionSelect}
-        />
-
-        <div ref={listRef}>
+    <div>
+      <div className='bg-gray-50'>
+        <section className="layout-container py-20 md:pt-20">
           <SectionHeader
-            title="프로젝트 목록"
-            subtitle="프로젝트를 선택하여 자세한 정보를 확인하세요"
+            title="프로젝트 지도"
+            subtitle="진행중인 프로젝트를 지도에서 확인하세요"
           />
-        </div>
-
-        <div className="mb-10">
-          <FilterGroup
-            items={[
-              { text: '전체보기', value: 'ALL' },
-              { text: '청약중', value: 'SUBSCRIPTION' },
-              { text: '공고중', value: 'ANNOUNCEMENT' },
-              { text: '진행중', value: 'INPROGRESS' },
-            ]}
-            currentValue={activeStatus}
-            onFilterChange={handleFilterChange}
+          <MapSection
+            mapInstance={mapInstance}
+            onRegionSelect={handleRegionSelect}
           />
-        </div>
-
-        <ProjectGrid
-          projects={currentProjects}
-          activeStatus={activeStatus}
-          isLoading={isLoading}
-          onToggleStar={handleToggleStar}
-        />
-
-        {!isLoading && totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-16">
-            {Array.from({ length: totalPages }).map((_, i) => {
-              const pageNum = i + 1;
-              const isActive = currentPage === pageNum;
-              return (
-                <Button
-                  key={i}
-                  variant={isActive ? 'check' : 'outline-disabled'}
-                  width={40}
-                  height={40}
-                  onClick={() => handlePageChange(pageNum)}
-                  disabled={false}
-                  className={`!p-0 flex items-center justify-center font-bold transition-all ${
-                    !isActive &&
-                    'hover:border-green-600 hover:text-green-600 !cursor-pointer'
-                  }`}
-                >
-                  {pageNum}
-                </Button>
-              );
-            })}
+        </section>
+      </div>
+      <div className=''>
+        <section className="layout-container py-20 my:pb-20">
+          <div ref={listRef}>
+            <SectionHeader
+              title="프로젝트 목록"
+              subtitle="프로젝트를 선택하여 자세한 정보를 확인하세요"
+            />
           </div>
-        )}
+          <div className="mb-10">
+            <FilterGroup
+              items={[
+                { text: '전체보기', value: 'ALL' },
+                { text: '청약중', value: 'SUBSCRIPTION' },
+                { text: '공고중', value: 'ANNOUNCEMENT' },
+                { text: '진행중', value: 'INPROGRESS' },
+              ]}
+              currentValue={activeStatus}
+              onFilterChange={handleFilterChange}
+            />
+          </div>
+
+          <ProjectGrid
+            projects={currentProjects}
+            activeStatus={activeStatus}
+            isLoading={isLoading}
+            onToggleStar={handleToggleStar}
+          />
+
+          {!isLoading && totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className="mt-16"
+            />
+          )}
+        </section>
       </div>
     </div>
   );

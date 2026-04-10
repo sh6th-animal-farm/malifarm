@@ -10,7 +10,7 @@ export default function MapSection({
   onRegionSelect,
 }: MapSectionProps) {
   return (
-    <div className="flex flex-col lg:flex-row gap-[24px] h-[400px] mb-20 items-stretch">
+    <div className="flex flex-col lg:flex-row gap-[24px] h-[400px] items-stretch">
       <div className="w-full lg:w-[320px] h-full flex-shrink-0">
         <RegionAccordion onRegionSelect={onRegionSelect} />
       </div>

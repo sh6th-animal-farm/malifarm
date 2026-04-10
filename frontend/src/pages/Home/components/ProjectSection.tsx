@@ -29,7 +29,7 @@ export default function ProjectSection() {
           <h2 className="font-header-01 text-gray-900">
             청약 진행 중인 프로젝트
           </h2>
-          <Link to="/project/list" className="font-caption-01 text-gray-500">
+          <Link to="/project" className="font-caption-01 text-gray-500">
             전체보기 &gt;
           </Link>
         </div>
