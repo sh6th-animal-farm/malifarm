@@ -46,7 +46,7 @@ export default function NewsDetail() {
   const news = currentIndex >= 0 ? mockNews[currentIndex] : mockNews[0];
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen">
       <div className="layout-container max-w-840 py-14 md:py-16">
         <button
           type="button"

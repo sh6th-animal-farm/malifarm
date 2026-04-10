@@ -31,7 +31,7 @@ export default function TokenList() {
 
   return (
     <div className="">
-      <section className="layout-container py-15 md:py-20">
+      <section className="layout-container py-20 md:py-20">
         <SectionHeader
           title="토큰 거래소"
           subtitle="실시간 차트를 확인해보세요."
@@ -46,7 +46,7 @@ export default function TokenList() {
             {displayId !== null ? (
               <TokenSummaryCard tokenId={displayId} />
             ) : (
-              <div className="w-[432px] h-[468px] bg-gray-50 animate-pulse rounded-[var(--radius-m)]" />
+              <div className="w-[432px] h-[468px] bg-gray-50 animate-pulse rounded-lg]" />
             )}
           </aside>
         </div>

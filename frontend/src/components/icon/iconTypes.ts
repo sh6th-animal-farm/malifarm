@@ -5,7 +5,7 @@ export type IconName =
   | "heart_filled" | "search" | "warning" | "home" 
   | "chevron_right" | "trashcan" | "check" | "instagram" 
   | "youtube" | "seedling" | "link" | "user"
-  | "check_circle" | "warning_circle";
+  | "check_circle" | "warning_circle" | "clock";
 
 export interface IconProps extends HTMLAttributes<SVGElement> {
   name?: IconName;

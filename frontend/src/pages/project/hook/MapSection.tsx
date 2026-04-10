@@ -17,7 +17,7 @@ export default function MapSection({
       <div className="flex-1 h-full relative">
         <div
           id="map"
-          className="w-full h-full rounded-[20px] border border-gray-200 bg-gray-50 shadow-sm"
+          className="w-full h-full rounded-[20px] bg-gray-50 shadow-std"
           style={{ height: '100%' }}
         />
       </div>

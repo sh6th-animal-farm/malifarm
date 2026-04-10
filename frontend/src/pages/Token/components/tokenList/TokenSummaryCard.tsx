@@ -60,7 +60,7 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
   }, [tokenId]);
 
   return (
-    <div className="w-[432px] h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight">
+    <div className="w-[432px] h-[468px] bg-white rounded-lg p-6 shadow-std tracking-tight">
       {!tokenOhlcv && <div>차트 데이터를 불러오는 중입니다.</div>}
       <div className={!tokenOhlcv ? 'hidden' : 'block'}>
         {/* 헤더 */}

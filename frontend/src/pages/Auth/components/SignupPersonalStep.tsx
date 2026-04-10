@@ -94,7 +94,7 @@ export default function SignupPersonalStep({
 }: SignupPersonalStepProps) {
   const navigate = useNavigate();
 
-  const labelClassName = "block mb-2 text-[14px] font-semibold text-gray-900";
+  const labelClassName = "block mb-2 font-caption-03 text-gray-900";
 
   if (form.step === 4) {
     return (
@@ -157,7 +157,7 @@ export default function SignupPersonalStep({
                 height={50}
               />
               {emailRemainSec > 0 && (
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[14px] text-red-500 font-semibold">
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 font-caption-02 text-error">
                   {formatMMSS(emailRemainSec)}
                 </span>
               )}
