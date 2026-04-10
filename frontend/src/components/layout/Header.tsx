@@ -108,7 +108,8 @@ export default function Header() {
     if (path.startsWith("/project")) return "프로젝트";
     if (path.startsWith("/token")) return "토큰 거래소";
     if (path.startsWith("/carbon")) return "탄소 마켓";
-    if (path.startsWith("/notice")) return "공지사항";
+    if (path.startsWith("/news")) return "뉴스";
+    if (path.startsWith("/notice")) return "뉴스";
     if (path.startsWith("/auth/login")) return "로그인";
     if (path.startsWith("/auth/signup")) return "회원가입";
     if (path.startsWith("/mypage/profile")) return "내 정보";
@@ -162,8 +163,8 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link to="/notice" className={getNavItemClass("/notice")}>
-                공지사항
+              <Link to="/news" className={getNavItemClass("/news")}>
+                뉴스
               </Link>
             </li>
           </ul>

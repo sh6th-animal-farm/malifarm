@@ -40,16 +40,19 @@ const mockNotices: NoticeItemDTO[] = [
 
 function CategoryBadge({ category }: { category: NoticeItemDTO["category"] }) {
   const badgeMap: Record<string, { variant: "info" | "warning" | "success" | "default"; className: string }> = {
-    공지: { variant: "default", className: "!bg-gray-900 !text-white" },
-    점검: { variant: "warning", className: "!bg-error/10 !text-error" },
-    이벤트: { variant: "info", className: "!bg-info/10 !text-info" },
-    안내: { variant: "default", className: "!bg-gray-100 !text-gray-500" },
+    공지: { variant: "default", className: "!bg-transparent !text-gray-700" },
+    점검: { variant: "default", className: "!bg-transparent !text-gray-500" },
+    이벤트: { variant: "default", className: "!bg-transparent !text-gray-500" },
+    안내: { variant: "default", className: "!bg-transparent !text-gray-500" },
   };
 
   const { variant, className } = badgeMap[category];
 
   return (
-    <Badge variant={variant} className={`!rounded-full !w-auto !min-w-14 !h-7 !border-0 ${className}`}>
+    <Badge
+      variant={variant}
+      className={`!h-auto !min-w-0 !w-auto !border-0 !bg-transparent !px-0 !py-0 font-caption-02 ${className}`}
+    >
       {category}
     </Badge>
   );
@@ -59,31 +62,33 @@ function NoticeRow({ notice }: { notice: NoticeItemDTO }) {
   const navigate = useNavigate();
 
   return (
-    <div 
-      className="group flex cursor-pointer items-center border-b border-gray-50 py-5 transition-colors hover:bg-gray-50/80 md:px-4 md:py-6"
+    <div
+      className="group flex cursor-pointer items-center gap-3 border-b border-gray-50 px-4 py-5 transition-colors last:border-b-0 hover:bg-gray-50 md:gap-6 md:px-5 md:py-6"
       onClick={() => navigate(`/notice/${notice.id}`)}
     >
-      <div className="flex w-16 shrink-0 justify-center md:w-24">
+      <div className="flex w-10 shrink-0 justify-start md:w-12">
         <CategoryBadge category={notice.category} />
       </div>
-      
-      <div className="flex min-w-0 flex-1 items-center gap-2 pl-2 md:pl-4">
-        <h3 className="truncate font-body-02 text-gray-900 group-hover:text-green-600">
+
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <h3 className="truncate font-body-02 text-gray-900 transition-colors group-hover:text-green-700">
           {notice.title}
         </h3>
         {notice.isNew && (
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-error md:h-2 md:w-2" />
+          <span className="shrink-0 font-caption-03 text-green-700">
+            NEW
+          </span>
         )}
       </div>
 
-      <div className="flex w-24 shrink-0 items-center justify-end gap-2 md:w-32">
-        <time className="font-caption-01 text-gray-400 group-hover:text-gray-500">
+      <div className="flex shrink-0 items-center justify-end gap-2">
+        <time className="hidden font-caption-01 text-gray-400 md:block">
           {notice.date}
         </time>
-        <Icon 
-          name="chevron_right" 
-          size={16} 
-          className="hidden text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-gray-500 md:block" 
+        <Icon
+          name="chevron_right"
+          size={16}
+          className="text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-gray-500"
         />
       </div>
     </div>
@@ -113,11 +118,11 @@ export default function Notice() {
 
   return (
     <div className="min-h-screen bg-white text-gray-900">
-      <section className="layout-container py-20 md:pt-20">
+      <section className="layout-container py-14 md:py-16">
         <SectionHeader
           title="공지사항"
           subtitle="서비스의 새로운 소식과 점검 안내를 전해드립니다."
-          className="mb-6"
+          className="mb-7"
         />
 
         <div className="mb-6">
@@ -134,9 +139,9 @@ export default function Notice() {
           />
         </div>
 
-        <div className="flex flex-col border-t border-gray-100">
+        <div className="bg-white">
           {currentItems.length > 0 ? (
-            <div className="flex flex-col border-b border-gray-100">
+            <div className="flex flex-col">
               {currentItems.map((notice) => (
                 <NoticeRow key={notice.id} notice={notice} />
               ))}
@@ -149,7 +154,7 @@ export default function Notice() {
         </div>
 
         {totalPages > 1 && (
-          <div className="mt-16 flex justify-center">
+          <div className="mt-12 flex justify-center">
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
