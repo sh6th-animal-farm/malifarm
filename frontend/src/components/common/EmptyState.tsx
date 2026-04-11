@@ -11,7 +11,7 @@ export default function EmptyState({
 }: EmptyStateProps) {
   return (
     <div
-      className={`mb-8 flex min-h-570 items-center justify-center rounded-lg bg-gray-0 px-6 py-10 text-center shadow-std ${className}`}
+      className={`mb-8 flex min-h-570 items-center justify-center rounded-lg bg-white px-6 py-10 text-center shadow-std ${className}`}
     >
       <div>
         <div
