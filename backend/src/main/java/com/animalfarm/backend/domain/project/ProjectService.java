@@ -117,6 +117,7 @@ public class ProjectService {
 			String timePart = String.valueOf(System.currentTimeMillis());
 			String shortTime = timePart.substring(timePart.length() - 6);
 			String txId = "ISS_" + projectId + "_" + shortTime;
+			String lastHash = tokenRepository.selectLastHash();
 
 			TokenLedgerDTO projectNewTokenDTO = TokenLedgerDTO.builder()
 				.tokenId(tokenId) // 토큰 번호
@@ -131,8 +132,8 @@ public class ProjectService {
 				.transactionType("ISSUE") // 거래 종류: 발행
 				.from_balanceAfter(BigDecimal.ZERO) // 송금 후 잔액 변동 없음 변경 필수
 				.to_balanceAfter(totalSupply) // 수금 후 잔액 변동 없음 변경 필수
-				.prevHashValue("0") // 이전 해시가 없으므로 "0"
-				.hashValue(HashManager.createHash("0", tokenId, totalSupply)) // 해시 계산
+				.prevHashValue(lastHash)
+				.hashValue(HashManager.createHash("0", projectId, totalSupply)) // 해시 계산
 				.build();
 
 			tokenRepository.insertTokenLedger(projectNewTokenDTO);
