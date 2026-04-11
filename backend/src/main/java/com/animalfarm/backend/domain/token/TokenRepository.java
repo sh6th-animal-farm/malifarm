@@ -7,11 +7,16 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
 import com.animalfarm.backend.domain.token.dto.TokenDTO;
+import com.animalfarm.backend.domain.token.dto.TokenIssueDTO;
 
 @Mapper
 public interface TokenRepository {
 
 	TokenDTO selectByProjectId(Long projectId);
+
+	TokenIssueDTO selectIssueToken(Long projectId);
+
+	void updateTokenStatus(Long tokenId, String status);
 
 	Long selectWalletId(Long userId);
 

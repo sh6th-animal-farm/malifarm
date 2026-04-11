@@ -33,6 +33,7 @@ import com.animalfarm.backend.domain.subscription.dto.SubscriptionApplicationDTO
 import com.animalfarm.backend.domain.subscription.dto.SubscriptionHistDTO;
 import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.domain.token.TokenService;
+import com.animalfarm.backend.domain.token.dto.TokenIssueDTO;
 import com.animalfarm.backend.global.ApiResponseDTO;
 import com.animalfarm.backend.global.MailService;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
@@ -266,7 +267,6 @@ public class SubscriptionService {
 		}
 	}
 
-	//@Transactional(rollbackFor = Exception.class)
 	public void processIndividualProject(ProjectStartCheckDTO data) throws Exception {
 		BigDecimal rate70 = new BigDecimal("70");
 		BigDecimal rate90 = new BigDecimal("90");
@@ -309,9 +309,22 @@ public class SubscriptionService {
 			System.out.println(rate + " 마리팜 회사가 나머지 충당");
 			subscriptionRepository.updateProjectInProgress(projectId);
 		} else {
-			subscriptionRepository.updateProjectInProgress(projectId);
-			allocationBatchService.runAllocationBatch(data.getProjectId());
-			System.out.println(rate + " 그대로 진행");
+			TokenIssueDTO tokenData = tokenReopsitory.selectIssueToken(projectId);
+			try {
+				if ("READY".equals(tokenData.getStatus())) {
+					projectService.postTokenIssue(tokenData);
+					tokenReopsitory.updateTokenStatus(tokenId, "ISSUE_SENT");
+					System.out.println("증권사 API 전송 완료: ISSUE_SENT 상태로 변경");
+				} else {
+					System.out.println("이미 토큰이 증권사에 있습니다.");
+				}
+				allocationBatchService.runAllocationBatch(data.getProjectId());
+				subscriptionRepository.updateProjectInProgress(projectId);
+				System.out.println(rate + " 그대로 진행");
+			} catch (Exception e) {
+				log.error("실패", e.getMessage());
+				throw e;
+			}
 		}
 	}
 
@@ -321,7 +334,7 @@ public class SubscriptionService {
 
 		// DB 업데이트 (프로젝트 상태 변경 및 토큰 삭제)
 		subscriptionRepository.updateProjectCanceled(projectId);
-		subscriptionRepository.updateTokenDelete(tokenId);
+		subscriptionRepository.updateTokenDelete("DELETED", tokenId);
 		System.out.println("ID: " + projectId + " 번 프로젝트 및 토큰(" + tokenId + ") 폐기 완료");
 	}
 
@@ -351,11 +364,9 @@ public class SubscriptionService {
 			Map<String, String> headers = new HashMap<>();
 			headers.put("X-Idempotency-Key", idempotencyKey);
 
-			// url 생성
 			String url = KH_BASE_URL + "api/project/cancel/" + subscriptionHistDTO.getExternalRefId();
 			RefundDTO refundDTO = null;
 			try {
-				// 취소 및 환불 요청
 				refundDTO = externalApiUtil.callApi(
 					url,
 					HttpMethod.POST,
@@ -374,7 +385,6 @@ public class SubscriptionService {
 				projectFailRefundRequest(subscriptionHistDTO, refundDTO);
 
 			} catch (RuntimeException e) {
-				// 유틸리티에서 던진 구체적인 에러 메시지("잔액 부족" 등)가 이곳으로 전달됨
 				log.error("[Service] 청약 취소 실패. 재시도 큐에 등록합니다. 사유: {}", e.getMessage());
 
 				Object[] params = new Object[] {subscriptionHistDTO.getExternalRefId()};

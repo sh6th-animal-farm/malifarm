@@ -44,6 +44,7 @@ public class AllocationBatchWriter implements ItemWriter<AllocationIntermediateR
 		List<? extends AllocationIntermediateResult> items = chunk.getItems();
 		if (items.isEmpty())
 			return;
+		System.out.println("[AllocationBatch] writer called. chunkSize=" + items.size());
 
 		// 1. 증권사 API 요청 리스트 빌드 (기존 Builder 형식 100% 유지)
 		List<AllocationRequestDTO> requests = items.stream()
@@ -58,6 +59,17 @@ public class AllocationBatchWriter implements ItemWriter<AllocationIntermediateR
 		// 2. 강황증권 API 호출 (사용자님 메서드 호출)
 		Long tokenId = items.get(0).getLedger().getTokenId();
 		List<AllocationResultDTO> apiResults = resultAllocation(tokenId, requests);
+		if (apiResults == null) {
+			throw new IllegalStateException("Allocation writer failed: tokenId=" + tokenId + " API response is null");
+		}
+		if (apiResults.isEmpty()) {
+			throw new IllegalStateException("Allocation writer failed: tokenId=" + tokenId + " API response is empty");
+		}
+		log.info("Allocation writer received API results. tokenId={}, requestCount={}, responseCount={}",
+			tokenId, requests.size(), apiResults.size());
+		System.out.println("[AllocationBatch] writer received API results. tokenId=" + tokenId
+			+ ", requestCount=" + requests.size()
+			+ ", responseCount=" + apiResults.size());
 
 		// 3. 결과 매핑을 위한 Map 생성
 		Map<Long, AllocationResultDTO> resultMap = apiResults.stream()
@@ -69,6 +81,10 @@ public class AllocationBatchWriter implements ItemWriter<AllocationIntermediateR
 		// 4. API 결과 매칭 및 환불 처리 (사용자님 Refund Builder 로직 그대로)
 		for (AllocationIntermediateResult item : items) {
 			AllocationResultDTO res = resultMap.get(item.getUclId());
+			if (res == null) {
+				throw new IllegalStateException("Allocation writer failed: walletId=" + item.getUclId()
+					+ ", shId=" + item.getInvestor().getShId() + " result not returned from API");
+			}
 			if (res != null) {
 				TokenLedgerDTO ledger = item.getLedger();
 				ledger.setExternalRefId(res.getPassTxId());
