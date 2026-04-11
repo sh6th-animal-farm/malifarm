@@ -209,4 +209,12 @@
         set subscription_status = 'APPROVED'
         where sh_id = #{shId};
     </update>
+
+    <select id="selectInvestorsByProjectId" resultType="InvestorDTO">
+        SELECT sh_id as shId, user_id as userId, project_id as projectId, subscription_amount as subscriptionAmount
+        FROM subscription_hists
+        WHERE project_id = #{projectId} AND payment_status = 'PAID'
+        ORDER BY sh_id ASC
+        LIMIT #{_pagesize} OFFSET #{_skiprows}
+    </select>
 </mapper>

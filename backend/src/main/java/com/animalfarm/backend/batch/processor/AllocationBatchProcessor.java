@@ -19,9 +19,11 @@ import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.HashManager;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @StepScope
+@Slf4j
 @RequiredArgsConstructor
 public class AllocationBatchProcessor implements ItemProcessor<InvestorDTO, AllocationIntermediateResult> {
 
@@ -32,26 +34,43 @@ public class AllocationBatchProcessor implements ItemProcessor<InvestorDTO, Allo
 	private final int MONEY_SCALE = 0;
 	private final int TOKEN_SCALE = 4;
 
-	@Value("#{jobExecutionContext['standardAmount']}")
-	BigDecimal standardAmount;
-	@Value("#{jobExecutionContext['bonusPie']}")
-	BigDecimal bonusPie;
-	@Value("#{jobExecutionContext['totalExcessAmount']}")
-	BigDecimal totalExcessAmount;
-	@Value("#{jobExecutionContext['pricePerToken']}")
-	BigDecimal pricePerToken;
-	@Value("#{jobExecutionContext['adminTotalBalance']}")
-	BigDecimal adminTotalBalance;
+	@Value("#{jobParameters['standardAmount']}")
+	String standardAmountValue;
+	@Value("#{jobParameters['bonusPie']}")
+	String bonusPieValue;
+	@Value("#{jobParameters['totalExcessAmount']}")
+	String totalExcessAmountValue;
+	@Value("#{jobParameters['pricePerToken']}")
+	String pricePerTokenValue;
+	@Value("#{jobParameters['adminTotalBalance']}")
+	String adminTotalBalanceValue;
 	@Value("#{jobParameters['projectId']}")
 	Long projectId;
 	@Value("#{jobParameters['tokenId']}")
 	Long tokenId;
 
+	private BigDecimal standardAmount;
+	private BigDecimal bonusPie;
+	private BigDecimal totalExcessAmount;
+	private BigDecimal pricePerToken;
+	private BigDecimal adminTotalBalance;
 	private String lastHash;
 
 	@BeforeStep
 	public void init(StepExecution stepExecution) {
-		this.lastHash = (String)stepExecution.getJobExecution().getExecutionContext().get("lastPrevHash");
+		this.standardAmount = new BigDecimal(standardAmountValue);
+		this.bonusPie = new BigDecimal(bonusPieValue);
+		this.totalExcessAmount = new BigDecimal(totalExcessAmountValue);
+		this.pricePerToken = new BigDecimal(pricePerTokenValue);
+		this.adminTotalBalance = new BigDecimal(adminTotalBalanceValue);
+		String hash = stepExecution.getJobExecution().getJobParameters().getString("lastPrevHash");
+		this.lastHash = (hash != null) ? hash : "0";
+		log.info("Allocation processor initialized. projectId={}, tokenId={}, standardAmount={}, pricePerToken={}",
+			projectId, tokenId, standardAmount, pricePerToken);
+		System.out.println("[AllocationBatch] processor initialized. projectId=" + projectId
+			+ ", tokenId=" + tokenId
+			+ ", standardAmount=" + standardAmount
+			+ ", pricePerToken=" + pricePerToken);
 	}
 
 	@Override
@@ -62,13 +81,30 @@ public class AllocationBatchProcessor implements ItemProcessor<InvestorDTO, Allo
 
 		// 2. 실시간 지갑 조회
 		Long uclId = subscriptionRepository.selectUclId(investor.getUserId());
+		if (uclId == null) {
+			throw new IllegalStateException(
+				"Allocation processing failed: userId=" + investor.getUserId() + " wallet link not found");
+		}
 		WalletDTO walletInfo = projectService.selectMyWalletInfo(uclId);
+		if (walletInfo == null) {
+			throw new IllegalStateException("Allocation processing failed: uclId=" + uclId + " wallet lookup returned null");
+		}
+		if (walletInfo.getTotalBalance() == null) {
+			throw new IllegalStateException("Allocation processing failed: uclId=" + uclId + " wallet total balance is null");
+		}
+		log.info("Processing allocation. userId={}, shId={}, uclId={}, subscriptionAmount={}, finalAmount={}",
+			investor.getUserId(), investor.getShId(), uclId, investor.getSubscriptionAmount(), finalAmount);
+		System.out.println("[AllocationBatch] processing investor. userId=" + investor.getUserId()
+			+ ", shId=" + investor.getShId()
+			+ ", uclId=" + uclId
+			+ ", subscriptionAmount=" + investor.getSubscriptionAmount()
+			+ ", finalAmount=" + finalAmount);
 
 		// 3. 해시 및 트랜잭션 ID 생성
 		String timePart = String.valueOf(System.currentTimeMillis());
 		String shortTime = timePart.substring(timePart.length() - 6);
 		String txId = "SUB_" + projectId + "_" + shortTime;
-		String newHash = HashManager.createHash(lastHash, tokenId, resultTokenCount);
+		String newHash = HashManager.createHash(lastHash, projectId, resultTokenCount);
 
 		// 4. 원본 Builder 로직 적용
 		TokenLedgerDTO ledger = TokenLedgerDTO.builder()

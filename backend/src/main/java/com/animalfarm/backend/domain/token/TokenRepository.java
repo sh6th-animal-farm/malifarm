@@ -16,7 +16,7 @@ public interface TokenRepository {
 
 	TokenIssueDTO selectIssueToken(Long projectId);
 
-	void updateTokenStatus(Long TokenId, String status);
+	void updateTokenStatus(Long tokenId, String status);
 
 	Long selectWalletId(Long userId);
 
