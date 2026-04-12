@@ -238,7 +238,8 @@ public class MypageService {
 					userId,
 					walletId,
 					randomAccessToken,
-					randomRefreshToken);
+					randomRefreshToken
+				);
 				return walletId;
 			}
 		} catch (Exception e) {
@@ -278,7 +279,8 @@ public class MypageService {
 						userId,
 						walletId,
 						randomAccessToken,
-						randomRefreshToken);
+						randomRefreshToken
+					);
 					return walletId;
 				}
 			} catch (Exception e) {
