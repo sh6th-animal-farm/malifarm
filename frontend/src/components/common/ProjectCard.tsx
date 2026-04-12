@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Badge from "@/components/common/Badge";
-import Button from "@/components/common/Button";
-import Icon from "@/components/icon";
-import type { Project } from "@/types/projectType";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Badge from '@/components/common/Badge';
+import Button from '@/components/common/Button';
+import Icon from '@/components/icon';
+import type { Project } from '@/types/projectType';
 
 function ProjectCard({
   project,
@@ -16,39 +16,39 @@ function ProjectCard({
 }) {
   const navigate = useNavigate();
   const [now, setNow] = useState(() => Date.now());
-  const isSubscription = project.status === "SUBSCRIPTION";
-  const isAnnouncement = project.status === "ANNOUNCEMENT";
-  const isInProgress = project.status === "INPROGRESS";
+  const isSubscription = project.status === 'SUBSCRIPTION';
+  const isAnnouncement = project.status === 'ANNOUNCEMENT';
+  const isInProgress = project.status === 'INPROGRESS';
 
   const badgeVariant = isSubscription
-    ? "warning"
+    ? 'warning'
     : isAnnouncement
-      ? "info"
-      : "success";
+      ? 'info'
+      : 'success';
   const badgeLabel = isSubscription
-    ? "청약중"
+    ? '청약중'
     : isAnnouncement
-      ? "공고중"
-      : "진행중";
+      ? '공고중'
+      : '진행중';
 
   const timerLabel = isSubscription
-    ? "마감까지"
+    ? '마감까지'
     : isAnnouncement
-      ? "시작까지"
-      : "";
+      ? '시작까지'
+      : '';
   const shouldShowTimer = isSubscription || isAnnouncement;
 
   const buttonVariant = isSubscription
-    ? "default-warning"
+    ? 'default-warning'
     : isAnnouncement
-      ? "default-info"
-      : "default";
+      ? 'default-info'
+      : 'default';
 
   const buttonLabel = isSubscription
-    ? "청약 하기"
+    ? '청약 하기'
     : isAnnouncement
-      ? "공고 보기"
-      : "토큰 구매";
+      ? '공고 보기'
+      : '토큰 구매';
 
   useEffect(() => {
     if (!shouldShowTimer || !project.countdownTarget) return;
@@ -61,18 +61,18 @@ function ProjectCard({
   }, [shouldShowTimer, project.countdownTarget]);
 
   const getCountdownText = () => {
-    if (!project.countdownTarget) return "";
+    if (!project.countdownTarget) return '';
 
     const end = new Date(project.countdownTarget).getTime();
-    if (Number.isNaN(end)) return "";
+    if (Number.isNaN(end)) return '';
 
     const diffMs = end - now;
-    if (diffMs <= 0) return "청약 마감";
+    if (diffMs <= 0) return '청약 마감';
 
     const totalSec = Math.floor(diffMs / 1000);
-    const hours = String(Math.floor(totalSec / 3600)).padStart(2, "0");
-    const minutes = String(Math.floor((totalSec % 3600) / 60)).padStart(2, "0");
-    const seconds = String(totalSec % 60).padStart(2, "0");
+    const hours = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+    const minutes = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+    const seconds = String(totalSec % 60).padStart(2, '0');
     return `${hours}:${minutes}:${seconds}`;
   };
 
@@ -83,7 +83,7 @@ function ProjectCard({
       tabIndex={0}
       onClick={() => navigate(`/project/${project.id}`)}
       onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
+        if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           navigate(`/project/${project.id}`);
         }
@@ -115,7 +115,7 @@ function ProjectCard({
             <Icon
               name="heart_filled"
               size={29}
-              color={starred ? "var(--color-error)" : "var(--color-gray-0)"}
+              color={starred ? 'var(--color-error)' : 'var(--color-gray-0)'}
             />
           </span>
         </button>
@@ -123,7 +123,7 @@ function ProjectCard({
 
       <div
         className={`flex flex-col p-6 ${
-          isSubscription ? "gap-6" : isAnnouncement ? "gap-5" : "gap-8"
+          isSubscription ? 'gap-6' : isAnnouncement ? 'gap-5' : 'gap-8'
         }`}
       >
         <div>
@@ -136,7 +136,7 @@ function ProjectCard({
               <span className="text-right">
                 <strong className="mr-1 text-error">{timerLabel}</strong>
                 <strong className="text-error">
-                  {shouldShowTimer ? getCountdownText() : ""}
+                  {shouldShowTimer ? getCountdownText() : ''}
                 </strong>
               </span>
             </div>
@@ -161,14 +161,16 @@ function ProjectCard({
         ) : (
           <div className="flex flex-col gap-2 font-caption-01 text-gray-500">
             <p className="flex items-start justify-between gap-3">
-              <span>{isAnnouncement ? "청약 예정일" : "운영 기간"}</span>
+              <span>{isAnnouncement ? '청약 예정일' : '운영 기간'}</span>
               <strong className="text-right text-gray-800">
                 {project.lowerDate}
               </strong>
             </p>
             <p className="flex items-start justify-between gap-3">
-              <span>{isAnnouncement ? "예상 수익률" : "현재 수익률"}</span>
-              <strong className="text-gray-800">연 14.2%</strong>
+              <span>{isAnnouncement ? '예상 수익률' : '현재 수익률'}</span>
+              <strong className="text-gray-800">
+                연 {project.expectedReturn}%
+              </strong>
             </p>
           </div>
         )}

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { adminApi } from '@/api/adminApi';
 import Button from '@/components/common/Button';
-import AdminSidebar from '@/components/common/AdminSidebar';
+import AdminSidebar from '@/pages/admin/AdminSidebar';
 import '../../styles/admin.css';
 
 interface ProjectFormData {
