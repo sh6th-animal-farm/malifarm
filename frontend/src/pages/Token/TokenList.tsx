@@ -30,23 +30,31 @@ export default function TokenList() {
   }
 
   return (
-    <div className="">
-      <section className="layout-container py-15 md:py-20">
+    <div className="w-full">
+      <section className="layout-container md:py-15 lg:py-20 md:px-12 pb-12">
         <SectionHeader
           title="토큰 거래소"
           subtitle="실시간 차트를 확인해보세요."
         />
-        <div className="flex items-start gap-4">
-          <TokenListTable
-            tokenList={tokenList}
-            hoveredTokenId={hoveredTokenId}
-            onHover={setHoveredTokenId}
-          />
-          <aside className="sticky top-20 self-start">
+        <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8">
+          <div className="w-full lg:flex-1 min-w-0 order-2 lg:order-1">
+            <div className="w-full">
+              <TokenListTable
+                tokenList={tokenList}
+                hoveredTokenId={hoveredTokenId}
+                onHover={setHoveredTokenId}
+              />
+            </div>
+          </div>
+          <aside className="w-full lg:w-[432px] lg:sticky lg:top-24 order-1 lg:order-2">
             {displayId !== null ? (
-              <TokenSummaryCard tokenId={displayId} />
+              <div className="flex justify-center lg:block">
+                <div className="w-full">
+                  <TokenSummaryCard tokenId={displayId} />
+                </div>
+              </div>
             ) : (
-              <div className="w-[432px] h-[468px] bg-gray-50 animate-pulse rounded-[var(--radius-m)]" />
+              <div className="w-full h-[468px] bg-gray-50 animate-pulse rounded-[var(--radius-m)]" />
             )}
           </aside>
         </div>

@@ -56,16 +56,32 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
 
     setIsReady(true); // 차트 생성 완료 후 리렌더링
 
-    return () => chart.remove(); // 컴포넌트 언마운트 시 차트 제거 (메모리 누수 방지)
+    // 화면 크기 변화 감지 (리사이즈 핸들러)
+    const handleResize = () => {
+      if (chartContainerRef.current && chartRef.current) {
+        // 컨테이너 너비가 변하면 차트 너비도 업데이트
+        chartRef.current.applyOptions({
+          width: chartContainerRef.current.clientWidth,
+        });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      chart.remove(); // 컴포넌트 언마운트 시 차트 제거 (메모리 누수 방지)
+    };
   }, [tokenId]);
 
   return (
-    <div className="w-[432px] h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight">
+    <div className="w-full max-w-[432px] min-h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight mx-auto">
+      {' '}
       {!tokenOhlcv && <div>차트 데이터를 불러오는 중입니다.</div>}
       <div className={!tokenOhlcv ? 'hidden' : 'block'}>
         {/* 헤더 */}
         <div className="flex justify-between items-start">
-          <div>
+          <div className="min-w-0">
             <h3 className="font-subtitle-01 text-gray-900 mb-1">
               {tokenOhlcv?.tickerSymbol}
             </h3>
@@ -106,7 +122,10 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
             <Badge children="1분봉" />
             <span className="font-caption-01 text-gray-400">최근 1시간</span>
           </div>
-          <div ref={chartContainerRef} className="w-full h-full [&_a]:hidden" />
+          <div
+            ref={chartContainerRef}
+            className="w-full h-[180px] [&_a]:hidden"
+          />
         </div>
 
         <div className="h-[1px] bg-gray-100 my-4" />
