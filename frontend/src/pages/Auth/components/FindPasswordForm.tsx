@@ -35,7 +35,7 @@ export default function FindPasswordForm({
   onSubmit,
 }: FindPasswordFormProps) {
   return (
-    <div className="flex flex-col items-center px-6 py-10 min-h-[calc(75vh-var(--spacing-header-height))] bg-gray-50">
+    <div className="flex min-h-[calc(100dvh-var(--spacing-header-height))] flex-col items-center justify-center bg-gray-50 px-6 py-10">
       <AuthCard
         title="비밀번호 찾기"
         description="이메일 인증 후 새로운 비밀번호를 설정합니다"
@@ -43,7 +43,7 @@ export default function FindPasswordForm({
         <form onSubmit={onSubmit}>
           {/* 이메일 */}
           <div className="mb-5">
-            <label className="block text-[14px] font-bold text-gray-900 mb-2">
+            <label className="font-caption-03 text-gray-900">
               이메일 주소
             </label>
 
@@ -58,28 +58,31 @@ export default function FindPasswordForm({
                   className="pr-20"
                 />
                 {emailRemainSec > 0 && (
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[14px] text-red-500 font-semibold">
+                  <span className="font-caption-02 text-error absolute top-1/2 right-4 -translate-y-1/2">
                     {formatMMSS(emailRemainSec)}
                   </span>
                 )}
               </div>
 
-              <button
+              <Button
                 type="button"
-                className="px-5 h-12 bg-gray-900 text-white rounded-[8px] font-semibold whitespace-nowrap"
+                variant="default"
+                width="auto"
+                height={50}
+                className="px-5 whitespace-nowrap font-button-02"
                 onClick={onSendCode}
               >
                 {emailRemainSec > 0 ? "재전송" : "코드 발송"}
-              </button>
+              </Button>
             </div>
             {emailMessage && (
-              <p className="mt-2 text-[14px] text-green-600">{emailMessage}</p>
+              <p className="font-caption-01 mt-2 text-green-600">{emailMessage}</p>
             )}
           </div>
 
           {/* 인증코드 */}
           <div className="mb-10">
-            <label className="block text-[14px] font-bold text-gray-900 mb-2">
+            <label className="font-caption-03 text-gray-900">
               인증코드
             </label>
 
@@ -95,17 +98,22 @@ export default function FindPasswordForm({
                 className="flex-1"
               />
 
-              <button
+              <Button
                 type="button"
-                className="px-5 h-12 bg-gray-900 text-white rounded-[8px] font-semibold whitespace-nowrap"
+                variant="default"
+                width="auto"
+                height={50}
+                className="px-5 whitespace-nowrap font-button-02"
                 onClick={onVerifyCode}
                 disabled={!verificationCode}
               >
                 확인
-              </button>
+              </Button>
             </div>
             {(error || success) && (
-              <p className={`mt-2 text-[14px] ${error ? "text-red-600" : "text-green-600"}`}>
+              <p
+                className={`font-caption-01 mt-2 ${error ? "text-error" : "text-green-600"}`}
+              >
                 {error || success}
               </p>
             )}
@@ -123,9 +131,9 @@ export default function FindPasswordForm({
         </form>
 
         {/* 하단 링크 */}
-        <div className="mt-8 text-center text-[14px] text-gray-500">
+        <div className="font-caption-01 mt-8 text-center text-gray-500">
           로그인 페이지로 돌아가시겠어요?
-          <Link to="/auth/login" className="ml-1 font-bold text-green-600">
+          <Link to="/auth/login" className="font-caption-03 ml-1 text-green-600">
             로그인
           </Link>
         </div>

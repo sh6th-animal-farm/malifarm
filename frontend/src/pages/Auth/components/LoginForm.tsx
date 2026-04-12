@@ -21,17 +21,17 @@ export default function LoginForm({
   onSubmit,
 }: LoginFormProps) {
   return (
-    <div className="flex flex-col items-center px-6 py-10 min-h-[calc(75vh-var(--spacing-header-height))] bg-gray-50">
+    <div className="flex min-h-[calc(100dvh-var(--spacing-header-height))] flex-col items-center justify-center px-6 py-10">
       
       <AuthCard
         title="로그인"
-        description="팜조각에 오신 것을 환영합니다"
+        description="마이리틀스마트팜에 오신 것을 환영합니다"
       >
         <form onSubmit={onSubmit}>
           
           {/* 이메일 */}
           <div className="mb-5">
-            <label className="block text-[14px] font-bold text-gray-900 mb-2">
+            <label className="font-caption-03 text-gray-900">
               이메일 주소
             </label>
             <Input
@@ -45,7 +45,7 @@ export default function LoginForm({
 
           {/* 비밀번호 */}
           <div className="mb-5">
-            <label className="block text-[14px] font-bold text-gray-900 mb-2">
+            <label className="font-caption-03 text-gray-900">
               비밀번호
             </label>
             <Input
@@ -57,7 +57,7 @@ export default function LoginForm({
             />
             <div className="min-h-[24px] mt-2">
               {error && (
-                <p className="text-[14px] text-[#d32f2f]">{error}</p>
+                <p className="font-caption-01 text-error">{error}</p>
               )}
             </div>
           </div>
@@ -69,16 +69,13 @@ export default function LoginForm({
         </form>
 
         {/* 회원가입 */}
-        <div className="mt-8 text-center text-[14px] text-gray-500">
-          계정이 없으신가요?
-          <Link to="/auth/signup" className="ml-1 font-bold text-green-600">
-            회원가입
-          </Link>
-        </div>
-        <div className="mt-2 text-center text-[14px] text-gray-500">
-          비밀번호를 잊으셨나요?
-          <Link to="/auth/find-password" className="ml-1 font-bold text-green-600">
+        <div className="mt-8 flex items-center justify-center font-caption-01 text-gray-500">
+          <Link to="/auth/find-password" className="font-caption-01 text-gray-500">
             비밀번호 찾기
+          </Link>
+          <span className="mx-3 text-gray-300">|</span>
+          <Link to="/auth/signup" className="font-caption-01 text-gray-500">
+            회원가입
           </Link>
         </div>
       </AuthCard>

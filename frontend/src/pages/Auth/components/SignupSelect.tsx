@@ -28,7 +28,7 @@ export default function SignupTypeSelect({
           </div>
           <div>
             <h4 className="text-[17px] font-bold text-gray-900 mb-1">개인 회원</h4>
-            <p className="text-[14px] text-gray-500">일반 투자 및 서비스를 이용하는 개인</p>
+            <p className="font-caption-01 text-gray-500">일반 투자 및 서비스를 이용하는 개인</p>
           </div>
         </button>
 
@@ -42,11 +42,11 @@ export default function SignupTypeSelect({
           </div>
           <div>
             <h4 className="text-[17px] font-bold text-gray-900 mb-1">기업 회원</h4>
-            <p className="text-[14px] text-gray-500">법인 및 사업자 명의 투자 서비스 이용</p>
+            <p className="font-caption-01 text-gray-500">법인 및 사업자 명의 투자 서비스 이용</p>
           </div>
         </button>
 
-        <div className="mt-6 text-center text-[14px] text-gray-500">
+        <div className="mt-6 text-center font-caption-01 text-gray-500">
           이미 회원이신가요?{" "}
           <button
             type="button"

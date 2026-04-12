@@ -79,7 +79,7 @@ export default function ProjectList() {
 
   return (
     <div>
-      <div className='bg-gray-50'>
+      <div className=''>
         <section className="layout-container py-20 md:pt-20">
           <SectionHeader
             title="프로젝트 지도"
@@ -92,7 +92,7 @@ export default function ProjectList() {
         </section>
       </div>
       <div className=''>
-        <section className="layout-container py-20 my:pb-20">
+        <section className="layout-container pb-20 my:pb-20">
           <div ref={listRef}>
             <SectionHeader
               title="프로젝트 목록"

@@ -74,7 +74,7 @@ export default function RegionAccordion({
   };
 
   return (
-    <div className="w-full h-full bg-white border border-gray-100 rounded-[20px] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex flex-col">
+    <div className="w-full h-full bg-white rounded-lg overflow-hidden shadow-std border border-gray-50 flex flex-col">
       {/* 내부 스크롤 영역 (스크롤바 커스텀 클래스 포함) */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300">
         {Object.entries(REGIONS).map(([mainRegion, subRegions]) => {
@@ -109,12 +109,12 @@ export default function RegionAccordion({
 
               {/* .region-content 스타일 적용 */}
               {isOpen && subRegions.length > 0 && (
-                <div className="bg-[#fafafa] py-2">
+                <div className="">
                   <ul className="list-none p-0 m-0">
                     {subRegions.map((sub) => (
                       <li
                         key={sub}
-                        className="px-10 py-2.5 text-[14px] text-gray-500 cursor-pointer hover:bg-[#f0f0f0] hover:text-[#4A9F2E] transition-colors"
+                        className="px-8 py-3 font-caption-01 text-gray-500 cursor-pointer hover:bg-gray-50 hover:text-green-600 transition-colors"
                         onClick={(e) =>
                           handleSubRegionClick(mainRegion, sub, e)
                         }
