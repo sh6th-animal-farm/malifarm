@@ -1,5 +1,6 @@
 package com.animalfarm.backend.config.batch;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -22,8 +23,10 @@ import com.animalfarm.backend.domain.subscription.dto.AllocationIntermediateResu
 import com.animalfarm.backend.domain.subscription.dto.InvestorDTO;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
+@Slf4j
 @RequiredArgsConstructor
 public class AllocationBatchConfig {
 
@@ -31,46 +34,48 @@ public class AllocationBatchConfig {
 	private final PlatformTransactionManager transactionManager;
 	private final AllocationBatchProcessor processor;
 	private final AllocationBatchWriter writer;
-	private final SqlSessionFactory sqlSessionFactory; // MyBatis를 쓰신다면 필요
+	private final SqlSessionFactory sqlSessionFactory;
 
-	//1. Job 설정 배치의 가장 큰 단위입니다. 하나 이상의 Step으로 구성됩니다.
 	@Bean
-	public Job allocationJob() {
+	public Job allocationJob(Step allocationStep) {
+		System.out.println("[AllocationBatch] allocationJob bean initialized");
 		return new JobBuilder("allocationJob", jobRepository)
-			.start(allocationStep())
+			.start(allocationStep)
 			.build();
 	}
 
-	// 2. Step 설정 실제 작업이 일어나는 단위입니다. Reader -> Processor -> Writer 흐름을 정의
 	@Bean
-	public Step allocationStep() {
+	public Step allocationStep(MyBatisPagingItemReader<InvestorDTO> investorReader) {
+		System.out.println("[AllocationBatch] allocationStep bean initialized");
 		return new StepBuilder("allocationStep", jobRepository)
 			.<InvestorDTO, AllocationIntermediateResult>chunk(1000, transactionManager)
-			.reader(investorReader(null)) // 여기서 호출!
+			.reader(investorReader)
 			.processor(processor)
 			.writer(writer)
-			.faultTolerant() // 장애 허용 설정 시작
-			.retry(Exception.class) // 에러 발생 시 재시도
-			.retryLimit(3) // 최대 3번까지 다시 시도
+			.faultTolerant()
+			.retry(Exception.class)
+			.retryLimit(3)
 			.build();
 	}
 
-	/**
-	 * 3. Reader 설정 (MyBatis 페이징 방식)
-	 * DB에서 투자자 목록을 1,000명씩 끊어서 가져오는 역할을 합니다.
-	 * * @StepScope: 배치가 실행될 때(런타임) 파라미터를 동적으로 받기 위해 필요합니다.
-	 * @Value("#{jobParameters['projectId']}"): 실행 시 외부에서 넘겨준 프로젝트 ID를 주입받습니다.
-	 */
 	@Bean
 	@StepScope
 	public MyBatisPagingItemReader<InvestorDTO> investorReader(
 		@Value("#{jobParameters['projectId']}") Long projectId) {
 
+		if (projectId == null) {
+			throw new IllegalStateException("Allocation reader initialization failed: projectId job parameter is null");
+		}
+
+		Map<String, Object> parameterValues = new HashMap<>();
+		parameterValues.put("projectId", projectId);
+		log.info("Initializing allocation reader. projectId={}", projectId);
+		System.out.println("[AllocationBatch] reader initialized. projectId=" + projectId);
+
 		return new MyBatisPagingItemReaderBuilder<InvestorDTO>()
 			.sqlSessionFactory(sqlSessionFactory)
-			.queryId(
-				"com.animalfarm.backend.domain.subscription.SubscriptionRepository.selectInvestorsByProjectId") // 실제 XML Mapper 경로
-			.parameterValues(Map.of("projectId", projectId))
+			.queryId("com.animalfarm.backend.domain.subscription.SubscriptionRepository.selectInvestorsByProjectId")
+			.parameterValues(parameterValues)
 			.pageSize(1000)
 			.saveState(false)
 			.build();

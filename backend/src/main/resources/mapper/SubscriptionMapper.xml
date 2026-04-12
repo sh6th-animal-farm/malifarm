@@ -105,8 +105,11 @@
 
     <!-- 토큰 소각일 업데이트 -->
     <update id="updateTokenDelete">
-        update tokens set deleted_at = now()
-        where token_id = #{tokenId}
+        UPDATE tokens
+        SET
+        deleted_at = now(),
+        status = #{status}
+        WHERE token_id = #{tokenId}
     </update>
 
     <!-- 프로젝트 테이블 Canceled 업데이트 -->
@@ -206,4 +209,12 @@
         set subscription_status = 'APPROVED'
         where sh_id = #{shId};
     </update>
+
+    <select id="selectInvestorsByProjectId" resultType="InvestorDTO">
+        SELECT sh_id as shId, user_id as userId, project_id as projectId, subscription_amount as subscriptionAmount
+        FROM subscription_hists
+        WHERE project_id = #{projectId} AND payment_status = 'PAID'
+        ORDER BY sh_id ASC
+        LIMIT #{_pagesize} OFFSET #{_skiprows}
+    </select>
 </mapper>

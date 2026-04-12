@@ -113,6 +113,7 @@ public class ExternalApiClient {
 			return webClient.method(method)
 				.uri(java.net.URI.create(secureUrl))
 				.header("User-Agent", "Mozilla/5.0")
+				.header("Accept", MediaType.APPLICATION_JSON_VALUE)
 				.retrieve()
 				.bodyToMono(responseType)
 				.block();
