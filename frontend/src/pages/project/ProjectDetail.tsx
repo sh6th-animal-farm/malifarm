@@ -108,10 +108,10 @@ export default function ProjectDetail() {
   if (!projectData) return null;
 
   return (
-    <div className="min-h-screen font-main bg-white">
-      <section className="layout-container py-15 md:py-20">
+    <div className="">
+      <section className="layout-container py-20 md:py-20">
         <div className="grid grid-cols-12 gap-[24px]">
-          <main className="col-span-12 lg:col-span-8">
+          <main className="col-span-12 lg:col-span-8 px-0">
             <ImageCarousel images={projectData.images} />
 
             <TabMenu

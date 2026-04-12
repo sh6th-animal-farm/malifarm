@@ -24,6 +24,13 @@ export interface NewsItemDTO {
   body: string[];
 }
 
+export interface NewsCommentDTO {
+  id: number;
+  author: string;
+  date: string;
+  content: string;
+}
+
 export const mockNews: NewsItemDTO[] = [
   {
     id: 20,
@@ -410,5 +417,22 @@ export const mockNews: NewsItemDTO[] = [
       "운영팀은 앞으로도 뉴스 콘텐츠를 서비스 이해를 돕는 안내형 자산으로 확장할 계획이라고 밝혔다.",
       "이번 업데이트는 정보량이 많은 화면에서도 사용자의 인지 부담을 줄이는 데 초점을 맞췄다.",
     ],
+  },
+];
+
+export const mockNewsComments: NewsCommentDTO[] = [
+  {
+    id: 1,
+    author: "greenfield",
+    date: "2026.04.10 09:24",
+    content:
+      "공지랑 분리되니까 읽기가 훨씬 편하네요. 이런 식으로 배경 설명이 같이 있는 콘텐츠가 더 자주 올라오면 좋겠습니다.",
+  },
+  {
+    id: 2,
+    author: "farmnote",
+    date: "2026.04.10 11:08",
+    content:
+      "뉴스 형식으로 보니까 서비스 방향성이 더 잘 이해돼요. 프로젝트 관련 기사도 이런 톤으로 계속 이어졌으면 합니다.",
   },
 ];
