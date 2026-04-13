@@ -1,5 +1,5 @@
 # 1. 빌드 스테이지: 빌드된 jar 파일을 가져오기 위한 환경
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-focal
 
 # 2. 작업 디렉토리 설정
 WORKDIR /app
