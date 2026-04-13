@@ -53,7 +53,7 @@ jobs:
           npm install
           npm run build
 
-      # 3. 빌드된 프론트엔드 파일(dist)을 서버로 전송 (SCP)
+      # 3. 빌드된 프론트엔드 파일을 서버로 전송 (SCP)
       - name: Copy Frontend dist to Server
         uses: appleboy/scp-action@v0.1.7
         with:
