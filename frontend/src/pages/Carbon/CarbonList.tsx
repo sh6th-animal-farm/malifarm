@@ -33,8 +33,8 @@ export default function CarbonList() {
 
   return (
     // 🌟 화면 전체(w-full)를 덮는 연회색 배경(bg-gray-50) 래퍼 추가!
-    <div className="w-full bg-gray-50 min-h-screen">
-      <section className="layout-container py-15 md:py-20">
+    <div className="w-full min-h-screen">
+      <section className="layout-container py-20 md:py-20">
         
         {/* 헤더 상단 정렬 */}
         <div className="flex justify-between items-start mb-[24px] px-5 xl:px-0">
@@ -46,7 +46,7 @@ export default function CarbonList() {
               titleSuffix={
                 <div className="relative inline-flex">
                   <button
-                    className={`flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-full border-none align-middle text-[14px] text-white transition-all ${
+                    className={`flex h-[24px] w-[24px] cursor-pointer items-center justify-center rounded-full border-none align-middle font-caption-02 text-white transition-all ${
                       isGuideOpen ? "bg-[var(--color-green-600)]" : "bg-[var(--color-gray-300)]"
                     }`}
                     onClick={() => setIsGuideOpen(!isGuideOpen)}

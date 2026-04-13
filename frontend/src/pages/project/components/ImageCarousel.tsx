@@ -8,18 +8,18 @@ export default function ImageCarousel({ images }: { images: string[] }) {
     setCurrentIdx((prev) => (prev + step + total) % total);
   };
 
-  if (!images || images.length === 0) return <div className="h-[420px] bg-gray-100 rounded-[24px]" />;
+  if (!images || images.length === 0) return <div className="w-full aspect-[16/9] bg-gray-70 rounded-lg" />;
 
   return (
-    <div className="relative mb-10 overflow-hidden">
-      <div className="rounded-[24px] overflow-hidden h-[420px] bg-gray-100 relative shadow-std border border-gray-100">
+    <div className="relative overflow-hidden">
+      <div className="w-full aspect-[16/9] rounded-lg overflow-hidden bg-gray-70 relative">
         <div 
           className="flex h-full transition-transform duration-500 ease-in-out" 
           style={{ transform: `translateX(-${currentIdx * 100}%)` }}
         >
           {images.map((img, i) => (
             <div key={i} className="min-w-full h-full flex items-center justify-center">
-              <img src={img} className="w-full h-full object-contain" alt="project" />
+              <img src={img} className="w-full h-full object-cover" alt="project" />
             </div>
           ))}
         </div>

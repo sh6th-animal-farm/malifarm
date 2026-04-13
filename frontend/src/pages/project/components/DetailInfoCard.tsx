@@ -17,7 +17,7 @@ const InfoBox = ({
 }: InfoItem) => (
   <div
     className={`
-    p-[24px] bg-white border border-gray-100 rounded-[var(--radius-m)]
+    p-[24px] bg-white rounded-lg
     shadow-std flex flex-col justify-center min-h-[102px] w-full
     ${fullWidth ? 'md:col-span-2' : 'col-span-1'}
   `}

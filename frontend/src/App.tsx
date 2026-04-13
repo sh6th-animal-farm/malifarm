@@ -15,7 +15,7 @@ import TokenDetail from './pages/Token/TokenDetail';
 import CarbonList from './pages/Carbon/CarbonList';
 import CarbonDetail from './pages/Carbon/CarbonDetail';
 import News from './pages/news';
-import NewsDetail from './pages/news/Detail';
+import NewsDetail from './pages/news/components/Detail';
 import MyPage from './pages/mypage';
 import ProfileLayout from './pages/mypage/components/myProfile/ProfileLayout';
 import ProjectLayout from './pages/mypage/components/myProject/ProjectLayout';

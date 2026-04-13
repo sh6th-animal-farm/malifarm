@@ -126,14 +126,14 @@ export default function Header() {
         {/* 로고 영역 */}
         <Link
           to="/"
-          className={`font-header-03 md:font-subtitle-01 text-gray-900 items-center overflow-hidden whitespace-nowrap cursor-pointer ${
+          className={`font-header-03 md:font-header-03 text-gray-900 items-center overflow-hidden whitespace-nowrap cursor-pointer ${
             location.pathname === "/" ? "flex" : "hidden md:flex"
           }`}
         >
           <Icon
             name="leaf"
             color="var(--color-green-600)"
-            size={24}
+            size={28}
             className="mr-2"
           />
           <span className="keep">마이리틀</span>
@@ -188,7 +188,8 @@ export default function Header() {
           ) : (
             /* 로그인 한 사용자 */
             <div className="flex items-center gap-[18px] relative">
-              {/* 알림 드롭다운 */}
+              {/* 알림 아이콘/드롭다운 비활성화 */}
+              {/*
               <div className="relative inline-block">
                 <button
                   type="button"
@@ -207,83 +208,90 @@ export default function Header() {
                   <p className="font-caption-01 text-gray-300">알림이 없습니다.</p>
                 </div>
               </div>
+              */}
 
-              {/* 프로필 드롭다운 */}
-              <div className="relative inline-block">
-                <button
-                  type="button"
-                  className="bg-none border-none cursor-pointer p-0 flex items-center outline-none"
-                  onClick={(e) => toggleDropdown("profile", e)}
-                >
-                  <Icon name="profile" />
-                </button>
-                <div
-                  className={`
-                    absolute top-[calc(100%+12px)] right-0 flex w-full flex-col overflow-hidden
-                    bg-white min-w-[180px] shadow-std rounded-[var(--radius-s)] z-[1000]
-                    ${openDropdown === "profile" ? "block" : "hidden"}
-                  `}
-                >
-                  <Link
-                    to="/mypage/profile"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
-                  >
-                    내 정보
-                  </Link>
-                  <Link
-                    to="/mypage/project-history"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
-                  >
-                    나의 프로젝트
-                  </Link>
-                  <Link
-                    to="/mypage/wallet"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
-                  >
-                    나의 전자지갑
-                  </Link>
-                  <Link
-                    to="/mypage/transaction-history"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
-                  >
-                    거래 내역
-                  </Link>
+              <div className="inline-flex items-center gap-5">
+                <span className="inline-flex h-[30px] w-[106px] items-center justify-between gap-2 rounded-[var(--radius-xl)] bg-gray-70 px-2.5 py-1.5 font-caption-02 text-gray-700 whitespace-nowrap">
+                  <Icon
+                    name="clock"
+                    size={18}
+                    color="var(--color-gray-500)"
+                  />
+                  <span className="tabular-nums">{sessionExpireText}</span>
+                </span>
 
-                  {/* ADMIN 권한인 사용자만 표시 */}
-                  {userRole === "ADMIN" && (
-                    <Link
-                      to="/admin"
-                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
-                    >
-                      관리자 페이지
-                    </Link>
-                  )}
-
-                  {userRole === "ENTERPRISE" && (
-                    <Link
-                      to="/mypage/carbon-history"
-                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
-                    >
-                      탄소 배출권 구매 내역
-                    </Link>
-                  )}
-
+                <div className="relative inline-block">
                   <button
                     type="button"
-                    onClick={handleLogout}
-                    className="block w-full cursor-pointer px-4 py-2.5 text-left font-caption-01 text-error hover:bg-gray-50 hover:text-red-700"
+                    className="inline-flex items-center gap-2 bg-none border-none cursor-pointer p-0 text-left outline-none"
+                    onClick={(e) => toggleDropdown("profile", e)}
                   >
-                    로그아웃
+                    <Icon name="profile" size={18} color="var(--color-gray-700)" />
+                    <span className="font-button-03 text-gray-700 whitespace-nowrap">
+                      {userName} 님
+                    </span>
                   </button>
+
+                  <div
+                    className={`
+                      absolute top-[calc(100%+12px)] right-0 flex w-max min-w-[180px] flex-col overflow-hidden
+                      bg-white shadow-std rounded-[var(--radius-s)] z-[1000]
+                      ${openDropdown === "profile" ? "block" : "hidden"}
+                    `}
+                  >
+                    <Link
+                      to="/mypage/profile"
+                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    >
+                      내 정보
+                    </Link>
+                    <Link
+                      to="/mypage/project-history"
+                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    >
+                      나의 프로젝트
+                    </Link>
+                    <Link
+                      to="/mypage/wallet"
+                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    >
+                      나의 전자지갑
+                    </Link>
+                    <Link
+                      to="/mypage/transaction-history"
+                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    >
+                      거래 내역
+                    </Link>
+
+                    {/* ADMIN 권한인 사용자만 표시 */}
+                    {userRole === "ADMIN" && (
+                      <Link
+                        to="/admin"
+                        className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                      >
+                        관리자 페이지
+                      </Link>
+                    )}
+
+                    {userRole === "ENTERPRISE" && (
+                      <Link
+                        to="/mypage/carbon-history"
+                        className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                      >
+                        탄소 배출권 구매 내역
+                      </Link>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="block w-full cursor-pointer px-4 py-2.5 text-left font-caption-01 text-error hover:bg-gray-50 hover:text-red-700"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="leading-tight">
-                <span className="pr-2 font-button-02 text-gray-700">
-                  {userName} 님
-                </span>
-                <span className="mt-0.5 text-[14px] text-gray-700">
-                    {sessionExpireText}
-                </span>
               </div>
             </div>
           )}
