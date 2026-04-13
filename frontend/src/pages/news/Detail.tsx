@@ -2,24 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Button from "@/components/common/Button";
 import Icon from "@/components/icon";
 import type { IconName } from "@/components/icon/iconTypes";
-import { mockNews } from "./mockNews";
-
-const sampleComments = [
-  {
-    id: 1,
-    author: "greenfield",
-    date: "2026.04.10 09:24",
-    content:
-      "공지랑 분리되니까 읽기가 훨씬 편하네요. 이런 식으로 배경 설명이 같이 있는 콘텐츠가 더 자주 올라오면 좋겠습니다.",
-  },
-  {
-    id: 2,
-    author: "farmnote",
-    date: "2026.04.10 11:08",
-    content:
-      "뉴스 형식으로 보니까 서비스 방향성이 더 잘 이해돼요. 프로젝트 관련 기사도 이런 톤으로 계속 이어졌으면 합니다.",
-  },
-];
+import { mockNews, mockNewsComments } from "./mockNews";
 
 function getValueColorClass(value: string) {
   const numericValue = Number(value.replace("%", ""));
@@ -145,8 +128,8 @@ export default function NewsDetail() {
 
         <section className="mt-4 rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
           <div className="mb-6">
-            <h2 className="font-subtitle-01 text-gray-900">
-              댓글 {sampleComments.length}개
+              <h2 className="font-subtitle-01 text-gray-900">
+              댓글 {mockNewsComments.length}개
             </h2>
           </div>
 
@@ -178,7 +161,7 @@ export default function NewsDetail() {
           </div>
 
           <div className="mt-8 flex flex-col">
-            {sampleComments.map((comment) => (
+            {mockNewsComments.map((comment) => (
               <article
                 key={comment.id}
                 className="border-b border-gray-50 py-6 last:border-b-0"

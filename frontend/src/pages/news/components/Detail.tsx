@@ -4,52 +4,8 @@ import EmptyState from "@/components/common/EmptyState";
 import Button from "@/components/common/Button";
 import { newsApi } from "@/api/newsApi";
 import type { MarketNewsDTO } from "@/types/newsType";
+import { mockNewsComments } from "@/pages/news/mockNews";
 import heroImage from "@/assets/hero.png";
-
-const sampleComments = [
-  {
-    id: 1,
-    author: "greenfield",
-    date: "2026.04.10 09:24",
-    content:
-      "공지랑 분리되니까 읽기가 훨씬 편하네요. 이런 식으로 배경 설명이 같이 있는 콘텐츠가 더 자주 올라오면 좋겠습니다.",
-  },
-  {
-    id: 2,
-    author: "farmnote",
-    date: "2026.04.10 11:08",
-    content:
-      "뉴스 형식으로 보니까 서비스 방향성이 더 잘 이해돼요. 프로젝트 관련 기사도 이런 톤으로 계속 이어졌으면 합니다.",
-  },
-  {
-    id: 3,
-    author: "orchardlab",
-    date: "2026.04.10 13:41",
-    content:
-      "핵심 지표를 한 번에 볼 수 있어서 좋네요. 특히 ADR이랑 거래대금 해석이 같이 나오는 점이 유용했습니다.",
-  },
-  {
-    id: 4,
-    author: "sto_insight",
-    date: "2026.04.10 15:16",
-    content:
-      "단순 등락보다 이벤트 원인이 같이 보여서 판단하기 편합니다. 다음에는 섹터별 비교도 있으면 더 좋겠어요.",
-  },
-  {
-    id: 5,
-    author: "agri_alpha",
-    date: "2026.04.10 18:52",
-    content:
-      "요약 3줄이 깔끔해서 훑어보기 좋아요. 본문은 근거 수치가 잘 보여서 신뢰감 있습니다.",
-  },
-  {
-    id: 6,
-    author: "fieldnote",
-    date: "2026.04.10 21:07",
-    content:
-      "핫 토큰 리스트가 과하지 않게 정리돼서 보기 편해졌네요. 상세 페이지 전반적으로 가독성이 좋아졌습니다.",
-  },
-];
 
 const NEWS_IMAGE_URLS = [
   // STO / 금융 / 거래 화면 계열
@@ -298,7 +254,7 @@ export default function NewsDetail() {
 
         <section className="mt-4 rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
           <div className="mb-6">
-            <h2 className="font-subtitle-01 text-gray-900">댓글 {sampleComments.length}개</h2>
+            <h2 className="font-subtitle-01 text-gray-900">댓글 {mockNewsComments.length}개</h2>
           </div>
 
           <div className="border-b border-gray-100 pb-6">
@@ -331,7 +287,7 @@ export default function NewsDetail() {
           </div>
 
           <div className="mt-8 flex flex-col">
-            {sampleComments.map((comment) => (
+            {mockNewsComments.map((comment) => (
               <article
                 key={comment.id}
                 className="border-b border-gray-50 py-6 last:border-b-0"
