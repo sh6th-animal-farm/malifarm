@@ -6,7 +6,12 @@
 bin/
 .gradle/                # Gradle 캐시 폴더
 build/                  # Gradle 빌드 결과물
-!gradle-wrapper.jar     # 래퍼 실행기
+
+# Gradle Wrapper 파일들은 무시하지 않도록 예외 처리
+!**/gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.properties
+!**/gradlew
+!**/gradlew.bat
 
 ### IntelliJ IDEA ###
 .idea/
@@ -23,19 +28,20 @@ Thumbs.db
 
 ### Backend - Security & Config ###
 *.properties
-# *.yml
+*.yml
+!.github/workflows/*.yml
 
 ### Backend - 설정 파일 ###
-src/main/resources/config/db.properties
-src/main/resources/config/mail.properties
-src/main/resources/config/enterprise.properties
-src/main/resources/config/redis.properties
-src/main/resources/config/kh-holding.properties
-src/main/resources/config/payment.properties
-src/main/resources/config/slack.properties
-src/main/resources/config/kakao.properties
-src/main/resources/config/smartFarm.properties
-src/main/resources/config/swagger.properties
+backend/src/main/resources/config/db.properties
+backend/src/main/resources/config/mail.properties
+backend/src/main/resources/config/enterprise.properties
+backend/src/main/resources/config/redis.properties
+backend/src/main/resources/config/kh-holding.properties
+backend/src/main/resources/config/payment.properties
+backend/src/main/resources/config/slack.properties
+backend/src/main/resources/config/kakao.properties
+backend/src/main/resources/config/smartFarm.properties
+backend/src/main/resources/config/swagger.properties
 
 ### Frontend (React + Vite) ###
 frontend/node_modules/
