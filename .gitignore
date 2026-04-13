@@ -23,7 +23,7 @@ Thumbs.db
 
 ### Backend - Security & Config ###
 *.properties
-*.yml
+# *.yml
 
 ### Backend - 설정 파일 ###
 src/main/resources/config/db.properties
@@ -34,6 +34,8 @@ src/main/resources/config/kh-holding.properties
 src/main/resources/config/payment.properties
 src/main/resources/config/slack.properties
 src/main/resources/config/kakao.properties
+src/main/resources/config/smartFarm.properties
+src/main/resources/config/swagger.properties
 
 ### Frontend (React + Vite) ###
 frontend/node_modules/
