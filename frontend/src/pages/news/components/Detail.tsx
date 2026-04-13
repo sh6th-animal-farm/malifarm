@@ -251,7 +251,6 @@ export default function NewsDetail() {
             </section>
           </div>
         )}
-
         <section className="mt-4 rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
           <div className="mb-6">
             <h2 className="font-subtitle-01 text-gray-900">댓글 {mockNewsComments.length}개</h2>
