@@ -54,6 +54,7 @@ type ProjectDTO = {
   announcementEndDate?: string | null;
   projectStartDate?: string | null;
   projectEndDate?: string | null;
+  expectedReturn?: number | null;
 };
 
 type AdminProject = {

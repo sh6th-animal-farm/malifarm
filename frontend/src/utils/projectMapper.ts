@@ -89,6 +89,8 @@ export const toCardModel = (dto: ProjectDTO | Project): Project => {
         (dto as Project).countdownTarget)
       : null;
 
+  const expectedReturn =
+    (dto as ProjectDTO).expectedReturn ?? (dto as Project).expectedReturn ?? 0;
   return {
     id: projectId,
     title,
@@ -103,5 +105,6 @@ export const toCardModel = (dto: ProjectDTO | Project): Project => {
       (dto as ProjectDTO).subscriptionRate ?? (dto as Project).percent ?? 0,
     dDay: (dto as Project).dDay ?? getDDay(dDayTarget),
     countdownTarget: dDayTarget,
+    expectedReturn,
   };
 };

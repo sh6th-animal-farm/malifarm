@@ -4,6 +4,7 @@ import { SubscriptionSummary } from './SubscriptionSummary';
 import { InvestmentLimitBar } from './InvestmentLimitBar';
 import { SubscriptionModalInput } from './SubscriptionModalInput';
 import { subscriptionApi } from '../../../api/subscriptionApi';
+import { useEffect } from 'react';
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -47,16 +48,31 @@ export default function SubscriptionModal({
     minAmountPerInvestor: projectData.minAmountPerInvestor,
   });
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleApplyClick = async () => {
     try {
-      // 1. 백엔드 SubscriptionApplicationDTO와 필드명 완전 일치시키기
       const payload = {
-        projectId: Number(projectData.projectId), // Long 타입 대응
-        userId: Number(projectData.userId), // Long 타입 대응
-        subscriptionAmount: totalPrice, // BigDecimal 타입 대응 (필드명 중요!)
-        tokenId: Number(projectData.tokenId), // Long 타입 대응
+        projectId: Number(projectData.projectId),
+        userId: Number(projectData.userId),
+        subscriptionAmount: totalPrice,
+        tokenId: Number(projectData.tokenId),
 
         subscriptionStatus: 'PENDING',
         paymentStatus: 'RESERVED',
@@ -80,8 +96,6 @@ export default function SubscriptionModal({
       } else if (result === 'empty_payload') {
         alert('증권사로 보낼 데이터가 비어있습니다. 입력값을 확인해주세요.');
       } else {
-        // INTERNAL_SERVER_ERROR인 경우 catch로 빠지지만,
-        // result에 에러 메시지가 담겨올 경우를 대비
         alert(`신청 실패: ${result}`);
       }
     } catch (err: any) {
@@ -94,10 +108,7 @@ export default function SubscriptionModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50">
       <div
         className="w-[440px] rounded-[20px] bg-white p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
