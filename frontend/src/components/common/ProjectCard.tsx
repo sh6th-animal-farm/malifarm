@@ -9,10 +9,14 @@ function ProjectCard({
   project,
   starred,
   onToggleStar,
+  onBeforeNavigateDetail,
+  detailNavigationState,
 }: {
   project: Project;
   starred: boolean;
   onToggleStar: (projectId: number) => void;
+  onBeforeNavigateDetail?: () => void;
+  detailNavigationState?: Record<string, unknown>;
 }) {
   const navigate = useNavigate();
   const [now, setNow] = useState(() => Date.now());
@@ -76,16 +80,23 @@ function ProjectCard({
     return `${hours}:${minutes}:${seconds}`;
   };
 
+  const navigateToDetail = () => {
+    onBeforeNavigateDetail?.();
+    navigate(`/project/${project.id}`, {
+      state: detailNavigationState,
+    });
+  };
+
   return (
     <article
       className="group relative overflow-hidden rounded-lg bg-white shadow-std transition duration-200 hover:-translate-y-1 cursor-pointer"
       role="link"
       tabIndex={0}
-      onClick={() => navigate(`/project/${project.id}`)}
+      onClick={navigateToDetail}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
-          navigate(`/project/${project.id}`);
+          navigateToDetail();
         }
       }}
     >

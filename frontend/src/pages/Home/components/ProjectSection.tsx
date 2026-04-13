@@ -38,6 +38,7 @@ export default function ProjectSection() {
         const data = await homeApi.getMainProjects();
         console.log('메인 프로젝트 데이터:', data);
         setProjects(data.map(toCardModel));
+        console.log('변환된 프로젝트:', data.map(toCardModel));
       } catch (e) {
         console.error('프로젝트 목록 로드 실패', e);
       }
@@ -67,9 +68,7 @@ export default function ProjectSection() {
     <section className="py-14 md:py-20 lg:py-24">
       <div className="layout-container">
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-          <h2 className="font-header-01 text-gray-900">
-            주목할 만한 프로젝트
-          </h2>
+          <h2 className="font-header-01 text-gray-900">주목할 만한 프로젝트</h2>
           <Link
             to="/project"
             className="inline-flex items-center rounded-full px-3 py-1 font-caption-01 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
