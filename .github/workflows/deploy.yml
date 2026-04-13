@@ -61,7 +61,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: "./frontend/dist/*"
+          source: "frontend/dist/*"
           target: "/home/minsjes/malifarm/frontend-dist"
           strip_components: 2 # 'frontend/dist/' 경로를 제거하고 파일만 전송
 
