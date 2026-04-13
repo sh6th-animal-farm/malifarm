@@ -8,6 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 import com.animalfarm.backend.domain.carbon.dto.CarbonDetailDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonListDTO;
+import com.animalfarm.backend.domain.carbon.dto.CarbonSnapshotBalanceDTO;
+import com.animalfarm.backend.domain.carbon.dto.CarbonSnapshotEventDTO;
+import com.animalfarm.backend.domain.carbon.dto.CarbonUserWalletDTO;
 
 @Mapper
 public interface CarbonRepository {
@@ -67,4 +70,32 @@ public interface CarbonRepository {
 		BigDecimal discountedPrice,
 		@Param("discountRate")
 		BigDecimal discountRate);
+
+	CarbonSnapshotEventDTO selectSnapshotEventBySeasonYm(@Param("seasonYm")
+	String seasonYm);
+
+	int insertSnapshotEvent(CarbonSnapshotEventDTO event);
+
+	List<CarbonSnapshotEventDTO> selectDuePlannedSnapshotEvents();
+
+	int markSnapshotEventCompleted(@Param("snapshotId")
+	Long snapshotId);
+
+	int markSnapshotEventFailed(@Param("snapshotId")
+	Long snapshotId);
+
+	Long selectLatestCompletedSnapshotId();
+
+	BigDecimal selectSnapshotSharePercent(@Param("snapshotId")
+	Long snapshotId, @Param("userId")
+	Long userId, @Param("tokenId")
+	Long tokenId);
+
+	List<CarbonUserWalletDTO> selectAllUserWallets();
+
+	BigDecimal getTotalSupplyByTokenId(@Param("tokenId")
+	Long tokenId);
+
+	int insertSnapshotBalances(@Param("list")
+	List<CarbonSnapshotBalanceDTO> list);
 }

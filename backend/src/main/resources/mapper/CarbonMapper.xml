@@ -165,5 +165,87 @@
         (#{userId}, #{cpId}, #{amount}, #{discountedPrice}, #{discountRate}, NOW())
     </insert>
 
+    <select id="selectSnapshotEventBySeasonYm" resultType="com.animalfarm.backend.domain.carbon.dto.CarbonSnapshotEventDTO">
+        SELECT snapshot_id, season_ym, planned_at, snapshot_at, status
+        FROM carbon_discount_snapshot_events
+        WHERE season_ym = #{seasonYm}
+    </select>
+
+    <insert id="insertSnapshotEvent" parameterType="com.animalfarm.backend.domain.carbon.dto.CarbonSnapshotEventDTO"
+            useGeneratedKeys="true" keyProperty="snapshotId" keyColumn="snapshot_id">
+        INSERT INTO carbon_discount_snapshot_events
+        (season_ym, planned_at, status)
+        VALUES
+        (#{seasonYm}, #{plannedAt}, #{status})
+    </insert>
+
+    <select id="selectDuePlannedSnapshotEvents" resultType="com.animalfarm.backend.domain.carbon.dto.CarbonSnapshotEventDTO">
+        SELECT snapshot_id, season_ym, planned_at, snapshot_at, status
+        FROM carbon_discount_snapshot_events
+        WHERE status = 'PLANNED'
+        AND planned_at &lt;= CURRENT_TIMESTAMP
+        ORDER BY planned_at ASC
+    </select>
+
+    <update id="markSnapshotEventCompleted">
+        UPDATE carbon_discount_snapshot_events
+        SET status = 'COMPLETED',
+        snapshot_at = CURRENT_TIMESTAMP
+        WHERE snapshot_id = #{snapshotId}
+    </update>
+
+    <update id="markSnapshotEventFailed">
+        UPDATE carbon_discount_snapshot_events
+        SET status = 'FAILED',
+        snapshot_at = CURRENT_TIMESTAMP
+        WHERE snapshot_id = #{snapshotId}
+    </update>
+
+    <select id="selectLatestCompletedSnapshotId" resultType="long">
+        SELECT snapshot_id
+        FROM carbon_discount_snapshot_events
+        WHERE status = 'COMPLETED'
+        ORDER BY snapshot_at DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectSnapshotSharePercent" resultType="java.math.BigDecimal">
+        SELECT share_percent
+        FROM carbon_discount_snapshot_balances
+        WHERE snapshot_id = #{snapshotId}
+        AND user_id = #{userId}
+        AND token_id = #{tokenId}
+        LIMIT 1
+    </select>
+
+    <select id="selectAllUserWallets" resultType="com.animalfarm.backend.domain.carbon.dto.CarbonUserWalletDTO">
+        SELECT user_id AS userId, ucl_id AS walletId
+        FROM user_certificate_links
+        WHERE ucl_id IS NOT NULL
+    </select>
+
+    <select id="getTotalSupplyByTokenId" resultType="java.math.BigDecimal">
+        SELECT total_supply
+        FROM tokens
+        WHERE token_id = #{tokenId}
+    </select>
+
+    <insert id="insertSnapshotBalances" parameterType="java.util.List">
+        INSERT INTO carbon_discount_snapshot_balances
+        (snapshot_id, user_id, wallet_id, token_id, token_balance, total_supply, share_percent)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.snapshotId},
+            #{item.userId},
+            #{item.walletId},
+            #{item.tokenId},
+            #{item.tokenBalance},
+            #{item.totalSupply},
+            #{item.sharePercent}
+            )
+        </foreach>
+    </insert>
+
 
 </mapper>

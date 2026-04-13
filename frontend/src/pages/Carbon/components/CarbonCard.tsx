@@ -10,6 +10,10 @@ interface CarbonCardProps {
 export default function CarbonCard({ item }: CarbonCardProps) {
   const navigate = useNavigate();
   const isRemoval = item.category === "REMOVAL";
+  const discountRate = Number(item.userBenefit?.discountRate ?? 0);
+  const hasDiscount = discountRate > 0;
+  const currentPrice = Number(item.userBenefit?.currentPrice ?? item.cpPrice ?? 0);
+  const originalPrice = Number(item.cpPrice ?? 0);
 
   return (
     // 🌟 카드 전체 크기 및 비율: flex와 h-full을 주어 그리드 내에서 높이가 꽉 차고 일정하게 맞도록 설정
@@ -55,21 +59,19 @@ export default function CarbonCard({ item }: CarbonCardProps) {
         {/* 🌟 진짜 데이터 연동: 가격 & 할인 정보 (flex-1로 하단으로 쫙 밀어냄) */}
         <div className="mt-4 text-right flex-1 flex flex-col justify-end">
           <div className="min-h-4.75 mb-1.25">
-            {item.userBenefit && (
+            {hasDiscount && (
               <>
                 <span className="font-caption-01 text-(--color-gray-400) line-through mr-2">
-                  {Number(item.cpPrice).toLocaleString()} P
+                  {originalPrice.toLocaleString()} P
                 </span>
                 <span className="font-caption-02 text-error">
-                  {item.userBenefit.discountRate}% 할인
+                  {discountRate}% 할인
                 </span>
               </>
             )}
           </div>
           <div className="font-header-02 text-(--color-gray-900)">
-            {item.userBenefit 
-              ? Number(item.userBenefit.currentPrice).toLocaleString() 
-              : Number(item.cpPrice).toLocaleString()} P
+            {(hasDiscount ? currentPrice : originalPrice).toLocaleString()} P
           </div>
         </div>
 
