@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class LlmConfig {
 
-	@Value("${openai.api.connect-timeout:5000}")
+	@Value("${openai.api.connect-timeout}")
 	private int connectTimeout;
 
 	@Value("${openai.api.read-timeout}")
