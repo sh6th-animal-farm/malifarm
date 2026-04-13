@@ -1,16 +1,201 @@
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { mockNews, mockNewsComments } from "../mockNews";
-import NewsBriefing from "./NewsBriefing";
-import NewsArticleBody from "./NewsArticleBody";
-import NewsCommentsSection from "./NewsCommentsSection";
+import EmptyState from "@/components/common/EmptyState";
+import Button from "@/components/common/Button";
+import { newsApi } from "@/api/newsApi";
+import type { MarketNewsDTO } from "@/types/newsType";
+import heroImage from "@/assets/hero.png";
+
+const sampleComments = [
+  {
+    id: 1,
+    author: "greenfield",
+    date: "2026.04.10 09:24",
+    content:
+      "공지랑 분리되니까 읽기가 훨씬 편하네요. 이런 식으로 배경 설명이 같이 있는 콘텐츠가 더 자주 올라오면 좋겠습니다.",
+  },
+  {
+    id: 2,
+    author: "farmnote",
+    date: "2026.04.10 11:08",
+    content:
+      "뉴스 형식으로 보니까 서비스 방향성이 더 잘 이해돼요. 프로젝트 관련 기사도 이런 톤으로 계속 이어졌으면 합니다.",
+  },
+  {
+    id: 3,
+    author: "orchardlab",
+    date: "2026.04.10 13:41",
+    content:
+      "핵심 지표를 한 번에 볼 수 있어서 좋네요. 특히 ADR이랑 거래대금 해석이 같이 나오는 점이 유용했습니다.",
+  },
+  {
+    id: 4,
+    author: "sto_insight",
+    date: "2026.04.10 15:16",
+    content:
+      "단순 등락보다 이벤트 원인이 같이 보여서 판단하기 편합니다. 다음에는 섹터별 비교도 있으면 더 좋겠어요.",
+  },
+  {
+    id: 5,
+    author: "agri_alpha",
+    date: "2026.04.10 18:52",
+    content:
+      "요약 3줄이 깔끔해서 훑어보기 좋아요. 본문은 근거 수치가 잘 보여서 신뢰감 있습니다.",
+  },
+  {
+    id: 6,
+    author: "fieldnote",
+    date: "2026.04.10 21:07",
+    content:
+      "핫 토큰 리스트가 과하지 않게 정리돼서 보기 편해졌네요. 상세 페이지 전반적으로 가독성이 좋아졌습니다.",
+  },
+];
+
+const NEWS_IMAGE_URLS = [
+  // STO / 금융 / 거래 화면 계열
+  "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=80",
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1600&q=80",
+  "https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=1600&q=80",
+  "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=80",
+  "https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1600&q=80",
+];
+
+const formatDate = (value: string): string => {
+  const dateOnly = value.includes("T") ? value.split("T")[0] : value;
+  return dateOnly.replace(/-/g, ".");
+};
+
+const formatHourNews = (value: string): string => {
+  const timePart = value.includes("T")
+    ? value.split("T")[1]
+    : value.split(" ")[1] ?? "";
+  const hour = Number.parseInt(timePart.slice(0, 2), 10);
+
+  if (Number.isNaN(hour)) return "";
+  return `${hour}시`;
+};
+
+const toPercentText = (value: number | null): string => {
+  if (value == null || Number.isNaN(value)) return "-";
+  return `${value.toFixed(1)}%`;
+};
+
+const getValueColorClass = (value: number | null): string => {
+  if (value == null || Number.isNaN(value) || value === 0) return "text-gray-900";
+  return value > 0 ? "text-error" : "text-info";
+};
+
+const getValueBorderClass = (value: number | null): string => {
+  if (value == null || Number.isNaN(value) || value === 0) return "border-gray-900";
+  return value > 0 ? "border-error" : "border-info";
+};
 
 export default function NewsDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const isLoggedIn = Boolean(localStorage.getItem("accessToken"));
+  const [news, setNews] = useState<MarketNewsDTO | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageIndex, setImageIndex] = useState(0);
+  const [useFallbackImage, setUseFallbackImage] = useState(false);
 
-  const currentIndex = mockNews.findIndex((item) => item.id === Number(id));
-  const news = currentIndex >= 0 ? mockNews[currentIndex] : mockNews[0];
+  useEffect(() => {
+    const newsId = Number(id);
+    if (!newsId) {
+      setIsLoading(false);
+      setNews(null);
+      return;
+    }
+
+    let mounted = true;
+
+    const fetchNewsDetail = async () => {
+      setIsLoading(true);
+      try {
+        const response = await newsApi.getGlobalDetail(newsId);
+        if (!mounted) return;
+        setNews(response ?? null);
+      } catch (error) {
+        console.error("뉴스 상세 로딩 실패:", error);
+        if (!mounted) return;
+        setNews(null);
+      } finally {
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchNewsDetail();
+
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
+
+  const bodyParagraphs = useMemo(() => {
+    if (!news?.summaryText) return [];
+
+    const normalized = news.summaryText.replace(/\s+/g, " ").trim();
+    const sentences = normalized
+      // 소수점 숫자(예: 2634.4)는 문장 경계로 보지 않음
+      .replace(/([.!?。！？])(?!\d)\s+/g, "$1\n")
+      .split("\n")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    if (sentences.length === 0) return [];
+
+    const chunks: string[] = [];
+    let index = 0;
+    let useThree = true;
+
+    while (index < sentences.length) {
+      const size = useThree ? 3 : 2;
+      chunks.push(sentences.slice(index, index + size).join(" "));
+      index += size;
+      useThree = !useThree;
+    }
+
+    return chunks;
+  }, [news?.summaryText]);
+
+  const hotTokens = useMemo(() => {
+    if (!news?.highlightTokens) return [];
+    return news.highlightTokens
+      .split(",")
+      .map((token) => token.trim())
+      .filter(Boolean)
+      .slice(0, 5);
+  }, [news?.highlightTokens]);
+
+  const newsImageUrl = useMemo(() => {
+    if (useFallbackImage) return heroImage;
+    if (NEWS_IMAGE_URLS.length === 0) return heroImage;
+    return NEWS_IMAGE_URLS[imageIndex] ?? heroImage;
+  }, [imageIndex, useFallbackImage]);
+
+  useEffect(() => {
+    if (!news || NEWS_IMAGE_URLS.length === 0) return;
+    const safeIndex = Math.abs(news.newsId) % NEWS_IMAGE_URLS.length;
+    setImageIndex(safeIndex);
+    setUseFallbackImage(false);
+  }, [news]);
+
+  const handleImageError = () => {
+    if (useFallbackImage) return;
+    if (NEWS_IMAGE_URLS.length === 0) {
+      setUseFallbackImage(true);
+      return;
+    }
+
+    if (imageIndex < NEWS_IMAGE_URLS.length - 1) {
+      setImageIndex((prev) => prev + 1);
+      return;
+    }
+
+    setUseFallbackImage(true);
+  };
 
   return (
     <main className="min-h-screen">
@@ -24,36 +209,147 @@ export default function NewsDetail() {
           <span>뉴스 목록</span>
         </button>
 
-        <div className="rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
-          <section className="pb-8">
-            <div className="mb-5 flex flex-wrap items-center gap-3 text-gray-400">
-              <span className="font-caption-01">{news.source}</span>
-              <span className="h-1 w-1 rounded-full bg-gray-300" />
-              <span className="font-caption-01">{news.publishedAt}</span>
+        {isLoading ? (
+          <div className="rounded-lg bg-white px-6 py-24 text-center text-gray-400 shadow-std md:px-8">
+            뉴스를 불러오는 중입니다...
+          </div>
+        ) : !news ? (
+          <EmptyState message="뉴스를 찾을 수 없습니다." />
+        ) : (
+          <div className="rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
+            <section className="pb-8">
+              <div className="mb-5 flex flex-wrap items-center gap-3 text-gray-400">
+                <span className="font-caption-03 text-green-600">{formatHourNews(news.createdAt)}</span>
+                <span className="h-1 w-1 rounded-full bg-gray-300" />
+                <span className="font-caption-01">마리팜 뉴스</span>
+                <span className="h-1 w-1 rounded-full bg-gray-300" />
+                <span className="font-caption-01">{formatDate(news.createdAt)}</span>
+              </div>
+
+              <h1 className="font-header-02 text-gray-900">
+                {news.title ?? news.summaryShort}
+              </h1>
+
+              <div className="mt-6 border-l-2 border-green-600/20 pl-4 md:pl-5">
+                <p className="font-subtitle-03 text-gray-600">
+                  {news.summaryShort}
+                </p>
+              </div>
+            </section>
+
+            <section className="pb-8">
+              <div className="h-[320px] w-full overflow-hidden rounded-lg md:h-[380px]">
+                <img
+                  src={newsImageUrl}
+                  alt="STO 및 디지털 자산 시장을 상징하는 더미 이미지"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                  onError={handleImageError}
+                />
+              </div>
+            </section>
+
+            <section>
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className={`border-l-4 ${getValueBorderClass(news.avgChangeRate)} pl-4 py-1`}>
+                  <p className="font-caption-02 text-gray-500">평균 등락률</p>
+                  <p className={`mt-1 font-header-02 ${getValueColorClass(news.avgChangeRate)}`}>{toPercentText(news.avgChangeRate)}</p>
+                </div>
+
+                <div className={`border-l-4 ${getValueBorderClass(news.adrValue)} pl-4 py-1`}>
+                  <p className="font-caption-02 text-gray-500">시장 투심 (ADR)</p>
+                  <p className={`mt-1 font-header-02 ${getValueColorClass(news.adrValue)}`}>{toPercentText(news.adrValue)}</p>
+                </div>
+
+                <div className={`border-l-4 ${getValueBorderClass(news.volGrowthRate)} pl-4 py-1`}>
+                  <p className="font-caption-02 text-gray-500">유동성 흐름</p>
+                  <p className={`mt-1 font-header-02 ${getValueColorClass(news.volGrowthRate)}`}>{toPercentText(news.volGrowthRate)}</p>
+                </div>
+              </div>
+            </section>
+
+            <section className="pt-8 pb-12">
+              <div className="flex flex-col gap-10">
+                {bodyParagraphs.map((paragraph, index) => (
+                  <p
+                    key={index}
+                    className="whitespace-pre-line font-body-01 leading-[1.6] tracking-[0.01em] text-gray-700"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+
+                {hotTokens.length > 0 && (
+                  <div className="pt-4">
+                    <p className="font-caption-02 text-gray-500">오늘의 핫 토큰</p>
+                    <ul className="mt-2 flex flex-col gap-1.5">
+                      {hotTokens.map((token) => (
+                        <li key={token} className="font-body-02 text-gray-700">
+                          • {token}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+        )}
+
+        <section className="mt-4 rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
+          <div className="mb-6">
+            <h2 className="font-subtitle-01 text-gray-900">댓글 {sampleComments.length}개</h2>
+          </div>
+
+          <div className="border-b border-gray-100 pb-6">
+            <textarea
+              rows={4}
+              disabled={!isLoggedIn}
+              placeholder={
+                isLoggedIn
+                  ? "의견을 남겨보세요."
+                  : "로그인 후 댓글을 작성할 수 있습니다."
+              }
+              className={`min-h-120 resize-none placeholder:text-gray-400 ${
+                isLoggedIn
+                  ? "border-gray-200 bg-white text-gray-700 focus:border-green-500"
+                  : "border-gray-100 bg-gray-50 text-gray-400"
+              }`}
+            />
+            <div className="mt-4 flex items-center justify-between gap-4">
+              <p className="font-caption-01 text-gray-400" />
+              <Button
+                variant={isLoggedIn ? "default" : "outline-disabled"}
+                width={84}
+                height={36}
+                className="rounded-full font-button-02"
+                disabled={!isLoggedIn}
+              >
+                등록
+              </Button>
             </div>
+          </div>
 
-            <h1 className="font-header-02 text-gray-900">
-              {news.title}
-            </h1>
-
-            <div className="mt-6 border-l-2 border-green-600/20 pl-4 md:pl-5">
-              <p className="font-subtitle-03 text-gray-600">
-                {news.summary}
-              </p>
-            </div>
-          </section>
-
-          {news.briefing && (
-            <NewsBriefing briefing={news.briefing} />
-          )}
-
-          <NewsArticleBody body={news.body} />
-        </div>
-
-        <NewsCommentsSection
-          comments={mockNewsComments}
-          isLoggedIn={isLoggedIn}
-        />
+          <div className="mt-8 flex flex-col">
+            {sampleComments.map((comment) => (
+              <article
+                key={comment.id}
+                className="border-b border-gray-50 py-6 last:border-b-0"
+              >
+                <div className="mb-2 flex items-center gap-3 text-gray-400">
+                  <span className="font-caption-03 text-gray-700">
+                    {comment.author}
+                  </span>
+                  <span className="h-1 w-1 rounded-full bg-gray-300" />
+                  <span className="font-caption-01">{comment.date}</span>
+                </div>
+                <p className="font-body-01 leading-loose text-gray-700">
+                  {comment.content}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
       </div>
     </main>
   );
