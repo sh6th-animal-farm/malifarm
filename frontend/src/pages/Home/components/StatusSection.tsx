@@ -1,4 +1,4 @@
-import { stats } from "@/pages/home/data/data";
+import { stats } from '@/pages/Home/data/data';
 
 export default function StatusSection() {
   return (
