@@ -10,23 +10,30 @@ import type {
 import apiClient from '@/api/apiClient';
 
 export const tokenApi = {
-  getTokenInfo: (tokenId: number) =>
-    apiClient.get<Token>(`/api/token/${tokenId}`),
+  getTokenInfo: (tokenId: number): Promise<Token> => {
+    return apiClient.get(`/api/token/${tokenId}`);
+  },
   getTokenList: (): Promise<Token[]> => {
     return apiClient.get('/api/token');
   },
-  getOhlcv: (tokenId: number) =>
-    apiClient.get<TokenOhlcv>(`/api/token/ohlcv/${tokenId}`),
+  getOhlcv: (tokenId: number): Promise<TokenOhlcv> => {
+    return apiClient.get(`/api/token/ohlcv/${tokenId}`);
+  },
   getCandles: (tokenId: number, unit: number = 1): Promise<CandleStick[]> => {
     return apiClient.get(`/api/market/candles/${tokenId}?unit=${unit}`);
   },
-  getCashBalance: () => apiClient.get<number>('/api/account/balance'),
-  getTokenBalance: (tokenId: number) =>
-    apiClient.get<number>(`/api/account/balance/${tokenId}`),
-  createOrder: (tokenId: number, order: Order) =>
-    apiClient.post<Order>(`/api/token/order/${tokenId}`, order),
-  cancelOrder: (tokenId: number, orderId: number) =>
-    apiClient.post<void>(`/api/token/order-cancel/${tokenId}/${orderId}`),
+  getCashBalance: (): Promise<number> => {
+    return apiClient.get('/api/account/balance');
+  },
+  getTokenBalance: (tokenId: number): Promise<number> => {
+    return apiClient.get(`/api/account/balance/${tokenId}`);
+  },
+  createOrder: (tokenId: number, order: Order): Promise<Order> => {
+    return apiClient.post(`/api/token/order/${tokenId}`, order);
+  },
+  cancelOrder: (tokenId: number, orderId: number): Promise<void> => {
+    return apiClient.post(`/api/token/order-cancel/${tokenId}/${orderId}`);
+  },
   getPendingList: (tokenId: number): Promise<TokenPending[]> => {
     return apiClient.get(`/api/token/pending/${tokenId}`);
   },
