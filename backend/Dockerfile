@@ -5,7 +5,7 @@ FROM eclipse-temurin:17-jdk-focal
 WORKDIR /app
 
 # 3. 빌드된 jar 파일을 이미지 내부로 복사
-COPY build/libs/*-SNAPSHOT.jar app.jar
+COPY backend/build/libs/*-SNAPSHOT.jar app.jar
 
 # 4. 실행 포트 설정
 EXPOSE 8080
