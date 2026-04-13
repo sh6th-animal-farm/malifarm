@@ -18,7 +18,7 @@ public class CarbonSnapshotBalanceDTO {
 	private Long userId;
 	private Long walletId;
 	private Long tokenId;
-	private BigDecimal tokenBalance;
-	private BigDecimal totalSupply;
-	private BigDecimal sharePercent;
+	private BigDecimal tokenBalance;	// 보유 토큰 수
+	private BigDecimal totalSupply;		// 토큰 발행량
+	private BigDecimal sharePercent;	// 보유 토큰 수 / 토큰 발행량 * 100 => %
 }
