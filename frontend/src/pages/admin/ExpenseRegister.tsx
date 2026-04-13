@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { adminApi } from '@/api/adminApi';
 import Button from '@/components/common/Button';
 import Toast from '@/components/common/Toast';
-import AdminSidebar from '@/components/common/AdminSidebar';
+import AdminSidebar from '@/pages/admin/AdminSidebar';
 import '../../styles/admin.css';
 
 interface ExpenseData {

@@ -7,6 +7,8 @@ interface ProjectGridProps {
   activeStatus: string;
   isLoading: boolean;
   onToggleStar: (projectId: number) => void;
+  onBeforeNavigateDetail?: () => void;
+  detailNavigationState?: Record<string, unknown>;
 }
 
 export default function ProjectGrid({
@@ -14,6 +16,8 @@ export default function ProjectGrid({
   activeStatus,
   isLoading,
   onToggleStar,
+  onBeforeNavigateDetail,
+  detailNavigationState,
 }: ProjectGridProps) {
   // 1. 로딩 중 UI
   if (isLoading) {
@@ -76,6 +80,8 @@ export default function ProjectGrid({
           project={project}
           starred={project.isFavorite}
           onToggleStar={onToggleStar}
+          onBeforeNavigateDetail={onBeforeNavigateDetail}
+          detailNavigationState={detailNavigationState}
         />
       ))}
     </div>

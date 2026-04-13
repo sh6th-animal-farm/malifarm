@@ -42,7 +42,7 @@ export default function FarmTabContent({ data }: { data: ProjectData }) {
     }
 
     chartInstance.current = new Chart(ctx, {
-      type: 'bar',
+      type: 'line',
       data: {
         labels: labels,
         datasets: [
