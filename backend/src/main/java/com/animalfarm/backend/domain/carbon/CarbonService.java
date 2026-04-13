@@ -1,4 +1,4 @@
-﻿package com.animalfarm.backend.domain.carbon;
+package com.animalfarm.backend.domain.carbon;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
