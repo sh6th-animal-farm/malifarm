@@ -1,6 +1,6 @@
-import Icon from "@/components/icon";
-import { numberFormatter, toNumber } from "./walletFormatters";
-import type { WalletInfoDTO } from "@/types/myPageType";
+import Icon from '@/components/icon';
+import { numberFormatter, toNumber } from './walletFormatters';
+import type { WalletInfoDTO } from '@/types/myPageType';
 
 interface AccountProps {
   walletInfo: WalletInfoDTO | null;
@@ -12,8 +12,6 @@ export default function Account({ walletInfo, loading = false }: AccountProps) {
   const availableAmount = walletInfo
     ? toNumber(walletInfo.availableBalance)
     : 0;
-  
-    console.log(walletInfo)
 
   return (
     <section className="mb-5 rounded-lg bg-white p-4 shadow-std md:p-6">
@@ -34,7 +32,7 @@ export default function Account({ walletInfo, loading = false }: AccountProps) {
               </div>
             ) : (
               <p className="font-body-02 text-gray-500">
-                {!loading ? "연동된 계좌가 없습니다." : "\u00A0"}
+                {!loading ? '연동된 계좌가 없습니다.' : '\u00A0'}
               </p>
             )}
           </div>

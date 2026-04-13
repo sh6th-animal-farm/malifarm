@@ -30,14 +30,14 @@ export default function ResetPasswordForm({
   onSubmit,
 }: ResetPasswordFormProps) {
   return (
-    <div className="flex flex-col items-center px-6 py-10 min-h-[calc(75vh-var(--spacing-header-height))] bg-gray-50">
+    <div className="flex min-h-[calc(100dvh-var(--spacing-header-height))] flex-col items-center justify-center bg-gray-50 px-6 py-10">
       <AuthCard
         title="비밀번호 재설정"
         description="이메일 인증 후 새 비밀번호를 설정하세요."
       >
         <form onSubmit={onSubmit}>
           <div className="mb-5">
-            <label className="block text-[14px] font-bold text-gray-900 mb-2">
+            <label className="font-caption-03 text-gray-900">
               이메일 주소
             </label>
             <Input
@@ -49,7 +49,7 @@ export default function ResetPasswordForm({
           </div>
 
           <div className="mb-5">
-            <label className="block text-[14px] font-bold text-gray-900 mb-2">
+            <label className="font-caption-03 text-gray-900">
               새 비밀번호
             </label>
             <Input
@@ -62,7 +62,7 @@ export default function ResetPasswordForm({
             <div className="mt-2">
               {newPassword.length > 0 && (
                 <p
-                  className={`text-[14px] ${passwordValidation.isValid ? "text-green-600" : "text-red-600"}`}
+                  className={`font-caption-01 ${passwordValidation.isValid ? "text-green-600" : "text-error"}`}
                 >
                   {passwordValidation.message}
                 </p>
@@ -71,7 +71,7 @@ export default function ResetPasswordForm({
           </div>
 
           <div className="mb-5">
-            <label className="block text-[14px] font-bold text-gray-900 mb-2">
+            <label className="font-caption-03 text-gray-900">
               비밀번호 확인
             </label>
             <Input
@@ -84,7 +84,7 @@ export default function ResetPasswordForm({
             <div className="min-h-[24px] mt-2">
               {passwordMatched !== null && (
                 <p
-                  className={`text-[14px] ${passwordMatched ? "text-green-600" : "text-red-600"}`}
+                  className={`font-caption-01 ${passwordMatched ? "text-green-600" : "text-error"}`}
                 >
                   {passwordMatched ? "비밀번호가 일치합니다." : "비밀번호가 일치하지 않습니다."}
                 </p>
@@ -94,7 +94,7 @@ export default function ResetPasswordForm({
 
           {error && (
             <div className="mb-4">
-              <p className="text-[14px] text-red-600">{error}</p>
+              <p className="font-caption-01 text-error">{error}</p>
             </div>
           )}
 
@@ -103,9 +103,9 @@ export default function ResetPasswordForm({
           </Button>
         </form>
 
-        <div className="mt-8 text-center text-[14px] text-gray-500">
+        <div className="font-caption-01 mt-8 text-center text-gray-500">
           로그인 페이지로 돌아가시겠어요?
-          <Link to="/auth/login" className="ml-1 font-bold text-green-600">
+          <Link to="/auth/login" className="font-caption-03 ml-1 text-green-600">
             로그인
           </Link>
         </div>

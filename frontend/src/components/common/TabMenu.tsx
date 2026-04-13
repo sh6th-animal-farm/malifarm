@@ -21,7 +21,7 @@ export default function TabMenu({
 }: TabMenuProps) {
   return (
     <div
-      className={`flex items-center gap-[24px] border-b border-gray-200 mb-[24px] ${className}`}
+      className={`flex items-center gap-[24px] border-b border-gray-200 my-6 ${className}`}
       style={{ width }}
     >
       {items.map((item) => {

@@ -78,7 +78,7 @@ export default function SignupEnterpriseStep({
   formatMMSS,
   renderStatus,
 }: SignupEnterpriseStepProps) {
-  const labelClassName = "block mb-2 text-[14px] font-semibold text-gray-900";
+  const labelClassName = "block mb-2 font-caption-03 text-gray-900";
 
   if (form.step === 2) {
     return (

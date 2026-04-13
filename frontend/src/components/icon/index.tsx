@@ -20,6 +20,7 @@ const ICON_MAP: Record<IconName, React.ComponentType<IconProps>> = {
   user: Icons.User,
   check_circle: Icons.CheckCircle,
   warning_circle: Icons.WarningCircle,
+  clock: Icons.Clock,
   price_up: Icons.PriceUp,
   price_down: Icons.PriceDown,
 };

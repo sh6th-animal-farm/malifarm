@@ -16,8 +16,8 @@ export default function TokenListTable({
   const navigate = useNavigate();
 
   return (
-    <div className="flex-1 max-h-screen overflow-y-auto rounded-[var(--radius-m)] shadow-std bg-white relative scrollbar-thin scrollbar-thumb-gray-300">
-      <table className="w-full border border-gray-100 border-separate border-spacing-0">
+    <div className="flex-1 max-h-screen overflow-y-auto rounded-lg shadow-std bg-white relative scrollbar-thin scrollbar-thumb-gray-300">
+      <table className="w-full border-separate border-spacing-0">
         <thead className="sticky top-0 z-10">
           <tr className="flex items-center w-full bg-gray-50 border-b border-gray-100 text-gray-400 font-caption-03">
             <th className="w-[50px] lg:w-[80px] py-4 px-2 text-center">순위</th>

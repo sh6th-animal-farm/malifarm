@@ -51,16 +51,16 @@ export default function ProjectDetailSideBar({
   return (
     <aside className="col-span-12 lg:col-span-4 px-0">
       <div className="sticky top-[96px]">
-        <div className="relative p-8 bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std">
+        <div className="relative p-8 bg-white rounded-lg shadow-std">
           {/* 1. 상태 배지 영역 */}
           <div className="absolute top-8 right-8">
             {projectData.projectStatus === 'ANNOUNCEMENT' && (
-              <span className="px-3.5 py-1.5 bg-info-light text-info rounded-[var(--radius-m)] font-button-02 font-semibold">
+              <span className="px-3.5 py-1.5 bg-info-light text-info rounded-lg font-button-02 font-semibold">
                 공고중
               </span>
             )}
             {projectData.projectStatus === 'SUBSCRIPTION' && (
-              <span className="px-3.5 py-1.5 bg-warning-light text-warning rounded-[var(--radius-m)] font-button-02 font-semibold">
+              <span className="px-3.5 py-1.5 bg-warning-light text-warning rounded-lg font-button-02 font-semibold">
                 청약중
               </span>
             )}
@@ -70,12 +70,12 @@ export default function ProjectDetailSideBar({
               </span>
             )}
             {projectData.projectStatus === 'COMPLETED' && (
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-[var(--radius-s)] font-caption-03 font-bold">
+              <span className="px-3 py-1 bg-gray-70 text-gray-600 rounded-[var(--radius-s)] font-caption-03 font-bold">
                 종료
               </span>
             )}
             {projectData.projectStatus === 'CANCELED' && (
-              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-[var(--radius-s)] font-caption-03 font-bold">
+              <span className="px-3 py-1 bg-gray-70 text-gray-600 rounded-[var(--radius-s)] font-caption-03 font-bold">
                 취소
               </span>
             )}
@@ -103,7 +103,7 @@ export default function ProjectDetailSideBar({
                     {getDDay()}
                   </span>
                 </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-70 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-green-500 transition-all duration-500"
                     style={{ width: `${projectData.subscriptionRate}%` }}
@@ -112,7 +112,7 @@ export default function ProjectDetailSideBar({
               </div>
 
               <div className="space-y-3 mb-8">
-                <div className="bg-gray-100 p-5 rounded-[var(--radius-m)]">
+                <div className="bg-gray-70 p-5 rounded-lg">
                   <span className="font-caption-01 text-gray-500 block mb-3">
                     총 모집 금액 (Target)
                   </span>
@@ -120,7 +120,7 @@ export default function ProjectDetailSideBar({
                     {projectData.targetAmount?.toLocaleString()}원
                   </strong>
                 </div>
-                <div className="bg-white border border-green-50 p-5 rounded-[var(--radius-m)]">
+                <div className="bg-white border border-green-600 p-5 rounded-lg">
                   <span className="font-caption-01 text-gray-500 block mb-3">
                     1 토큰당 청약 금액
                   </span>
@@ -162,7 +162,7 @@ export default function ProjectDetailSideBar({
                   </Button>
                 )}
                 <p className="text-center font-caption-01 text-gray-400">
-                  * 본 자산은 세준 증권 원장에 실시간 기록됩니다.
+                  * 본 자산은 kh 증권 원장에 실시간 기록됩니다.
                 </p>
               </div>
             </>
@@ -171,7 +171,7 @@ export default function ProjectDetailSideBar({
           {/* [CASE 2] 진행중 */}
           {projectData.projectStatus === 'INPROGRESS' && (
             <div className="space-y-6">
-              <div className="bg-gray-100 p-6 rounded-[var(--radius-m)]">
+              <div className="bg-gray-70 p-6 rounded-lg">
                 <span className="font-caption-01 text-gray-500 block mb-2">
                   현재 토큰가 (Market Price)
                 </span>
@@ -194,7 +194,7 @@ export default function ProjectDetailSideBar({
           {(projectData.projectStatus === 'COMPLETED' ||
             projectData.projectStatus === 'CANCELED') && (
             <div className="space-y-6">
-              <div className="bg-gray-100 p-6 rounded-[var(--radius-m)]">
+              <div className="bg-gray-70 p-6 rounded-lg">
                 <span className="font-caption-01 text-gray-500 block mb-2">
                   최종 토큰가
                 </span>

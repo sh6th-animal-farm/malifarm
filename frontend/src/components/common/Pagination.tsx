@@ -68,7 +68,7 @@ export default function Pagination({
             size={16}
             className="rotate-180 text-current"
           />
-          <span>Prev</span>
+          {/* <span>Prev</span> */}
         </button>
 
         <div className="flex items-center gap-0.5">
@@ -108,7 +108,7 @@ export default function Pagination({
           onClick={() => onPageChange?.(currentPage + 1)}
           className="pagination-nav-button"
         >
-          <span>Next</span>
+          {/* <span>Next</span> */}
           <Icon name="chevron_right" size={16} className="text-current" />
         </button>
       </div>

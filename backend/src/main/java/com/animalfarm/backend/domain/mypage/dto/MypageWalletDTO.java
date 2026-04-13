@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class MypageWalletDTO {
 
+	private Long walletId; // 지갑 번호
 	private String accountNo; // 계좌번호
 	private String bankName; // 은행명
 	private BigDecimal availableBalance; // 사용 가능 금액

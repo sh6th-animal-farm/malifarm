@@ -21,7 +21,10 @@ export default function TokenSection() {
       <div className="layout-container">
         <div className="mb-7 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <h2 className="font-header-01 text-gray-900">토큰 거래소 TOP 10</h2>
-          <Link to="/token" className="font-caption-01 text-gray-500">
+          <Link
+            to="/token"
+            className="inline-flex items-center rounded-full px-3 py-1 font-caption-01 text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
+          >
             전체보기 &gt;
           </Link>
         </div>
