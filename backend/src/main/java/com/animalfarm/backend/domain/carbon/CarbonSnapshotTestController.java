@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CarbonSnapshotTestController {
 
 	@Autowired
-	private com.animalfarm.backend.domain.carbon.CarbonSnapshotBatchService CarbonBatchService;
+	private CarbonSnapshotBatchService CarbonBatchService;
 
 	/**
 	 * 스냅샷 강제 실행 테스트
