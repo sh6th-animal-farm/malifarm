@@ -1,6 +1,5 @@
 package com.animalfarm.backend.domain.project;
 
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.animalfarm.backend.domain.accounting.DividendService;
-import com.animalfarm.backend.domain.accounting.dto.DividendDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectListDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectSearchReqDTO;
 import com.animalfarm.backend.domain.subscription.SubscriptionService;
@@ -98,6 +95,7 @@ public class ProjectViewController {
 	}
 */
 
+	/*
 	@GetMapping("/dividend/poll")
 	public String pollDividendType(Model model, @RequestParam
 	Long id) {
@@ -109,4 +107,5 @@ public class ProjectViewController {
 		model.addAttribute("pollEndDisplay", formattedDate);
 		return "layout";
 	}
+	 */
 }
