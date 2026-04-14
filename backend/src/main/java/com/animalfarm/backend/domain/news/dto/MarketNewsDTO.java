@@ -17,6 +17,7 @@ import lombok.Setter;
 public class MarketNewsDTO {
 	private Long newsId;
 	private Long tokenId;       // GLOBAL 뉴스일 경우 null
+	private String title;       // 기사 제목
 	private String summaryShort; // 1줄 요약
 	private String summaryText;  // 데이터 분석 본문
 	private String newsType;    // GLOBAL, TOKEN

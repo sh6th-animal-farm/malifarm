@@ -14,10 +14,17 @@ export default function CarbonList() {
   const [carbonList, setCarbonList] = useState<CarbonListDTO[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [userRole, setUserRole] = useState("");
+
+  const canViewCarbonHistory = ["SYSTEM", "ADMIN", "ENTERPRISE"].includes(userRole);
 
   useEffect(() => {
     fetchCarbonList(category);
   }, [category]);
+
+  useEffect(() => {
+    setUserRole(localStorage.getItem("userRole") ?? "");
+  }, []);
 
   const fetchCarbonList = async (cat: string) => {
     setIsLoading(true);
@@ -37,7 +44,7 @@ export default function CarbonList() {
       <section className="layout-container py-20 md:py-20">
         
         {/* 헤더 상단 정렬 */}
-        <div className="flex justify-between items-start mb-[24px] px-5 xl:px-0">
+        <div className="flex justify-between items-start mb-[24px] xl:px-0">
           <div className="relative">
             <SectionHeader
               title="탄소마켓"
@@ -62,16 +69,18 @@ export default function CarbonList() {
               }
             />
           </div>
-          <button
-            onClick={() => navigate("/mypage/carbon-history")}
-            className="font-button-02 text-[var(--color-green-600)] border border-[var(--color-green-600)] px-[20px] py-[10px] rounded-[var(--radius-s)] bg-white whitespace-nowrap mt-[5px] transition-all duration-200 hover:bg-[var(--color-green-50)] cursor-pointer no-underline"
-          >
-            구매한 탄소 상품 보러가기 &gt;
-          </button>
+          {canViewCarbonHistory && (
+            <button
+              onClick={() => navigate("/mypage/carbon-history")}
+              className="font-button-02 text-[var(--color-green-600)] border border-[var(--color-green-600)] px-[20px] py-[10px] rounded-[var(--radius-s)] bg-white whitespace-nowrap mt-[5px] transition-all duration-200 hover:bg-[var(--color-green-50)] cursor-pointer no-underline"
+            >
+              구매한 탄소 상품 보러가기 &gt;
+            </button>
+          )}
         </div>
 
         {/* 필터 탭 */}
-        <div className="flex gap-[10px] flex-wrap mt-[24px] px-5 xl:px-0">
+        <div className="flex gap-[10px] flex-wrap mt-[24px] xl:px-0">
           {(["ALL", "REMOVAL", "REDUCTION"] as const).map((cat) => (
             <button
               key={cat}
@@ -88,7 +97,7 @@ export default function CarbonList() {
         </div>
 
         {/* 그리드 */}
-        <div className="mt-[18px] min-h-[400px] px-5 xl:px-0">
+        <div className="mt-[18px] min-h-[400px]">
           {isLoading ? (
             <div className="flex justify-center items-center h-full text-[var(--color-gray-400)]">로딩 중...</div>
           ) : carbonList.length === 0 ? (
