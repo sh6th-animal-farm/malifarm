@@ -122,7 +122,7 @@ export default function CarbonList() {
               className="mb-0 py-10"
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2grid-cols-3 gap-[26px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[26px]">
               {carbonList.map((item) => (
                 <CarbonCard key={item.cpId} item={item} />
               ))}
