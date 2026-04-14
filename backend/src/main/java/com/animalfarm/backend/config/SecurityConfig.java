@@ -41,7 +41,7 @@ public class SecurityConfig {
 		// 정적 리소스 및 Swagger v3 경로는 필터를 거치지 않도록 설정 (성능 최적화)
 		return (web) -> web.ignoring()
 			.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/v3/api-docs/**",
-				"/v3/api-docs", "/webjars/**",
+				"/v3/api-docs", "/webjars/**", "/api/swagger-ui/**", "/api/swagger-ui.html", "/api/v3/api-docs/**",
 				"/resources/**", "/favicon.ico", "/error");
 	}
 
@@ -58,9 +58,11 @@ public class SecurityConfig {
 			// 2. API 접근 권한 제어
 			.authorizeHttpRequests(auth -> auth
 				// [Public] 로그인 없이 접근 가능한 경로
-				.requestMatchers("/api/auth/**", "/", "/main", "/auth/**", "/policy", "/notice/list")
+				.requestMatchers("/api/auth/**", "/", "/main", "/auth/**", "/policy")
 				.permitAll()
-				.requestMatchers("/project/**", "/token/**", "/token", "/mypage/**", "/market/**")
+				.requestMatchers("/project/**", "/token/**", "/token", "/mypage/**", "/market/**", "/api/news/**")
+				.permitAll()
+				.requestMatchers("/api/auth/**", "/api/project/**", "/api/token/**")
 				.permitAll()
 
 				// [Read-Only] GET 요청에 대해 전역 허용
@@ -114,7 +116,7 @@ public class SecurityConfig {
 		CorsConfiguration configuration = new CorsConfiguration();
 		// 프론트엔드 도메인 허용
 		configuration.setAllowedOrigins(
-			List.of("https://mlfarm.3jun.store", "http://localhost:9999", "http://localhost:5173"));
+			List.of("https://mlfarm.3jun.store", "http://localhost:9999", "http://localhost:5173", "https://malifarm.site", "https://www.malifarm.site"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);

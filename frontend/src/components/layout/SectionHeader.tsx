@@ -14,7 +14,7 @@ export default function SectionHeader({
   titleSuffix,
 }: SectionHeaderProps) {
   return (
-    <div className={`flex flex-col gap-2 mb-6 ${className}`}>
+    <div className={`hidden md:flex md:flex-col gap-2 mb-6 ${className}`}>
       <div className="flex items-center gap-2.5">
         <h2 className="font-header-01 text-gray-900 leading-tight">{title}</h2>
         {titleSuffix}

@@ -61,17 +61,17 @@ export default function TokenListTableRow({
       onMouseOver={() => onHover(token.tokenId)}
       onClick={onClick}
       className={`
-        flex items-center w-full py-4 px-2 border-bottom border-gray-50 cursor-pointer transition-colors duration-500
+        flex items-center w-full py-4 border-bottom border-gray-50 cursor-pointer transition-colors duration-500
         ${isActive ? 'bg-gray-50' : 'bg-white hover:bg-gray-50'}
       `}
     >
       {/* 순위 */}
-      <td className="w-[80px] text-center text-gray-900 font-body-01">
+      <td className="w-[50px] lg:w-[80px] text-center text-gray-900 font-body-01">
         {index + 1}
       </td>
 
       {/* 종목 */}
-      <td className="flex-1 min-w-[150px] text-left">
+      <td className="flex-1 lg:min-w-[150px] text-left px-2">
         <div className="text-gray-900 font-body-03">{token.tokenName}</div>
         <div className="text-gray-400 uppercase font-caption-01">
           {token.tickerSymbol}
@@ -79,14 +79,14 @@ export default function TokenListTableRow({
       </td>
 
       {/* 현재가 */}
-      <td className="w-[160px] text-right">
+      <td className="w-[100px] lg:w-[160px] text-right px-2">
         <div className="text-gray-900 font-body-03">
           {formatNum(token.marketPrice)}
         </div>
       </td>
 
       {/* 등락률 */}
-      <td className="w-[180px] text-right">
+      <td className="hidden lg:block lg:w-[180px] text-right shrink-0">
         <div className="flex justify-end">
           <div
             className={`
@@ -116,7 +116,7 @@ export default function TokenListTableRow({
       </td>
 
       {/* 거래대금 */}
-      <td className="w-[160px] pr-4 text-right text-gray-900 font-body-01">
+      <td className="hidden lg:block lg:w-[160px] pr-6 text-right text-gray-900 font-body-01 shrink-0">
         {formatVolume(token.dailyTradeVolume)}
       </td>
     </tr>
