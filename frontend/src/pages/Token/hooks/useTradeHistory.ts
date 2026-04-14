@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import WebSocketManager from '@/utils/WebSocketManager';
 import type { TradeInfo } from '@/types/tokenType';
 import { tokenApi } from '@/api/tokenApi';

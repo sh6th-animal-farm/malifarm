@@ -70,8 +70,7 @@ const refreshAccessToken = async () => {
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) {
-    // 토큰이 있다면 헤더에 추가
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`; // 토큰이 있다면 헤더에 추가
   }
   return config;
 });
@@ -167,8 +166,7 @@ apiClient.interceptors.response.use(
           console.error('관심 프로젝트 처리 실패:', errorMsg);
           break;
 
-        default:
-          // 그 외 에러
+        default: // 그 외 에러
           console.error(errorMsg);
       }
     } else {

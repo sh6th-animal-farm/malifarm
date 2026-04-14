@@ -17,8 +17,10 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -29,10 +31,12 @@ import com.animalfarm.backend.batch.processor.DividendProcessor;
 import com.animalfarm.backend.batch.processor.SettlementProcessor;
 import com.animalfarm.backend.batch.writer.SettlementWriter;
 import com.animalfarm.backend.domain.accounting.DividendRepository;
+import com.animalfarm.backend.domain.accounting.FinancesRepository;
 import com.animalfarm.backend.domain.accounting.dto.DividendDTO;
 import com.animalfarm.backend.domain.accounting.dto.RevenueSummaryDTO;
 import com.animalfarm.backend.domain.accounting.dto.SnapshotResponseDTO;
 import com.animalfarm.backend.domain.project.ProjectService;
+import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.global.MailService;
 
 @Configuration
@@ -40,7 +44,7 @@ import com.animalfarm.backend.global.MailService;
 public class DividendSettlementJobConfig {
 	@Autowired
 	private JobRepository jobRepository;
-	
+
 	@Autowired
 	private SqlSessionFactory sqlSessionFactory;
 
@@ -49,31 +53,33 @@ public class DividendSettlementJobConfig {
 	@Autowired
 	private SettlementWriter settlementWriter;
 	@Autowired
-	private PlatformTransactionManager transactionManager; // 추가
+	private FinancesRepository financesRepository;
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	@Autowired
+	private TokenRepository tokenRepository;
 
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
-	private MailService mailService; // 스프링 메일 설정 필요
+	private MailService mailService;
 
 	@Autowired
 	private DividendRepository dividendRepository;
 
 	@Bean
-	@StepScope // 실행 시점에 JobParameters를 바인딩하기 위해 필수
+	@StepScope
 	public DividendProcessor dividendProcessor(
 		@Value("#{jobParameters[totalAmount]}")
 		BigDecimal totalAmount,
 		@Value("#{jobParameters[totalIssueVolume]}")
 		BigDecimal totalIssueVolume) {
 
-		// 이 시점에 JobParameters에 있는 값이 생성자로 주입됩니다.
 		return new DividendProcessor(totalAmount, totalIssueVolume);
 	}
 
 	@Bean
 	public Job dividendJob() {
-		// 2. .get("이름") 대신 new JobBuilder("이름", jobRepository)를 씁니다.
 		return new JobBuilder("dividendJob", jobRepository)
 			.start(createSummaryStep())
 			.next(calculateDividendStep())
@@ -81,15 +87,24 @@ public class DividendSettlementJobConfig {
 			.build();
 	}
 
-	// ======== Step ========
-
 	@Bean
 	public Step createSummaryStep() {
 		return new StepBuilder("createSummaryStep", jobRepository)
-			.<Map<String, Object>, RevenueSummaryDTO>chunk(10, transactionManager)
-			.reader(revenueExpenseReader())
-			.processor(settlementProcessor)
-			.writer(settlementWriter)
+			.tasklet((contribution, chunkContext) -> {
+				List<RevenueSummaryDTO> summaries = financesRepository.selectSettlementTargets(new HashMap<>())
+					.stream()
+					.map(item -> {
+						try {
+							return settlementProcessor.process(item);
+						} catch (Exception e) {
+							throw new IllegalStateException("Failed to build revenue summary", e);
+						}
+					})
+					.toList();
+
+				settlementWriter.write(new Chunk<>(summaries));
+				return RepeatStatus.FINISHED;
+			}, transactionManager)
 			.build();
 	}
 
@@ -97,7 +112,7 @@ public class DividendSettlementJobConfig {
 	public Step calculateDividendStep() {
 		return new StepBuilder("calculateDividendStep", jobRepository)
 			.<SnapshotResponseDTO, DividendDTO>chunk(100, transactionManager)
-			.reader(dividendListItemReader(null, null))
+			.reader(dividendListItemReader(null, null, null))
 			.processor(dividendProcessor(null, null))
 			.writer(dividendJobWriter())
 			.build();
@@ -107,7 +122,7 @@ public class DividendSettlementJobConfig {
 	public Step sendEmailStep() {
 		return new StepBuilder("sendEmailStep", jobRepository)
 			.<DividendDTO, DividendDTO>chunk(10, transactionManager)
-			.reader(emailTargetReader())
+			.reader(emailTargetProjectReader(null))
 			.writer(emailItemWriter())
 			.build();
 	}
@@ -121,13 +136,11 @@ public class DividendSettlementJobConfig {
 			.build();
 	}
 
-	// ======== Reader ========
-
 	@Bean
 	public MyBatisPagingItemReader<Map<String, Object>> revenueExpenseReader() {
 		return new MyBatisPagingItemReaderBuilder<Map<String, Object>>()
 			.sqlSessionFactory(sqlSessionFactory)
-			.queryId("com.animalfarm.backend.domain.accounting.RevenueSummaryRepository.selectSettlementTargets")
+			.queryId("com.animalfarm.backend.domain.accounting.FinancesRepository.selectSettlementTargets")
 			.pageSize(10)
 			.build();
 	}
@@ -137,28 +150,17 @@ public class DividendSettlementJobConfig {
 	public ListItemReader<SnapshotResponseDTO> dividendListItemReader(
 		@Value("#{jobParameters[projectId]}")
 		Long projectId,
+		@Value("#{jobParameters[tokenId]}") Long tokenId,
 		@Value("#{jobParameters[rsId]}")
 		Long rsId) {
+		List<SnapshotResponseDTO> snapshot = projectService.getDividendSnapshot(tokenId);
 
-		// 외부 API 호출
-		List<SnapshotResponseDTO> snapshot = projectService.getDividendSnapshot(projectId);
-
-		// 모든 DTO에 rsId 세팅
 		snapshot.forEach(s -> {
 			s.setRsId(rsId);
 			s.setProjectId(projectId);
 		});
 
 		return new ListItemReader<>(snapshot);
-	}
-
-	@Bean
-	public MyBatisPagingItemReader<DividendDTO> emailTargetReader() {
-		return new MyBatisPagingItemReaderBuilder<DividendDTO>()
-			.sqlSessionFactory(sqlSessionFactory)
-			.queryId("com.animalfarm.backend.domain.accounting.DividendRepository.selectPollingList")
-			.pageSize(10)
-			.build();
 	}
 
 	@Bean
@@ -177,8 +179,6 @@ public class DividendSettlementJobConfig {
 			.build();
 	}
 
-	// ======== Writer ========
-
 	@Bean
 	public MyBatisBatchItemWriter<DividendDTO> dividendJobWriter() {
 		return new MyBatisBatchItemWriterBuilder<DividendDTO>()
@@ -191,23 +191,19 @@ public class DividendSettlementJobConfig {
 	public ItemWriter<DividendDTO> emailItemWriter() {
 		return items -> {
 			for (DividendDTO item : items) {
-				// 메일 발송
 				mailService.sendDividendPollEmail(
-					item.getUserEmail(), // DTO에 email 필드 추가 필요
+					item.getUserEmail(),
 					item.getUserName(),
 					item.getAmountAftTax().toString(),
 					item.getPollEndDate().toString(),
 					item.getDividendId());
 
-				// 상태 POLLING으로 수정
 				dividendRepository.updateStatusToPolling(item.getDividendId());
 
-				// 0.5초(500ms) 지연 주입
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					Thread.currentThread().interrupt();
-					// 로그 기록 등 예외 처리
 				}
 			}
 		};
