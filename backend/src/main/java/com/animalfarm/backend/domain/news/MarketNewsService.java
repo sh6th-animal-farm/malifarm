@@ -159,14 +159,18 @@ public class MarketNewsService {
 			log.info("[통합 분석 완료] LLM 전달 팩트 -> {}", factData);
 
 			LlmResponseDTO llmRes = llmService.ask(factData, "GLOBAL");
+			String generatedTitle = (llmRes.getTitle() != null && !llmRes.getTitle().isBlank())
+				? llmRes.getTitle().trim()
+				: llmRes.getShortSummary();
 
-			// 💡 UI 위젯이 깨지지 않도록 최대 2개까지만 잘라서 문자열로 조립!
+			// 💡 UI 위젯이 깨지지 않도록 최대 5개까지만 잘라서 문자열로 조립!
 			String highlightTokensStr = highlightTokenNamesList.stream()
-				.limit(2)
+				.limit(5)
 				.collect(Collectors.joining(", "));
 
 			MarketNewsDTO newsDTO = MarketNewsDTO.builder()
 				.newsType("GLOBAL")
+				.title(generatedTitle)
 				.summaryShort(llmRes.getShortSummary())
 				.summaryText(llmRes.getTextBody())
 				// 💡 [추가됨] 프론트엔드 UI 위젯이 그대로 가져다 쓸 데이터 직접 삽입!

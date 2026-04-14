@@ -1,6 +1,7 @@
 package com.animalfarm.backend.domain.carbon;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -8,63 +9,85 @@ import org.apache.ibatis.annotations.Param;
 
 import com.animalfarm.backend.domain.carbon.dto.CarbonDetailDTO;
 import com.animalfarm.backend.domain.carbon.dto.CarbonListDTO;
+import com.animalfarm.backend.domain.carbon.dto.CarbonSnapshotBalanceDTO;
+import com.animalfarm.backend.domain.carbon.dto.CarbonSnapshotEventDTO;
 
 @Mapper
 public interface CarbonRepository {
 
-	// [전체] 보유 토큰 기반 상품 리스트
-	List<CarbonListDTO> selectAll(@Param("tokenIds")
-	List<Long> tokenIds);
+	// 전체 리스트 (스냅샷 보유 토큰 기준)
+	List<CarbonListDTO> selectAll(@Param("tokenIds") List<Long> tokenIds);
 
-	// [카테고리] 카테고리 + 보유 토큰 기반 상품 리스트
-	List<CarbonListDTO> selectByCondition(@Param("category")
-	String category, @Param("tokenIds")
-	List<Long> tokenIds);
+	// 카테고리 리스트 (스냅샷 보유 토큰 기준)
+	List<CarbonListDTO> selectByCondition(@Param("category") String category, @Param("tokenIds") List<Long> tokenIds);
 
 	// 상세 조회
 	CarbonDetailDTO selectDetail(Long cpId);
 
-	// 유저 ID로 지갑 번호(ucl_id) 가져오기
-	Long getWalletIdByUserId(@Param("userId")
-	Long userId);
+	// 현재 유저 지갑 ID 조회
+	Long getWalletIdByUserId(@Param("userId") Long userId);
 
-	//지분이 있는 토큰 ID 리스트를 받아 필터링된 상품들을 가져옵
-	List<CarbonDetailDTO> selectProductsByTokenIds(@Param("tokenIds")
-	List<Long> tokenIds);
+	// 프로젝트 ID -> 토큰 ID
+	Long getTokenIdByProjectId(@Param("projectId") Long projectId);
 
-	// 프로젝트 ID로 강황증권의 토큰 ID 조회
-	Long getTokenIdByProjectId(@Param("projectId")
-	Long projectId);
+	// 프로젝트별 토큰 총발행량
+	BigDecimal getTotalSupply(@Param("projectId") Long projectId);
 
-	/*// 프로젝트 ID로 총 투자금액(actual_amount)만 따로 가져오는 메서드
-	BigDecimal getActualAmount(@Param("projectId")
-	Long projectId);*/
+	// 토큰 ID 기준 총발행량
+	BigDecimal getTotalSupplyByTokenId(@Param("tokenId") Long tokenId);
 
-	// 기존 BigDecimal getActualAmount(@Param("projectId") Long projectId); 수정
-	BigDecimal getTotalSupply(@Param("projectId")
-	Long projectId);
+	// 지분율 구간별 할인율 조회
+	BigDecimal getDiscountRate(@Param("sharePercent") BigDecimal sharePercent);
 
-	//할인율
-	BigDecimal getDiscountRate(@Param("sharePercent")
-	BigDecimal sharePercent);
+	// 상품명
+	String selectCpTitle(@Param("cpId") Long cpId);
 
-	String selectCpTitle(@Param("cpId")
-	Long cpId);
+	// 상품 잔여 수량
+	BigDecimal selectCpAmount(@Param("cpId") Long cpId);
 
-	// 상품 잔여 수량 조회
-	BigDecimal selectCpAmount(@Param("cpId")
-	Long cpId);
-
-	// 결제 완료시 carbonHist테이블에 거래내역 담기
+	// 구매내역 저장
 	int insertCarbonHist(
-		@Param("userId")
-		Long userId,
-		@Param("cpId")
-		Long cpId,
-		@Param("amount")
-		BigDecimal amount,
-		@Param("discountedPrice")
-		BigDecimal discountedPrice,
-		@Param("discountRate")
-		BigDecimal discountRate);
+		@Param("userId") Long userId,
+		@Param("cpId") Long cpId,
+		@Param("amount") BigDecimal amount,
+		@Param("discountedPrice") BigDecimal discountedPrice,
+		@Param("discountRate") BigDecimal discountRate);
+
+	// 최신 완료 스냅샷 ID
+	Long selectLatestCompletedSnapshotId();
+
+	// 스냅샷 기준 보유 정보 조회
+	CarbonSnapshotBalanceDTO selectSnapshotBalance(
+		@Param("snapshotId") Long snapshotId,
+		@Param("userId") Long userId,
+		@Param("tokenId") Long tokenId);
+
+	// 스냅샷 기준 유저가 보유한 토큰 목록
+	List<Long> selectSnapshotTokenIdsByUserId(
+		@Param("snapshotId") Long snapshotId,
+		@Param("userId") Long userId);
+
+	// 배치: 예정된 스냅샷 이벤트 1건 조회
+	CarbonSnapshotEventDTO selectPlannedSnapshotEvent(@Param("now") LocalDateTime now);
+
+	// 배치: 스냅샷 이벤트 상태 변경
+	int updateSnapshotEventStatus(
+		@Param("snapshotId") Long snapshotId,
+		@Param("status") String status,
+		@Param("snapshotAt") LocalDateTime snapshotAt
+	);
+
+	// 배치: 기업 회원 목록 조회
+	List<Long> selectEnterpriseUserIds();
+
+	// 배치: 스냅샷 balance 저장
+	int insertSnapshotBalance(
+		@Param("snapshotId") Long snapshotId,
+		@Param("userId") Long userId,
+		@Param("walletId") Long walletId,
+		@Param("tokenId") Long tokenId,
+		@Param("tokenBalance") BigDecimal tokenBalance,
+		@Param("totalSupply") BigDecimal totalSupply,
+		@Param("sharePercent") BigDecimal sharePercent
+	);
 }

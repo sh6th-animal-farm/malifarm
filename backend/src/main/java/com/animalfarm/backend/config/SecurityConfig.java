@@ -58,9 +58,9 @@ public class SecurityConfig {
 			// 2. API 접근 권한 제어
 			.authorizeHttpRequests(auth -> auth
 				// [Public] 로그인 없이 접근 가능한 경로
-				.requestMatchers("/api/auth/**", "/", "/main", "/auth/**", "/policy", "/notice/list")
+				.requestMatchers("/api/auth/**", "/", "/main", "/auth/**", "/policy")
 				.permitAll()
-				.requestMatchers("/project/**", "/token/**", "/token", "/mypage/**", "/market/**")
+				.requestMatchers("/project/**", "/token/**", "/token", "/mypage/**", "/market/**", "/api/news/**")
 				.permitAll()
 				.requestMatchers("/api/auth/**", "/api/project/**", "/api/token/**")
 				.permitAll()

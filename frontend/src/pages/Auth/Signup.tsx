@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import apiClient from "@/api/apiClient";
 import SignupAgreeStep from "./components/SignupAgreeStep";
 import SignupProgress from "./components/SignupProgress";
@@ -359,35 +360,43 @@ export default function Signup() {
       return;
     }
 
-    const expireAt = Date.now() + EMAIL_EXPIRE_SEC * 1000;
-
-    setForm((prev) => ({
-      ...prev,
-      emailVerified: false,
-      emailExpireAt: expireAt,
-    }));
-    setEmailRemainSec(EMAIL_EXPIRE_SEC);
-    setEmailSendStatus({ msg: "인증번호를 발송했습니다. 메일을 확인해주세요.", ok: true });
-
     try {
       await apiClient.post("/api/auth/email/verification", {
         email: form.email.trim(),
       });
+
+      const expireAt = Date.now() + EMAIL_EXPIRE_SEC * 1000;
+
+      setForm((prev) => ({
+        ...prev,
+        emailVerified: false,
+        emailExpireAt: expireAt,
+      }));
+      setEmailRemainSec(EMAIL_EXPIRE_SEC);
+      setEmailSendStatus({ msg: "인증번호를 발송했습니다. 메일을 확인해주세요.", ok: true });
     } catch (error) {
       console.error("이메일 인증번호 발송 실패:", error);
+
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409 || error.response?.status === 400) {
+          setEmailSendStatus({ msg: "이미 가입된 이메일입니다.", ok: false });
+        } else {
+          setEmailSendStatus({ msg: "인증번호 발송에 실패했습니다.", ok: false });
+        }
+      } else {
+        setEmailSendStatus({ msg: "인증번호 발송에 실패했습니다.", ok: false });
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        emailVerified: false,
+      }));
+      setEmailRemainSec(0);
 
       if (emailTimerRef.current) {
         window.clearInterval(emailTimerRef.current);
         emailTimerRef.current = null;
       }
-
-      setForm((prev) => ({
-        ...prev,
-        emailExpireAt: null,
-        emailVerified: false,
-      }));
-      setEmailRemainSec(0);
-      setEmailSendStatus({ msg: "인증번호 발송에 실패했습니다.", ok: false });
     }
   };
 
