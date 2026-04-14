@@ -180,7 +180,7 @@
         token_balance,
         total_supply,
         share_percent
-        FROM carbon_discount_snapshot_balances
+        FROM carbon_snapshot_history
         WHERE snapshot_id = #{snapshotId}
         AND user_id = #{userId}
         AND token_id = #{tokenId}
@@ -189,7 +189,7 @@
 
     <select id="selectSnapshotTokenIdsByUserId" resultType="long">
         SELECT token_id
-        FROM carbon_discount_snapshot_balances
+        FROM carbon_snapshot_history
         WHERE snapshot_id = #{snapshotId}
         AND user_id = #{userId}
         AND token_balance > 0
