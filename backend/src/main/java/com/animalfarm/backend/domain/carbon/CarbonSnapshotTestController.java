@@ -16,7 +16,7 @@ public class CarbonSnapshotTestController {
 	/**
 	 * 스냅샷 강제 실행 테스트
 	 */
-	@PostMapping("/test/snapshot/user-token")
+	@PostMapping("/user-token")
 	public String testSnapshot(
 		@RequestParam Long snapshotId,
 		@RequestParam Long userId,
