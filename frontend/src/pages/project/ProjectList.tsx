@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { projectApi } from '@/api/projectApi';
 
@@ -10,17 +10,73 @@ import { useKakaoMap } from '@/pages/project/hook/useKakaoMap';
 import MapSection from '@/pages/project/hook/MapSection';
 import { useStarreds } from '@/pages/project/hook/useStarreds';
 
+const PROJECT_LIST_RESTORE_KEY = 'project-list-restore-state';
+
+type ProjectListRestoreState = {
+  currentPage: number;
+  scrollY: number;
+  activeStatus: string;
+};
+
 export default function ProjectList() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
+  const [pendingRestore] = useState<ProjectListRestoreState | null>(() => {
+    const raw = sessionStorage.getItem(PROJECT_LIST_RESTORE_KEY);
+    if (!raw) return null;
+
+    try {
+      const parsed = JSON.parse(raw) as ProjectListRestoreState;
+      if (
+        typeof parsed.currentPage === 'number' &&
+        typeof parsed.scrollY === 'number' &&
+        typeof parsed.activeStatus === 'string'
+      ) {
+        return parsed;
+      }
+    } catch (error) {
+      console.error('리스트 복원 상태 파싱 실패:', error);
+    }
+    return null;
+  });
+
+  const shouldRestoreRef = useRef(Boolean(pendingRestore));
+  const hasRestoredScrollRef = useRef(false);
   const itemsPerPage = 9;
 
   // 관심 프로젝트 상태 관리 훅
   const { projects, setProjects, handleToggleStar } = useStarreds([]);
 
   const activeStatus = searchParams.get('projectStatus') || 'ALL';
+  const saveListViewState = useCallback(() => {
+    const restoreState: ProjectListRestoreState = {
+      currentPage,
+      scrollY: window.scrollY,
+      activeStatus,
+    };
+    sessionStorage.setItem(
+      PROJECT_LIST_RESTORE_KEY,
+      JSON.stringify(restoreState),
+    );
+  }, [activeStatus, currentPage]);
+
   const mapInstance = useKakaoMap('map', projects);
+
+  useEffect(() => {
+    saveListViewState();
+  }, [saveListViewState]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      saveListViewState();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [saveListViewState]);
 
   // [Effect] 데이터 로딩 - 필터가 변경될 때마다 실행
   useEffect(() => {
@@ -32,8 +88,26 @@ export default function ProjectList() {
           projectStatus: activeStatus === 'ALL' ? '' : activeStatus,
         });
         console.log('API 응답:', response);
-        setProjects(response || []);
-        setCurrentPage(1);
+        const nextProjects = response || [];
+        setProjects(nextProjects);
+
+        if (
+          shouldRestoreRef.current &&
+          pendingRestore &&
+          pendingRestore.activeStatus === activeStatus
+        ) {
+          const totalPages = Math.max(
+            1,
+            Math.ceil(nextProjects.length / itemsPerPage),
+          );
+          const restoredPage = Math.min(
+            totalPages,
+            Math.max(1, pendingRestore.currentPage),
+          );
+          setCurrentPage(restoredPage);
+        } else {
+          setCurrentPage(1);
+        }
       } catch (error) {
         console.error('데이터 로딩 실패:', error);
       } finally {
@@ -41,7 +115,30 @@ export default function ProjectList() {
       }
     };
     initData();
-  }, [activeStatus]);
+  }, [activeStatus, pendingRestore]);
+
+  useEffect(() => {
+    if (!pendingRestore || hasRestoredScrollRef.current || isLoading) {
+      return;
+    }
+    if (
+      !shouldRestoreRef.current ||
+      pendingRestore.activeStatus !== activeStatus
+    ) {
+      shouldRestoreRef.current = false;
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      window.scrollTo(0, pendingRestore.scrollY);
+      hasRestoredScrollRef.current = true;
+      shouldRestoreRef.current = false;
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [activeStatus, isLoading, pendingRestore]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -79,7 +176,7 @@ export default function ProjectList() {
 
   return (
     <div>
-      <div className=''>
+      <div className="">
         <section className="layout-container py-20 md:pt-20">
           <SectionHeader
             title="프로젝트 지도"
@@ -91,7 +188,7 @@ export default function ProjectList() {
           />
         </section>
       </div>
-      <div className=''>
+      <div className="">
         <section className="layout-container pb-20 my:pb-20">
           <div ref={listRef}>
             <SectionHeader
@@ -117,6 +214,8 @@ export default function ProjectList() {
             activeStatus={activeStatus}
             isLoading={isLoading}
             onToggleStar={handleToggleStar}
+            onBeforeNavigateDetail={saveListViewState}
+            detailNavigationState={{ from: 'project-list' }}
           />
 
           {!isLoading && totalPages > 1 && (

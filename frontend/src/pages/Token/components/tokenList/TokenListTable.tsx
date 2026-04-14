@@ -19,12 +19,20 @@ export default function TokenListTable({
     <div className="flex-1 max-h-screen overflow-y-auto rounded-lg shadow-std bg-white relative scrollbar-thin scrollbar-thumb-gray-300">
       <table className="w-full border-separate border-spacing-0">
         <thead className="sticky top-0 z-10">
-          <tr className="flex items-center w-full bg-gray-50 text-gray-400 font-caption-03">
-            <th className="w-[80px] py-4 px-2 text-center">순위</th>
-            <th className="flex-1 min-w-[150px] py-4 px-2 text-left">종목</th>
-            <th className="w-[160px] py-4 px-2 text-right">현재가(KRW)</th>
-            <th className="w-[170px] py-4 px-2 text-right">등락률</th>
-            <th className="w-[170px] py-4 px-2 pr-6 text-right">거래대금</th>
+          <tr className="flex items-center w-full bg-gray-50 border-b border-gray-100 text-gray-400 font-caption-03">
+            <th className="w-[50px] lg:w-[80px] py-4 px-2 text-center">순위</th>
+            <th className="flex-1 lg:min-w-[150px] py-4 px-2 text-left">
+              종목
+            </th>
+            <th className="w-[100px] lg:w-[160px] py-4 px-2 text-right">
+              현재가(KRW)
+            </th>
+            <th className="hidden lg:block lg:w-[180px] py-4 px-2 text-right">
+              등락률
+            </th>
+            <th className="hidden lg:block lg:w-[160px] py-4 px-2 pr-6 text-right">
+              거래대금
+            </th>
           </tr>
         </thead>
         <tbody className="block w-full">

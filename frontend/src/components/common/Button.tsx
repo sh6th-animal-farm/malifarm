@@ -34,9 +34,11 @@ export default function Button({
   className = '',
   ...props
 }: ButtonProps) {
+  const isDisabled = Boolean(props.disabled) || variant.includes('disabled');
+
   // 공통 스타일
   const baseStyles =
-    'inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap cursor-pointer';
+    'inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap';
 
   // 버튼 타입별 스타일 매핑
   const variants: Record<ButtonVariant, string> = {
@@ -76,9 +78,9 @@ export default function Button({
 
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${className}`}
       style={customStyle}
-      disabled={variant.includes('disabled')}
+      disabled={isDisabled}
       {...props}
     >
       {children}

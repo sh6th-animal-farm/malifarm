@@ -164,7 +164,7 @@ public class MypageService {
 	public MypageWalletDTO getWalletInfo() {
 		Long walletId = validateAndGetWalletId();
 		if (walletId == null) {
-			return null; // 미연동 사용자 처리
+			throw new BusinessException(ErrorCode.EXTERNAL_API_ACC_NOT_FOUND); // 미연동 사용자 처리
 		}
 
 		try {
@@ -177,7 +177,7 @@ public class MypageService {
 			);
 		} catch (Exception e) {
 			System.err.println("[ERROR] 지갑 API 호출 실패: " + e.getMessage());
-			return null;
+			throw new BusinessException(ErrorCode.EXTERNAL_API_ERROR);
 		}
 	}
 

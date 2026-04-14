@@ -20,6 +20,10 @@ export default function CarbonList() {
     fetchCarbonList(category);
   }, [category]);
 
+  useEffect(() => {
+    setUserRole(localStorage.getItem("userRole") ?? "");
+  }, []);
+
   const fetchCarbonList = async (cat: string) => {
     setIsLoading(true);
     try {
@@ -44,7 +48,7 @@ export default function CarbonList() {
       <section className="layout-container py-20 md:py-20">
         
         {/* 헤더 상단 정렬 */}
-        <div className="flex justify-between items-start mb-[24px] px-5 xl:px-0">
+        <div className="flex justify-between items-start mb-[24px] xl:px-0">
           <div className="relative">
             <SectionHeader
               title="탄소마켓"

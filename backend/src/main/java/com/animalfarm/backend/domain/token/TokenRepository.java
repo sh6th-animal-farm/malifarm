@@ -20,7 +20,7 @@ public interface TokenRepository {
 
 	Long selectWalletId(Long userId);
 
-	public abstract void insertTokenLedger(TokenLedgerDTO projectNewTokenDTO);
+	void insertTokenLedger(TokenLedgerDTO projectNewTokenDTO);
 
 	void insertTokenLedgerBatch(List<TokenLedgerDTO> tokenLedgerList);
 
