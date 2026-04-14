@@ -20,7 +20,7 @@ export default function EmptyState({
         >
           {iconText}
         </div>
-        <p className="font-subtitle-02 text-gray-400">{message}</p>
+        <p className="text-body-01 text-gray-400">{message}</p>
       </div>
     </div>
   );
