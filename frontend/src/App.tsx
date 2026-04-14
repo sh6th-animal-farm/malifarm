@@ -23,6 +23,7 @@ import WalletLayout from './pages/mypage/components/myWallet/WalletLayout';
 import TransactionLayout from './pages/mypage/components/myTransaction/TransactionLayout';
 import CarbonLayout from './pages/mypage/components/myCarbon/CarbonLayout';
 import ProjectList from './pages/project/ProjectList';
+import DividendPollRoutePage from './pages/project/DividendPollRoutePage';
 import {
   CultivationRegister,
   ExpenseRegister,
@@ -73,7 +74,15 @@ function App() {
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/find-password" element={<FindPassword />} />
           <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/project/dividend/poll"
+            element={<DividendPollRoutePage />}
+          />
           <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route
+            path="/project/:id/dividend-poll"
+            element={<DividendPollRoutePage />}
+          />
           <Route path="/project" element={<ProjectList />} />
           <Route path="/token" element={<TokenList />} />
           <Route path="/token/:id" element={<TokenDetail />} />

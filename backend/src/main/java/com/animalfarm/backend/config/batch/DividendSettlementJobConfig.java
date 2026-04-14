@@ -36,6 +36,7 @@ import com.animalfarm.backend.domain.accounting.dto.DividendDTO;
 import com.animalfarm.backend.domain.accounting.dto.RevenueSummaryDTO;
 import com.animalfarm.backend.domain.accounting.dto.SnapshotResponseDTO;
 import com.animalfarm.backend.domain.project.ProjectService;
+import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.global.MailService;
 
 @Configuration
@@ -55,6 +56,8 @@ public class DividendSettlementJobConfig {
 	private FinancesRepository financesRepository;
 	@Autowired
 	private PlatformTransactionManager transactionManager;
+	@Autowired
+	private TokenRepository tokenRepository;
 
 	@Autowired
 	private ProjectService projectService;
@@ -109,7 +112,7 @@ public class DividendSettlementJobConfig {
 	public Step calculateDividendStep() {
 		return new StepBuilder("calculateDividendStep", jobRepository)
 			.<SnapshotResponseDTO, DividendDTO>chunk(100, transactionManager)
-			.reader(dividendListItemReader(null, null))
+			.reader(dividendListItemReader(null, null, null))
 			.processor(dividendProcessor(null, null))
 			.writer(dividendJobWriter())
 			.build();
@@ -147,10 +150,10 @@ public class DividendSettlementJobConfig {
 	public ListItemReader<SnapshotResponseDTO> dividendListItemReader(
 		@Value("#{jobParameters[projectId]}")
 		Long projectId,
+		@Value("#{jobParameters[tokenId]}") Long tokenId,
 		@Value("#{jobParameters[rsId]}")
 		Long rsId) {
-
-		List<SnapshotResponseDTO> snapshot = projectService.getDividendSnapshot(projectId);
+		List<SnapshotResponseDTO> snapshot = projectService.getDividendSnapshot(tokenId);
 
 		snapshot.forEach(s -> {
 			s.setRsId(rsId);
