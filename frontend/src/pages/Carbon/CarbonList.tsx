@@ -20,10 +20,6 @@ export default function CarbonList() {
     fetchCarbonList(category);
   }, [category]);
 
-  useEffect(() => {
-    setUserRole(localStorage.getItem("userRole") ?? "");
-  }, []);
-
   const fetchCarbonList = async (cat: string) => {
     setIsLoading(true);
     try {
