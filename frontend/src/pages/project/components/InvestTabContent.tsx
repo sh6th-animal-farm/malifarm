@@ -1,4 +1,4 @@
-import type { ProjectData } from '@/types/project';
+import type { ProjectData } from '@/types/projectType';
 import InfoGrid from './DetailInfoCard';
 
 export default function InvestTabContent({ data }: { data: ProjectData }) {

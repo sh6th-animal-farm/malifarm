@@ -1,7 +1,8 @@
+import type { ProjectList } from '@/types/projectType';
 import React, { useEffect, useRef } from 'react';
 
 interface Props {
-  projects: any[]; // 백엔드에서 받은 리스트
+  projects: ProjectList[]; // 백엔드에서 받은 리스트
 }
 
 const KakaoMap = ({ projects }: Props) => {

@@ -16,7 +16,7 @@ interface SideBarProps {
     subscriptionEndDate: string;
     targetAmount: number;
     totalSupply: number;
-    tokenId?: string;
+    tokenId?: number;
   };
   isApplied: boolean;
   onAction: () => void;

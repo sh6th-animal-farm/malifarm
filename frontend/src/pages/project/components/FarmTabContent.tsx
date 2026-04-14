@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js'; // 1. registerables 추가
-import type { ProjectData } from '@/types/project';
+import type { ProjectData } from '@/types/projectType';
 import InfoGrid from './DetailInfoCard';
 
 // 2. 반드시 컴포넌트 외부에서 차트 기능을 등록해야 합니다.
