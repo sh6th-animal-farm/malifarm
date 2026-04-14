@@ -70,8 +70,7 @@ const refreshAccessToken = async () => {
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) {
-    // 토큰이 있다면 헤더에 추가
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`; // 토큰이 있다면 헤더에 추가
   }
   return config;
 });
