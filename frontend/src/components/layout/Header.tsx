@@ -117,6 +117,7 @@ export default function Header() {
     if (path.startsWith("/mypage/wallet")) return "나의 전자지갑";
     if (path.startsWith("/mypage/transaction-history")) return "거래 내역";
     if (path.startsWith("/mypage/carbon-history")) return "탄소 배출권 구매 내역";
+    if (path === "/mypage") return "내 정보";
     return "마이리틀스마트팜";
   };
 

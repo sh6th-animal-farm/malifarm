@@ -17,6 +17,7 @@ import CarbonDetail from './pages/Carbon/CarbonDetail';
 import News from './pages/news';
 import NewsDetail from './pages/news/components/Detail';
 import MyPage from './pages/mypage';
+import MobileMyPageEntry from './pages/mypage/components/MobileMyPageEntry';
 import ProfileLayout from './pages/mypage/components/myProfile/ProfileLayout';
 import ProjectLayout from './pages/mypage/components/myProject/ProjectLayout';
 import WalletLayout from './pages/mypage/components/myWallet/WalletLayout';
@@ -84,7 +85,7 @@ function App() {
           <Route path="/notice" element={<Navigate to="/news" replace />} />
           <Route path="/notice/:id" element={<Navigate to="/news" replace />} />
           <Route path="/mypage" element={<MyPage />}>
-            <Route index element={<Navigate to="profile" replace />} />
+            <Route index element={<MobileMyPageEntry />} />
             <Route path="profile" element={<ProfileLayout />} />
             <Route path="project-history" element={<ProjectLayout />} />
             <Route path="wallet" element={<WalletLayout />} />
