@@ -44,7 +44,7 @@ export default function CarbonList() {
       <section className="layout-container py-20 md:py-20">
         
         {/* 헤더 상단 정렬 */}
-        <div className="flex justify-between items-start mb-[24px] xl:px-0">
+        <div className="flex justify-between items-start mb-[24px]">
           <div className="relative">
             <SectionHeader
               title="탄소마켓"
@@ -81,7 +81,7 @@ export default function CarbonList() {
         </div>
 
         {!isForbidden && (
-          <div className="flex gap-[10px] flex-wrap mt-[24px] px-5 xl:px-0">
+          <div className="flex gap-[10px] flex-wrap mt-[24px]">
             {(["ALL", "REMOVAL", "REDUCTION"] as const).map((cat) => (
               <button
                 key={cat}
@@ -98,7 +98,7 @@ export default function CarbonList() {
           </div>
         )}
 
-        <div className="mt-[18px] min-h-[400px] px-5 xl:px-0">
+        <div className="mt-[18px] min-h-[400px]">
           {isLoading ? (
             <div className="flex justify-center items-center h-full text-[var(--color-gray-400)]">
               로딩 중...
@@ -115,7 +115,7 @@ export default function CarbonList() {
           ) : carbonList.length === 0 ? (
             <EmptyState
               message="구매 가능한 상품이 없습니다."
-              className="mb-0 px-5 py-10"
+              className="mb-0 py-10"
             />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[26px]">

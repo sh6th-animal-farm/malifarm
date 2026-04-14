@@ -74,6 +74,8 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
     };
   }, [tokenId]);
 
+  const changeRate = tokenOhlcv?.changeRate ?? 0;
+
   return (
     <div className="w-full max-w-[432px] min-h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight mx-auto">
       {' '}
@@ -94,21 +96,21 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
               {formatNum(tokenOhlcv?.marketPrice || 0)}
             </div>
             <div className="flex gap-1 pt-2 text-right">
-              {tokenOhlcv?.changeRate > 0 && <PriceUp />}
-              {tokenOhlcv?.changeRate < 0 && <PriceDown />}
+              {changeRate > 0 && <PriceUp />}
+              {changeRate < 0 && <PriceDown />}
               <span
                 className={`
                     font-body-03
                   ${
-                    tokenOhlcv?.changeRate > 0
+                    changeRate > 0
                       ? 'text-error'
-                      : tokenOhlcv?.changeRate < 0
+                      : changeRate < 0
                         ? 'text-info'
                         : 'text-gray-900'
                   }
                 `}
               >
-                {tokenOhlcv?.changeRate?.toFixed(2) || '0.00'}% 전일대비
+                {changeRate.toFixed(2) || '0.00'}% 전일대비
               </span>
             </div>
           </div>

@@ -1,7 +1,4 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { homeApi } from '@/api/homeApi';
-import type { TokenShort } from '@/types/tokenType';
 import TokenTopTen from './TokenTopTen';
 import { useTokenList } from '@/pages/Token/hooks/useTokenList.ts';
 
@@ -11,7 +8,9 @@ export default function TokenSection() {
   if (isLoading) {
     return (
       <section className="py-14 md:py-20 lg:py-24">
-        <div className="layout-container">실시간 토큰 정보를 불러오는 중입니다.</div>
+        <div className="layout-container">
+          실시간 토큰 정보를 불러오는 중입니다.
+        </div>
       </section>
     );
   }
