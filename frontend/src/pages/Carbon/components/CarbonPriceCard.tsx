@@ -1,6 +1,3 @@
-// src/pages/Carbon/components/CarbonPriceCard.tsx
-import React from 'react';
-
 interface CarbonPriceCardProps {
   originalPrice: number;
   discountRate: number;
