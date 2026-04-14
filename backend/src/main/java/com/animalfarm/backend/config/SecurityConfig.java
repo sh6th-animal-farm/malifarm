@@ -41,7 +41,7 @@ public class SecurityConfig {
 		// 정적 리소스 및 Swagger v3 경로는 필터를 거치지 않도록 설정 (성능 최적화)
 		return (web) -> web.ignoring()
 			.requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/v3/api-docs/**",
-				"/v3/api-docs", "/webjars/**",
+				"/v3/api-docs", "/webjars/**", "/api/swagger-ui/**", "/api/swagger-ui.html", "/api/v3/api-docs/**",
 				"/resources/**", "/favicon.ico", "/error");
 	}
 
@@ -61,6 +61,8 @@ public class SecurityConfig {
 				.requestMatchers("/api/auth/**", "/", "/main", "/auth/**", "/policy", "/notice/list")
 				.permitAll()
 				.requestMatchers("/project/**", "/token/**", "/token", "/mypage/**", "/market/**")
+				.permitAll()
+				.requestMatchers("/api/auth/**", "/api/project/**", "/api/token/**")
 				.permitAll()
 
 				// [Read-Only] GET 요청에 대해 전역 허용
