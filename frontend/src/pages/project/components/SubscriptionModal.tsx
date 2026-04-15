@@ -145,23 +145,19 @@ export default function SubscriptionModal({
           minAmountText={`* 최소 청약 금액: ${projectData.minAmountPerInvestor.toLocaleString()}원`}
         />
 
-        <div className="flex justify-between text-[13px] mb-5 px-1 font-medium">
-          <span className="text-gray-600">나의 지갑 잔액</span>
-          <span className="text-gray-900">
-            {isWalletLoading
-              ? '조회 중...'
-              : `${currentCashBalance.toLocaleString()}원`}
-          </span>
-        </div>
-
         <div className="bg-gray-50 rounded-[12px] p-4 mb-5">
-          <div className="flex justify-between text-xs text-gray-500 mb-2">
-            <span>청약 수량</span>
-            <span>{quantity.toLocaleString()} 토큰</span>
+          <div className="px-0.5 font-caption-02 text-gray-400 flex justify-between items-center mb-3">
+            <span>나의 지갑 잔액</span>
+            <span>
+              {isWalletLoading
+                ? '조회 중...'
+                : `${currentCashBalance.toLocaleString()}원`}
+            </span>
           </div>
-          <div className="pt-3 border-t flex justify-between items-center">
-            <span className="text-sm font-bold">총 청약 금액</span>
-            <span className="text-green-600 text-xl font-bold">
+          <div className="border border-[0.5px] border-gray-200 rounded-[8px]" />
+          <div className="pt-2 px-0.5 flex items-center justify-between text-xs text-gray-600">
+            <span className="font-caption-03 text-gray-600">총 청약 금액</span>
+            <span className="text-green-600 text-xl font-semibold">
               {totalPrice.toLocaleString()} 원
             </span>
           </div>

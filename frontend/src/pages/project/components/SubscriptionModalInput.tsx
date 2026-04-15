@@ -34,7 +34,7 @@ export const SubscriptionModalInput = ({
   };
 
   return (
-    <div className="mb-1">
+    <div className="mb-5">
       <label className="block text-sm font-body-04 text-gray-800 mb-2.5">
         {label}
       </label>
@@ -43,19 +43,19 @@ export const SubscriptionModalInput = ({
         className={`flex items-center gap-2 border-[1.5px] h-[60px] rounded-[12px] px-4 transition-all ${
           errorMsg
             ? 'border-red-500 bg-red-50'
-            : 'border-gray-900 focus-within:ring-2 focus-within:ring-gray-900'
+            : 'border-gray-600 focus-within:ring-0.5 focus-within:ring-gray-600'
         }`}
       >
         <input
           type="number"
           inputMode="decimal"
-          className="flex-1 text-right font-header-04 bg-transparent outline-none border-none focus:ring-0"
+          className="flex-1 text-right text-gray-600 font-header-04 bg-transparent outline-none border-none focus:ring-0"
           value={value}
           onChange={handleInputChange}
           step="0.0001"
           placeholder="0" // 값이 비어있을 때만 회색으로 0이 보임
         />
-        <span className="text-sm font-body-04 text-gray-800 shrink-0">
+        <span className="text-sm font-body-04 text-gray-600 shrink-0">
           {unit}
         </span>
       </div>
