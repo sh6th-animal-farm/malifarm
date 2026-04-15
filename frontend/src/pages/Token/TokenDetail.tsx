@@ -26,6 +26,7 @@ export default function TokenDetail() {
   useEffect(() => {
     setFixedPrice(null);
     setSelectedPrice(null);
+    isFixed.current = false;
   }, [id]);
 
   // 최초 1회만 marketPrice를 fixedPrice에 저장
