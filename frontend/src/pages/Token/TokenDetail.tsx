@@ -13,7 +13,7 @@ export default function TokenDetail() {
   const { id } = useParams(); // URL 파라미터에서 토큰 ID 추출
   const navigate = useNavigate();
   const isFixed = useRef(false); // 가격이 고정되었는지 저장
-  const [fixedPrice, setFixedPrice] = useState<number | null>(null);   // 최초 로드 시 시장가로 세팅
+  const [fixedPrice, setFixedPrice] = useState<number | null>(null); // 최초 로드 시 시장가로 세팅
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null); // 사용자가 직접 선택한 가격
 
   // 훅을 통한 데이터 관리 (에러 방지를 위해 기본값 [] 설정)
@@ -44,7 +44,7 @@ export default function TokenDetail() {
   };
 
   return (
-    <div className="container">
+    <div className="layout-container py-20">
       <div className="flex gap-6 items-start w-full">
         <div className="flex-[2] min-w-0 flex flex-col gap-6">
           <div className="flex flex-col gap-6">

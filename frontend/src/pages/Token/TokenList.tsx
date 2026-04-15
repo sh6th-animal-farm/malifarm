@@ -30,7 +30,7 @@ export default function TokenList() {
 
   return (
     <div className="w-full">
-      <section className="layout-container md:py-15 lg:py-20 md:px-12 pb-12">
+      <section className="layout-container py-20">
         <SectionHeader
           title="토큰 거래소"
           subtitle="실시간 차트를 확인해보세요."
