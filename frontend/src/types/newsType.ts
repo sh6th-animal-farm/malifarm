@@ -8,6 +8,7 @@ export interface MarketNewsDTO {
   createdAt: string;
   avgChangeRate: number | null;
   adrValue: number | null;
+  adrText: string | null;
   volGrowthRate: number | null;
   highlightTokens: string | null;
 }

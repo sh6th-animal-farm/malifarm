@@ -1,6 +1,8 @@
 package com.animalfarm.backend.domain.project;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.animalfarm.backend.domain.accounting.DividendService;
+import com.animalfarm.backend.domain.accounting.dto.DividendDTO;
 import com.animalfarm.backend.domain.accounting.dto.DividendSelectDTO;
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
@@ -219,18 +222,40 @@ public class ProjectController {
 	}
 
 	@PostMapping("/dividend/poll/select")
-	public ResponseEntity<String> selectDividendType(@RequestBody
-	DividendSelectDTO dividendSelectDTO) {
-		Long dividendId = dividendSelectDTO.getDividendId();
-		String dividendType = dividendSelectDTO.getDividendType();
-		String address = dividendSelectDTO.getAddress();
+	@Operation(summary = "배당 수령 방식 선택", description = "사용자가 선택한 배당 수령 방식(현금/작물)을 저장")
+	public ResponseEntity<ApiResponseDTO<Boolean>> selectDividendType(
+		@RequestBody DividendSelectDTO dividendSelectDTO) {
 		try {
-			dividendService.processUserSelection(dividendId, dividendType, address);
-			// 성공 시 성공 메시지 반환
-			return ResponseEntity.ok("수령 방식 선택이 완료되었습니다.");
+			dividendService.processUserSelection(
+				dividendSelectDTO.getDividendId(),
+				dividendSelectDTO.getDividendType(),
+				dividendSelectDTO.getAddress()
+			);
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(true, "수령 방식 선택이 완료되었습니다.")
+			);
 		} catch (Exception e) {
-			// 실패 시 에러 메시지와 함께 400 또는 500 에러 반환
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			log.error("배당 수령 방식 선택 실패: {}", e.getMessage());
+			// 정의된 에러 코드가 있다면 적용 (예: DIVIDEND_POLL_FAILED)
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/dividend/poll-data")
+	@Operation(summary = "배당 설문 데이터 조회", description = "특정 배당 정보의 상세 내용을 반환")
+	public ResponseEntity<ApiResponseDTO<Map<String, Object>>> getPollData(
+		@Parameter(description = "배당 ID", required = true)
+		@RequestParam Long id) {
+		try {
+			DividendDTO dividend = dividendService.getDividendByID(id);
+			Map<String, Object> response = new HashMap<>();
+			response.put("dividend", dividend);
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(response, "배당 데이터 조회 성공")
+			);
+		} catch (Exception e) {
+			log.error("배당 데이터 조회 실패: {}", e.getMessage());
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
 	}
 

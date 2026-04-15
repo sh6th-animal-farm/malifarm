@@ -17,7 +17,7 @@ public interface FinancesRepository {
 	void updateRevenueSummaryId(Map<String, Object> params);
 
 	// 수익 요약 입력
-	void insertRevenueSummary(RevenueSummaryDTO summary);
+	void insertSummary(RevenueSummaryDTO summary);
 
 	List<Map<String, Object>> selectSettlementTargets(Map<String, Object> params);
 

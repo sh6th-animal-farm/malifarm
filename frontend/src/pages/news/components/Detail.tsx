@@ -46,6 +46,27 @@ const getValueBorderClass = (value: number | null): string => {
   return value > 0 ? "border-error" : "border-info";
 };
 
+const getAdrDisplayText = (text: string | null, value: number | null): string => {
+  if (text) return text;
+  if (value == null || Number.isNaN(value)) return "-";
+  return `${value.toFixed(1)}%`;
+};
+
+const getAdrColorClass = (value: number | null): string => {
+  if (value == null || Number.isNaN(value)) return "text-gray-500";
+  if (value >= 120) return "text-error";
+  if (value <= 75) return "text-info";
+  return "text-gray-900";
+};
+
+const getAdrBorderClass = (value: number | null): string => {
+  if (value == null || Number.isNaN(value)) return "border-gray-400";
+  if (value >= 120) return "border-error";
+  if (value <= 75) return "border-info";
+  return "border-gray-900";
+};
+
+
 export default function NewsDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -212,10 +233,18 @@ export default function NewsDetail() {
                   <p className={`mt-1 font-header-02 ${getValueColorClass(news.avgChangeRate)}`}>{toPercentText(news.avgChangeRate)}</p>
                 </div>
 
-                <div className={`border-l-4 ${getValueBorderClass(news.adrValue)} pl-4 py-1`}>
+                {/* <div className={`border-l-4 ${getValueBorderClass(news.adrValue)} pl-4 py-1`}>
                   <p className="font-caption-02 text-gray-500">시장 투심 (ADR)</p>
                   <p className={`mt-1 font-header-02 ${getValueColorClass(news.adrValue)}`}>{toPercentText(news.adrValue)}</p>
-                </div>
+                </div> */}
+
+                <div className={`border-l-4 ${getAdrBorderClass(news.adrValue)} pl-4 py-1`}>
+                  <p className="font-caption-02 text-gray-500">시장 투심 (ADR)</p>
+                  <p className={`mt-1 font-header-02 ${getAdrColorClass(news.adrValue)}`}>
+                    {getAdrDisplayText(news.adrText, news.adrValue)}
+                  </p>
+                </div>   
+
 
                 <div className={`border-l-4 ${getValueBorderClass(news.volGrowthRate)} pl-4 py-1`}>
                   <p className="font-caption-02 text-gray-500">유동성 흐름</p>

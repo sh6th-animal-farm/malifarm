@@ -525,7 +525,7 @@ export default function Signup() {
   }
 
   return (
-    <main className="flex-1 flex flex-col items-center py-10 bg-gray-50 min-h-[calc(75vh-var(--spacing-header-height))]">
+    <main className="flex min-h-[calc(100dvh-var(--spacing-header-height))] flex-col items-center justify-center px-6 py-10">
       <div className="w-full max-w-[520px]">
         <SignupProgress
           totalSteps={totalSteps}

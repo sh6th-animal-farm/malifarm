@@ -16,10 +16,13 @@ export default function InvestTabContent({ data }: { data: ProjectData }) {
     { label: '예상 수익률', value: `${data.expectedReturn}%` },
     { label: '청약 달성률', value: `${data.subscriptionRate}%` },
     {
-      label: '총 모집 금액',
+      label: '현재 달성 금액',
       value: `${data.actualAmount?.toLocaleString()}원`,
     },
-    { label: '목표 금액', value: `${data.targetAmount?.toLocaleString()}원` },
+    {
+      label: '총 모집 금액',
+      value: `${data.targetAmount?.toLocaleString()}원`,
+    },
     {
       label: '인당 투자 최소 금액',
       value: `${data.minAmountPerInvestor?.toLocaleString()}원`,
@@ -27,12 +30,7 @@ export default function InvestTabContent({ data }: { data: ProjectData }) {
     {
       label: '진행 상태',
       value: (
-        <span
-          style={{
-            fontWeight: '700',
-            letterSpacing: '-0.02em',
-          }}
-        >
+        <span className="font-bold text-green-700">
           {statusMap[data.projectStatus]?.label || data.projectStatus}
         </span>
       ),

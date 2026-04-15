@@ -14,6 +14,7 @@
         summary_text,
         avg_change_rate,
         adr_value,
+        adr_text,
         vol_growth_rate,
         highlight_tokens,
         created_at
@@ -25,6 +26,7 @@
         #{summaryText},
         #{avgChangeRate},
         #{adrValue},
+        #{adrText},
         #{volGrowthRate},
         #{highlightTokens},
         NOW()
@@ -41,6 +43,7 @@
         news_type AS newsType,
         avg_change_rate AS avgChangeRate,
         adr_value AS adrValue,
+    adr_text AS adrText,
         vol_growth_rate AS volGrowthRate,
         highlight_tokens AS highlightTokens,
         created_at AS createdAt
@@ -59,6 +62,7 @@
         news_type AS newsType,
         avg_change_rate AS avgChangeRate,
         adr_value AS adrValue,
+        adr_text AS adrText,
         vol_growth_rate AS volGrowthRate,
         highlight_tokens AS highlightTokens,
         created_at AS createdAt
@@ -75,6 +79,7 @@
     <!--        news_type AS newsType,-->
     <!--        avg_change_rate AS avgChangeRate,-->
     <!--        adr_value AS adrValue,-->
+    <!--        adr_text AS adrText,-->
     <!--        vol_growth_rate AS volGrowthRate,-->
     <!--        highlight_tokens AS highlightTokens,-->
     <!--        created_at AS createdAt-->

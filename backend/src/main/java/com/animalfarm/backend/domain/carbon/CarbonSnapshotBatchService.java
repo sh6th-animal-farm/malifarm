@@ -37,55 +37,6 @@ public class CarbonSnapshotBatchService {
 	@Value("${api.kh-stock.url}")
 	private String khUrl;
 
-	@Transactional // test 코드
-	public void createSnapshotForUserAndToken(Long snapshotId, Long userId, Long tokenId) {
-
-		Long walletId = carbonRepository.getWalletIdByUserId(userId);
-
-		if (walletId == null) {
-			throw new RuntimeException("지갑 없음 userId=" + userId);
-		}
-
-		List<CarbonDiscountDTO> holdings = fetchAllHoldings(walletId);
-
-		for (CarbonDiscountDTO holding : holdings) {
-
-			if (!tokenId.equals(holding.getTokenId())) {
-				continue;
-			}
-
-			BigDecimal myBalance = holding.getMyBalance();
-			BigDecimal enterpriseTotal = holding.getEnterpriseTotal();
-
-			if (myBalance == null || enterpriseTotal == null) {
-				throw new RuntimeException("데이터 없음");
-			}
-
-			if (enterpriseTotal.compareTo(BigDecimal.ZERO) <= 0) {
-				throw new RuntimeException("총량 0");
-			}
-
-			BigDecimal sharePercent = myBalance
-				.divide(enterpriseTotal, 6, RoundingMode.HALF_UP)
-				.multiply(new BigDecimal("100"))
-				.setScale(6, RoundingMode.HALF_UP);
-
-			carbonRepository.insertSnapshotBalance(
-				snapshotId,
-				userId,
-				walletId,
-				tokenId,
-				myBalance,
-				enterpriseTotal,
-				sharePercent
-			);
-
-			return; // 하나만 처리하고 끝
-		}
-
-		throw new RuntimeException("해당 tokenId 없음: " + tokenId);
-	}
-
 	/**
 	 * 11월 마다 예정된 스냅샷 이벤트가 있는지 확인
 	 */

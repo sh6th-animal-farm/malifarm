@@ -45,7 +45,7 @@ export default function TokenDetail() {
   };
 
   return (
-    <div className="container">
+    <div className="layout-container py-20">
       <div className="flex gap-6 items-start w-full">
         <div className="flex-[2] min-w-0 flex flex-col gap-6">
           <div className="flex flex-col gap-6">
