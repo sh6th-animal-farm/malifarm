@@ -31,6 +31,7 @@ import {
   ProjectRegister,
   RevenueRegister,
 } from '@/pages/admin';
+import Policy from '@/pages/Policy/Policy';
 import FindPassword from './pages/Auth/components/FindPassword';
 import ResetPassword from './pages/Auth/components/ResetPassword';
 
@@ -105,6 +106,7 @@ function App() {
           <Route path="/admin/cultivation" element={<CultivationRegister />} />
           <Route path="/admin/expense" element={<ExpenseRegister />} />
           <Route path="/admin/revenue" element={<RevenueRegister />} />
+          <Route path="/policy" element={<Policy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

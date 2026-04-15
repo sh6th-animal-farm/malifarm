@@ -35,7 +35,7 @@ export default function FindPasswordForm({
   onSubmit,
 }: FindPasswordFormProps) {
   return (
-    <div className="flex min-h-[calc(100dvh-var(--spacing-header-height))] flex-col items-center justify-center bg-gray-50 px-6 py-10">
+    <div className="flex min-h-[calc(100dvh-var(--spacing-header-height))] flex-col items-center justify-center px-6 py-10">
       <AuthCard
         title="비밀번호 찾기"
         description="이메일 인증 후 새로운 비밀번호를 설정합니다"
