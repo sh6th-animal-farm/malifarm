@@ -1,18 +1,23 @@
 interface PercentageBtnProps {
   type: string; // 'buy' or 'sell'
   onClick: (value: number) => void;
+  gapClassName?: string;
 }
 
 const PERCENT_OPTIONS = [25, 50, 75, 100];
 
-export default function PercentageBtn({ type, onClick }: PercentageBtnProps) {
+export default function PercentageBtn({
+  type,
+  onClick,
+  gapClassName = 'gap-2',
+}: PercentageBtnProps) {
   const activeStyles =
     type === 'buy'
       ? 'active:border-error active:bg-error-light active:text-error'
       : 'active:border-info active:bg-info-light active:text-info';
 
   return (
-    <div className="flex gap-2">
+    <div className={`flex ${gapClassName}`}>
       {PERCENT_OPTIONS.map((percent) => (
         <button
           key={percent}

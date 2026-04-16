@@ -66,7 +66,7 @@ function App() {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="content-wrapper pb-16 md:pb-0">
+      <main className="pb-[calc(var(--bottom-tabbar-height))] md:pb-0">
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
