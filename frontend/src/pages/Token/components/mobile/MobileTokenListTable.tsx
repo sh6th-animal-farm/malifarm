@@ -4,20 +4,20 @@ import { PriceDown, PriceUp } from '@/components/icon/Icons';
 
 interface MobileTokenListTableProps {
   tokenList: Token[];
-  hoveredTokenId: number | null;
-  onHover: (id: number) => void;
+  selectedTokenId: number | null;
+  onSelect: (id: number) => void;
 }
 
 export default function MobileTokenListTable({
   tokenList,
-  hoveredTokenId,
-  onHover,
+  selectedTokenId,
+  onSelect,
 }: MobileTokenListTableProps) {
   const navigate = useNavigate();
   const formatNum = (num: number) => new Intl.NumberFormat().format(num);
 
   return (
-    <div>
+    <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       <table className="w-full border-separate border-spacing-0">
         <tbody className="block w-full">
           {tokenList.length > 0 ? (
@@ -28,12 +28,16 @@ export default function MobileTokenListTable({
               return (
                 <tr
                   key={token.tokenId}
-                  onMouseOver={() => onHover(token.tokenId)}
-                  onClick={() => navigate(`/token/${token.tokenId}`)}
+                  onClick={() => {
+                    onSelect(token.tokenId);
+                    navigate(`/token/${token.tokenId}`, {
+                      state: { mobileTab: 'chart' },
+                    });
+                  }}
                   className={`
                     flex items-center w-full px-4 py-3 border-bottom border-gray-50 cursor-pointer transition-colors duration-500
                     ${
-                      hoveredTokenId === token.tokenId
+                      selectedTokenId === token.tokenId
                         ? 'bg-gray-50'
                         : 'bg-white hover:bg-gray-50'
                     }

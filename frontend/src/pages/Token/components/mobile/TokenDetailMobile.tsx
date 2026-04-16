@@ -4,7 +4,9 @@ import MobileTokenListTable from './MobileTokenListTable';
 import MobileTokenChartCard from './MobileTokenChartCard';
 import MobileTokenPriceCard from './MobileTokenPriceCard';
 import MobileTokenTradeCard from './MobileTokenTradeCard';
-import type { OrderInfo, Token, TokenOhlcv, TradeInfo } from '@/types/tokenType';
+import type { OrderInfo, Token, TokenOhlcv } from '@/types/tokenType';
+
+const MOBILE_TOKEN_DETAIL_TAB_KEY = 'mobile-token-detail-tab';
 
 interface TokenDetailMobileProps {
   tokenId: number;
@@ -12,7 +14,6 @@ interface TokenDetailMobileProps {
   tokenOhlcv: TokenOhlcv | null;
   buyList: OrderInfo[];
   sellList: OrderInfo[];
-  tradeList: TradeInfo[];
   tradePrice: number;
   onPriceSelect: (price: number) => void;
   initialTab?: string;
@@ -24,17 +25,31 @@ export default function TokenDetailMobile({
   tokenOhlcv,
   buyList,
   sellList,
-  tradeList,
   tradePrice,
   onPriceSelect,
   initialTab = 'chart',
 }: TokenDetailMobileProps) {
-  const [mobileTab, setMobileTab] = useState(initialTab);
-  const [hoveredTokenId, setHoveredTokenId] = useState<number | null>(tokenId);
+  const [mobileTab, setMobileTab] = useState(() => {
+    if (typeof window === 'undefined') return initialTab;
+    const saved = sessionStorage.getItem(MOBILE_TOKEN_DETAIL_TAB_KEY);
+    return saved || initialTab;
+  });
+  const [selectedTokenId, setSelectedTokenId] = useState<number | null>(tokenId);
 
   useEffect(() => {
-    setHoveredTokenId(tokenId);
+    setSelectedTokenId(tokenId);
   }, [tokenId]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const saved = sessionStorage.getItem(MOBILE_TOKEN_DETAIL_TAB_KEY);
+    setMobileTab(saved || initialTab);
+  }, [initialTab]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    sessionStorage.setItem(MOBILE_TOKEN_DETAIL_TAB_KEY, mobileTab);
+  }, [mobileTab]);
 
   const mobileTabs = [
     { text: '목록', value: 'list' },
@@ -44,7 +59,7 @@ export default function TokenDetailMobile({
   ];
 
   return (
-    <div className="md:hidden flex min-h-[calc(100dvh-52px-var(--bottom-tabbar-height))] flex-col">
+    <div className="md:hidden flex h-[calc(100dvh-52px-var(--bottom-tabbar-height))] flex-col">
       <div className="sticky top-[52px] z-20 bg-white">
         <TabMenu
           items={mobileTabs}
@@ -58,7 +73,7 @@ export default function TokenDetailMobile({
         />
       </div>
 
-      <div className="flex-1 min-h-0">
+      <div className="flex min-h-0 flex-1 flex-col">
         {mobileTab === 'chart' &&
           (tokenOhlcv ? (
             <MobileTokenChartCard tokenOhlcv={tokenOhlcv} />
@@ -71,8 +86,8 @@ export default function TokenDetailMobile({
         {mobileTab === 'list' && (
           <MobileTokenListTable
             tokenList={tokenList}
-            hoveredTokenId={hoveredTokenId}
-            onHover={setHoveredTokenId}
+            selectedTokenId={selectedTokenId}
+            onSelect={setSelectedTokenId}
           />
         )}
 
@@ -82,7 +97,6 @@ export default function TokenDetailMobile({
               ohlcv={tokenOhlcv}
               buyList={buyList}
               sellList={sellList}
-              tradeList={tradeList}
               onPriceClick={onPriceSelect}
             />
           ) : (
@@ -96,6 +110,9 @@ export default function TokenDetailMobile({
             tokenId={tokenId}
             marketPrice={tradePrice}
             tickerSymbol={tokenOhlcv?.tickerSymbol || '-'}
+            ohlcv={tokenOhlcv}
+            buyList={buyList}
+            sellList={sellList}
           />
         )}
       </div>

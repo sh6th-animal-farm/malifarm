@@ -72,7 +72,6 @@ export default function TokenDetail() {
           tokenOhlcv={tokenOhlcv}
           buyList={buyList}
           sellList={sellList}
-          tradeList={tradeList}
           tradePrice={selectedPrice ?? fixedPrice ?? 0}
           onPriceSelect={setSelectedPrice}
           initialTab={location.state?.mobileTab === 'list' ? 'list' : 'chart'}
