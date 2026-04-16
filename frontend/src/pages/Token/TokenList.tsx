@@ -4,10 +4,13 @@ import TokenSummaryCard from './components/tokenList/TokenSummaryCard';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useTokenList } from '@/pages/Token/hooks/useTokenList';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function TokenList() {
   // 훅으로 초기 데이터 + 실시간 업데이트 + 정렬된 리스트를 한 번에 가져옴
   const { tokenList = [], isLoading } = useTokenList('VOLUME');
+  const location = useLocation();
+  const navigate = useNavigate();
   const [hoveredTokenId, setHoveredTokenId] = useState<number | null>(null);
   // 0.3초 동안 hover 상태가 유지될 때만 debouncedId 업데이트
   const debouncedId = useDebounce(hoveredTokenId, 300);
@@ -18,6 +21,19 @@ export default function TokenList() {
       setHoveredTokenId(tokenList[0].tokenId);
     }
   }, [tokenList]);
+
+  useEffect(() => {
+    const shouldOpenDetailOnMobile =
+      location.state?.openTokenDetailOnMobile === true;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    if (!shouldOpenDetailOnMobile || !isMobile || tokenList.length === 0) return;
+
+    navigate(`/token/${tokenList[0].tokenId}`, {
+      replace: true,
+      state: { mobileTab: 'list' },
+    });
+  }, [location.state, tokenList, navigate]);
 
   const displayId = debouncedId ?? hoveredTokenId ?? tokenList[0]?.tokenId;
 

@@ -121,7 +121,7 @@ export default function Header() {
   };
 
   return (
-    <header className="h-14 md:h-header-height bg-white/85 backdrop-blur-md sticky top-0 z-[1000] flex items-center">
+    <header className="h-[52px] md:h-header-height bg-white md:bg-white/85 md:backdrop-blur-md sticky top-0 z-[1000] flex items-center">
       <div className="layout-container relative flex h-full items-center justify-between">
         {/* 로고 영역 */}
         <Link

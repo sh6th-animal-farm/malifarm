@@ -12,12 +12,16 @@ interface TokenTradeCardProps {
   tokenId: number;
   marketPrice: number;
   tickerSymbol: string;
+  isMobileCombined?: boolean;
+  embedded?: boolean;
 }
 
 export default function TokenTradeCard({
   tokenId,
   marketPrice,
   tickerSymbol,
+  isMobileCombined = false,
+  embedded = false,
 }: TokenTradeCardProps) {
   const tabs = [
     { id: 'buy', label: '매수' },
@@ -201,8 +205,17 @@ export default function TokenTradeCard({
   };
 
   return (
-    <div className="flex flex-col gap-4 border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std bg-white w-[420px] h-[450px]">
-      <ToggleGroup tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+    <div
+      className={`flex flex-col gap-4 ${embedded ? 'border-0 rounded-none shadow-none p-3' : 'border border-gray-100 rounded-[var(--radius-m)] p-4 md:p-6 shadow-std bg-white'} w-full md:w-[420px] ${
+        isMobileCombined ? 'h-full' : 'h-[450px]'
+      }`}
+    >
+      <ToggleGroup
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        fullWidth
+      />
 
       {activeTab === 'pending' ? (
         /* --- 미체결 내역 --- */
@@ -211,7 +224,9 @@ export default function TokenTradeCard({
             <span>총 {pendingList.length}건</span>
             <span>최신순</span>
           </div>
-          <div className="h-[450px] overflow-y-auto scrollbar-thin pr-1">
+          <div
+            className={`${isMobileCombined ? 'h-full' : 'h-[450px]'} overflow-y-auto scrollbar-thin pr-1`}
+          >
             {pendingList.length > 0 ? (
               pendingList.map((item) => (
                 <div

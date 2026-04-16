@@ -77,7 +77,7 @@ export default function TokenSummaryCard({ tokenId }: { tokenId: number }) {
   const changeRate = tokenOhlcv?.changeRate ?? 0;
 
   return (
-    <div className="w-full max-w-[432px] min-h-[468px] bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std tracking-tight mx-auto">
+    <div className="w-full max-w-[432px] min-h-[468px] bg-white rounded-m p-6 shadow-std tracking-tight mx-auto">
       {' '}
       {!tokenOhlcv && <div>차트 데이터를 불러오는 중입니다.</div>}
       <div className={!tokenOhlcv ? 'hidden' : 'block'}>
