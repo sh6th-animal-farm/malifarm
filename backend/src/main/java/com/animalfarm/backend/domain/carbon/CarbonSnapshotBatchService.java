@@ -38,13 +38,13 @@ public class CarbonSnapshotBatchService {
 	private String khUrl;
 
 	/**
-	 * 11월 마다 예정된 스냅샷 이벤트가 있는지 확인
+	 * 예정된 스냅샷 이벤트가 있는지 확인
 	 */
-	@Scheduled(cron = "0 0 * * 11 *")
+	@Scheduled(cron = "0 0 0/1 * * *")
 	public void runScheduledSnapshot() {
 		CarbonSnapshotEventDTO event = carbonRepository.selectPlannedSnapshotEvent(LocalDateTime.now());
 
-		// 11월에 매시간마다 실행 후 이벤트가 없으면 return
+		// 매 1시간마다 실행 후 이벤트가 없으면 return
 		if (event == null) {
 			return;
 		}
@@ -56,7 +56,7 @@ public class CarbonSnapshotBatchService {
 			carbonRepository.updateSnapshotEventStatus(event.getSnapshotId(), "RUNNING", null);
 			// 전체 snapshot 생성
 			createSnapshotBalances(event.getSnapshotId());
-			// 다 끝나면 Comlieted로 변경 후 snapshot 저장
+			// 다 끝나면 Completed로 변경 후 snapshot 저장
 			carbonRepository.updateSnapshotEventStatus(
 				event.getSnapshotId(),
 				"COMPLETED",

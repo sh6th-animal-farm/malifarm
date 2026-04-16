@@ -274,6 +274,48 @@ export default function Signup() {
     return { ok: true };
   };
 
+  const goToStepByDot = (dotIndex: number) => {
+    setForm((prev) => {
+      if (prev.signUpType === "PERSONAL") {
+        const personalStepMap: Record<number, number> = {
+          1: 1,
+          2: 4,
+          3: 5,
+          4: 6,
+          5: 7,
+        };
+
+        const nextStep = personalStepMap[dotIndex];
+        if (!nextStep) return prev;
+
+        return {
+          ...prev,
+          step: nextStep,
+        };
+      }
+
+      const enterpriseStepMap: Record<number, number> = {
+        1: 1,
+        2: 2,
+        3: 3,
+        4: 4,
+        5: 5,
+        6: 6,
+        7: 7,
+      };
+
+      const nextStep = enterpriseStepMap[dotIndex];
+      if (!nextStep) return prev;
+
+      return {
+        ...prev,
+        step: nextStep,
+      };
+    });
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const goToNext = () => {
     const result = validateStep();
 
@@ -530,6 +572,7 @@ export default function Signup() {
         <SignupProgress
           totalSteps={totalSteps}
           currentDotIndex={currentDotIndex}
+          onStepClick={goToStepByDot}
         />
 
         {form.step === 1 && (
