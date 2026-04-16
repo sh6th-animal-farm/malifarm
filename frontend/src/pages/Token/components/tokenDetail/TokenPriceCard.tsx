@@ -9,8 +9,6 @@ interface TokenPriceCardProps {
   sellList: OrderInfo[];
   tradeList: TradeInfo[];
   onPriceClick: (price: number) => void;
-  mobileCombined?: boolean;
-  embedded?: boolean;
 }
 
 export default function TokenPriceCard({
@@ -19,8 +17,6 @@ export default function TokenPriceCard({
   sellList,
   tradeList,
   onPriceClick,
-  mobileCombined = false,
-  embedded = false,
 }: TokenPriceCardProps) {
   const [activeTab, setActiveTab] = useState('order');
   const tabs = [
@@ -32,54 +28,11 @@ export default function TokenPriceCard({
 
   if (!ohlcv)
     return (
-      <div
-        className={`${mobileCombined ? 'h-full' : 'h-[760px]'} w-full md:w-[420px] animate-pulse bg-gray-50 rounded-[var(--radius-m)]`}
-      />
+      <div className="h-[760px] w-[420px] animate-pulse bg-gray-50 rounded-[var(--radius-m)]" />
     );
-
-  if (mobileCombined) {
-    return (
-      <div
-        className={`flex h-full flex-col gap-3 overflow-hidden ${embedded ? 'bg-transparent p-3' : 'bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std p-4'}`}
-      >
-        <div className="flex items-center justify-between border-b border-gray-100 pb-2">
-          <span className="font-body-03 text-gray-900">호가</span>
-          <span className="font-caption-02 text-gray-400">수량</span>
-        </div>
-
-        <div className="flex-1 overflow-y-auto scrollbar-hide">
-          <div className="flex flex-col gap-1">
-            {ladder.map((row, idx) => {
-              const isSell = row.side === 'SELL';
-              return (
-                <button
-                  key={idx}
-                  onClick={() => onPriceClick(row.price)}
-                  className="relative flex h-8 w-full items-center justify-between rounded-[var(--radius-s)] px-2 text-left hover:bg-gray-50"
-                >
-                  <span
-                    className={`z-10 font-caption-02 ${isSell ? 'text-info' : 'text-error'}`}
-                  >
-                    {row.price.toLocaleString()}
-                  </span>
-                  <span className="z-10 font-caption-01 text-gray-600">
-                    {row.volume > 0 ? Number(row.volume).toFixed(4) : '-'}
-                  </span>
-                  <div
-                    className={`absolute right-2 top-1/2 h-5 -translate-y-1/2 rounded-[var(--radius-s)] ${isSell ? 'bg-info-light' : 'bg-error-light'}`}
-                    style={{ width: `${Math.max(row.ratio, 6)}%` }}
-                  />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std flex flex-col gap-4 p-4 md:p-6 h-[760px] w-full md:w-[420px] overflow-hidden">
+    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std flex flex-col gap-4 p-6 h-[760px] w-[420px] overflow-hidden">
       {/* 호가/체결 탭 */}
       <ToggleGroup
         tabs={tabs}
