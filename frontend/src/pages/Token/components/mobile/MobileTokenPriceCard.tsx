@@ -46,7 +46,6 @@ export default function MobileTokenPriceCard({
         <span className="p-2 text-center font-caption-02">가격</span>
         <span className="p-2 text-center font-caption-02">매수잔량</span>
       </div>
-
       <div
         ref={scrollRef}
         className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"

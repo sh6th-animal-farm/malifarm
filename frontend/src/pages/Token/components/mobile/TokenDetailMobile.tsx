@@ -3,8 +3,9 @@ import TabMenu from '@/components/common/TabMenu';
 import MobileTokenListTable from './MobileTokenListTable';
 import MobileTokenChartCard from './MobileTokenChartCard';
 import MobileTokenPriceCard from './MobileTokenPriceCard';
+import MobileTokenExecutionCard from './MobileTokenExecutionCard';
 import MobileTokenTradeCard from './MobileTokenTradeCard';
-import type { OrderInfo, Token, TokenOhlcv } from '@/types/tokenType';
+import type { OrderInfo, Token, TokenOhlcv, TradeInfo } from '@/types/tokenType';
 
 const MOBILE_TOKEN_DETAIL_TAB_KEY = 'mobile-token-detail-tab';
 
@@ -14,6 +15,7 @@ interface TokenDetailMobileProps {
   tokenOhlcv: TokenOhlcv | null;
   buyList: OrderInfo[];
   sellList: OrderInfo[];
+  tradeList: TradeInfo[];
   tradePrice: number;
   onPriceSelect: (price: number) => void;
   initialTab?: string;
@@ -25,14 +27,15 @@ export default function TokenDetailMobile({
   tokenOhlcv,
   buyList,
   sellList,
+  tradeList,
   tradePrice,
   onPriceSelect,
-  initialTab = 'chart',
+  initialTab,
 }: TokenDetailMobileProps) {
   const [mobileTab, setMobileTab] = useState(() => {
-    if (typeof window === 'undefined') return initialTab;
+    if (typeof window === 'undefined') return initialTab || 'chart';
     const saved = sessionStorage.getItem(MOBILE_TOKEN_DETAIL_TAB_KEY);
-    return saved || initialTab;
+    return saved || initialTab || 'chart';
   });
   const [selectedTokenId, setSelectedTokenId] = useState<number | null>(tokenId);
 
@@ -43,7 +46,10 @@ export default function TokenDetailMobile({
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const saved = sessionStorage.getItem(MOBILE_TOKEN_DETAIL_TAB_KEY);
-    setMobileTab(saved || initialTab);
+    if (!saved && initialTab === 'list') {
+      setMobileTab(initialTab);
+      sessionStorage.setItem(MOBILE_TOKEN_DETAIL_TAB_KEY, initialTab);
+    }
   }, [initialTab]);
 
   useEffect(() => {
@@ -55,6 +61,7 @@ export default function TokenDetailMobile({
     { text: '목록', value: 'list' },
     { text: '차트', value: 'chart' },
     { text: '호가', value: 'price' },
+    { text: '체결', value: 'execution' },
     { text: '거래', value: 'trade' },
   ];
 
@@ -88,6 +95,7 @@ export default function TokenDetailMobile({
             tokenList={tokenList}
             selectedTokenId={selectedTokenId}
             onSelect={setSelectedTokenId}
+            onRowClick={() => setMobileTab('chart')}
           />
         )}
 
@@ -104,6 +112,10 @@ export default function TokenDetailMobile({
               호가 데이터를 불러오는 중입니다.
             </div>
           ))}
+
+        {mobileTab === 'execution' && (
+          <MobileTokenExecutionCard tradeList={tradeList} />
+        )}
 
         {mobileTab === 'trade' && (
           <MobileTokenTradeCard

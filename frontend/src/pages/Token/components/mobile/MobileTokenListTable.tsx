@@ -6,12 +6,14 @@ interface MobileTokenListTableProps {
   tokenList: Token[];
   selectedTokenId: number | null;
   onSelect: (id: number) => void;
+  onRowClick: (id: number) => void;
 }
 
 export default function MobileTokenListTable({
   tokenList,
   selectedTokenId,
   onSelect,
+  onRowClick,
 }: MobileTokenListTableProps) {
   const navigate = useNavigate();
   const formatNum = (num: number) => new Intl.NumberFormat().format(num);
@@ -30,6 +32,7 @@ export default function MobileTokenListTable({
                   key={token.tokenId}
                   onClick={() => {
                     onSelect(token.tokenId);
+                    onRowClick(token.tokenId);
                     navigate(`/token/${token.tokenId}`, {
                       state: { mobileTab: 'chart' },
                     });
