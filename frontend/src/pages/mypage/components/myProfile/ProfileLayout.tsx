@@ -1,25 +1,27 @@
-import { useEffect, useMemo, useState } from "react";
-import Button from "@/components/common/Button";
-import Badge from "@/components/common/Badge";
-import Toggle from "@/components/common/Toggle";
-import PageHeader from "@/pages/mypage/components/PageHeader";
-import { myPageApi } from "@/api/myPageApi";
-import type { ProfileDTO } from "@/types/myPageType";
-import AddressModal from "./AddressModal";
-import PasswordModal from "./PasswordModal";
+import { useEffect, useMemo, useState } from 'react';
+import Button from '@/components/common/Button';
+import Badge from '@/components/common/Badge';
+import Toggle from '@/components/common/Toggle';
+import PageHeader from '@/pages/mypage/components/PageHeader';
+import { myPageApi } from '@/api/myPageApi';
+import type { ProfileDTO } from '@/types/myPageType';
+import AddressModal from './AddressModal';
+import PasswordModal from './PasswordModal';
 
-const ADDRESS_DELIMITER = "|||";
+const ADDRESS_DELIMITER = '|||';
 
 const notificationItems = [
   {
-    key: "push",
-    title: "푸시 알림 동의",
-    description: "투자 상품 오픈, 이벤트 및 서비스 혜택 알림을 실시간으로 받습니다.",
+    key: 'push',
+    title: '푸시 알림 동의',
+    description:
+      '투자 상품 오픈, 이벤트 및 서비스 혜택 알림을 실시간으로 받습니다.',
   },
   {
-    key: "email",
-    title: "이메일 수신 동의",
-    description: "자산 리포트 및 주요 뉴스레터를 이메일로 받아보실 수 있습니다.",
+    key: 'email',
+    title: '이메일 수신 동의',
+    description:
+      '자산 리포트 및 주요 뉴스레터를 이메일로 받아보실 수 있습니다.',
   },
 ] as const;
 
@@ -29,13 +31,16 @@ export default function ProfileLayout() {
   const [pushEnabled, setPushEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
-  const [addressDraft, setAddressDraft] = useState("");
+  const [addressDraft, setAddressDraft] = useState('');
   const [savingAddress, setSavingAddress] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [changingPassword, setChangingPassword] = useState(false);
+  const [currentPasswordError, setCurrentPasswordError] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -46,7 +51,7 @@ export default function ProfileLayout() {
         setPushEnabled(Boolean(data?.pushYn));
         setEmailEnabled(Boolean(data?.receiveEmailYn));
       } catch (error) {
-        console.error("내 정보 조회 실패", error);
+        console.error('내 정보 조회 실패', error);
         setProfile(null);
       } finally {
         setLoading(false);
@@ -56,60 +61,60 @@ export default function ProfileLayout() {
     fetchProfile();
   }, []);
 
-  const profileItems = useMemo(
-    () => {
-      const address = profile?.address?.trim()
-        ? profile.address.replaceAll(ADDRESS_DELIMITER, ", ")
-        : "-";
+  const profileItems = useMemo(() => {
+    const address = profile?.address?.trim()
+      ? profile.address.replaceAll(ADDRESS_DELIMITER, ', ')
+      : '-';
 
-      return [
-        { label: "이메일", value: profile?.email ?? "-" },
-        { label: "휴대폰 번호", value: profile?.phoneNumber ?? "-" },
-        { label: "주소", value: address, editable: true },
-        { label: "비밀번호", value: "••••••••", editable: true },
-      ];
-    },
-    [profile],
-  );
+    return [
+      { label: '이메일', value: profile?.email ?? '-' },
+      { label: '휴대폰 번호', value: profile?.phoneNumber ?? '-' },
+      { label: '주소', value: address, editable: true },
+      { label: '비밀번호', value: '••••••••', editable: true },
+    ];
+  }, [profile]);
 
   const notificationState = {
     push: pushEnabled,
     email: emailEnabled,
   } as const;
 
-  const updateNotification = async (key: "push" | "email", checked: boolean) => {
+  const updateNotification = async (
+    key: 'push' | 'email',
+    checked: boolean,
+  ) => {
     if (!profile) return;
 
     const previousPush = pushEnabled;
     const previousEmail = emailEnabled;
 
-    if (key === "push") setPushEnabled(checked);
-    if (key === "email") setEmailEnabled(checked);
+    if (key === 'push') setPushEnabled(checked);
+    if (key === 'email') setEmailEnabled(checked);
 
     try {
       await myPageApi.updateProfile({
-        address: profile.address ?? "",
-        pushYn: key === "push" ? checked : pushEnabled,
-        receiveEmailYn: key === "email" ? checked : emailEnabled,
+        address: profile.address ?? '',
+        pushYn: key === 'push' ? checked : pushEnabled,
+        receiveEmailYn: key === 'email' ? checked : emailEnabled,
       });
       setProfile((prev) =>
         prev
           ? {
               ...prev,
-              pushYn: key === "push" ? checked : prev.pushYn,
-              receiveEmailYn: key === "email" ? checked : prev.receiveEmailYn,
+              pushYn: key === 'push' ? checked : prev.pushYn,
+              receiveEmailYn: key === 'email' ? checked : prev.receiveEmailYn,
             }
           : prev,
       );
     } catch (error) {
-      console.error("알림 설정 변경 실패", error);
+      console.error('알림 설정 변경 실패', error);
       setPushEnabled(previousPush);
       setEmailEnabled(previousEmail);
     }
   };
 
   const openAddressModal = () => {
-    setAddressDraft(profile?.address ?? "");
+    setAddressDraft(profile?.address ?? '');
     setIsAddressModalOpen(true);
   };
 
@@ -131,16 +136,16 @@ export default function ProfileLayout() {
       setProfile((prev) => (prev ? { ...prev, address: nextAddress } : prev));
       setIsAddressModalOpen(false);
     } catch (error) {
-      console.error("주소 수정 실패", error);
+      console.error('주소 수정 실패', error);
     } finally {
       setSavingAddress(false);
     }
   };
 
   const openPasswordModal = () => {
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
     setIsPasswordModalOpen(true);
   };
 
@@ -151,14 +156,14 @@ export default function ProfileLayout() {
 
   const changePassword = async () => {
     if (changingPassword) return;
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      alert("비밀번호를 모두 입력해주세요.");
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
-      return;
-    }
+    // if (!currentPassword || !newPassword || !confirmPassword) {
+    //   alert("비밀번호를 모두 입력해주세요.");
+    //   return;
+    // }
+    // if (newPassword !== confirmPassword) {
+    //   alert("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+    //   return;
+    // }
 
     try {
       setChangingPassword(true);
@@ -168,10 +173,24 @@ export default function ProfileLayout() {
       });
       setIsPasswordModalOpen(false);
     } catch (error) {
-      console.error("비밀번호 변경 실패", error);
+      // 1. 에러 메시지 설정
+      setCurrentPasswordError('현재 비밀번호가 일치하지 않습니다.');
+      // 2. 모든 입력창 초기화
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      console.error('비밀번호 변경 실패', error);
     } finally {
       setChangingPassword(false);
     }
+  };
+
+  const onChangeCurrentPassword = (value: string) => {
+    // 현재 비밀번호를 수정하면 에러 메시지 삭제
+    if (currentPasswordError) {
+      setCurrentPasswordError(null);
+    }
+    setCurrentPassword(value);
   };
 
   return (
@@ -185,14 +204,19 @@ export default function ProfileLayout() {
         <section className="rounded-lg bg-white p-4 shadow-std md:p-6">
           <div className="flex flex-wrap items-center gap-3">
             <strong className="font-header-03 text-gray-900">
-              {loading ? "불러오는 중..." : profile?.userName ?? "-"}
+              {loading ? '불러오는 중...' : (profile?.userName ?? '-')}
             </strong>
-            <Badge variant="info" width="auto" height={28} className="cursor-default select-none rounded-full">
-              {profile?.investorType ?? "General Investor"}
+            <Badge
+              variant="info"
+              width="auto"
+              height={28}
+              className="cursor-default select-none rounded-full"
+            >
+              {profile?.investorType ?? 'General Investor'}
             </Badge>
           </div>
           <p className="mt-2 font-caption-01 text-gray-500">
-            가입일: {profile?.createdAt ? profile.createdAt.slice(0, 10) : "-"}
+            가입일: {profile?.createdAt ? profile.createdAt.slice(0, 10) : '-'}
           </p>
         </section>
 
@@ -208,7 +232,9 @@ export default function ProfileLayout() {
               >
                 <div>
                   <p className="font-caption-02 text-gray-400">{item.label}</p>
-                  <p className="mt-1.5 font-body-02 text-gray-900">{item.value}</p>
+                  <p className="mt-1.5 font-body-02 text-gray-900">
+                    {item.value}
+                  </p>
                 </div>
                 {item.editable ? (
                   <Button
@@ -218,9 +244,9 @@ export default function ProfileLayout() {
                     height={32}
                     className="font-caption-02 hover:bg-gray-200"
                     onClick={
-                      item.label === "주소"
+                      item.label === '주소'
                         ? openAddressModal
-                        : item.label === "비밀번호"
+                        : item.label === '비밀번호'
                           ? openPasswordModal
                           : undefined
                     }
@@ -245,7 +271,9 @@ export default function ProfileLayout() {
               >
                 <div className="pr-3">
                   <p className="font-body-02 text-gray-900">{item.title}</p>
-                  <p className="mt-1.5 font-caption-01 text-gray-400">{item.description}</p>
+                  <p className="mt-1.5 font-caption-01 text-gray-400">
+                    {item.description}
+                  </p>
                 </div>
                 <Toggle
                   checked={notificationState[item.key]}
@@ -261,9 +289,12 @@ export default function ProfileLayout() {
         <section className="rounded-lg border border-dashed border-gray-200 p-4 md:p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="font-caption-02 text-gray-900">계정 삭제가 필요하신가요?</p>
+              <p className="font-caption-02 text-gray-900">
+                계정 삭제가 필요하신가요?
+              </p>
               <p className="mt-1 font-caption-01 text-gray-400">
-                회원 탈퇴 시 모든 투자 기록 및 자산 정보가 삭제되며 복구할 수 없습니다.
+                회원 탈퇴 시 모든 투자 기록 및 자산 정보가 삭제되며 복구할 수
+                없습니다.
               </p>
             </div>
             <button
@@ -290,7 +321,8 @@ export default function ProfileLayout() {
         newPassword={newPassword}
         confirmPassword={confirmPassword}
         changingPassword={changingPassword}
-        onChangeCurrentPassword={setCurrentPassword}
+        currentPasswordError={currentPasswordError}
+        onChangeCurrentPassword={onChangeCurrentPassword}
         onChangeNewPassword={setNewPassword}
         onChangeConfirmPassword={setConfirmPassword}
         onClose={closePasswordModal}
