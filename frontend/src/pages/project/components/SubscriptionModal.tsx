@@ -34,7 +34,7 @@ export default function SubscriptionModal({
   const { walletData, isLoading: isWalletLoading } = useWallet(
     projectData.userId,
   );
-  const currentCashBalance = walletData?.cashBalance ?? 0;
+  const currentCashBalance = Math.floor(walletData?.availableBalance ?? 0);
 
   const {
     quantity,

@@ -103,6 +103,7 @@ export interface Wallet {
   totalBalance: number;
   profitLoss: number;
   profitLossRate: number;
+  availableBalance?: number;
 }
 
 export interface ProjectList {

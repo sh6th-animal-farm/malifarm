@@ -15,8 +15,11 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
-			.allowedOrigins("http://localhost:5173") // Vite
-			.allowedMethods("GET", "POST", "PUT", "DELETE");
+			.allowedOrigins("https://malifarm.shinhanacademy.co.kr", "http://localhost:5173") // Vite
+			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+			.allowedHeaders("*")
+			.allowCredentials(true)
+			.maxAge(3600);
 	}
 
 	@Value("${file.upload.path}")
