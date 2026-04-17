@@ -33,7 +33,6 @@ export interface ProjectData {
   method: string;
   temperatureInside: number[];
   humidityInside: number[];
-  thumbnailUrl?: string;
 
   farm: {
     addressSido: string;
