@@ -18,7 +18,7 @@ interface SubscriptionModalProps {
     tokenId: number;
     title: string;
     price: number;
-    thumbnail?: string;
+    thumbnailUrl?: string;
     userLimit: number;
     minAmountPerInvestor: number;
   };
@@ -129,7 +129,7 @@ export default function SubscriptionModal({
         </div>
 
         <SubscriptionSummary
-          thumbnail={projectData.thumbnail}
+          thumbnail={projectData.thumbnailUrl}
           title={projectData.title}
           labelText={`1 토큰 당 ${projectData.price.toLocaleString()}원`}
         />
