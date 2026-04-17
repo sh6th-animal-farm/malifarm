@@ -109,7 +109,8 @@ export default function SignupPersonalStep({
               updateForm("phoneVerified", false);
               setPhoneStatus({ msg: "", ok: null });
             }}
-            placeholder="01012345678"
+            placeholder="'-' 없이 숫자만 입력 (11자리)"
+            maxLength={11}
             height={50}
           />
           {renderStatus(phoneStatus)}

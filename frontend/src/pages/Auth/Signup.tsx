@@ -343,7 +343,7 @@ export default function Signup() {
 
   const mockPhoneVerify = () => {
     const onlyNumber = form.phone.replace(/\D/g, "");
-    if (onlyNumber.length < 10) {
+    if (onlyNumber.length <= 10) {
       setPhoneStatus({ msg: "휴대폰 번호를 입력해주세요.", ok: false });
       return;
     }
