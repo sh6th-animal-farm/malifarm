@@ -157,6 +157,7 @@ export default function ProjectDetail() {
             price: Math.floor(
               projectData.targetAmount / projectData.totalSupply,
             ),
+            thumbnailUrl: projectData.thumbnailUrl,
             userLimit: 500000000,
             minAmountPerInvestor: projectData.minAmountPerInvestor,
           }}
