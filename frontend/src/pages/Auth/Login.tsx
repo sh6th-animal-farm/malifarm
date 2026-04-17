@@ -39,7 +39,9 @@ export default function Login() {
         localStorage.setItem("loginStartTime", now);
         localStorage.setItem("lastActivityTime", now);
 
-            navigate("/");
+            navigate("/", {
+                state: { toastMessage: "로그인 성공!" },
+            });
         } catch (err) {
             console.error("로그인 실패:", err);
             setError("이메일 또는 비밀번호를 확인하세요.");

@@ -15,6 +15,7 @@ public class MarketNewsScheduler {
 
 	// 02시, 08시, 14시, 20시 (하루 4회, 6시간 간격)
 	@Scheduled(cron = "0 0 2,8,14,20 * * *")
+	//@Scheduled(cron = "0 * * * * *")
 	public void runGlobalMarketNews() {
 		log.info("[Scheduler] 통합 마켓 브리핑 생성 프로세스 시작");
 		newsService.generateGlobalNews();

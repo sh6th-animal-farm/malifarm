@@ -1,23 +1,25 @@
-import { useState, useEffect, useCallback } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import PercentageBtn from './PercentageBtn';
-import { tokenApi } from '@/api/tokenApi';
 import Toast from '@/components/common/Toast';
-import type { TokenPending, Order } from '@/types/tokenType';
 import { Trashcan } from '@/components/icon/Icons';
+import { useTradeOrderForm } from '@/pages/Token/hooks/useTradeOrderForm';
 
 interface TokenTradeCardProps {
   tokenId: number;
   marketPrice: number;
   tickerSymbol: string;
+  isMobileCombined?: boolean;
+  embedded?: boolean;
 }
 
 export default function TokenTradeCard({
   tokenId,
   marketPrice,
   tickerSymbol,
+  isMobileCombined = false,
+  embedded = false,
 }: TokenTradeCardProps) {
   const tabs = [
     { id: 'buy', label: '매수' },
@@ -25,184 +27,40 @@ export default function TokenTradeCard({
     { id: 'pending', label: '미체결' },
   ];
 
-  const [activeTab, setActiveTab] = useState('buy'); // buy | sell | pending
-  const [orderType, setOrderType] = useState('LIMIT'); // LIMIT | MARKET
-  const [price, setPrice] = useState('');
-  const [volume, setVolume] = useState('');
-  const [amount, setAmount] = useState('');
-  const [pendingList, setPendingList] = useState<TokenPending[]>([]);
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
-
-  const getNumPrice = () => Number(price.replace(/,/g, '')) || 0;
-  const getNumVolume = () => Number(volume) || 0;
-  const getNumAmount = () => Number(amount.replace(/,/g, '')) || 0;
-
-  useEffect(() => {
-    if (marketPrice && marketPrice > 0) {
-      setPrice(marketPrice.toLocaleString());
-    }
-  }, [marketPrice]);
-
-  // 1. 숫자 포맷팅 함수 (천단위 콤마 및 커서 제어)
-  const formatNumber = (val: string) => {
-    const num = val.replace(/[^0-9]/g, '');
-    return num ? Number(num).toLocaleString() : '';
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    setter: (v: string) => void,
-  ) => {
-    const { value, selectionStart } = e.target;
-    const prevLen = value.length;
-    const formatted = formatNumber(value);
-    setter(formatted);
-
-    setTimeout(() => {
-      if (selectionStart !== null) {
-        const newPos = selectionStart + (formatted.length - prevLen);
-        e.target.setSelectionRange(newPos, newPos);
-      }
-    }, 0);
-  };
-
-  // 2. 날짜 포맷팅 함수
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  };
-
-  // 3. 미체결 내역 조회
-  const fetchPendingOrders = useCallback(async () => {
-    try {
-      const data = await tokenApi.getPendingList(tokenId);
-      setPendingList(data || []);
-    } catch (error) {
-      console.error('미체결 내역 조회 실패:', error);
-    }
-  }, [tokenId]);
-
-  useEffect(() => {
-    if (activeTab === 'pending') fetchPendingOrders();
-  }, [activeTab, fetchPendingOrders]);
-
-  // 4. 퍼센트 버튼 클릭 시 자동 계산
-  const handlePercentageClick = async (perc: number) => {
-    try {
-      let balanceStr = '0';
-      if (activeTab === 'buy') {
-        const data = await tokenApi.getCashBalance();
-        balanceStr = String(data);
-      } else {
-        const data = await tokenApi.getTokenBalance(tokenId);
-        balanceStr = String(data);
-      }
-
-      const balance = Number(balanceStr);
-      const calculatedValue = balance * (perc / 100);
-
-      if (activeTab === 'buy') {
-        if (orderType === 'MARKET') {
-          setAmount(Math.floor(calculatedValue).toLocaleString());
-        } else {
-          const currentPrice = getNumPrice();
-          if (currentPrice > 0) {
-            setVolume((calculatedValue / currentPrice).toFixed(4));
-          }
-        }
-      } else {
-        setVolume(calculatedValue.toFixed(4));
-      }
-    } catch (error) {
-      console.error('잔액 조회 실패:', error);
-    }
-  };
-
-  // 5. 주문 검증 및 전송
-  const handleOrder = async () => {
-    const numPrice = getNumPrice();
-    const numVolume = getNumVolume();
-    const numAmount = getNumAmount();
-
-    // 주문 정보
-    const order: Order = {
-      tokenId,
-      orderSide: activeTab === 'buy' ? 'BUY' : 'SELL',
-      orderType: orderType as 'LIMIT' | 'MARKET',
-      orderPrice: orderType === 'LIMIT' ? numPrice.toString() : '0',
-      orderVolume:
-        activeTab === 'buy' && orderType === 'MARKET'
-          ? '0'
-          : numVolume.toString(),
-      totalPrice:
-        activeTab === 'buy'
-          ? orderType === 'LIMIT'
-            ? (numPrice * numVolume).toString()
-            : numAmount.toString()
-          : '0',
-    };
-
-    // 검증 로직
-    if (order.orderSide === 'BUY') {
-      if (orderType === 'LIMIT') {
-        if (!price || price === '' || price === '0')
-          return setToastMsg('가격을 입력해주세요.');
-        if (!volume || volume === '' || volume === '0')
-          return setToastMsg('수량을 입력해주세요.');
-      } else if (orderType === 'MARKET') {
-        if (!amount || amount === '' || amount === '0')
-          return setToastMsg('주문 총액을 입력해주세요.');
-      }
-
-      if (Number(order.totalPrice) < 1000) {
-        return setToastMsg('최소 주문 금액은 1,000원입니다.');
-      }
-    } else {
-      if (!volume || volume === '' || volume === '0')
-        return setToastMsg('수량을 입력해주세요.');
-      if (orderType === 'LIMIT' && (!price || price === '' || price === '0'))
-        return setToastMsg('가격을 입력해주세요.');
-
-      if (numVolume < 0.00001)
-        return setToastMsg('최소 주문 수량은 0.00001개입니다.');
-    }
-
-    try {
-      await tokenApi.createOrder(tokenId, order);
-      setToastMsg('주문 완료');
-      setPrice('');
-      setVolume('');
-      setAmount('');
-    } catch (e) {
-      console.error('주문 실패:', e);
-      setToastMsg('주문 실패');
-    }
-  };
-
-  // 6. 주문 취소
-  const cancelOrder = async (orderId: number) => {
-    try {
-      await tokenApi.cancelOrder(tokenId, orderId);
-      setToastMsg('주문 취소');
-      fetchPendingOrders();
-    } catch (e) {
-      console.error('주문 취소 실패:', e);
-      setToastMsg('주문 취소 실패');
-    }
-  };
+  const {
+    activeTab,
+    setActiveTab,
+    orderType,
+    setOrderType,
+    price,
+    volume,
+    setVolume,
+    amount,
+    pendingList,
+    toastMsg,
+    setToastMsg,
+    getNumPrice,
+    getNumVolume,
+    getNumAmount,
+    handleFormattedInputChange,
+    formatDateTime,
+    handlePercentageClick,
+    handleOrder,
+    cancelOrder,
+  } = useTradeOrderForm({ tokenId, marketPrice });
 
   return (
-    <div className="flex flex-col gap-4 border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std bg-white w-[420px] h-[450px]">
-      <ToggleGroup tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+    <div
+      className={`flex flex-col gap-4 ${embedded ? 'border-0 rounded-none shadow-none p-3' : 'border border-gray-100 rounded-[var(--radius-m)] p-4 md:p-6 shadow-std bg-white'} w-full md:w-[420px] ${
+        isMobileCombined ? 'h-full' : 'h-[450px]'
+      }`}
+    >
+      <ToggleGroup
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        fullWidth
+      />
 
       {activeTab === 'pending' ? (
         /* --- 미체결 내역 --- */
@@ -211,7 +69,9 @@ export default function TokenTradeCard({
             <span>총 {pendingList.length}건</span>
             <span>최신순</span>
           </div>
-          <div className="h-[450px] overflow-y-auto scrollbar-thin pr-1">
+          <div
+            className={`${isMobileCombined ? 'h-full' : 'h-[450px]'} overflow-y-auto scrollbar-thin pr-1`}
+          >
             {pendingList.length > 0 ? (
               pendingList.map((item) => (
                 <div
@@ -310,7 +170,7 @@ export default function TokenTradeCard({
               <Input
                 height={42}
                 value={price}
-                onChange={(e) => handleInputChange(e, setPrice)}
+                onChange={(e) => handleFormattedInputChange(e, 'price')}
                 placeholder="예: 100,000"
               />
             </div>
@@ -324,7 +184,7 @@ export default function TokenTradeCard({
               <Input
                 height={42}
                 value={amount}
-                onChange={(e) => handleInputChange(e, setAmount)}
+                onChange={(e) => handleFormattedInputChange(e, 'amount')}
                 placeholder="예: 100,000"
               />
             </div>

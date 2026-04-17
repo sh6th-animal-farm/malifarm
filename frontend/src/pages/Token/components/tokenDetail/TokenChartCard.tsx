@@ -4,6 +4,7 @@ import { useTokenChart } from '@/pages/Token/hooks/useTokenChart';
 import type { TokenOhlcv } from '@/types/tokenType';
 import {
   CandlestickSeries,
+  ColorType,
   createChart,
   HistogramSeries,
   type IChartApi,
@@ -38,7 +39,12 @@ export default function TokenChartCard({
     }
 
     const chart = createChart(chartContainerRef.current, {
-      layout: { backgroundColor: '#ffffff', textColor: '#333' },
+      layout: {
+        background: {
+          type: ColorType.Solid,
+          color: '#ffffff',
+        },
+      },
       grid: {
         vertLines: { color: '#f8f8f8' },
         horzLines: { color: '#f8f8f8' },
@@ -98,12 +104,12 @@ export default function TokenChartCard({
     activeUnit,
     candleSeriesRef,
     volumeSeriesRef,
-    isReady
+    isReady,
   );
 
   return (
-    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] p-6 shadow-std">
-      <div className="flex justify-between items-start">
+    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] p-4 md:p-6 shadow-std">
+      <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-start">
         <div className="flex flex-col gap-4">
           {/* 토큰 제목부 */}
           <div className="flex items-baseline gap-2">
