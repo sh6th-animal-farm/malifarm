@@ -31,6 +31,7 @@ import {
   ProjectRegister,
   RevenueRegister,
 } from '@/pages/admin';
+import Policy from '@/pages/Policy/Policy';
 import FindPassword from './pages/Auth/components/FindPassword';
 import ResetPassword from './pages/Auth/components/ResetPassword';
 
@@ -65,7 +66,7 @@ function App() {
     <div className="flex flex-col min-h-screen">
       <Header />
 
-      <main className="content-wrapper pb-16 md:pb-0">
+      <main className="pb-[calc(var(--bottom-tabbar-height))] md:pb-0">
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -105,6 +106,7 @@ function App() {
           <Route path="/admin/cultivation" element={<CultivationRegister />} />
           <Route path="/admin/expense" element={<ExpenseRegister />} />
           <Route path="/admin/revenue" element={<RevenueRegister />} />
+          <Route path="/policy" element={<Policy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

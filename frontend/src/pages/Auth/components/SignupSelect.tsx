@@ -13,7 +13,7 @@ export default function SignupTypeSelect({
   onGoLogin,
 }: SignupTypeSelectProps) {
   return (
-    <main className="flex-1 flex flex-col min-h-[calc(75vh-var(--spacing-header-height))] items-center py-10 pt-20 bg-gray-50">
+    <main className="flex min-h-[calc(100dvh-var(--spacing-header-height))] flex-col items-center justify-center px-6 py-10">
       <AuthCard
         title="회원가입"
         description="가입하실 회원 유형을 선택해주세요"

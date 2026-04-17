@@ -4,10 +4,29 @@ import CarbonSection from "./components/CarbonSection";
 import ProjectSection from "./components/ProjectSection";
 import StatusSection from "./components/StatusSection";
 import HeroSection from "./components/HeroSection";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Toast from "@/components/common/Toast";
 
 function Home() {
+  const location = useLocation();
+  const [toastMessage, setToastMessage] = useState("");
+
+  useEffect(() => {
+    if (location.state?.toastMessage) {
+      setToastMessage(location.state.toastMessage);
+    }
+  }, [location.state]);
+  
   return (
     <div className="flex flex-col">
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage("")}
+        />
+      )}
+
       <HeroSection />
       <StatusSection />
       <ProjectSection />

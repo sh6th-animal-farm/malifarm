@@ -138,7 +138,21 @@ public class MarketNewsService {
 			double averageChangeRate = validChangeRateCount > 0 ? (totalChangeRateSum / validChangeRateCount) : 0.0;
 
 			// ② ADR (등락비율: 상승종목수 / 하락종목수 * 100)
-			double adr = (downCount == 0) ? (upCount > 0 ? 200.0 : 100.0) : ((double)upCount / downCount) * 100;
+			Double adrValue = null;
+			String adrText;
+
+			if (upCount == 0 && downCount == 0) {
+				adrText = "집계 불가";
+			} else if (downCount == 0) {
+				adrText = "하락 종목 부재";
+			} else if (upCount == 0) {
+				adrValue = 0.0;
+				adrText = "상승 종목 부재";
+			} else {
+				adrValue = ((double) upCount / downCount) * 100;
+				adrText = String.format("%.1f%%", adrValue);
+			}
+
 
 			// ③ 전체 시장 거래대금 증감률 (후반전 3H vs 전반전 3H)
 			double marketVolGrowth = 0;
@@ -150,8 +164,8 @@ public class MarketNewsService {
 
 			// 3. LLM에게 던져줄 정제된 팩트 데이터 조립
 			String factData = String.format(
-				"평균등락률:%.2f%%, ADR:%.1f%%, 총거래대금:%s, 전체대금증감률(최근3H vs 직전3H):%.1f%%, [통계] 상승:%d/하락:%d/보합:%d, [특징주(수급/호가쏠림)]: %s",
-				averageChangeRate, adr, totalRecentVol.toPlainString(), marketVolGrowth,
+				"평균등락률:%.2f%%, ADR:%s, 총거래대금:%s, 전체대금증감률(최근3H vs 직전3H):%.1f%%, [통계] 상승:%d/하락:%d/보합:%d, [특징주(수급/호가쏠림)]: %s",
+				averageChangeRate, adrText, totalRecentVol.toPlainString(), marketVolGrowth,
 				upCount, downCount, steadyCount,
 				impactfulTokensReport.length() > 0 ? impactfulTokensReport.toString() : "없음"
 			);
@@ -175,7 +189,8 @@ public class MarketNewsService {
 				.summaryText(llmRes.getTextBody())
 				// 💡 [추가됨] 프론트엔드 UI 위젯이 그대로 가져다 쓸 데이터 직접 삽입!
 				.avgChangeRate(averageChangeRate)
-				.adrValue(adr)
+				.adrValue(adrValue)
+				.adrText(adrText)
 				.volGrowthRate(marketVolGrowth)
 				.highlightTokens(highlightTokensStr)
 				.build();

@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import type { OrderInfo, TokenOhlcv, TradeInfo } from '@/types/tokenType';
+import { useOrderbookLadder } from '@/pages/Token/hooks/useOrderbookLadder';
 
 interface TokenPriceCardProps {
   ohlcv: TokenOhlcv | null;
@@ -23,78 +24,7 @@ export default function TokenPriceCard({
     { id: 'trade', label: '체결' },
   ];
 
-  // 1. 호가 단위(Tick Size) 계산
-  const getTickSize = (price: number) => {
-    if (price < 10) return 0.01;
-    if (price < 100) return 0.1;
-    if (price < 1000) return 1;
-    if (price < 10000) return 5;
-    if (price < 100000) return 10;
-    if (price < 500000) return 50;
-    return 100;
-  };
-
-  // 2. 호가 사다리(Ladder) 생성 (Memoization)
-  const ladder = useMemo(() => {
-    if (!ohlcv) return [];
-
-    const marketPrice = Number(ohlcv.marketPrice);
-    const tickSize = getTickSize(marketPrice);
-    const basePrice = Math.round(marketPrice / tickSize) * tickSize; // 현재가를 호가 단위에 맞춰 보정
-
-    const sellMap = new Map<number, number>(); // <가격, 수량>
-    sellList.forEach((s) => {
-      const priceNum = Number(s.price);
-      sellMap.set(
-        priceNum,
-        (sellMap.get(priceNum) || 0) + Number(s.totalVolume),
-      );
-    });
-
-    const buyMap = new Map<number, number>(); // <가격, 수량>
-    buyList.forEach((b) => {
-      const priceNum = Number(b.price);
-      buyMap.set(priceNum, (buyMap.get(priceNum) || 0) + Number(b.totalVolume));
-    });
-
-    const rows = [];
-
-    // 1. 매도 10개 (위로)
-    for (let i = 10; i >= 1; i--) {
-      const p = basePrice + i * tickSize;
-      rows.push({
-        price: p,
-        volume: sellMap.get(p) || 0,
-        side: 'SELL',
-        isCurrent: false,
-      });
-    }
-
-    // 2. 현재가
-    const sVol = sellMap.get(basePrice) || 0;
-    const bVol = buyMap.get(basePrice) || 0;
-
-    rows.push({
-      price: basePrice,
-      volume: sVol > 0 ? sVol : bVol,
-      side: sVol > 0 ? 'SELL' : 'BUY',
-      isCurrent: true,
-    });
-
-    // 3. 매수 10개 (아래로)
-    for (let i = 1; i <= 10; i++) {
-      const p = basePrice - i * tickSize;
-      rows.push({
-        price: p,
-        volume: buyMap.get(p) || 0,
-        side: 'BUY',
-        isCurrent: false,
-      });
-    }
-
-    const maxVol = Math.max(...rows.map((r) => r.volume), 0.0001);
-    return rows.map((r) => ({ ...r, ratio: (r.volume / maxVol) * 100 }));
-  }, [ohlcv, buyList, sellList]);
+  const ladder = useOrderbookLadder({ ohlcv, buyList, sellList });
 
   if (!ohlcv)
     return (
@@ -108,8 +38,8 @@ export default function TokenPriceCard({
         tabs={tabs}
         activeTab={activeTab}
         onChange={setActiveTab}
-        width={372}
         height={52}
+        fullWidth
       />
 
       <div className="flex-1 overflow-y-auto scrollbar-hide">

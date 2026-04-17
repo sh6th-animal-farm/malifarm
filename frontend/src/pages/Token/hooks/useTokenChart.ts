@@ -34,11 +34,12 @@ export const useTokenChart = (
         rawTime > 10000000000 ? Math.floor(rawTime / 1000) : rawTime; // 만약 데이터가 밀리초(13자리)라면 초로 변환
       const finalTime = (timeValue + KST_OFFSET) as UTCTimestamp; // 한국 시간으로 보정
 
-      // 차트 인스턴스에서 직접 마지막 데이터의 시간을 가져오는 게 가장 정확합니다.
-      const lastData = (candleSeriesRef.current as any)._internal_series
-        ?.data()
-        .last();
-      const lastTime = lastData ? lastData.time : 0;
+      // 차트 인스턴스에서 직접 마지막 데이터의 시간을 가져오기
+      const seriesData = candleSeriesRef.current.data();
+      const lastTime =
+        seriesData.length > 0
+          ? (seriesData[seriesData.length - 1].time as number)
+          : 0;
 
       // 새 데이터의 시간이 마지막 데이터 시간보다 작으면(과거라면) 업데이트하지 않음
       if (finalTime < lastTime) return;
@@ -64,7 +65,7 @@ export const useTokenChart = (
         });
       }
     },
-    [candleSeriesRef, volumeSeriesRef],
+    [candleSeriesRef, volumeSeriesRef, activeUnit],
   );
 
   // 초기 데이터 로드 및 웹소켓 연결
@@ -73,39 +74,66 @@ export const useTokenChart = (
 
     const fetchAndSubscribe = async () => {
       // tokenId와 candleSeries가 존재할 때만 실행
-      if (!tokenId || !candleSeriesRef.current) return;
+      if (!tokenId || !candleSeriesRef.current || !isReady) return;
 
       try {
-        // 이전 단위 데이터 삭제
+        // 1. 차트 초기화
         candleSeriesRef.current?.setData([]);
         volumeSeriesRef.current?.setData([]);
 
-        // 과거 데이터 로드
+        // 2. 과거 데이터 로드
         const response = await tokenApi.getCandles(
           Number(tokenId),
           Number(activeUnit),
         );
+        const unitSec = Number(activeUnit) * 60;
 
-        const candleData = response.map((d: CandleStick) => ({
-          time: (Number(d.candleTime) + KST_OFFSET) as UTCTimestamp,
-          open: Number(d.openingPrice),
-          high: Number(d.highPrice),
-          low: Number(d.lowPrice),
-          close: Number(d.closingPrice),
+        // 3. 중복 시간 제거 및 데이터 정규화 (Map 활용)
+        const normalizedMap = new Map<number, any>();
+
+        response.forEach((d: CandleStick) => {
+          const rawTime = Number(d.candleTime);
+          const timeValue =
+            rawTime > 10000000000 ? Math.floor(rawTime / 1000) : rawTime;
+
+          // 시간을 유닛 단위로 내림 (예: 5분봉에서 12:01, 12:02 -> 모두 12:00으로 통합)
+          const normTime = Math.floor(timeValue / unitSec) * unitSec;
+          const finalTime = (normTime + KST_OFFSET) as UTCTimestamp;
+
+          // Map은 키(시간)가 중복되면 마지막 값으로 덮어씌움 (중복 제거)
+          normalizedMap.set(finalTime, {
+            time: finalTime,
+            open: Number(d.openingPrice),
+            high: Number(d.highPrice),
+            low: Number(d.lowPrice),
+            close: Number(d.closingPrice),
+            volume: Number(d.tradeVolume || 0),
+          });
+        });
+
+        // 4. Map을 다시 배열로 변환하고 시간순으로 정렬
+        const sortedData = Array.from(normalizedMap.values()).sort(
+          (a, b) => a.time - b.time,
+        );
+
+        // 5. 차트 시리즈에 맞게 가공
+        const candleData = sortedData.map((d) => ({
+          time: d.time,
+          open: d.open,
+          high: d.high,
+          low: d.low,
+          close: d.close,
         }));
 
+        const volumeData = sortedData.map((d) => ({
+          time: d.time,
+          value: d.volume,
+          color: d.close >= d.open ? '#ffebee' : '#e8f1fa',
+        }));
+
+        // 6. 데이터 설정
         candleSeriesRef.current.setData(candleData);
-
         if (volumeSeriesRef.current) {
-          const volumeData = response.map((d: CandleStick) => ({
-            time: (Number(d.candleTime) + KST_OFFSET) as UTCTimestamp,
-            value: Number(d.tradeVolume || 0),
-            color:
-              Number(d.closingPrice) >= Number(d.openingPrice)
-                ? '#ffebee'
-                : '#e8f1fa',
-          }));
-
           volumeSeriesRef.current.setData(volumeData);
         }
 
