@@ -40,6 +40,10 @@ public class UserEmailService {
 	}
 
 	public boolean verifyCode(String email, String inputCode) {
+		return verifyCode(email, inputCode, true);
+	}
+
+	public boolean verifyCode(String email, String inputCode, boolean consume) {
 		String key = "EMAIL_AUTH:" + email;
 		Object savedCode = redisTemplate.opsForValue().get(key);
 
@@ -48,7 +52,7 @@ public class UserEmailService {
 		}
 
 		boolean success = savedCode.toString().equals(inputCode);
-		if (success) {
+		if (success && consume) {
 			redisTemplate.delete(key);
 			String verifiedKey = "EMAIL_VERIFIED:" + email;
 			redisTemplate.opsForValue()

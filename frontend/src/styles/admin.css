@@ -1,0 +1,223 @@
+@charset "UTF-8";
+
+/**
+ * [Admin Design System]
+ * 현대적인 CSS Nesting 방식을 사용하여 .admin-layout 내부에 모든 스타일을 격리합니다.
+ * 이 방식은 글로벌 스타일 오염을 방지하면서도 코드의 가독성을 최상으로 유지합니다.
+ */
+
+.admin-layout {
+  /* 1. 디자인 토큰 (Scoped CSS Variables) */
+  --green-600: #4a9f2e;
+  --green-700: #3f8f2d;
+  --gray-900: #191919;
+  --gray-600: #404040;
+  --gray-300: #c6c6c6;
+  --gray-50: #f8fafb;
+  --gray-0: #fcfcfc;
+  --header-height: 72px;
+  --sidebar-width: 240px;
+
+  /* 2. 관리자 페이지 기본 베이스 (Body 대체) */
+  font-family: 'Pretendard', sans-serif;
+  display: flex;
+  background-color: var(--gray-50);
+  color: var(--gray-600);
+  letter-spacing: -0.02em;
+  min-height: 100vh;
+
+  /* 3. 사이드바 네비게이션 */
+  & .sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--gray-900);
+    color: white;
+    position: fixed;
+    padding: 24px 0;
+    z-index: 100;
+
+    & .logo {
+      padding: 0 24px 32px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green-600);
+    }
+  }
+
+  & .menu-item {
+    padding: 14px 24px;
+    cursor: pointer;
+    display: block;
+    text-decoration: none;
+    color: var(--gray-300);
+    font-size: 15px;
+    transition: 0.2s;
+
+    &:hover,
+    &.active {
+      background: rgba(74, 159, 46, 0.1);
+      color: var(--green-600);
+      border-right: 4px solid var(--green-600);
+    }
+  }
+
+  & .sidebar-footer {
+    margin-top: auto;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  & .home-link {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: var(--green-600) !important;
+      color: #fff !important;
+    }
+
+    & svg { opacity: 0.7; }
+  }
+
+  /* 4. 메인 콘텐츠 영역 */
+  & .main-content {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    padding: 40px;
+  }
+
+  & .container-1200 {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  & .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+
+    & h1 {
+      font-size: 32px;
+      color: var(--gray-900);
+      margin: 0;
+    }
+  }
+
+  /* 5. 폼 및 입력 요소 (Expert Tag Selection) */
+  & .form-card {
+    background: var(--gray-0);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+    border: 1px solid var(--gray-300);
+  }
+
+  & .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gray-50);
+  }
+
+  & .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  & .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  & .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+  & label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+  }
+
+  & input,
+  & select,
+  & textarea {
+    padding: 12px 16px;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    font-size: 15px;
+    transition: 0.2s;
+    background: white;
+
+    &:focus {
+      outline: none;
+      border-color: var(--green-600);
+      box-shadow: 0 0 0 3px rgba(74, 159, 46, 0.1);
+    }
+  }
+
+  & .btn-submit {
+    background: var(--green-600);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+      background: var(--green-700);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* 6. 기타 UI 컴포넌트 */
+  & .image-upload-box {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed var(--gray-300);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: 0.2s;
+
+    &:hover {
+      border-color: var(--green-600);
+      background: var(--gray-50);
+    }
+  }
+
+  & .modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+
+    & .modal-content {
+      background: white;
+      padding: 32px;
+      border-radius: 12px;
+      width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+  }
+
+  & .readonly-input {
+    background-color: var(--gray-50) !important;
+    cursor: not-allowed;
+    color: var(--gray-600);
+  }
+}
+
+/* 애니메이션 Keyframes는 글로벌로 선언되어야 함 */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

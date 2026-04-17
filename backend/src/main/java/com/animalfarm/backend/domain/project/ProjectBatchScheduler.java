@@ -35,12 +35,18 @@ public class ProjectBatchScheduler {
 	private final JobLauncher jobLauncher;
 	private final Job projectClosingJob;
 	private final FinancesRepository financesRepository;
+	private final FarmService farmService;
 
 	// 1분마다 실행
 	@Scheduled(cron = "0 * * * * *")
 	public void runBatch() {
 		projectService.selectStatus();
 		subscriptionService.projectStartCheck();
+	}
+
+	@Scheduled(cron = "0 5 * * * *")
+	public void runFarmBatch() {
+		farmService.saveCurrentHourEnv();
 	}
 
 	// 매일 자정
@@ -57,12 +63,10 @@ public class ProjectBatchScheduler {
 
 					// DividendBatchService에서 했던 것처럼 정산 요약 정보도 가져와야 함
 					RevenueSummaryDTO summary = financesRepository.selectRevenueSummaryByProjectId(projectId);
-
 					if (summary == null || token == null) {
 						log.warn(">>> 프로젝트 {}의 정산 정보나 토큰 정보가 없어 건너뜁니다.", projectId);
 						continue;
 					}
-
 					JobParameters jobParameters = new JobParametersBuilder()
 						.addLong("projectId", projectId)
 						.addLong("tokenId", token.getTokenId())

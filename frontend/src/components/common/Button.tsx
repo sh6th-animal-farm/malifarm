@@ -15,6 +15,7 @@ type ButtonVariant =
   | 'subscriptionEnd' // 연한 회색 배경 / 회색 테두리 - 프로젝트 종료 전용
   | 'sub_modalFirst' // 회색 (nohover) - 모달 내 버튼
   | 'sub_modalSecond' // 초록 테두리 / 흰색 배경 (nohover) - 모달 내 버튼
+  | 'sub_modalCheck' // 초록 테두리, 흰색 배경 / 초록 (hover)
   | 'buy' // 빨강 - 매수 버튼
   | 'sell'; // 파랑 - 매도 버튼
 
@@ -33,9 +34,11 @@ export default function Button({
   className = '',
   ...props
 }: ButtonProps) {
+  const isDisabled = Boolean(props.disabled) || variant.includes('disabled');
+
   // 공통 스타일
   const baseStyles =
-    'inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap cursor-pointer';
+    'inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap';
 
   // 버튼 타입별 스타일 매핑
   const variants: Record<ButtonVariant, string> = {
@@ -61,6 +64,8 @@ export default function Button({
       'bg-gray-100 border-gray-100 text-gray-600 cursor-not-allowed',
     sub_modalFirst: 'bg-gray-900 border-gray-900 text-white font-button-02',
     sub_modalSecond: 'bg-white border-green-600 text-green-600 font-button-02',
+    sub_modalCheck:
+      'bg-white border-green-600 text-green-600 font-button-02 hover:bg-green-600 hover:border-green-600 hover:text-white',
     buy: 'bg-error border-error text-white font-button-02',
     sell: 'bg-info border-info text-white font-button-02',
   };
@@ -73,9 +78,9 @@ export default function Button({
 
   return (
     <button
-      className={`${baseStyles} ${variants[variant]} ${className}`}
+      className={`${baseStyles} ${variants[variant]} ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'} ${className}`}
       style={customStyle}
-      disabled={variant.includes('disabled')}
+      disabled={isDisabled}
       {...props}
     >
       {children}

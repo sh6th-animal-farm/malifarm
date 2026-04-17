@@ -13,4 +13,6 @@ public interface FarmRepository {
 
 	public void insertFarm(FarmDTO farmDTO);
 
+	public void insertFarmEnv(Long farmId, Double humidityInside, Double temperatureInside);
+
 }

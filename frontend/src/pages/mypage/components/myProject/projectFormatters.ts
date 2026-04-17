@@ -1,31 +1,62 @@
 import type { MyPageProjectDTO } from "@/types/myPageType";
 
+const normalizeStatus = (status?: string | null) => {
+  if (!status) return "";
+  if (status === "종료" || status === "종료됨" || status === "COMPLETED" || status === "ENDED") {
+    return "COMPLETED";
+  }
+  if (status === "취소" || status === "취소됨" || status === "CANCELED" || status === "CANCELLED") {
+    return "CANCELED";
+  }
+  if (status === "청약중" || status === "SUBSCRIPTION") return "SUBSCRIPTION";
+  if (status === "공고중" || status === "ANNOUNCEMENT") return "ANNOUNCEMENT";
+  if (status === "진행중" || status === "INPROGRESS") return "INPROGRESS";
+  if (status === "당첨" || status === "APPROVED") return "APPROVED";
+  if (status === "낙첨" || status === "REJECTED") return "REJECTED";
+  return status;
+};
+
+const isJoinedProject = (project: MyPageProjectDTO) =>
+  project.subscriptionStatus != null || project.statusText2 != null;
+
 export const toTagVariant = (status: string) => {
-  if (status === "SUBSCRIPTION" || status === "청약중") return "warning" as const;
-  if (status === "ANNOUNCEMENT" || status === "공고중") return "info" as const;
-  if (status === "INPROGRESS" || status === "진행중") return "success" as const;
-  if (status === "APPROVED" || status === "당첨") return "success" as const;
-  if (status === "REJECTED" || status === "낙첨") return "default" as const;
-  if (status === "CANCELED" || status === "취소") return "default" as const;
+  const normalized = normalizeStatus(status);
+
+  if (normalized === "SUBSCRIPTION") return "warning" as const;
+  if (normalized === "ANNOUNCEMENT") return "info" as const;
+  if (normalized === "INPROGRESS") return "success" as const;
+  if (normalized === "APPROVED") return "success" as const;
+  if (normalized === "REJECTED") return "default" as const;
+  if (normalized === "CANCELED") return "default" as const;
+  if (normalized === "COMPLETED") return "default" as const;
   return "default" as const;
 };
 
-export const toStatusLabel = (project: MyPageProjectDTO) => {
-  if (project.statusText1) {
-    if (project.statusText1 === "종료") return "종료됨";
-    return project.statusText1;
+export const toProjectBadgeLabel = (project: MyPageProjectDTO) => {
+  const projectStatus = normalizeStatus(project.statusText1 || project.projectStatus);
+  const subscriptionStatus = normalizeStatus(project.statusText2 || project.subscriptionStatus);
+
+  if (isJoinedProject(project)) {
+    if (subscriptionStatus === "CANCELED" || projectStatus === "CANCELED") return "취소";
+    if (projectStatus === "INPROGRESS") return "진행중";
+    if (projectStatus === "COMPLETED") return "종료";
+    return "청약중";
   }
-  if (project.projectStatus === "SUBSCRIPTION") return "청약중";
-  if (project.projectStatus === "ANNOUNCEMENT") return "공고중";
-  if (project.projectStatus === "INPROGRESS") return "진행중";
-  if (project.projectStatus === "ENDED") return "종료됨";
-  return project.projectStatus || "-";
+
+  if (projectStatus === "SUBSCRIPTION") return "청약중";
+  if (projectStatus === "INPROGRESS") return "진행중";
+  if (projectStatus === "ANNOUNCEMENT") return "공고중";
+  if (projectStatus === "COMPLETED") return "종료";
+  if (projectStatus === "CANCELED") return "취소";
+  return project.statusText1 || project.projectStatus || "-";
 };
 
-export const toSubStatusLabel = (project: MyPageProjectDTO) => {
-  if (!project.statusText2) return "";
-  if (project.statusText2 === "종료") return "종료됨";
-  return project.statusText2;
+export const toStatusLabel = (project: MyPageProjectDTO) => {
+  return toProjectBadgeLabel(project);
+};
+
+export const toSubStatusLabel = (_project: MyPageProjectDTO) => {
+  return "";
 };
 
 export const toPeriodText = (project: MyPageProjectDTO) => {

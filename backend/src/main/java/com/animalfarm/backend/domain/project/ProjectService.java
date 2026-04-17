@@ -72,8 +72,8 @@ public class ProjectService {
 		return projectRepository.selectByCondition(searchDTO);
 	}
 
-	public List<ProjectListDTO> selectByConditionForMain() {
-		return projectRepository.selectByConditionForMain();
+	public List<ProjectListDTO> selectByConditionForMain(ProjectSearchReqDTO searchDTO) {
+		return projectRepository.selectByConditionForMain(searchDTO);
 	}
 
 	public boolean getStarredStatus(ProjectStarredDTO projectStarredDTO) {
@@ -117,6 +117,7 @@ public class ProjectService {
 			String timePart = String.valueOf(System.currentTimeMillis());
 			String shortTime = timePart.substring(timePart.length() - 6);
 			String txId = "ISS_" + projectId + "_" + shortTime;
+			String lastHash = tokenRepository.selectLastHash();
 
 			TokenLedgerDTO projectNewTokenDTO = TokenLedgerDTO.builder()
 				.tokenId(tokenId) // 토큰 번호
@@ -131,27 +132,20 @@ public class ProjectService {
 				.transactionType("ISSUE") // 거래 종류: 발행
 				.from_balanceAfter(BigDecimal.ZERO) // 송금 후 잔액 변동 없음 변경 필수
 				.to_balanceAfter(totalSupply) // 수금 후 잔액 변동 없음 변경 필수
-				.prevHashValue("0") // 이전 해시가 없으므로 "0"
-				.hashValue(HashManager.createHash("0", tokenId, totalSupply)) // 해시 계산
+				.prevHashValue(lastHash)
+				.hashValue(HashManager.createHash("0", projectId, totalSupply)) // 해시 계산
 				.build();
 
 			tokenRepository.insertTokenLedger(projectNewTokenDTO);
-			this.postTokenIssue(projectInsertDTO);
+			//this.postTokenIssue(projectInsertDTO);
 
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			// 여기서 에러 로그를 남겨서 개발자가 알게 함
 			log.error("통합 처리 중 에러 발생! DB 롤백을 시작합니다. 사유: {}", e.getMessage());
-			//// 제일 중요!! 예외를 다시 밖으로 던져야 스프링이 롤백을 해줍니다.
 			throw new RuntimeException("프로젝트 등록 중 오류 발생: " + e.getMessage(), e);
 		}
-	}
-
-	// 간단한 해시 계산 예시 메서드
-	public String createHash(String prevHash, Long projectId, BigDecimal amount) {
-		return org.springframework.util.DigestUtils.md5DigestAsHex(
-			(prevHash + projectId + amount.toString()).getBytes());
 	}
 
 	public List<FarmDTO> selectAllFarm() {
@@ -222,6 +216,10 @@ public class ProjectService {
 		return projectRepository.selectStatus();
 	}
 
+	public Long getUclId(Long userId) {
+		return projectRepository.selectMyWalletId(userId);
+	}
+
 	public boolean checkAccount() {
 		Long userId = SecurityUtil.getCurrentUserId();
 		System.out.println("checkAccount userId  " + userId);
@@ -257,10 +255,9 @@ public class ProjectService {
 
 		if (uclId == null) {
 			log.warn("조회 실패: 사용자 {}의 uclId가 존재하지 않습니다.", userId);
-			return null; // 0.0 대신 null을 주어 '계좌 없음'과 '잔액 0원'을 구분하는 게 좋습니다.
+			return null;
 		}
 		try {
-			// 2. GET 방식으로 데이터 요청 (응답은 String으로 받는 예시)
 			ResponseEntity<ApiResponse> responseEntity = restTemplate.getForEntity(targetUrl, ApiResponse.class);
 			int status = responseEntity.getStatusCodeValue();
 			System.out.println("응답 결과: " + status);
@@ -287,8 +284,8 @@ public class ProjectService {
 		}
 	}
 
-	public List<SnapshotResponseDTO> getDividendSnapshot(Long projectId) {
-		String fullUrl = khUrl + "api/project/dividend/before/" + projectId.toString();
+	public List<SnapshotResponseDTO> getDividendSnapshot(Long tokenId) {
+		String fullUrl = khUrl + "api/project/dividend/before/" + tokenId.toString();
 		try {
 			return externalApiClient.callApi(fullUrl, HttpMethod.POST, null,
 				new ParameterizedTypeReference<ExternalApiResponseDTO<List<SnapshotResponseDTO>>>() {
@@ -301,8 +298,6 @@ public class ProjectService {
 	public WalletDTO selectMyWalletInfo(Long uclId) {
 		String targetUrl = khUrl + "api/my/wallet/" + uclId;
 		try {
-			// 2. ExternalApiUtil의 callApi 호출
-			// ParameterizedTypeReference를 사용해 결과 타입을 WalletDTO로 명시합니다.
 			WalletDTO wallet = externalApiClient.callApi(targetUrl, HttpMethod.GET,
 				null, new ParameterizedTypeReference<ExternalApiResponseDTO<WalletDTO>>() {
 				}
@@ -317,53 +312,18 @@ public class ProjectService {
 		return null;
 	}
 
-	/* 로직 생각해서 다시 사용할 수 있으니 남겨둘게요.
-	public void postTokenIssue(ProjectInsertDTO projectInsertDTO) {
-		TokenIssueDTO tokenIssueDTO = TokenIssueDTO.builder()
-			.tokenName(projectInsertDTO.getProjectName())
-			.tickerSymbol(projectInsertDTO.getTickerSymbol())
-			.totalSupply(projectInsertDTO.getTotalSupply())
-			.projectId(projectInsertDTO.getProjectId())
-			.issuePrice(projectInsertDTO.getTargetAmount().divide(projectInsertDTO.getTotalSupply()))
-			.createdAt(projectInsertDTO.getCreatedAt())
-			.build();
-
-		String targetUrl = khUrl + "api/project/open";
-		try {
-			TokenIssueDTO result = externalApiUtil.callApi(targetUrl, HttpMethod.POST, tokenIssueDTO,
-				new ParameterizedTypeReference<ApiResponse<TokenIssueDTO>>() {});
-			log.info("증권사 전송 성공 : " + result);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			log.error("실패!!! : " + e.getMessage());
-		}
-	}
-	*/
 	public List<ProjectDTO> selectEndTargetProject() {
 		return projectRepository.selectEndTargetProject();
 	}
 
-	public void postTokenIssue(ProjectInsertDTO projectInsertDTO) {
-		TokenIssueDTO tokenIssueDTO = TokenIssueDTO.builder()
-			.tokenId(projectInsertDTO.getTokenId())
-			.tokenName(projectInsertDTO.getTokenName())
-			.tickerSymbol(projectInsertDTO.getTickerSymbol())
-			.totalSupply(projectInsertDTO.getTotalSupply())
-			.projectId(projectInsertDTO.getProjectId())
-			.issuePrice(
-				projectInsertDTO.getTargetAmount().divide(projectInsertDTO.getTotalSupply(), 0, RoundingMode.FLOOR))
-			.createdAt(projectInsertDTO.getCreatedAt())
-			.build();
+	public void postTokenIssue(TokenIssueDTO tokenData) {
+		tokenData.setIssuePrice(tokenData.getTargetAmount().divide(tokenData.getTotalSupply(), 0, RoundingMode.FLOOR));
 
 		String targetUrl = khUrl + "api/project/open";
-
-		// externalApiUtil.callApi 내부에서 이미 에러 시 RuntimeException을 던지도록 되어있으니
-		// 그냥 호출만 하면 에러가 상위로 전파됨.
-		TokenIssueDTO result = externalApiClient.callApi(targetUrl, HttpMethod.POST, tokenIssueDTO,
+		TokenIssueDTO result = externalApiClient.callApi(targetUrl, HttpMethod.POST, tokenData,
 			new ParameterizedTypeReference<ExternalApiResponseDTO<TokenIssueDTO>>() {
 			});
 
-		log.info("증권사 전송 성공 : " + result);
+		log.info("증권사 전송 성공 : " + tokenData);
 	}
 }

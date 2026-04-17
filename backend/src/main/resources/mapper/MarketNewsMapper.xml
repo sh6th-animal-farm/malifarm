@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.animalfarm.backend.domain.news.MarketNewsRepository">
+
+    <insert id="saveNews" parameterType="MarketNewsDTO">
+        INSERT INTO marketnews (
+        token_id,
+        news_type,
+        title,
+        summary_short,
+        summary_text,
+        avg_change_rate,
+        adr_value,
+        adr_text,
+        vol_growth_rate,
+        highlight_tokens,
+        created_at
+        ) VALUES (
+        #{tokenId},
+        #{newsType},
+        #{title},
+        #{summaryShort},
+        #{summaryText},
+        #{avgChangeRate},
+        #{adrValue},
+        #{adrText},
+        #{volGrowthRate},
+        #{highlightTokens},
+        NOW()
+        )
+    </insert>
+
+    <select id="selectNewsByType" parameterType="string" resultType="MarketNewsDTO">
+        SELECT
+        news_id AS newsId,
+        token_id AS tokenId,
+        title AS title,
+        summary_short AS summaryShort,
+        summary_text AS summaryText,
+        news_type AS newsType,
+        avg_change_rate AS avgChangeRate,
+        adr_value AS adrValue,
+    adr_text AS adrText,
+        vol_growth_rate AS volGrowthRate,
+        highlight_tokens AS highlightTokens,
+        created_at AS createdAt
+        FROM marketnews
+        WHERE news_type = #{newsType}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectNewsById" parameterType="long" resultType="MarketNewsDTO">
+        SELECT
+        news_id AS newsId,
+        token_id AS tokenId,
+        title AS title,
+        summary_short AS summaryShort,
+        summary_text AS summaryText,
+        news_type AS newsType,
+        avg_change_rate AS avgChangeRate,
+        adr_value AS adrValue,
+        adr_text AS adrText,
+        vol_growth_rate AS volGrowthRate,
+        highlight_tokens AS highlightTokens,
+        created_at AS createdAt
+        FROM marketnews
+        WHERE news_id = #{newsId}
+    </select>
+
+    <!--    <select id="selectNewsByTokenId" parameterType="long" resultType="MarketNewsDTO">-->
+    <!--        SELECT-->
+    <!--        news_id AS newsId,-->
+    <!--        token_id AS tokenId,-->
+    <!--        summary_short AS summaryShort,-->
+    <!--        summary_text AS summaryText,-->
+    <!--        news_type AS newsType,-->
+    <!--        avg_change_rate AS avgChangeRate,-->
+    <!--        adr_value AS adrValue,-->
+    <!--        adr_text AS adrText,-->
+    <!--        vol_growth_rate AS volGrowthRate,-->
+    <!--        highlight_tokens AS highlightTokens,-->
+    <!--        created_at AS createdAt-->
+    <!--        FROM marketnews-->
+    <!--        WHERE token_id = #{tokenId}-->
+    <!--        ORDER BY created_at DESC-->
+    <!--    </select>-->
+
+</mapper>

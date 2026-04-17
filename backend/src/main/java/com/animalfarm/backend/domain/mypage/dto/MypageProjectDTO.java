@@ -15,7 +15,7 @@ public class MypageProjectDTO {
 	private String projectName;
 
 	// status (DB raw)
-	private String projectStatus;        // PREPARING / ANNOUNCEMENT / SUBSCRIPTION / INPROGRESS / ENDED ...
+	private String projectStatus;        // PREPARING / ANNOUNCEMENT / SUBSCRIPTION / INPROGRESS / COMPLETED ...
 	private String subscriptionStatus;   // PENDING / APPROVED / REJECTED / CANCELED (JOIN 탭에서만)
 	private Boolean starred;             // STAR 탭이면 true/false (선택)
 

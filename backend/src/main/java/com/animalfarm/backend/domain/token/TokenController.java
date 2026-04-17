@@ -2,6 +2,7 @@ package com.animalfarm.backend.domain.token;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.animalfarm.backend.domain.token.dto.CandleDTO;
 import com.animalfarm.backend.domain.token.dto.OrderDTO;
+import com.animalfarm.backend.domain.token.dto.OrderPriceDTO;
 import com.animalfarm.backend.domain.token.dto.TokenDTO;
 import com.animalfarm.backend.domain.token.dto.TokenSummaryDTO;
 import com.animalfarm.backend.domain.token.dto.TokenPendingDTO;
+import com.animalfarm.backend.domain.token.dto.TradePriceDTO;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.exception.BusinessException;
 import com.animalfarm.backend.global.exception.ErrorCode;
@@ -28,6 +31,14 @@ public class TokenController {
 	@Autowired
 	TokenService tokenService;
 
+	// 전체 목록 조회
+	@GetMapping("/api/token")
+	public ResponseEntity<ApiResponseDTO<List<TokenSummaryDTO>>> getTokenList() {
+		List<TokenSummaryDTO> list = tokenService.selectAll();
+		return ResponseEntity.ok(ApiResponseDTO.success(list));
+	}
+
+	// 특정 토큰 조회
 	@GetMapping("/api/token/{projectId}")
 	public ResponseEntity<ApiResponseDTO<TokenDTO>> selectDetail(@PathVariable("projectId") Long projectId) {
 		TokenDTO data = tokenService.selectByProjectId(projectId);
@@ -112,6 +123,27 @@ public class TokenController {
 	public ResponseEntity<ApiResponseDTO<TokenSummaryDTO>> selectTokenOhlcv(@PathVariable Long tokenId) {
 		TokenSummaryDTO tokenInfo = tokenService.selectTokenOhlcv(tokenId);
 		return ResponseEntity.ok(ApiResponseDTO.success(tokenInfo));
+	}
+
+	// 매수 호가 조회
+	@GetMapping("/api/token/buy/{tokenId}")
+	public ResponseEntity<ApiResponseDTO<List<OrderPriceDTO>>> selectAllBuyPrice(@PathVariable Long tokenId) {
+		List<OrderPriceDTO> buyList = tokenService.selectAllOrderBuyPrice(tokenId);
+		return ResponseEntity.ok(ApiResponseDTO.success(buyList));
+	}
+
+	// 매도 호가 조회
+	@GetMapping("/api/token/sell/{tokenId}")
+	public ResponseEntity<ApiResponseDTO<List<OrderPriceDTO>>> selectAllSellPrice(@PathVariable Long tokenId) {
+		List<OrderPriceDTO> sellList = tokenService.selectAllOrderSellPrice(tokenId);
+		return ResponseEntity.ok(ApiResponseDTO.success(sellList));
+	}
+
+	// 체결 조회
+	@GetMapping("/api/token/trade/{tokenId}")
+	public ResponseEntity<ApiResponseDTO<List<TradePriceDTO>>> selectAllTradePrice(@PathVariable Long tokenId) {
+		List<TradePriceDTO> tradeList = tokenService.selectAllTradePrice(tokenId);
+		return ResponseEntity.ok(ApiResponseDTO.success(tradeList));
 	}
 
 }

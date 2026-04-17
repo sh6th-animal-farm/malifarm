@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { projectApi } from '@/api/projectApi';
 
 export const useWallet = (userId: string | number | undefined) => {
@@ -11,6 +11,8 @@ export const useWallet = (userId: string | number | undefined) => {
       setIsLoading(true);
       try {
         const response = await projectApi.getMyWalletInfo(userId);
+        console.log('userId:', userId);
+        console.log('지갑 정보:', response);
 
         // 보통 axios는 response.data에 실제 값이 들어있습니다.
         setWalletData(response.data || response);

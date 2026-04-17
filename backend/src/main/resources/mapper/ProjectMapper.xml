@@ -27,36 +27,48 @@
         </collection>
 
         <collection property="temperatureInside"
-                    ofType="java.math.BigDecimal">
-            <result column="temperature_inside"/>
-        </collection>
+                    column="farm_id"
+                    javaType="java.util.List"
+                    ofType="java.math.BigDecimal"
+                    select="selectRecentTemperature"/>
+
+        <collection property="humidityInside"
+                    column="farm_id"
+                    javaType="java.util.List"
+                    ofType="java.math.BigDecimal"
+                    select="selectRecentHumidity"/>
     </resultMap>
 
     <select id="selectAll" resultType="projectDTO">
         select * from projects
-        order by created_at
+        order by created_at desc
     </select>
 
-    <select id="selectDetail" parameterType="long"
-            resultMap="ProjectDetailMap">
+    <select id="selectDetail" resultMap="ProjectDetailMap">
         SELECT
-        p.*,
-        f.*,
-        c.crop,
-        c.method,
-        t.ticker_symbol,
-        t.total_supply,
-        t.token_id,
-        img.image_url, -- 직접 조인 (중복 행 발생하지만 MyBatis가 처리함)
-        fed.temperature_inside -- 직접 조인
+        p.*, f.*, c.crop, c.method, t.ticker_symbol, t.total_supply, t.token_id, img.image_url
         FROM projects p
         LEFT JOIN farms f ON p.farm_id = f.farm_id
         LEFT JOIN cultivations c ON p.project_id = c.project_id
         LEFT JOIN tokens t ON p.project_id = t.project_id
-        -- 서브쿼리 그룹화 대신 원본 테이블과 직접 조인
         LEFT JOIN project_images img ON p.project_id = img.project_id
-        LEFT JOIN farm_env_data fed ON f.farm_id = fed.farm_id
         WHERE p.project_id = #{projectId}
+    </select>
+
+    <select id="selectRecentTemperature" resultType="java.math.BigDecimal">
+        SELECT temperature_inside
+        FROM farm_env_data
+        WHERE farm_id = #{farmId}
+        AND created_at >= NOW() - INTERVAL '12 hours'
+        ORDER BY created_at ASC
+    </select>
+
+    <select id="selectRecentHumidity" resultType="java.math.BigDecimal">
+        SELECT humidity_inside
+        FROM farm_env_data
+        WHERE farm_id = #{farmId}
+        AND created_at >= NOW() - INTERVAL '12 hours'
+        ORDER BY created_at ASC
     </select>
 
     <select id="selectByCondition"

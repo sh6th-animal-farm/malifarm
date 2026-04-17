@@ -80,6 +80,33 @@ export const BellOff = ({ size, color, className, ...props }: IconProps) => (
   </svg>
 );
 
+export const Clock = ({ size, color, className, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r="8.5"
+      stroke={color}
+      strokeWidth="1.8"
+    />
+    <path
+      d="M12 7.5V12L15 13.8"
+      stroke={color}
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const Instagram = ({ size, color, className, ...props }: IconProps) => (
   <svg
     width={size}
@@ -322,9 +349,9 @@ export const WarningCircle = ({ className, ...props }: IconProps) => (
     <path
       d="M30 42.5C36.9036 42.5 42.5 36.9036 42.5 30C42.5 23.0964 36.9036 17.5 30 17.5C23.0964 17.5 17.5 23.0964 17.5 30C17.5 36.9036 23.0964 42.5 30 42.5Z"
       stroke="#E53935"
-      stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
     <path
       d="M30 25V30"
@@ -343,31 +370,125 @@ export const WarningCircle = ({ className, ...props }: IconProps) => (
   </svg>
 );
 
-export const PersonalUser = ({ className, ...props }: IconProps) => (
-  <svg 
-    width="60"
-    height="60"
+export const PersonalUser = ({
+  size = 60,
+  color = '#000000',
+  className,
+  ...props
+}: IconProps) => (
+  <svg
+    width={size}
+    height={size}
     className={className}
-    viewBox="0 0 60 60"
+    viewBox="0 0 640 640"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <path d="M463 448.2C440.9 409.8 399.4 384 352 384L288 384C240.6 384 199.1 409.8 177 448.2C212.2 487.4 263.2 512 320 512C376.8 512 427.8 487.3 463 448.2zM64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C178.6 576 64 461.4 64 320zM320 336C359.8 336 392 303.8 392 264C392 224.2 359.8 192 320 192C280.2 192 248 224.2 248 264C248 303.8 280.2 336 320 336z"/>
+    <path
+      fill={color}
+      d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"
+    />
   </svg>
 );
 
-export const EnterpriseUser = ({ className, ...props }: IconProps) => (
-  <svg 
-    width="60"
-    height="60"
+export const EnterpriseUser = ({
+  size = 60,
+  color = '#000000',
+  className,
+  ...props
+}: IconProps) => (
+  <svg
+    width={size}
+    height={size}
     className={className}
-    viewBox="0 0 60 60"
+    viewBox="0 0 640 640"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <path d="M64 128C64 92.7 92.7 64 128 64L384 64C419.3 64 448 92.7 448 128L448 249.3C401.1 268.3 368 314.3 368 368C368 395.7 376.8 421.4 391.8 442.4C340.3 463.4 304 514 304 573.1C304 574.1 304 575 304 576L128 576C92.7 576 64 547.3 64 512L64 128zM208 464L208 528L261.4 528C268.6 498.6 282.7 471.9 301.8 449.7C295.7 430.2 277.5 416 256 416C229.5 416 208 437.5 208 464zM339 288.3C338 288.1 337 288 336 288L304 288C295.2 288 288 295.2 288 304L288 336C288 344.8 295.2 352 304 352L320.7 352C322.8 329.2 329.1 307.7 339 288.3zM176 160C167.2 160 160 167.2 160 176L160 208C160 216.8 167.2 224 176 224L208 224C216.8 224 224 216.8 224 208L224 176C224 167.2 216.8 160 208 160L176 160zM288 176L288 208C288 216.8 295.2 224 304 224L336 224C344.8 224 352 216.8 352 208L352 176C352 167.2 344.8 160 336 160L304 160C295.2 160 288 167.2 288 176zM176 288C167.2 288 160 295.2 160 304L160 336C160 344.8 167.2 352 176 352L208 352C216.8 352 224 344.8 224 336L224 304C224 295.2 216.8 288 208 288L176 288zM416 368C416 323.8 451.8 288 496 288C540.2 288 576 323.8 576 368C576 412.2 540.2 448 496 448C451.8 448 416 412.2 416 368zM352 576C352 523 395 480 448 480L544 480C597 480 640 523 640 576C640 593.7 625.7 608 608 608L384 608C366.3 608 352 593.7 352 576z"/>
+    <path
+      fill={color}
+      d="M64 128C64 92.7 92.7 64 128 64L384 64C419.3 64 448 92.7 448 128L448 249.3C401.1 268.3 368 314.3 368 368C368 395.7 376.8 421.4 391.8 442.4C340.3 463.4 304 514 304 573.1C304 574.1 304 575 304 576L128 576C92.7 576 64 547.3 64 512L64 128zM208 464L208 528L261.4 528C268.6 498.6 282.7 471.9 301.8 449.7C295.7 430.2 277.5 416 256 416C229.5 416 208 437.5 208 464zM339 288.3C338 288.1 337 288 336 288L304 288C295.2 288 288 295.2 288 304L288 336C288 344.8 295.2 352 304 352L320.7 352C322.8 329.2 329.1 307.7 339 288.3zM176 160C167.2 160 160 167.2 160 176L160 208C160 216.8 167.2 224 176 224L208 224C216.8 224 224 216.8 224 208L224 176C224 167.2 216.8 160 208 160L176 160zM288 176L288 208C288 216.8 295.2 224 304 224L336 224C344.8 224 352 216.8 352 208L352 176C352 167.2 344.8 160 336 160L304 160C295.2 160 288 167.2 288 176zM176 288C167.2 288 160 295.2 160 304L160 336C160 344.8 167.2 352 176 352L208 352C216.8 352 224 344.8 224 336L224 304C224 295.2 216.8 288 208 288L176 288zM416 368C416 323.8 451.8 288 496 288C540.2 288 576 323.8 576 368C576 412.2 540.2 448 496 448C451.8 448 416 412.2 416 368zM352 576C352 523 395 480 448 480L544 480C597 480 640 523 640 576C640 593.7 625.7 608 608 608L384 608C366.3 608 352 593.7 352 576z"
+    />
   </svg>
 );
 
+export const PriceUp = ({ className, ...props }: IconProps) => (
+  <svg
+    width="9"
+    height="24"
+    viewBox="0 0 9 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    {...props}
+  >
+    <path
+      d="M7.875 14.375H0.847656C0.355469 14.375 0.109375 13.8008 0.464844 13.4453L3.96484 9.94531C4.18359 9.72656 4.53906 9.72656 4.75781 9.94531L8.25781 13.4453C8.61328 13.8008 8.36719 14.375 7.875 14.375Z"
+      fill="#E53935"
+    />
+  </svg>
+);
+
+export const PriceDown = ({ className, ...props }: IconProps) => (
+  <svg
+    width="9"
+    height="24"
+    viewBox="0 0 9 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    {...props}
+  >
+    <path
+      d="M1.125 9.625L8.15234 9.625C8.64453 9.625 8.89063 10.1992 8.53516 10.5547L5.03516 14.0547C4.81641 14.2734 4.46094 14.2734 4.24219 14.0547L0.742188 10.5547C0.386719 10.1992 0.632813 9.625 1.125 9.625Z"
+      fill="#1976D2"
+    />
+  </svg>
+);
+
+export const CircularProgress = ({ percent }: { percent: number }) => {
+  const size = 100;
+  const center = size / 2;
+  const strokeWidth = 10;
+  const radius = (size - strokeWidth) / 2;
+
+  const circumference = 2 * Math.PI * radius; // 약 276.46
+  const offset = circumference - (percent / 100) * circumference;
+
+  return (
+    <div className="flex items-center justify-center">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {/* 1. 배경 */}
+        <circle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          stroke="#4A9F2E"
+          strokeOpacity="0.2"
+          strokeWidth={strokeWidth}
+        />
+
+        {/* 2. 진행 */}
+        <circle
+          cx={center}
+          cy={center}
+          r={radius}
+          fill="none"
+          stroke="#4A9F2E"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          style={{
+            strokeDashoffset: offset,
+            transition: 'stroke-dashoffset 0.5s ease-out', // 차오를 때 부드러운 효과
+            transform: 'rotate(-90deg)',
+            transformOrigin: 'center',
+          }}
+        />
+      </svg>
+    </div>
+  );
+};

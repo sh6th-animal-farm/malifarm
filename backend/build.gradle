@@ -57,6 +57,9 @@ dependencies {
 
     // 8. Mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    //9. 보안 알고리즘 (SHA-256) 라이브러리
+    implementation 'commons-codec:commons-codec:1.15'
 }
 
 tasks.named('test') {

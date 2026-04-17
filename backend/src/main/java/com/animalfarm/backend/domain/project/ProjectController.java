@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.animalfarm.backend.domain.accounting.DividendService;
+import com.animalfarm.backend.domain.accounting.dto.DividendDTO;
 import com.animalfarm.backend.domain.accounting.dto.DividendSelectDTO;
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
@@ -29,8 +30,12 @@ import com.animalfarm.backend.domain.project.dto.ProjectSearchReqDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectStarredDTO;
 import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
+import com.animalfarm.backend.global.exception.BusinessException;
+import com.animalfarm.backend.global.exception.ErrorCode;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,28 +65,15 @@ public class ProjectController {
 	}
 
 	@GetMapping("/{projectId}")
-	public ResponseEntity<?> selectDetail(@PathVariable("projectId") Long projectId) {
+	public ResponseEntity<ApiResponseDTO<ProjectDetailDTO>> selectDetail(@PathVariable("projectId") Long projectId) {
 		ProjectDetailDTO data = projectService.selectDetail(projectId);
-
-		// apiClient가 에러를 던지지 않도록 규격(success, status 등)을 맞춰줍니다.
-		Map<String, Object> response = new HashMap<>();
-		response.put("success", true); // apiClient가 이 필드를 검사할 확률이 높습니다.
-		response.put("status", 200);
-		response.put("data", data);    // 실제 데이터는 data 키에 담습니다.
-
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(ApiResponseDTO.success(data));
 	}
 
-	/*
-		@GetMapping("/{projectId}")
-		public ProjectDetailDTO selectDetail(@PathVariable("projectId")
-		Long projectId) {
-			return projectService.selectDetail(projectId);
-		}
-	*/
 	@GetMapping("/all")
-	public List<ProjectDTO> selectAll() {
-		return projectService.selectAll();
+	public ResponseEntity<ApiResponseDTO<List<ProjectDTO>>> selectAll() {
+		List<ProjectDTO> data = projectService.selectAll();
+		return ResponseEntity.ok(ApiResponseDTO.success(data));
 	}
 
 	@GetMapping("/")
@@ -97,34 +89,72 @@ public class ProjectController {
 		return projectService.selectByCondition(searchDTO);
 	}
 
-	//관심 프로젝트인지 조회
+	@GetMapping("/list")
+	public ResponseEntity<ApiResponseDTO<List<ProjectListDTO>>> getProjectList(ProjectSearchReqDTO searchReqDTO) {
+		Long userId = null;
+		try {
+			userId = SecurityUtil.getCurrentUserId();
+		} catch (Exception e) {
+			userId = null;
+		}
+		try {
+			searchReqDTO.setUserId(userId);
+			List<ProjectListDTO> list = projectService.selectByCondition(searchReqDTO);
+			return ResponseEntity.ok(ApiResponseDTO.success(list));
+		} catch (Exception e) {
+			log.error("프로젝트 목록 조회 중 서버 오류 발생: ", e);
+			throw new BusinessException(ErrorCode.PROJECT_LIST_FETCH_ERROR);
+		}
+	}
+
+	//프로젝트 목록 조회
 	@GetMapping("/starred")
-	public boolean getStarredStatus(@RequestParam Long projectId) {
+	@Operation(summary = "관심 프로젝트 상태 조회", description = "특정 프로젝트의 관심 등록 여부를 반환")
+	public ResponseEntity<ApiResponseDTO<Boolean>> getStarredStatus(
+		@Parameter(description = "프로젝트 ID", required = true)
+		@RequestParam Long projectId) {
 		try {
 			Long userId = SecurityUtil.getCurrentUserId();
+			if (userId == null) {
+				return ResponseEntity.ok(ApiResponseDTO.success(false, null));
+			}
 			ProjectStarredDTO projectStarredDTO = ProjectStarredDTO.builder()
 				.userId(userId)
 				.projectId(projectId)
 				.build();
-			return projectService.getStarredStatus(projectStarredDTO);
+
+			boolean isStarred = projectService.getStarredStatus(projectStarredDTO);
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(isStarred, "null")
+			);
 		} catch (Exception e) {
-			return false;
+			log.error("관심 상태 조회 실패: {}", e.getMessage());
+			throw new BusinessException(ErrorCode.STARRED_PROCESS_FAILED);
 		}
 	}
 
-	//관심 프로젝트 신규 등록
+	// 관심 프로젝트 등록 및 해제 (Upsert)
 	@PostMapping("/starred")
-	public Boolean upsertStrarredProject(@RequestBody Long projectId) {
+	@Operation(summary = "관심 프로젝트 등록/해제", description = "관심 프로젝트를 토글(등록<->해제) 처리")
+	public ResponseEntity<ApiResponseDTO<Boolean>> upsertStarredProject(
+		@Parameter(description = "프로젝트 ID", required = true)
+		@RequestBody Long projectId) {
 		try {
+			log.info("관심 프로젝트 요청 - 프로젝트 ID: {}", projectId);
 			Long userId = SecurityUtil.getCurrentUserId();
 			ProjectStarredDTO projectStarredDTO = ProjectStarredDTO.builder()
 				.userId(userId)
 				.projectId(projectId)
 				.build();
 			projectService.upsertStrarredProject(projectStarredDTO);
-			return projectService.getStarredStatus(projectStarredDTO);
+			boolean currentStatus = projectService.getStarredStatus(projectStarredDTO);
+
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(currentStatus, "관심 프로젝트 처리 성공")
+			);
 		} catch (Exception e) {
-			return false;
+			log.error("관심 프로젝트 처리 실패: {}", e.getMessage(), e);
+			throw new BusinessException(ErrorCode.STARRED_PROCESS_FAILED);
 		}
 	}
 
@@ -177,7 +207,8 @@ public class ProjectController {
 
 	@GetMapping("/walletInfo")
 	public ResponseEntity<ApiResponseDTO<WalletDTO>> getMyWallet(Long userId) {
-		WalletDTO wallet = projectService.selectMyWalletInfo(userId);
+		Long uclId = projectService.getUclId(userId);
+		WalletDTO wallet = projectService.selectMyWalletInfo(uclId);
 		if (wallet == null) {
 			// 지갑 정보가 없을 경우 처리 (빈 객체 혹은 에러)
 			return ResponseEntity.ok(ApiResponseDTO.success(new WalletDTO()));
@@ -191,18 +222,40 @@ public class ProjectController {
 	}
 
 	@PostMapping("/dividend/poll/select")
-	public ResponseEntity<String> selectDividendType(@RequestBody
-	DividendSelectDTO dividendSelectDTO) {
-		Long dividendId = dividendSelectDTO.getDividendId();
-		String dividendType = dividendSelectDTO.getDividendType();
-		String address = dividendSelectDTO.getAddress();
+	@Operation(summary = "배당 수령 방식 선택", description = "사용자가 선택한 배당 수령 방식(현금/작물)을 저장")
+	public ResponseEntity<ApiResponseDTO<Boolean>> selectDividendType(
+		@RequestBody DividendSelectDTO dividendSelectDTO) {
 		try {
-			dividendService.processUserSelection(dividendId, dividendType, address);
-			// 성공 시 성공 메시지 반환
-			return ResponseEntity.ok("수령 방식 선택이 완료되었습니다.");
+			dividendService.processUserSelection(
+				dividendSelectDTO.getDividendId(),
+				dividendSelectDTO.getDividendType(),
+				dividendSelectDTO.getAddress()
+			);
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(true, "수령 방식 선택이 완료되었습니다.")
+			);
 		} catch (Exception e) {
-			// 실패 시 에러 메시지와 함께 400 또는 500 에러 반환
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			log.error("배당 수령 방식 선택 실패: {}", e.getMessage());
+			// 정의된 에러 코드가 있다면 적용 (예: DIVIDEND_POLL_FAILED)
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/dividend/poll-data")
+	@Operation(summary = "배당 설문 데이터 조회", description = "특정 배당 정보의 상세 내용을 반환")
+	public ResponseEntity<ApiResponseDTO<Map<String, Object>>> getPollData(
+		@Parameter(description = "배당 ID", required = true)
+		@RequestParam Long id) {
+		try {
+			DividendDTO dividend = dividendService.getDividendByID(id);
+			Map<String, Object> response = new HashMap<>();
+			response.put("dividend", dividend);
+			return ResponseEntity.ok(
+				ApiResponseDTO.success(response, "배당 데이터 조회 성공")
+			);
+		} catch (Exception e) {
+			log.error("배당 데이터 조회 실패: {}", e.getMessage());
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
 		}
 	}
 

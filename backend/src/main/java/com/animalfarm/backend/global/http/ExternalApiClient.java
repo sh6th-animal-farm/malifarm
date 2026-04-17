@@ -1,6 +1,5 @@
 package com.animalfarm.backend.global.http;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -79,7 +78,8 @@ public class ExternalApiClient {
 				.onStatus(HttpStatusCode::isError, clientResponse ->
 					clientResponse.bodyToMono(String.class)
 						.flatMap(errorBody -> {
-							log.error("[External API Fail] Status: {}, Body: {}", clientResponse.statusCode(), errorBody);
+							log.error("[External API Fail] Status: {}, Body: {}", clientResponse.statusCode(),
+								errorBody);
 							return Mono.error(new ExternalApiException(
 								clientResponse.statusCode().value(),
 								errorBody
@@ -103,6 +103,24 @@ public class ExternalApiClient {
 			// 시스템 에러(타임아웃, 접속 불가 등) 처리
 			log.error("[External API System Error] URL: {}, Message: {}", url, e.getMessage());
 			throw new RuntimeException("외부 서비스 호출 중 시스템 오류가 발생했습니다.", e);
+		}
+	}
+
+	// 껍데기(ExternalApiResponseDTO) 없이 직접 데이터를 받는 메서드
+	public <T> T callRawApi(String url, HttpMethod method, ParameterizedTypeReference<T> responseType) {
+		try {
+			String secureUrl = url.replace("http://", "https://");
+			return webClient.method(method)
+				.uri(java.net.URI.create(secureUrl))
+				.header("User-Agent", "Mozilla/5.0")
+				.header("Accept", MediaType.APPLICATION_JSON_VALUE)
+				.retrieve()
+				.bodyToMono(responseType)
+				.block();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

@@ -6,10 +6,10 @@
 
     <select id="findByEmail" resultType="UserDTO">
         SELECT user_id,
-               email,
-               password,
-               user_name,
-               role
+        email,
+        password,
+        user_name,
+        role
         FROM users
         WHERE email = #{email}
     </select>
@@ -17,13 +17,13 @@
     <insert id="insertUser">
         INSERT INTO users (user_name, email, password, phone_number, role, brn)
         VALUES (#{userName}, #{email}, #{password}, #{phoneNumber}, #{role},
-                #{brn})
+        #{brn})
     </insert>
 
     <select id="existsByEmail" resultType="boolean">
         SELECT EXISTS (SELECT 1
-                       FROM users
-                       WHERE email = #{email})
+        FROM users
+        WHERE email = #{email})
     </select>
 
     <select id="selectAddress" resultType="string">
@@ -36,6 +36,12 @@
         UPDATE users
         SET address = #{address}
         WHERE user_id = #{userId}
+    </update>
+
+    <update id="updatePasswordByEmail">
+        UPDATE users
+        SET password = #{password}
+        WHERE email = #{email}
     </update>
 
     <select id="getUserById" resultType="userDTO">

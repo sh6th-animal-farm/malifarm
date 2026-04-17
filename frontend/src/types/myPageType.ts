@@ -1,6 +1,8 @@
 export interface WalletInfoDTO {
+  walletId: number;
   accountNo: string;
   bankName: string;
+  availableBalance: number | string;
   cashBalance: number | string;
   frozenAmount: number | string;
   totalPurchasedValue: number | string;
@@ -11,6 +13,7 @@ export interface WalletInfoDTO {
 }
 
 export interface HoldingDTO {
+  tokenId: number;
   tokenName: string;
   tickerSymbol: string;
   tokenBalance: number | string;
@@ -24,13 +27,13 @@ export interface MyTransactionHistDTO {
   transactionId: number;
   createdAt: string;
   transactionType:
-    | "BUY"
-    | "SELL"
-    | "PASS"
-    | "FAIL"
-    | "CANCELLED"
-    | "DIVIDEND"
-    | "BURN"
+    | 'BUY'
+    | 'SELL'
+    | 'PASS'
+    | 'FAIL'
+    | 'CANCELLED'
+    | 'DIVIDEND'
+    | 'BURN'
     | string;
   tokenName: string | null;
   tickerSymbol: string | null;
@@ -95,4 +98,31 @@ export interface MyPageProjectDTO {
   periodText?: string | null;
   statusText1?: string | null;
   statusText2?: string | null;
+}
+
+// 전자 지갑 정보 (웹소켓 통신용)
+export interface WalletUpdate {
+  walletId: number;
+  tokenId: number;
+  tokenName: string;
+  tickerSymbol: string;
+  frozenAmount: number; // 동결 금액
+  cashBalance: number; // 총 예수금
+  totalPurchasedValue: number; // 총 매입 금액
+  tokenQty: number; // 해당 토큰의 총 수량
+  tokenPurchasedVal: number; // 해당 토큰의 총 매입금액
+}
+
+// 보유 토큰 정보
+export interface HoldingShortDTO {
+  tokenName: string;
+  tickerSymbol: string;
+  quantity: number;
+  purchasedValue: number;
+}
+
+// 시장가 정보 (웹소켓 통신용)
+export interface MarketPriceDTO {
+  tokenId: number;
+  currentPrice: number;
 }

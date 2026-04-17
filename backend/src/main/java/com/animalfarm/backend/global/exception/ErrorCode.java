@@ -25,6 +25,7 @@ public enum ErrorCode {
 	INVALID_LOGOUT_REQUEST(HttpStatus.BAD_REQUEST, "AUTH_005", "잘못된 로그아웃 요청입니다."),
 	LOGOUT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_006", "로그아웃 처리 중 오류가 발생했습니다."),
 	INVALID_AUTH_CODE(HttpStatus.UNAUTHORIZED, "AUTH_007", "이메일 인증 코드가 올바르지 않습니다."),
+	ACCESS_DENIED(HttpStatus.FORBIDDEN, "AUTH_008", "접근 권한이 없습니다."),
 
 	// 시스템 에러
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "서버 내부 오류가 발생했습니다."),
@@ -36,7 +37,15 @@ public enum ErrorCode {
 
 	// 계좌 연동
 	EXTERNAL_API_ACC_EXIST(HttpStatus.BAD_REQUEST, "EXTERNAL_004", "이미 연동된 회원입니다."),
-	EXTERNAL_API_ACC_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXTERNAL_005", "연동 가능한 강황증권 계좌를 찾을 수 없습니다.");
+	EXTERNAL_API_ACC_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXTERNAL_005", "연동 가능한 강황증권 계좌를 찾을 수 없습니다."),
+
+	// 프로젝트 에러
+	PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_001", "존재하지 않는 프로젝트입니다."),
+	STARRED_PROCESS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_002", "관심 프로젝트 처리 중 오류가 발생했습니다."),
+	PROJECT_LIST_FETCH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_003", "프로젝트 목록을 불러오는 중 오류가 발생했습니다."),
+
+	// 뉴스 에러
+	NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWS_001", "해당 뉴스를 찾을 수 없습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String code;

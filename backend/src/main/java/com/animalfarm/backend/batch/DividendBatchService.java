@@ -39,7 +39,6 @@ public class DividendBatchService {
 	public void runDividendBatch(Long projectId) throws Exception {
 		// rsId를 기반으로 정산 요약 정보 조회 (DB에서 직접 가져옴)
 		RevenueSummaryDTO summary = financesRepository.selectRevenueSummaryByProjectId(projectId);
-
 		if (summary == null) {
 			throw new RuntimeException("정산 대기 중인 내역이 없습니다.");
 		}
@@ -58,6 +57,7 @@ public class DividendBatchService {
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
 				.addLong("projectId", summary.getProjectId())
 				.addLong("rsId", summary.getRsId())
+				.addLong("tokenId", token.getTokenId())
 				// BigDecimal -> Double 변환 (JobParameter 제약 때문)
 				.addDouble("totalAmount", summary.getNetProfit().doubleValue())
 				.addDouble("totalIssueVolume", token.getTotalSupply().doubleValue())

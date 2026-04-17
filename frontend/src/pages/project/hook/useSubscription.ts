@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { projectApi } from '@/api/projectApi'; // API 설정에 맞춰 경로 조정
 
 interface UseSubscriptionProps {
   price: number;

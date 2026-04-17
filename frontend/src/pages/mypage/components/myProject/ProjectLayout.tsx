@@ -9,13 +9,29 @@ import type { MyPageProjectDTO, ProjectTabsDTO } from "@/types/myPageType";
 import ProjectTable from "./ProjectTable";
 
 type ProjectTab = "JOIN" | "STAR";
-type ProjectFilter = "ALL" | "SUBSCRIPTION" | "ANNOUNCEMENT" | "ENDED";
+type ProjectFilter =
+  | "ALL"
+  | "SUBSCRIPTION"
+  | "ANNOUNCEMENT"
+  | "INPROGRESS"
+  | "COMPLETED"
+  | "CANCELED";
 
-const filters = [
+const joinFilters = [
   { text: "전체보기", value: "ALL" },
   { text: "청약중", value: "SUBSCRIPTION" },
+  { text: "진행중", value: "INPROGRESS" },
+  { text: "종료", value: "COMPLETED" },
+  { text: "취소", value: "CANCELED" },
+];
+
+const starFilters = [
+  { text: "전체보기", value: "ALL" },
+  { text: "청약중", value: "SUBSCRIPTION" },
+  { text: "진행중", value: "INPROGRESS" },
   { text: "공고중", value: "ANNOUNCEMENT" },
-  { text: "종료됨", value: "ENDED" },
+  { text: "종료", value: "COMPLETED" },
+  { text: "취소", value: "CANCELED" },
 ];
 
 export default function ProjectLayout() {
@@ -39,6 +55,7 @@ export default function ProjectLayout() {
     ],
     [tabCounts.joinedCount, tabCounts.starredCount],
   );
+  const filters = tab === "JOIN" ? joinFilters : starFilters;
 
   useEffect(() => {
     const fetchTabCounts = async () => {
@@ -113,7 +130,10 @@ export default function ProjectLayout() {
       <TabMenu
         items={tabs}
         currentValue={tab}
-        onTabChange={(value) => setTab(value as ProjectTab)}
+        onTabChange={(value) => {
+          setTab(value as ProjectTab);
+          setFilter("ALL");
+        }}
       />
 
       <div className="mb-5">

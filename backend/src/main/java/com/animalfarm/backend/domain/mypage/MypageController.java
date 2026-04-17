@@ -68,10 +68,10 @@ public class MypageController {
 		return ResponseEntity.ok(ApiResponseDTO.success(wallet));
 	}
 
-	// 연동하기 (kh)
+	// 계좌 연동하기 (kh)
 	@GetMapping("/account/link")
 	public ResponseEntity<ApiResponseDTO<Long>> linkAccounOt() {
-		Long result = mypageService.linkGangHwangAccount();
+		Long result = mypageService.linkKangHwangAccount();
 
 		if (result != null && result == -1L) {
 			throw new BusinessException(ErrorCode.EXTERNAL_API_ACC_EXIST);
@@ -80,6 +80,13 @@ public class MypageController {
 		} else {
 			throw new BusinessException(ErrorCode.EXTERNAL_API_ACC_NOT_FOUND);
 		}
+	}
+
+	// 계좌 생성 및 연동하기 (kh)
+	@GetMapping("/account/create-link")
+	public ResponseEntity<ApiResponseDTO<Long>> craeteLinkAccount() {
+		Long result = mypageService.craeteLinkAccount();
+		return ResponseEntity.ok(ApiResponseDTO.success(result));
 	}
 
 	// 내 정보 조회
