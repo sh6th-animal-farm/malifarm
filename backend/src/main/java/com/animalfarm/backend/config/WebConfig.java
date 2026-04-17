@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/api/**")
-			.allowedOrigins("https://malifarm.shinhanacademy.co.kr", "http://localhost:5173") // Vite
+			.allowedOrigins("https://malifarm.shinhanacademy.co.kr", "https://malifarm.site", "http://localhost:5173") // Vite
 			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
 			.allowedHeaders("*")
 			.allowCredentials(true)
