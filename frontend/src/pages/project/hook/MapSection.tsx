@@ -9,6 +9,8 @@ export default function MapSection({
   mapInstance,
   onRegionSelect,
 }: MapSectionProps) {
+  void mapInstance;
+
   return (
     <div className="flex flex-col lg:flex-row gap-[24px] h-[500px] items-stretch">
       <div className="w-full lg:w-[320px] h-full flex-shrink-0">

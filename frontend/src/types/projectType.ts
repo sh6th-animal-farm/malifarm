@@ -1,6 +1,7 @@
-interface ProjectData {
+export interface ProjectData {
   projectId: number;
   farmId: number;
+  tokenId?: number;
   projectName: string;
   projectRound: number;
   projectDescription: string;
@@ -39,9 +40,9 @@ interface ProjectData {
   };
 }
 
-type ProjectStatus = 'SUBSCRIPTION' | 'ANNOUNCEMENT' | 'INPROGRESS';
+export type ProjectStatus = 'SUBSCRIPTION' | 'ANNOUNCEMENT' | 'INPROGRESS';
 
-type ProjectDTO = {
+export type ProjectDTO = {
   projectId: number;
   projectName: string;
   projectRound?: number | null;
@@ -55,9 +56,24 @@ type ProjectDTO = {
   projectStartDate?: string | null;
   projectEndDate?: string | null;
   expectedReturn?: number | null;
+  isStarred?: boolean | null;
 };
 
-type AdminProject = {
+export interface Project {
+  id: number;
+  title: string;
+  status: ProjectStatus;
+  thumbnailUrl: string;
+  upperDate: string;
+  lowerDate: string;
+  percent: number;
+  dDay: string;
+  countdownTarget?: string | null;
+  isStarred?: boolean;
+  expectedReturn?: number;
+}
+
+export type AdminProject = {
   id: number;
   title: string;
   status: ProjectStatus;
@@ -70,14 +86,14 @@ type AdminProject = {
   isStarred?: boolean;
 };
 
-type Token = {
+export type Token = {
   tokenId: number;
   tokenName: string;
   marketPrice: number;
   changeRate: number;
 };
 
-interface Wallet {
+export interface Wallet {
   accountNo: string;
   bankName: string;
   cashBalance: number;
@@ -87,9 +103,10 @@ interface Wallet {
   totalBalance: number;
   profitLoss: number;
   profitLossRate: number;
+  availableBalance?: number;
 }
 
-interface ProjectList {
+export interface ProjectList {
   projectId: number;
   projectName: string;
   projectRound: number;
@@ -135,13 +152,3 @@ interface ProjectList {
   lowerDate?: string;
   percent?: number;
 }
-
-export type {
-  ProjectData,
-  ProjectDTO,
-  Project,
-  Token,
-  ProjectStatus,
-  Wallet,
-  ProjectList,
-};

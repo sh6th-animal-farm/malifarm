@@ -25,4 +25,5 @@ public class WalletDTO {
 	private BigDecimal totalBalance;              // 총자산
 	private BigDecimal profitLoss;                  // 평가손익
 	private BigDecimal profitLossRate;            // 수익률
+	private BigDecimal availableBalance;        // 사용 가능 금액
 }
