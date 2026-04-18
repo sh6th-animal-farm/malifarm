@@ -34,7 +34,7 @@ export default function ProjectDetail() {
   const fetchData = async (projectId: string) => {
     try {
       const projectRes = await projectApi.getProjectDetail(projectId);
-      setProjectData(projectRes.data || projectRes);
+      setProjectData(projectRes);
 
       const token = localStorage.getItem('accessToken');
       if (token) {
@@ -64,6 +64,8 @@ export default function ProjectDetail() {
 
   // 사이드바 버튼 클릭 시 실행될 함수
   const handleAction = async () => {
+    if (!projectData) return;
+
     if (projectData.projectStatus === 'INPROGRESS') {
       navigate(`/token/${id}`);
       return;
@@ -155,8 +157,8 @@ export default function ProjectDetail() {
             price: Math.floor(
               projectData.targetAmount / projectData.totalSupply,
             ),
+            thumbnailUrl: projectData.images?.[0] ?? '',
             userLimit: 500000000,
-            walletBalance: 0,
             minAmountPerInvestor: projectData.minAmountPerInvestor,
           }}
         />

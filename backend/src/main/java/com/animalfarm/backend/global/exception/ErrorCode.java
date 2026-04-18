@@ -44,6 +44,9 @@ public enum ErrorCode {
 	STARRED_PROCESS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_002", "관심 프로젝트 처리 중 오류가 발생했습니다."),
 	PROJECT_LIST_FETCH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_003", "프로젝트 목록을 불러오는 중 오류가 발생했습니다."),
 
+	// 청약 신청 에러
+	INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "PAY-001", "증권 계좌 잔액이 부족합니다."),
+
 	// 뉴스 에러
 	NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWS_001", "해당 뉴스를 찾을 수 없습니다.");
 

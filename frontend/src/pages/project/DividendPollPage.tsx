@@ -63,7 +63,7 @@ export default function DividendPollPage() {
     }
 
     new daumPostcode({
-      oncomplete: (data) => {
+      oncomplete: (data: PostcodeAddressData) => {
         let selectedAddress =
           data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
         let extraAddress = '';
@@ -155,7 +155,9 @@ export default function DividendPollPage() {
                       ₩
                     </span>
                     <div className="relative z-10 pr-16">
-                      <p className="font-body-04 text-gray-900">현금으로 받기</p>
+                      <p className="font-body-04 text-gray-900">
+                        현금으로 받기
+                      </p>
                       <p className="mt-1 font-caption-01 text-gray-500">
                         등록된 계좌로 배당금이 입금됩니다.
                       </p>
@@ -179,7 +181,9 @@ export default function DividendPollPage() {
                       <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z" />
                     </svg>
                     <div className="relative z-10 pr-16">
-                      <p className="font-body-04 text-gray-900">농산물로 받기</p>
+                      <p className="font-body-04 text-gray-900">
+                        농산물로 받기
+                      </p>
                       <p className="mt-1 font-caption-01 text-gray-500">
                         제철 수확물 기준으로 우선 배송해 드립니다.
                       </p>

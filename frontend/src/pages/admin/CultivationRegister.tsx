@@ -3,6 +3,7 @@ import { adminApi } from '@/api/adminApi';
 import Button from '@/components/common/Button';
 import Toast from '@/components/common/Toast';
 import AdminSidebar from '@/pages/admin/AdminSidebar';
+import type { ProjectDTO } from '@/types/projectType';
 import '../../styles/admin.css';
 
 interface CultivationData {
@@ -16,12 +17,6 @@ interface CultivationData {
   notes?: string;
 }
 
-interface Project {
-  projectId: number;
-  projectName: string;
-  projectRound: number;
-}
-
 const CultivationRegister: React.FC = () => {
   const [formData, setFormData] = useState<CultivationData>({
     projectId: 0,
@@ -33,7 +28,8 @@ const CultivationRegister: React.FC = () => {
     harvestDate: '',
     notes: '',
   });
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectDTO[]>([]);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -51,9 +47,9 @@ const CultivationRegister: React.FC = () => {
     e.preventDefault();
     try {
       await adminApi.insertCultivation(formData);
-      Toast.show('재배 정보 등록 완료');
+      setToastMessage('재배 정보 등록 완료');
     } catch (error) {
-      Toast.show('등록 실패');
+      setToastMessage('등록 실패');
     }
   };
 
@@ -70,6 +66,9 @@ const CultivationRegister: React.FC = () => {
 
   return (
     <div className="admin-layout min-h-screen bg-gray-50 flex">
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage('')} />
+      )}
       <AdminSidebar />
       <main className="flex-1 p-10">
         <div className="max-w-5xl mx-auto">
@@ -92,7 +91,7 @@ const CultivationRegister: React.FC = () => {
                     <option value="0">선택</option>
                     {projects.map((project) => (
                       <option key={project.projectId} value={project.projectId}>
-                        {project.projectName} ({project.projectRound}차)
+                        {project.projectName} ({project.projectRound ?? 0}차)
                       </option>
                     ))}
                   </select>

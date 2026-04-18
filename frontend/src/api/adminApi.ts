@@ -1,5 +1,11 @@
 import apiClient from './apiClient'; // 기존 http_client 재사용 (apiClient.ts로 가정)
 import axios from 'axios';
+import type { FarmDTO } from '@/types/farmType';
+import type {
+  ProjectData as ProjectDetailData,
+  ProjectDTO,
+} from '@/types/projectType';
+import type { Token } from '@/types/tokenType';
 
 export interface FarmData {
   farmName: string;
@@ -68,11 +74,18 @@ export interface RevenueData {
   description?: string;
 }
 
+export interface CoordsResponse {
+  latitude: number;
+  longitude: number;
+  altitude: number;
+}
+
 export const adminApi = {
-  insertFarm: (data: FarmData) => apiClient.post('/farm/insert', data),
-  getCoords: (address: string) =>
+  insertFarm: (data: FarmData): Promise<string> =>
+    apiClient.post('/farm/insert', data),
+  getCoords: (address: string): Promise<CoordsResponse> =>
     apiClient.get(`/farm/get-coords?address=${encodeURIComponent(address)}`),
-  getFarms: async () => {
+  getFarms: async (): Promise<FarmDTO[]> => {
     // /api/project/farm/all은 ApiResponseDTO 없이 직접 배열을 반환하므로 axios 직접 사용
     const baseURL = import.meta.env.VITE_API_BASE_URL;
     const token = localStorage.getItem('accessToken');
@@ -84,21 +97,21 @@ export const adminApi = {
     });
     return response.data;
   },
-  insertProject: (data: FormData) =>
+  insertProject: (data: FormData): Promise<string> =>
     apiClient.post('/api/project/insert', data),
-  updateProject: (data: FormData) =>
+  updateProject: (data: FormData): Promise<string> =>
     apiClient.post('/api/project/update', data),
-  getProjects: () => apiClient.get('/api/project/all'),
-  getProjectDetails: (projectId: number) =>
+  getProjects: (): Promise<ProjectDTO[]> => apiClient.get('/api/project/all'),
+  getProjectDetails: (projectId: number): Promise<ProjectDetailData> =>
     apiClient.get(`/api/project/${projectId}`),
-  getProjectPictures: (projectId: number) =>
+  getProjectPictures: (projectId: number): Promise<string[]> =>
     apiClient.get(`/api/project/${projectId}/pictures`),
-  getTokens: (projectId: number) =>
+  getTokens: (projectId: number): Promise<Token> =>
     apiClient.get(`/api/token/${projectId}`),
-  insertCultivation: (data: CultivationData) =>
+  insertCultivation: (data: CultivationData): Promise<string> =>
     apiClient.post('/api/cultivation/insert', data),
-  insertExpense: (data: ExpenseData) =>
+  insertExpense: (data: ExpenseData): Promise<string> =>
     apiClient.post('/api/expense/insert', data),
-  insertRevenue: (data: RevenueData) =>
+  insertRevenue: (data: RevenueData): Promise<string> =>
     apiClient.post('/api/revenue/insert', data),
 };

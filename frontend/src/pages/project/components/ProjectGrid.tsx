@@ -48,7 +48,12 @@ export default function ProjectGrid({
         isFavorite: p.isStarred,
         id: p.projectId,
         title: p.projectName,
-        status: p.projectStatus,
+        status:
+          p.projectStatus === 'SUBSCRIPTION' ||
+          p.projectStatus === 'ANNOUNCEMENT' ||
+          p.projectStatus === 'INPROGRESS'
+            ? p.projectStatus
+            : 'ANNOUNCEMENT',
         percent: p.subscriptionRate,
         upperDate: `${formatDate(p.subscriptionStartDate)} ~ ${formatDate(p.subscriptionEndDate)}`,
         lowerDate: `${formatDate(p.projectStartDate)} ~ ${formatDate(p.projectEndDate)}`,
@@ -62,6 +67,7 @@ export default function ProjectGrid({
         thumbnailUrl:
           p.thumbnailUrl ||
           'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?w=1000',
+        dDay: '',
       };
     });
 
