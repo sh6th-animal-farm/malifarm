@@ -1,4 +1,7 @@
-import type { SubscriptionApplicationDTO } from '@/types/subscriptionType';
+import type {
+  SubscriptionApplicationDTO,
+  UserInvestmentLimitDTO,
+} from '@/types/subscriptionType';
 import apiClient from './apiClient';
 
 export const subscriptionApi = {
@@ -12,5 +15,8 @@ export const subscriptionApi = {
     projectId: number,
   ): Promise<{ isApplied?: boolean; data?: { isApplied?: boolean } }> => {
     return apiClient.get(`/api/subscription/check/${projectId}`);
+  },
+  getUserInvestmentLimit: (): Promise<UserInvestmentLimitDTO> => {
+    return apiClient.get(`/api/user/myinvestmentlimit`);
   },
 };
