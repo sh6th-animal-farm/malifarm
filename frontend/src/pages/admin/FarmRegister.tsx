@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { adminApi } from '@/api/adminApi';
 import Button from '@/components/common/Button';
-import Modal from '@/components/common/Modal';
 import Toast from '@/components/common/Toast';
 import AdminSidebar from '@/pages/admin/AdminSidebar';
 import '../../styles/admin.css';
@@ -40,7 +39,7 @@ const FarmRegister: React.FC = () => {
     altitude: 0,
     description: '',
   });
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     // daum Postcode 스크립트 로드
@@ -60,14 +59,14 @@ const FarmRegister: React.FC = () => {
     try {
       const response = await adminApi.insertFarm(formData);
       if (response === 'success') {
-        Toast.show('농장 등록이 완료되었습니다!');
+        setToastMessage('농장 등록이 완료되었습니다!');
         // 리다이렉트 로직 추가 가능
       } else {
-        Toast.show('등록 실패: ' + response);
+        setToastMessage('등록 실패: ' + response);
       }
     } catch (error) {
       console.error(error);
-      Toast.show('등록 실패');
+      setToastMessage('등록 실패');
     }
   };
 
@@ -106,23 +105,27 @@ const FarmRegister: React.FC = () => {
           longitude: coords.longitude,
           altitude: coords.altitude || 0,
         });
-        Toast.show('위치 좌표가 자동으로 설정되었습니다.');
+        setToastMessage('위치 좌표가 자동으로 설정되었습니다.');
       }
     } catch (error) {
       console.error('좌표 로드 실패:', error);
-      Toast.show('좌표를 가져오지 못했습니다. 수동 입력을 권장합니다.');
+      setToastMessage('좌표를 가져오지 못했습니다. 수동 입력을 권장합니다.');
     }
   };
 
   return (
     <div className="admin-layout min-h-screen bg-gray-50 flex">
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage('')} />
+      )}
       <AdminSidebar />
       <main className="flex-1 p-10">
         <div className="max-w-5xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold">농장 등록/수정</h1>
             <Button
-              onClick={() => setIsModalOpen(false)}
+              type="button"
+              onClick={() => {}}
               className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
             >
               농장 정보 불러오기

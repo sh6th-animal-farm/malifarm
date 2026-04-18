@@ -2,12 +2,13 @@ import ProjectCard from '@/components/common/ProjectCard';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { homeApi } from '@/api/homeApi';
+import type { Project } from '@/types/projectType';
 import { toCardModel } from '@/utils/projectMapper';
 import { useStarreds } from '@/pages/project/hook/useStarreds';
 import Icon from '@/components/icon';
 
 export default function ProjectSection() {
-  const { projects, setProjects, handleToggleStar } = useStarreds([]);
+  const { projects, setProjects, handleToggleStar } = useStarreds<Project>([]);
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const [canSlidePrev, setCanSlidePrev] = useState(false);
   const [canSlideNext, setCanSlideNext] = useState(false);
@@ -89,7 +90,7 @@ export default function ProjectSection() {
               >
                 <ProjectCard
                   project={project}
-                  starred={project.isStarred}
+                  starred={project.isStarred ?? false}
                   onToggleStar={handleToggleStar}
                 />
               </div>

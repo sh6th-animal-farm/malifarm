@@ -107,7 +107,14 @@ export default function AddressModal({
     }
 
     new daumPostcode({
-      oncomplete: (data) => {
+      oncomplete: (data: {
+        userSelectedType: string;
+        roadAddress: string;
+        jibunAddress: string;
+        bname: string;
+        buildingName: string;
+        apartment: string;
+      }) => {
         let address =
           data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
 

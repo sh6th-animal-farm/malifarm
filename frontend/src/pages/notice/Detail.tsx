@@ -3,6 +3,8 @@ import Badge from "@/components/common/Badge";
 import Button from "@/components/common/Button";
 import Icon from "@/components/icon";
 
+void Icon;
+
 // Mock data (matches the list in index.tsx)
 const mockNotices = [
   { 
@@ -38,6 +40,8 @@ const winners = [
   { rank: "3등 (1명)", email: "luck****@kakao.com", prize: "농작물 럭키박스" },
   { rank: "3등 (1명)", email: "test****@test.com", prize: "농작물 럭키박스" },
 ];
+
+void winners;
 
 const prizeInstructions = [
   "당첨 메일에 포함된 [배송지 입력 링크]를 통해 05월 10일(금)까지 정보를 입력해 주세요.",
