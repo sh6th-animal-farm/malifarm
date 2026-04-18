@@ -51,7 +51,13 @@ jobs:
         run: |
           cd frontend
           npm install
-          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env
+          cat <<EOF > .env
+          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+          VITE_PORTONE_IMP_CODE=${{ secrets.VITE_PORTONE_IMP_CODE }}
+          VITE_PORTONE_CHANNEL_KEY=${{ secrets.VITE_PORTONE_CHANNEL_KEY }}
+          VITE_WS_URL=${{ secrets.VITE_WS_URL }}
+          VITE_KAKAO_MAP_KEY=${{ secrets.VITE_KAKAO_MAP_KEY }}
+          EOF
           npm run build
 
       # 3. 빌드된 프론트엔드 파일을 서버로 전송 (SCP)
