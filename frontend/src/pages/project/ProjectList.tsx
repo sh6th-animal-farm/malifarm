@@ -23,6 +23,7 @@ type ProjectListRestoreState = {
 
 export default function ProjectList() {
   const isMobile = useMediaQuery('(max-width: 767px)');
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,16 +56,20 @@ export default function ProjectList() {
 
   const activeStatus = searchParams.get('projectStatus') || 'ALL';
   const saveListViewState = useCallback(() => {
+    const scrollY = isMobile
+      ? mobileScrollRef.current?.scrollTop ?? 0
+      : window.scrollY;
+
     const restoreState: ProjectListRestoreState = {
       currentPage,
-      scrollY: window.scrollY,
+      scrollY,
       activeStatus,
     };
     sessionStorage.setItem(
       PROJECT_LIST_RESTORE_KEY,
       JSON.stringify(restoreState),
     );
-  }, [activeStatus, currentPage]);
+  }, [activeStatus, currentPage, isMobile]);
 
   const mapInstance = useKakaoMap('map', projects);
 
@@ -77,11 +82,15 @@ export default function ProjectList() {
       saveListViewState();
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const target: Window | HTMLDivElement | null = isMobile
+      ? mobileScrollRef.current
+      : window;
+    if (!target) return;
+    target.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      target.removeEventListener('scroll', handleScroll);
     };
-  }, [saveListViewState]);
+  }, [isMobile, saveListViewState]);
 
   // [Effect] 데이터 로딩 - 필터가 변경될 때마다 실행
   useEffect(() => {
@@ -135,7 +144,11 @@ export default function ProjectList() {
     }
 
     const timer = window.setTimeout(() => {
-      window.scrollTo(0, pendingRestore.scrollY);
+      if (isMobile && mobileScrollRef.current) {
+        mobileScrollRef.current.scrollTo(0, pendingRestore.scrollY);
+      } else {
+        window.scrollTo(0, pendingRestore.scrollY);
+      }
       hasRestoredScrollRef.current = true;
       shouldRestoreRef.current = false;
     }, 0);
@@ -143,7 +156,7 @@ export default function ProjectList() {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [activeStatus, isLoading, pendingRestore]);
+  }, [activeStatus, isLoading, isMobile, pendingRestore]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -180,7 +193,7 @@ export default function ProjectList() {
   };
 
   return (
-    <PageShell>
+    <PageShell mobileInnerRef={mobileScrollRef}>
         <div className="hidden md:block">
           <section className="layout-container py-20 md:pt-20">
             <SectionHeader

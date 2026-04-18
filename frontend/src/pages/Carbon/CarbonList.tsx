@@ -5,6 +5,7 @@ import { carbonApi } from "../../api/carbonApi";
 import type { CarbonListDTO } from "../../types/carbonType";
 import EmptyState from "@/components/common/EmptyState";
 import SectionHeader from "@/components/layout/SectionHeader";
+import PageShell from "@/components/layout/PageShell";
 import CarbonCard from "./components/CarbonCard";
 import CarbonDiscountRateModal from "./components/CarbonDiscountRateModal";
 
@@ -39,8 +40,9 @@ export default function CarbonList() {
   };
 
   return (
-    <div className="w-full">
-      <section className="layout-container py-20 md:py-20">
+    <PageShell>
+      <div className="w-full">
+        <section className="layout-container py-20 md:py-20">
         
         {/* 헤더 상단 정렬 */}
         <div className="flex justify-between items-start mb-[24px]">
@@ -124,7 +126,8 @@ export default function CarbonList() {
             </div>
           )}
         </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </PageShell>
   );
 }

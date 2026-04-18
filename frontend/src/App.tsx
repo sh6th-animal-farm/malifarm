@@ -5,7 +5,7 @@ import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import BottomTabBar from './components/layout/BottomTabBar';
 import ScrollToTop from './components/layout/ScrollToTop';
-import Home from './pages/Home';
+import Home from './pages/home';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
 import NotFound from './pages/Error/NotFound';

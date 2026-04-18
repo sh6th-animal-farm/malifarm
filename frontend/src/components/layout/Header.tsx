@@ -105,7 +105,21 @@ export default function Header() {
 
   const getMobileHeaderTitle = () => {
     const path = location.pathname;
+    const mobileTokenTab =
+      typeof window !== "undefined"
+        ? sessionStorage.getItem("mobile-token-detail-tab")
+        : null;
     if (path === "/") return "홈";
+    if (/^\/project\/\d+$/.test(path)) {
+      return sessionStorage.getItem("mobile-project-detail-title") || "프로젝트 상세";
+    }
+    if (/^\/token\/\d+$/.test(path)) {
+      if (mobileTokenTab === "list") return "토큰 거래소";
+      return sessionStorage.getItem("mobile-token-detail-title") || "토큰 거래소";
+    }
+    if (/^\/carbon\/\d+$/.test(path)) {
+      return sessionStorage.getItem("mobile-carbon-detail-title") || "탄소마켓";
+    }
     if (path.startsWith("/project")) return "프로젝트";
     if (path.startsWith("/token")) return "토큰 거래소";
     if (path.startsWith("/carbon")) return "탄소 마켓";
@@ -123,14 +137,39 @@ export default function Header() {
   };
 
   const showMyPageMobileBackButton = location.pathname.startsWith("/mypage/");
+  const showProjectDetailMobileBackButton = /^\/project\/\d+$/.test(location.pathname);
+  const showTokenDetailMobileBackButton =
+    /^\/token\/\d+$/.test(location.pathname) &&
+    (typeof window === "undefined" ||
+      sessionStorage.getItem("mobile-token-detail-tab") !== "list");
+  const showCarbonDetailMobileBackButton = /^\/carbon\/\d+$/.test(location.pathname);
+  const showMobileBackButton =
+    showMyPageMobileBackButton ||
+    showProjectDetailMobileBackButton ||
+    showTokenDetailMobileBackButton ||
+    showCarbonDetailMobileBackButton;
 
   return (
     <header className="h-[var(--spacing-header-height)] bg-white md:bg-white/85 md:backdrop-blur-md sticky top-0 z-[1000] flex items-center">
       <div className="layout-container relative flex h-full items-center justify-between">
-        {showMyPageMobileBackButton && (
+        {showMobileBackButton && (
           <button
             type="button"
-            onClick={() => navigate("/mypage")}
+            onClick={() => {
+              if (showProjectDetailMobileBackButton) {
+                navigate("/project");
+                return;
+              }
+              if (showTokenDetailMobileBackButton) {
+                navigate("/token");
+                return;
+              }
+              if (showCarbonDetailMobileBackButton) {
+                navigate("/carbon/list");
+                return;
+              }
+              navigate("/mypage");
+            }}
             className="absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center text-gray-700 md:hidden"
             aria-label="뒤로가기"
           >
@@ -158,7 +197,7 @@ export default function Header() {
         <div
           className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap font-header-03
           } ${
-            showMyPageMobileBackButton
+            showMobileBackButton
               ? "absolute left-1/2 -translate-x-1/2"
               : ""
           }`}

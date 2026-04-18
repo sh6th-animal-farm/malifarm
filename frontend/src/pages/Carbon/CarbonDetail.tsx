@@ -8,6 +8,7 @@ import CarbonPriceCard from "./components/CarbonPriceCard";
 import InfoGrid from "../project/components/DetailInfoCard";
 import ImageCarousel from "../project/components/ImageCarousel";
 import TabMenu from "@/components/common/TabMenu";
+import PageShell from "@/components/layout/PageShell";
 
 
 export default function CarbonDetail() {
@@ -26,6 +27,12 @@ export default function CarbonDetail() {
       try {
         const data = await carbonApi.getCarbonDetail(Number(id));
         setDetailData(data);
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(
+            "mobile-carbon-detail-title",
+            data.carbonInfo?.cpTitle || "탄소마켓",
+          );
+        }
       } catch (error) {
         console.error("상세 정보 로딩 실패:", error);
       } finally {
@@ -74,9 +81,10 @@ export default function CarbonDetail() {
 
 
   return (
-    // 🌟 화면 전체(w-full)를 덮는 연회색 배경(bg-gray-50) 래퍼 추가!
-    <div className="w-full bg-[var(--color-gray-50)] min-h-screen">
-      <div className="layout-container py-[48px]">
+    <PageShell>
+      {/* 🌟 화면 전체(w-full)를 덮는 연회색 배경(bg-gray-50) 래퍼 추가! */}
+      <div className="w-full bg-[var(--color-gray-50)] min-h-screen">
+        <div className="layout-container py-[48px]">
         <div className="w-full flex gap-[var(--spacing-gutter)] pt-[48px] pb-[48px]">
           
           {/* 왼쪽 메인 콘텐츠 영역 */}
@@ -140,15 +148,16 @@ export default function CarbonDetail() {
 
         </div>
 
-       <CarbonOrderModal 
-          isOpen={isOrderModalOpen} 
-          onClose={() => setIsOrderModalOpen(false)} 
-          cpId={Number(id)} 
+          <CarbonOrderModal 
+          isOpen={isOrderModalOpen}
+          onClose={() => setIsOrderModalOpen(false)}
+          cpId={Number(id)}
           productName={carbonInfo.cpTitle}
           unitPrice={userBenefit?.currentPrice || carbonInfo.cpPrice || 0}
           maxQty={carbonInfo.cpAmount || 0}
         />
+        </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

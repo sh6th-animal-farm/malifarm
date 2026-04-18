@@ -10,6 +10,8 @@ import { useTradeHistory } from '@/pages/Token/hooks/useTradeHistory';
 import { useTokenList } from '@/pages/Token/hooks/useTokenList';
 import { useTokenOhlcv } from '@/pages/Token/hooks/useTokenOhlcv';
 
+const LAST_VIEWED_TOKEN_ID_KEY = 'last-viewed-token-id';
+
 export default function TokenDetail() {
   const { id } = useParams(); // URL 파라미터에서 토큰 ID 추출
   const navigate = useNavigate();
@@ -57,6 +59,20 @@ export default function TokenDetail() {
       isFixed.current = true;
     }
   }, [tokenOhlcv?.marketPrice]);
+
+  useEffect(() => {
+    if (!tokenOhlcv?.tokenName) return;
+    if (typeof window === 'undefined') return;
+    sessionStorage.setItem('mobile-token-detail-title', tokenOhlcv.tokenName);
+  }, [tokenOhlcv?.tokenName]);
+
+  useEffect(() => {
+    if (!id) return;
+    if (typeof window === 'undefined') return;
+    const parsedId = Number(id);
+    if (!Number.isFinite(parsedId) || parsedId <= 0) return;
+    sessionStorage.setItem(LAST_VIEWED_TOKEN_ID_KEY, String(parsedId));
+  }, [id]);
 
   // 클릭 시 페이지 이동
   const handleTokenClick = (tokenId: number) => {

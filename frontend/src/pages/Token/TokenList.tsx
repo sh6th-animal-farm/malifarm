@@ -6,6 +6,8 @@ import { useDebounce } from '@/hooks/useDebounce';
 import { useTokenList } from '@/pages/Token/hooks/useTokenList';
 import { useNavigate } from 'react-router-dom';
 
+const LAST_VIEWED_TOKEN_ID_KEY = 'last-viewed-token-id';
+
 export default function TokenList() {
   // 훅으로 초기 데이터 + 실시간 업데이트 + 정렬된 리스트를 한 번에 가져옴
   const { tokenList = [], isLoading } = useTokenList('VOLUME');
@@ -26,7 +28,16 @@ export default function TokenList() {
 
     if (!isMobile || tokenList.length === 0) return;
 
-    navigate(`/token/${tokenList[0].tokenId}`, {
+    const savedId = Number(
+      sessionStorage.getItem(LAST_VIEWED_TOKEN_ID_KEY) ?? '',
+    );
+    const hasSavedId = Number.isFinite(savedId) && savedId > 0;
+    const targetTokenId = hasSavedId
+      ? (tokenList.find((token) => token.tokenId === savedId)?.tokenId ??
+        tokenList[0].tokenId)
+      : tokenList[0].tokenId;
+
+    navigate(`/token/${targetTokenId}`, {
       replace: true,
       state: { mobileTab: 'list' },
     });

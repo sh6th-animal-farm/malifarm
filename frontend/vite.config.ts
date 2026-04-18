@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 import { VitePWA, type VitePWAOptions } from 'vite-plugin-pwa';
 
-const pwaOptions: VitePWAOptions = {
+const pwaOptions: Partial<VitePWAOptions> = {
   registerType: 'autoUpdate',
   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
   manifest: {

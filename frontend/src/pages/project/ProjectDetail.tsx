@@ -36,6 +36,12 @@ export default function ProjectDetail() {
     try {
       const projectRes = await projectApi.getProjectDetail(projectId);
       setProjectData(projectRes);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(
+          'mobile-project-detail-title',
+          projectRes.projectName ?? '프로젝트 상세',
+        );
+      }
 
       const token = localStorage.getItem('accessToken');
       if (token) {

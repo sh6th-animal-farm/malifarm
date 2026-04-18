@@ -3,16 +3,17 @@ import { Link, useLocation } from "react-router-dom";
 import Icon from "@/components/icon";
 
 const tabs = [
-  { to: "/", label: "홈", icon: "home" as const, match: ["/"] },
-  { to: "/project", label: "프로젝트", icon: "seedling" as const, match: ["/project"] },
+  { to: "/", label: "홈", icon: "home" as const, match: ["/"], state: undefined },
+  { to: "/project", label: "프로젝트", icon: "seedling" as const, match: ["/project"], state: undefined },
   {
     to: "/token",
     label: "토큰 거래소",
     icon: "link" as const,
     match: ["/token"],
+    state: undefined
   },
-  { to: "/carbon/list", label: "탄소마켓", icon: "leaf" as const, match: ["/carbon"] },
-  { to: "/mypage", label: "내 정보", icon: "user" as const, match: ["/mypage"] },
+  { to: "/carbon/list", label: "탄소마켓", icon: "leaf" as const, match: ["/carbon"], state: undefined },
+  { to: "/mypage", label: "내 정보", icon: "user" as const, match: ["/mypage"], state: undefined },
 ];
 
 export default function BottomTabBar() {
