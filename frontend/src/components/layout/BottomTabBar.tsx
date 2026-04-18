@@ -10,7 +10,6 @@ const tabs = [
     label: "토큰 거래소",
     icon: "link" as const,
     match: ["/token"],
-    state: { openTokenDetailOnMobile: true },
   },
   { to: "/carbon/list", label: "탄소마켓", icon: "leaf" as const, match: ["/carbon"] },
   { to: "/mypage", label: "내 정보", icon: "user" as const, match: ["/mypage"] },
@@ -49,7 +48,7 @@ export default function BottomTabBar() {
       ref={navRef}
       className="fixed inset-x-0 bottom-0 z-[1100] bg-white shadow-std md:hidden"
     >
-      <ul className="flex items-center justify-center gap-x-3 pb-4">
+      <ul className="flex items-center justify-center gap-x-2 pb-6">
         {tabs.map((tab) => {
           const active = isActive(tab.match);
 

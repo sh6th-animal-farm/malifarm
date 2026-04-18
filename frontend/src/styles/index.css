@@ -63,7 +63,7 @@
 
   * { @apply m-0 p-0 box-border tracking-std; }
   body {
-    @apply font-main bg-white text-gray-600 leading-std antialiased flex flex-col min-h-screen;
+    @apply font-main bg-gray-50 text-gray-600 leading-std antialiased flex flex-col min-h-screen;
   }
   a { @apply cursor-pointer no-underline text-inherit; }
   
@@ -72,6 +72,11 @@
     @apply w-full p-[14px] border border-gray-200 rounded-[var(--radius-s)] text-[16px] transition-colors focus:outline-none focus:border-green-500;
   }
   label { @apply block mb-2 text-gray-800 font-caption-02; }
+
+  html {
+    background-color: var(--color-gray-50); 
+  }
+
 }
 
 /* --- 7. Typography Utilities --- */
@@ -208,7 +213,7 @@
   .font-header-00 { font: 900 24px/1.35 var(--font-main); }
   .font-header-01 { font: 700 24px/1.35 var(--font-main); }
   .font-header-02 { font: 600 20px/1.35 var(--font-main); }
-  .font-header-03 { font: 700 18px/1.35 var(--font-main); }
+  .font-header-03 { font: 600 18px/1.35 var(--font-main); }
   .font-header-04 { font: 600 16px/1.35 var(--font-main); }
   .font-subtitle-01 { font: 600 16px/1.4 var(--font-main); }
   .font-subtitle-02 { font: 500 16px/1.4 var(--font-main); }

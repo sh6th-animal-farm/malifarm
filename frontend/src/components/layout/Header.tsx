@@ -125,7 +125,7 @@ export default function Header() {
   const showMyPageMobileBackButton = location.pathname.startsWith("/mypage/");
 
   return (
-    <header className="h-header-height bg-white md:bg-white/85 md:backdrop-blur-md sticky top-0 z-[1000] flex items-center">
+    <header className="h-[var(--spacing-header-height)] bg-white md:bg-white/85 md:backdrop-blur-md sticky top-0 z-[1000] flex items-center">
       <div className="layout-container relative flex h-full items-center justify-between">
         {showMyPageMobileBackButton && (
           <button

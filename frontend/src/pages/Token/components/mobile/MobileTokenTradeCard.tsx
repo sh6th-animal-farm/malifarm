@@ -140,7 +140,7 @@ export default function MobileTokenTradeCard({
         </div>
       </div>
 
-      <div className="flex w-3/5 min-w-0 flex-col px-4 py-4">
+      <div className="flex w-3/5 min-w-0 flex-col overflow-hidden px-4 py-4">
         <div>
           <ToggleGroup
             tabs={tabs}
@@ -221,7 +221,7 @@ export default function MobileTokenTradeCard({
             </div>
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1 flex-col gap-4 pt-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-4">
             <div className="flex items-center gap-2">
               <span className="w-24 text-gray-400 font-caption-03">주문 유형</span>
               <select

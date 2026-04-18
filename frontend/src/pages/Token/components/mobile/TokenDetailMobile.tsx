@@ -66,8 +66,8 @@ export default function TokenDetailMobile({
   ];
 
   return (
-    <div className="md:hidden flex h-full flex-col">
-      <div className="sticky top-header-height z-20 bg-white">
+    <div className="md:hidden flex h-[var(--custom-calc-height)] flex-col overflow-hidden">
+      <div className="sticky top-0 z-20 bg-white">
         <TabMenu
           items={mobileTabs}
           currentValue={mobileTab}
@@ -80,7 +80,7 @@ export default function TokenDetailMobile({
         />
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {mobileTab === 'chart' &&
           (tokenOhlcv ? (
             <MobileTokenChartCard tokenOhlcv={tokenOhlcv} />
