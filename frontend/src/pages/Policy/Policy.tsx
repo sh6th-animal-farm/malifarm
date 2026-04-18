@@ -1,36 +1,67 @@
 import { useState } from "react";
+import TabMenu from "@/components/common/TabMenu";
+import Icon from "@/components/icon";
 
 type PolicyTab = "marifarm" | "sto" | "trade" | "dividend" | "carbon";
 
 export default function Policy() {
   const [activeTab, setActiveTab] = useState<PolicyTab>("marifarm");
+  const policyTabs: Array<{ text: string; value: PolicyTab }> = [
+    { text: "마리팜", value: "marifarm" },
+    { text: "STO 청약", value: "sto" },
+    { text: "토큰 거래", value: "trade" },
+    { text: "수익 분배", value: "dividend" },
+    { text: "탄소 규정", value: "carbon" },
+  ];
 
   const tabStyle = (tab: PolicyTab) =>
-    `w-full text-left px-4 py-3 rounded-xl text-sm transition-colors cursor-pointer ${
+    `group flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3.5 transition-colors md:px-5 md:py-4 ${
       activeTab === tab
-        ? "bg-green-50 text-green-700 font-semibold"
-        : "text-gray-700 hover:bg-gray-50"
+        ? "bg-white font-body-04 text-green-600 shadow-std"
+        : "font-body-01 text-gray-500 hover:bg-green-0 hover:text-green-700"
     }`;
 
-  const sectionTitleClass = "text-2xl font-bold text-gray-900 mb-6";
-  const articleTitleClass = "text-lg font-semibold text-gray-900 mt-6 mb-2";
-  const bodyClass = "text-sm leading-7 text-gray-700";
+  const sectionTitleClass = "font-header-02 text-gray-900 mb-6";
+  const articleTitleClass = "font-subtitle-01 text-gray-900 mt-6 mb-2";
+  const bodyClass = "font-body-01 leading-7 text-gray-700";
   const ulClass = "list-disc pl-6 space-y-1";
-  const pClass = "text-sm leading-7 text-gray-700";
+  const pClass = "font-body-01 leading-7 text-gray-700";
 
   return (
-    <main className="max-w-[1200px] mx-auto px-4 py-10 flex flex-col gap-6 md:flex-row">
-      <aside className="w-full md:w-[280px] md:shrink-0 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm h-fit">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">이용약관</h2>
+    <main className="layout-container py-10 md:py-16 flex flex-col gap-6 md:flex-row">
+      <div className="md:hidden">
+        <TabMenu
+          items={policyTabs}
+          currentValue={activeTab}
+          onTabChange={(value) => setActiveTab(value as PolicyTab)}
+          tabPaddingY={10}
+          gap={0}
+          marginY={0}
+          equalWidth
+        />
+      </div>
 
-        <ul className="flex flex-col gap-2">
+      <aside className="hidden md:block w-full md:w-[280px] md:shrink-0 h-fit">
+        {/* <h2 className="font-header-04 text-gray-900 mb-4 px-1">이용약관</h2> */}
+
+        <ul className="flex flex-col gap-1">
           <li>
             <button
               type="button"
               className={tabStyle("marifarm")}
               onClick={() => setActiveTab("marifarm")}
             >
-              마리팜 이용약관
+              <>
+                <span>마리팜 이용약관</span>
+                {activeTab === "marifarm" ? (
+                  <Icon
+                    name="chevron_right"
+                    size={16}
+                    color="currentColor"
+                    className="opacity-80 transition duration-200 group-hover:opacity-100 group-hover:scale-105"
+                  />
+                ) : null}
+              </>
             </button>
           </li>
           <li>
@@ -39,7 +70,17 @@ export default function Policy() {
               className={tabStyle("sto")}
               onClick={() => setActiveTab("sto")}
             >
-              STO 청약 서비스 이용약관
+              <>
+                <span>STO 청약 서비스 이용약관</span>
+                {activeTab === "sto" ? (
+                  <Icon
+                    name="chevron_right"
+                    size={16}
+                    color="currentColor"
+                    className="opacity-80 transition duration-200 group-hover:opacity-100 group-hover:scale-105"
+                  />
+                ) : null}
+              </>
             </button>
           </li>
           <li>
@@ -48,7 +89,17 @@ export default function Policy() {
               className={tabStyle("trade")}
               onClick={() => setActiveTab("trade")}
             >
-              토큰 증권 거래 이용약관
+              <>
+                <span>토큰 증권 거래 이용약관</span>
+                {activeTab === "trade" ? (
+                  <Icon
+                    name="chevron_right"
+                    size={16}
+                    color="currentColor"
+                    className="opacity-80 transition duration-200 group-hover:opacity-100 group-hover:scale-105"
+                  />
+                ) : null}
+              </>
             </button>
           </li>
           <li>
@@ -57,7 +108,17 @@ export default function Policy() {
               className={tabStyle("dividend")}
               onClick={() => setActiveTab("dividend")}
             >
-              수익 분배 및 배당 이용약관
+              <>
+                <span>수익 분배 및 배당 이용약관</span>
+                {activeTab === "dividend" ? (
+                  <Icon
+                    name="chevron_right"
+                    size={16}
+                    color="currentColor"
+                    className="opacity-80 transition duration-200 group-hover:opacity-100 group-hover:scale-105"
+                  />
+                ) : null}
+              </>
             </button>
           </li>
           <li>
@@ -66,13 +127,23 @@ export default function Policy() {
               className={tabStyle("carbon")}
               onClick={() => setActiveTab("carbon")}
             >
-              탄소배출권 거래 운영 규정
+              <>
+                <span>탄소배출권 거래 운영 규정</span>
+                {activeTab === "carbon" ? (
+                  <Icon
+                    name="chevron_right"
+                    size={16}
+                    color="currentColor"
+                    className="opacity-80 transition duration-200 group-hover:opacity-100 group-hover:scale-105"
+                  />
+                ) : null}
+              </>
             </button>
           </li>
         </ul>
       </aside>
 
-      <article className="flex-1 rounded-2xl border border-gray-200 bg-white p-6 md:p-8 shadow-sm">
+      <article className="flex-1 rounded-lg bg-white p-6 md:p-8 shadow-std">
         {activeTab === "marifarm" && (
           <section>
             <h3 className={sectionTitleClass}>마리팜 이용약관</h3>

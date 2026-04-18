@@ -64,10 +64,10 @@ function App() {
     };
   }, []);
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-dvh">
       <Header />
 
-      <main className="pb-[calc(var(--bottom-tabbar-height))] md:pb-0">
+      <main className="flex-1 min-h-content pb-[var(--bottom-tabbar-height)]">
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />

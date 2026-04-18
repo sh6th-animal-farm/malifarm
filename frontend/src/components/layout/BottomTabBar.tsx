@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Icon from "@/components/icon";
 
@@ -23,7 +23,7 @@ export default function BottomTabBar() {
   const isActive = (paths: string[]) =>
     paths.some((path) => location.pathname === path || location.pathname.startsWith(`${path}/`));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const setHeightVar = () => {
       const height = navRef.current?.offsetHeight ?? 0;
       document.documentElement.style.setProperty("--bottom-tabbar-height", `${height}px`);
@@ -49,7 +49,7 @@ export default function BottomTabBar() {
       ref={navRef}
       className="fixed inset-x-0 bottom-0 z-[1100] bg-white shadow-std md:hidden"
     >
-      <ul className="grid grid-cols-5 px-2 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-1">
+      <ul className="flex items-center justify-center gap-x-3 pb-4">
         {tabs.map((tab) => {
           const active = isActive(tab.match);
 
@@ -58,12 +58,12 @@ export default function BottomTabBar() {
               <Link
                 to={tab.to}
                 state={tab.state}
-                className={`flex h-16 flex-col items-center justify-center gap-0.5 px-1 ${
-                  active ? "text-green-600" : "text-gray-400"
+                className={`flex h-14 w-18 flex-col items-center justify-center gap-0.5 ${
+                  active ? "text-gray-900" : "text-gray-400"
                 }`}
               >
                 <Icon name={tab.icon} size={28} color="currentColor" />
-                <span className={`${active ? "font-caption-02" : "font-caption-01"} leading-none`}>
+                <span className={`${active ? "font-bottom-02" : "font-bottom-01"} leading-none`}>
                   {tab.label}
                 </span>
               </Link>

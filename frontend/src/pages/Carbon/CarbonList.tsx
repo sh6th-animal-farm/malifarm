@@ -39,8 +39,7 @@ export default function CarbonList() {
   };
 
   return (
-    // 🌟 화면 전체(w-full)를 덮는 연회색 배경(bg-gray-50) 래퍼 추가!
-    <div className="w-full min-h-screen">
+    <div className="w-full">
       <section className="layout-container py-20 md:py-20">
         
         {/* 헤더 상단 정렬 */}
@@ -98,13 +97,13 @@ export default function CarbonList() {
           </div>
         )}
 
-        <div className="mt-[18px] min-h-[400px]">
+        <div className="mt-[18px]">
           {isLoading ? (
-            <div className="flex justify-center items-center h-full text-[var(--color-gray-400)]">
+            <div className="flex justify-center items-center h-[400px] text-[var(--color-gray-400)]">
               로딩 중...
             </div>
           ) : isForbidden ? (
-            <div className="w-full py-[60px] px-[20px] text-center flex flex-col items-center gap-[16px]">
+            <div className="py-[60px] px-[20px] text-center flex flex-col items-center gap-[16px]">
               <div className="w-[64px] h-[64px] bg-[var(--color-gray-100)] text-[var(--color-gray-400)] rounded-full flex items-center justify-center text-[32px] font-bold">
                 !
               </div>

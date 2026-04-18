@@ -1,24 +1,30 @@
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/common/Button";
+import heroSmartFarm from "@/assets/hero-smart-farm.png";
 
 export default function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-gray-50 pt-14 md:pt-20">
+    <section className="py-8 md:py-10">
       <div className="layout-container">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
+        <div
+          className="flex min-h-[520px] px-10 items-center rounded-lg bg-cover bg-center bg-no-repeat md:min-h-[620px]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroSmartFarm})`,
+          }}
+        >
           <div>
-            <span className="inline-flex items-center rounded-full bg-green-0 px-3.5 py-2 font-caption-03 text-green-700">
+            <span className="inline-flex items-center rounded-full bg-white/85 px-3.5 py-2 font-caption-03 text-green-700">
               Green Investment
             </span>
-            <h1 className="mt-6 font-header-hero text-gray-900">
+            <h1 className="mt-6 font-header-hero text-white">
               농장의 주인이 되는
               <br />
-              <span className="text-green-600">가장 가벼운 방법</span>
+              <span className="text-green-200">가장 가벼운 방법</span>
             </h1>
-            <p className="mt-4 font-subtitle-03 text-gray-600">
-              어렵기만 했던 스마트팜 투자, 
+            <p className="mt-4 font-subtitle-03 text-white/90">
+              어렵기만 했던 스마트팜 투자,
               <br className="md:hidden" />
               이제 STO 조각 투자로
               <br />
@@ -37,14 +43,6 @@ export default function HeroSection() {
                 이용 가이드
               </Button>
             </div>
-          </div>
-
-          <div className="flex justify-center lg:justify-end">
-            <img
-              src="https://images.unsplash.com/photo-1558449028-b53a39d100fc?q=80&w=600"
-              alt="스마트팜"
-              className="h-80 w-full max-w-xl rounded-hero-image object-cover shadow-std md:h-96"
-            />
           </div>
         </div>
       </div>

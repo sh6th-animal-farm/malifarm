@@ -139,7 +139,7 @@ export default function MobileTokenChartCard({
 
   return (
     <div className="">
-      <div className="px-4 pt-4 pb-3">
+      <div className="pt-4 pb-3">
         <div className="flex flex-col gap-3">
           <div className="flex items-baseline gap-2">
             <h2 className="font-header-02 text-gray-900">{tokenOhlcv.tokenName}</h2>
