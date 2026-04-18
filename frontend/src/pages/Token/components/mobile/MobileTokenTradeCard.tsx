@@ -83,10 +83,10 @@ export default function MobileTokenTradeCard({
 
   return (
     <div className="flex h-full min-h-0 overflow-hidden bg-white">
-      <div className="flex w-2/5 min-w-0 flex-col border-r border-gray-100">
+      <div className="flex w-2/5 min-w-0 bg-gray-50 flex-col border-r border-gray-100">
         <div
           ref={orderbookScrollRef}
-          className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="min-h-0 flex-1 bg-white overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           {ladder.map((row, idx) => {
             const isSell = row.side === 'SELL';

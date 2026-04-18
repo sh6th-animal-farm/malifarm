@@ -138,66 +138,64 @@ export default function MobileTokenChartCard({
   );
 
   return (
-    <div className="bg-white">
-      <div className="px-4 pt-4 pb-3">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-baseline gap-2">
-            <h2 className="font-header-02 text-gray-900">{tokenOhlcv.tokenName}</h2>
-            <p className="font-body-02 text-gray-400">{tokenOhlcv.tickerSymbol}</p>
-          </div>
+    <div className="bg-white h-full min-h-0">
+      <div className="layout-container py-4 flex flex-col gap-3">
+        <div className="flex items-baseline gap-2">
+          <h2 className="font-header-02 text-gray-900">{tokenOhlcv.tokenName}</h2>
+          <p className="font-body-02 text-gray-400">{tokenOhlcv.tickerSymbol}</p>
+        </div>
 
-          <div className="flex flex-col gap-1.5">
-            <div className="flex gap-2">
-              <div className="flex items-baseline gap-1">
-                <span className="font-header-02 text-gray-900">
-                  {tokenOhlcv.marketPrice
-                    ? tokenOhlcv.marketPrice.toLocaleString()
-                    : '0.00'}
-                </span>
-                <span className="font-caption-02 text-gray-500">KRW</span>
-              </div>
-              <div className="flex items-center gap-1 pt-2">
-                {tokenOhlcv.changeRate > 0 && <PriceUp />}
-                {tokenOhlcv.changeRate < 0 && <PriceDown />}
-                <span
-                  className={`font-body-03 ${
-                    tokenOhlcv.changeRate > 0
-                      ? 'text-error'
-                      : tokenOhlcv.changeRate < 0
-                        ? 'text-info'
-                        : 'text-gray-900'
-                  }`}
-                >
-                  {tokenOhlcv.changeRate?.toFixed(2) || '0.00'}% 전일대비
-                </span>
-              </div>
+        <div className="flex flex-col gap-1.5">
+          <div className="flex gap-2">
+            <div className="flex items-baseline gap-1">
+              <span className="font-header-02 text-gray-900">
+                {tokenOhlcv.marketPrice
+                  ? tokenOhlcv.marketPrice.toLocaleString()
+                  : '0.00'}
+              </span>
+              <span className="font-caption-02 text-gray-500">KRW</span>
             </div>
-
-            <div className="flex items-center gap-2 font-caption-02 text-gray-500">
-              <span className="flex gap-1">
-                고가 <b className="text-gray-900">{tokenOhlcv.highPrice?.toLocaleString() || '0.00'}</b>
-              </span>
-              <span className="flex gap-1">
-                저가 <b className="text-gray-900">{tokenOhlcv.lowPrice?.toLocaleString() || '0.00'}</b>
-              </span>
-              <span className="flex gap-1">
-                거래대금{' '}
-                <b className="text-gray-900">
-                  {tokenOhlcv.dailyTradeVolume?.toLocaleString() || '0.00'}
-                </b>
+            <div className="flex items-center gap-1 pt-2">
+              {tokenOhlcv.changeRate > 0 && <PriceUp />}
+              {tokenOhlcv.changeRate < 0 && <PriceDown />}
+              <span
+                className={`font-body-03 ${
+                  tokenOhlcv.changeRate > 0
+                    ? 'text-error'
+                    : tokenOhlcv.changeRate < 0
+                      ? 'text-info'
+                      : 'text-gray-900'
+                }`}
+              >
+                {tokenOhlcv.changeRate?.toFixed(2) || '0.00'}% 전일대비
               </span>
             </div>
           </div>
 
-          <div className="w-[182px]">
-            <ToggleGroup
-              tabs={units}
-              activeTab={activeUnit}
-              onChange={setActiveUnit}
-              height={44}
-              fullWidth
-            />
+          <div className="flex items-center gap-2 font-caption-02 text-gray-500">
+            <span className="flex gap-1">
+              고가 <b className="text-gray-900">{tokenOhlcv.highPrice?.toLocaleString() || '0.00'}</b>
+            </span>
+            <span className="flex gap-1">
+              저가 <b className="text-gray-900">{tokenOhlcv.lowPrice?.toLocaleString() || '0.00'}</b>
+            </span>
+            <span className="flex gap-1">
+              거래대금{' '}
+              <b className="text-gray-900">
+                {tokenOhlcv.dailyTradeVolume?.toLocaleString() || '0.00'}
+              </b>
+            </span>
           </div>
+        </div>
+
+        <div className="w-[182px]">
+          <ToggleGroup
+            tabs={units}
+            activeTab={activeUnit}
+            onChange={setActiveUnit}
+            height={44}
+            fullWidth
+          />
         </div>
       </div>
 

@@ -201,6 +201,18 @@
     --spacing-header-height: 48px;
     --spacing-bottom-tabbar-height: var(--bottom-tabbar-height);
     --custom-calc-height: calc(100dvh - var(--spacing-header-height) - var(--spacing-bottom-tabbar-height));
+    --shadow-std: none; 
+  }
+
+  #root {
+    height: 100%;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
   }
 
   .layout-container {

@@ -19,20 +19,22 @@ function Home() {
   }, [location.state]);
   
   return (
-    <div className="flex flex-col">
-      {toastMessage && (
-        <Toast
-          message={toastMessage}
-          onClose={() => setToastMessage("")}
-        />
-      )}
+    <div className="flex flex-col h-[var(--custom-calc-height)] overflow-hidden">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        {toastMessage && (
+          <Toast
+            message={toastMessage}
+            onClose={() => setToastMessage("")}
+          />
+        )}
 
-      <HeroSection />
-      <StatusSection />
-      <ProjectSection />
-      <CarbonSection />
-      <TokenSection />
-      <PartnerSection />
+        <HeroSection />
+        <StatusSection />
+        <ProjectSection />
+        <CarbonSection />
+        <TokenSection />
+        <PartnerSection />
+      </div>
     </div>
   );
 }
