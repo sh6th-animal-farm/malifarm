@@ -194,7 +194,7 @@ export default function ProfileLayout() {
   };
 
   return (
-    <div>
+    <div className="layout-container py-4 md:py-0">
       <PageHeader
         title="내 정보"
         subtitle="마리팜에서 사용되는 회원님의 정보를 관리합니다."

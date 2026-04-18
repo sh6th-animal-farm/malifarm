@@ -67,7 +67,7 @@ export default function TokenDetailMobile({
 
   return (
     <div className="md:hidden flex h-[var(--custom-calc-height)] flex-col overflow-hidden">
-      <div className="sticky top-0 z-20 bg-white">
+      <div className="bg-white">
         <TabMenu
           items={mobileTabs}
           currentValue={mobileTab}

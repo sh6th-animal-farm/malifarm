@@ -111,7 +111,7 @@ export default function WalletLayout() {
   }, [isCreatingAcc, currentStep]);
 
   return (
-    <div>
+    <div className='layout-container py-4 md:py-0'>
       <PageHeader
         title="나의 전자지갑"
         subtitle="연동된 증권 계좌와 실시간 투자 현황을 확인하세요."

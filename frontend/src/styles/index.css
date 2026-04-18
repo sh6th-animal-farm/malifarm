@@ -8,7 +8,7 @@
   --color-green-800: #2e7127; --color-green-900: #225223; --color-green-950: #163b16;
 
   /* --- 2. Gray Colors --- */
-  --color-gray-0: #fcfcfc; --color-gray-50: #f8fafb; --color-gray-70: #f5f7f8; --color-gray-100: #f2f2f2;
+  --color-gray-0: #fcfcfc; --color-gray-50: #f5f7f8; --color-gray-70: #f8fafb; --color-gray-100: #f2f2f2;
   --color-gray-200: #e1e1e1; --color-gray-300: #c6c6c6; --color-gray-400: #707070;
   --color-gray-500: #565656; --color-gray-600: #404040; --color-gray-700: #313131;
   --color-gray-800: #262626; --color-gray-900: #191919;
@@ -201,11 +201,14 @@
     --spacing-header-height: 48px;
     --spacing-bottom-tabbar-height: var(--bottom-tabbar-height);
     --custom-calc-height: calc(100dvh - var(--spacing-header-height) - var(--spacing-bottom-tabbar-height));
-    --shadow-std: none; 
   }
 
   #root {
     height: 100%;
+  }
+
+  .shadow-std {
+    box-shadow: none !important;
   }
 
   html, body {
