@@ -1,5 +1,5 @@
 import type { ProjectList } from '@/types/projectType';
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   projects: ProjectList[]; // 백엔드에서 받은 리스트

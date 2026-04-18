@@ -42,8 +42,7 @@ export default function News() {
     const fetchNewsList = async () => {
       setIsLoading(true);
       try {
-        const response = await newsApi.getGlobalList();
-        const list = response.map(toNewsListItem);
+        const list = (await newsApi.getGlobalList()).map(toNewsListItem);
         if (!mounted) return;
         setNewsItems(list);
       } catch (error) {

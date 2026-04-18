@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js'; // 1. registerables 추가
 import type { ProjectData } from '@/types/projectType';
 import InfoGrid from './DetailInfoCard';
@@ -50,14 +50,12 @@ export default function FarmTabContent({ data }: { data: ProjectData }) {
             label: '내부 기온 (℃)',
             data: chartData,
             backgroundColor: backgroundColors,
-            borderRadius: 4,
           },
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        hover: { mode: null },
         scales: {
           y: { min: 10, max: 35 },
           x: { grid: { display: false } },
@@ -113,7 +111,6 @@ export default function FarmTabContent({ data }: { data: ProjectData }) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        hover: { mode: null },
         scales: {
           y: {
             type: 'linear',
