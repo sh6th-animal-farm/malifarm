@@ -45,11 +45,9 @@ export default function TokenDetailMobile({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const saved = sessionStorage.getItem(MOBILE_TOKEN_DETAIL_TAB_KEY);
-    if (!saved && initialTab === 'list') {
-      setMobileTab(initialTab);
-      sessionStorage.setItem(MOBILE_TOKEN_DETAIL_TAB_KEY, initialTab);
-    }
+    if (!initialTab) return;
+    setMobileTab(initialTab);
+    sessionStorage.setItem(MOBILE_TOKEN_DETAIL_TAB_KEY, initialTab);
   }, [initialTab]);
 
   useEffect(() => {

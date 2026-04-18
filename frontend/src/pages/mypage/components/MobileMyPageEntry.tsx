@@ -97,18 +97,20 @@ export default function MobileMyPageEntry() {
           <h3 className="font-caption-02 text-gray-400">서비스</h3>
         </div>
         <div className="mt-2">
-          {items.map((item) => (
+          {items.map((item, index) => (
             <Link
               key={item.to}
               to={item.to}
-              className="group flex items-center justify-between rounded-xl px-2 py-3.5 transition-colors duration-200 hover:bg-gray-50"
+              className={`group flex items-center justify-between rounded-xl pt-3 transition-colors duration-200 hover:bg-gray-50 ${
+                index === items.length - 1 ? "pb-1" : "pb-3"
+              }`}
             >
               <div className="min-w-0">
                 <p className="font-body-03 text-gray-900">{item.label}</p>
               </div>
               <Icon
                 name="chevron_right"
-                size={18}
+                size={14}
                 className="shrink-0 text-gray-300 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-gray-500"
               />
             </Link>

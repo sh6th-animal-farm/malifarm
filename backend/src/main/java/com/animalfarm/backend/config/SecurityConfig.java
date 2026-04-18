@@ -115,8 +115,9 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		// 프론트엔드 도메인 허용
-		configuration.setAllowedOrigins(
-			List.of("https://mlfarm.3jun.store", "http://localhost:9999", "http://localhost:5173", "https://malifarm.site", "https://www.malifarm.site"));
+		// configuration.setAllowedOrigins(
+		// 	List.of("https://mlfarm.3jun.store", "http://localhost:9999", "http://localhost:5173", "https://malifarm.site", "https://www.malifarm.site"));
+		configuration.setAllowedOriginPatterns(List.of("http://*:*"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);

@@ -134,7 +134,7 @@ export default function Header() {
             className="absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center text-gray-700 md:hidden"
             aria-label="뒤로가기"
           >
-            <Icon name="chevron_right" size={20} className="rotate-180" />
+            <Icon name="chevron_right" size={22} className="rotate-180" />
           </button>
         )}
 
@@ -156,8 +156,7 @@ export default function Header() {
         </Link>
 
         <div
-          className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap ${
-            showMyPageMobileBackButton ? "font-body-03" : "font-header-03"
+          className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap font-header-03
           } ${
             showMyPageMobileBackButton
               ? "absolute left-1/2 -translate-x-1/2"

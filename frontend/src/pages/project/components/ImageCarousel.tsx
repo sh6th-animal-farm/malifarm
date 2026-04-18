@@ -8,11 +8,13 @@ export default function ImageCarousel({ images }: { images: string[] }) {
     setCurrentIdx((prev) => (prev + step + total) % total);
   };
 
-  if (!images || images.length === 0) return <div className="w-full aspect-[16/9] bg-gray-70 rounded-lg" />;
+  if (!images || images.length === 0) {
+    return <div className="w-full aspect-[16/9] bg-gray-50 rounded-none md:rounded-lg" />;
+  }
 
   return (
     <div className="relative overflow-hidden">
-      <div className="w-full aspect-[16/9] rounded-lg overflow-hidden bg-gray-70 relative">
+      <div className="w-full aspect-[16/9] rounded-none md:rounded-lg overflow-hidden bg-gray-50 relative">
         <div 
           className="flex h-full transition-transform duration-500 ease-in-out" 
           style={{ transform: `translateX(-${currentIdx * 100}%)` }}

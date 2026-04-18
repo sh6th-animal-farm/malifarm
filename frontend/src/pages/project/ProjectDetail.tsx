@@ -13,6 +13,7 @@ import AccountCheckFailModal from './components/AccountCheckFailModal';
 import { authApi } from '@/api/authApi';
 import { subscriptionApi } from '@/api/subscriptionApi';
 import Toast from '@/components/common/Toast';
+import PageShell from '@/components/layout/PageShell';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string | undefined }>();
@@ -110,11 +111,13 @@ export default function ProjectDetail() {
   if (!projectData) return null;
 
   return (
-    <div className="">
-      <section className="layout-container py-20 md:py-20">
+    <PageShell>
+      <section className="layout-container pb-20 md:py-20">
         <div className="grid grid-cols-12 gap-[24px]">
           <main className="col-span-12 lg:col-span-8 px-0">
-            <ImageCarousel images={projectData.images} />
+            <div className="-mx-4 md:mx-0">
+              <ImageCarousel images={projectData.images} />
+            </div>
 
             <TabMenu
               items={[
@@ -181,6 +184,6 @@ export default function ProjectDetail() {
       />
 
       {toastMsg && <Toast message={toastMsg} onClose={handleCloseToast} />}
-    </div>
+    </PageShell>
   );
 }

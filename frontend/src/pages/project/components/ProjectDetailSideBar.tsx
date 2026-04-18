@@ -94,7 +94,7 @@ export default function ProjectDetailSideBar({
                     {getDDay()}
                   </span>
                 </div>
-                <div className="w-full h-2 bg-gray-70 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-50 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-green-600 transition-all duration-500"
                     style={{ width: `${projectData.subscriptionRate}%` }}
@@ -103,7 +103,7 @@ export default function ProjectDetailSideBar({
               </div>
 
               <div className="space-y-3 mb-8">
-                <div className="bg-gray-70 p-5 rounded-lg">
+                <div className="bg-gray-50 p-5 rounded-lg">
                   <span className="font-caption-01 text-gray-500 block mb-3">
                     총 모집 금액
                   </span>
@@ -162,7 +162,7 @@ export default function ProjectDetailSideBar({
           {/* [CASE 2] 진행중 */}
           {projectData.projectStatus === 'INPROGRESS' && (
             <div className="space-y-6">
-              <div className="bg-gray-70 p-6 rounded-lg">
+              <div className="bg-gray-50 p-6 rounded-lg">
                 <span className="font-caption-01 text-gray-500 block mb-2">
                   현재 토큰가 (Market Price)
                 </span>
@@ -185,7 +185,7 @@ export default function ProjectDetailSideBar({
           {(projectData.projectStatus === 'COMPLETED' ||
             projectData.projectStatus === 'CANCELED') && (
             <div className="space-y-6">
-              <div className="bg-gray-70 p-6 rounded-lg">
+              <div className="bg-gray-50 p-6 rounded-lg">
                 <span className="font-caption-01 text-gray-500 block mb-2">
                   최종 토큰가
                 </span>

@@ -75,7 +75,11 @@ export default function TokenDetail() {
           tradeList={tradeList}
           tradePrice={selectedPrice ?? fixedPrice ?? 0}
           onPriceSelect={setSelectedPrice}
-          initialTab={location.state?.mobileTab === 'list' ? 'list' : undefined}
+          initialTab={
+            typeof location.state?.mobileTab === 'string'
+              ? location.state.mobileTab
+              : undefined
+          }
         />
       )}
 
