@@ -73,17 +73,12 @@
         #{subscriptionAmount} where project_id = #{projectId}
     </update>
 
-    <select id="">
-
-        
-    </select>
-
     <update id="useLimit">
         UPDATE users
         SET used_limit_amount = used_limit_amount + #{amount},
         updated_at = NOW()
         WHERE user_id = #{userId}
-        AND (annual_limit_amount - used_limit_amount) >= #{amount}
+        AND #{amount} > 0 AND (annual_limit_amount - used_limit_amount) >= #{amount}
     </update>
 
     <update id="restoreLimit">
@@ -91,7 +86,7 @@
         SET used_limit_amount = used_limit_amount - #{amount},
         updated_at = NOW()
         WHERE user_id = #{userId}
-        AND used_limit_amount >= #{amount}
+        AND #{amount} > 0 AND used_limit_amount >= #{amount}
     </update>
 
     <select id="selectUclId" resultType="Long">
