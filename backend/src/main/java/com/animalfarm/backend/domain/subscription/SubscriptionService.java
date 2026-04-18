@@ -121,6 +121,7 @@ public class SubscriptionService {
 			cancelApplication.setSubscriptionAmount(refundDTO.getAmount().multiply(new BigDecimal("-1")));
 			cancelApplication.setProjectId(refundDTO.getProjectId());
 			subscriptionRepository.updatePlusAmount(cancelApplication);
+			subscriptionRepository.restoreLimit(userId, refundDTO.getAmount());
 
 		} catch (RuntimeException e) {
 			// 유틸리티에서 던진 구체적인 에러 메시지("잔액 부족" 등)가 이곳으로 전달됨
@@ -259,6 +260,7 @@ public class SubscriptionService {
 
 		if ("PAID".equals(dto.getPaymentStatus())) {
 			subscriptionRepository.updatePlusAmount(dto);
+			subscriptionRepository.useLimit(dto.getUserId(), dto.getSubscriptionAmount());
 		}
 	}
 

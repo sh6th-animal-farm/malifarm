@@ -13,6 +13,7 @@ import AccountCheckFailModal from './components/AccountCheckFailModal';
 import { authApi } from '@/api/authApi';
 import { subscriptionApi } from '@/api/subscriptionApi';
 import Toast from '@/components/common/Toast';
+import type { UserInvestmentLimitDTO } from '@/types/subscriptionType';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string | undefined }>();
@@ -27,6 +28,8 @@ export default function ProjectDetail() {
   const navigate = useNavigate();
   const [isApplied, setIsApplied] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [userInvestmentLimit, setUserInvestmentLimit] =
+    useState<UserInvestmentLimitDTO | null>(null);
   const handleCloseToast = useCallback(() => {
     setToastMsg(null);
   }, []);
@@ -95,6 +98,8 @@ export default function ProjectDetail() {
     try {
       const user = (await authApi.getUser()) as any;
       setCurrentUserId(user.userId);
+      const investmentLimit = await subscriptionApi.getUserInvestmentLimit();
+      setUserInvestmentLimit(investmentLimit);
       const checkacc = await projectApi.getCheckAccount(user.userId);
 
       if (checkacc === true) {
@@ -158,7 +163,7 @@ export default function ProjectDetail() {
               projectData.targetAmount / projectData.totalSupply,
             ),
             thumbnailUrl: projectData.images?.[0] ?? '',
-            userLimit: 500000000,
+            userLimit: userInvestmentLimit?.availableLimit ?? 0,
             minAmountPerInvestor: projectData.minAmountPerInvestor,
           }}
         />

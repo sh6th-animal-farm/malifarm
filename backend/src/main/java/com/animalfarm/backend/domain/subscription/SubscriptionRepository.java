@@ -33,6 +33,10 @@ public interface SubscriptionRepository {
 
 	public abstract Long selectUclId(SubscriptionApplicationDTO subscriptionInsertDTO);
 
+	public abstract void useLimit(Long userId, BigDecimal amount);
+
+	public abstract void restoreLimit(Long userId, BigDecimal amount);
+
 	public abstract List<ProjectStartCheckDTO> selectExpiredSubscriptions();
 
 	public abstract AllocationStatsDTO selectAllocationStats(Long projectId, BigDecimal standardAmount);
