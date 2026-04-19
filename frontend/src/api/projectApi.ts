@@ -1,4 +1,6 @@
 import type {
+  FarmEnvChartPoint,
+  FarmEnvChartRange,
   Project,
   ProjectData,
   ProjectList,
@@ -25,6 +27,14 @@ export interface DividendPollResponse {
 export const projectApi = {
   getProjectDetail: (projectId: string | number): Promise<ProjectData> => {
     return apiClient.get(`/api/project/${projectId}`);
+  },
+  getFarmEnvChartData: (
+    projectId: string | number,
+    range: FarmEnvChartRange,
+  ): Promise<FarmEnvChartPoint[]> => {
+    return apiClient.get(`/api/project/${projectId}/farm-env`, {
+      params: { range },
+    });
   },
   getCheckAccount: (
     userId: string | number | undefined,
