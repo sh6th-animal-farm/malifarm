@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.animalfarm.backend.domain.user.dto.UserDTO;
+import com.animalfarm.backend.domain.user.dto.UserInvestmentLimitDTO;
 import com.animalfarm.backend.domain.user.service.UserService;
 import com.animalfarm.backend.global.dto.ApiResponseDTO;
 import com.animalfarm.backend.global.exception.ErrorCode;
@@ -51,5 +52,23 @@ public class UserController {
 	public ResponseEntity<ApiResponseDTO<String>> getMyRole() {
 		String userRole = userService.getMyRole();
 		return ResponseEntity.ok(ApiResponseDTO.success(userRole));
+	}
+
+	@GetMapping("/myinvestmentlimit")
+	public ResponseEntity<ApiResponseDTO> getMyInvestmentLimit() {
+		// 1. SecurityUtil 등을 통해 현재 로그인한 유저 ID 획득
+		Long userId = SecurityUtil.getCurrentUserId();
+		if (userId == null) {
+			// 토큰이 없거나 유효하지 않은 경우 401 반환
+			return ResponseEntity
+				.status(HttpStatus.UNAUTHORIZED)
+				.body(ApiResponseDTO.fail(ErrorCode.NEED_LOGIN.getCode(), ErrorCode.NEED_LOGIN.getMessage()));
+		}
+
+		// 2. 서비스 호출
+		UserInvestmentLimitDTO limitInfo = userService.getUserInvestmentLimit(userId);
+
+		// 3. 기존에 약속된 응답 형식으로 반환
+		return ResponseEntity.ok(ApiResponseDTO.success(limitInfo));
 	}
 }

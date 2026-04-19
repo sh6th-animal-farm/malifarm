@@ -1,14 +1,22 @@
-import type { SubscriptionApplicationDTO } from '@/types/subscriptionType';
+import type {
+  SubscriptionApplicationDTO,
+  UserInvestmentLimitDTO,
+} from '@/types/subscriptionType';
 import apiClient from './apiClient';
 
 export const subscriptionApi = {
-  applySubscription: (data: SubscriptionApplicationDTO) => {
-    return apiClient.post<string>(`/api/subscription/application`, data);
+  applySubscription: (data: SubscriptionApplicationDTO): Promise<string> => {
+    return apiClient.post(`/api/subscription/application`, data);
   },
-  cancelSubscription: (projectId: number) => {
+  cancelSubscription: (projectId: number): Promise<void> => {
     return apiClient.post('/api/subscription/cancel', projectId);
   },
-  checkStatus: (projectId: number) => {
+  checkStatus: (
+    projectId: number,
+  ): Promise<{ isApplied?: boolean; data?: { isApplied?: boolean } }> => {
     return apiClient.get(`/api/subscription/check/${projectId}`);
+  },
+  getUserInvestmentLimit: (): Promise<UserInvestmentLimitDTO> => {
+    return apiClient.get(`/api/user/myinvestmentlimit`);
   },
 };

@@ -3,6 +3,7 @@ import { adminApi } from '@/api/adminApi';
 import Button from '@/components/common/Button';
 import Toast from '@/components/common/Toast';
 import AdminSidebar from '@/pages/admin/AdminSidebar';
+import type { ProjectDTO } from '@/types/projectType';
 import '../../styles/admin.css';
 
 interface ExpenseData {
@@ -17,12 +18,6 @@ interface ExpenseData {
   description?: string;
 }
 
-interface Project {
-  projectId: number;
-  projectName: string;
-  projectRound: number;
-}
-
 const ExpenseRegister: React.FC = () => {
   const [formData, setFormData] = useState<ExpenseData>({
     projectId: 0,
@@ -35,7 +30,8 @@ const ExpenseRegister: React.FC = () => {
     vendor: '',
     description: '',
   });
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectDTO[]>([]);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -53,9 +49,9 @@ const ExpenseRegister: React.FC = () => {
     e.preventDefault();
     try {
       await adminApi.insertExpense(formData);
-      Toast.show('지출 데이터 기록 완료');
+      setToastMessage('지출 데이터 기록 완료');
     } catch (error) {
-      Toast.show('기록 실패');
+      setToastMessage('기록 실패');
     }
   };
 
@@ -72,6 +68,9 @@ const ExpenseRegister: React.FC = () => {
 
   return (
     <div className="admin-layout min-h-screen bg-gray-50 flex">
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage('')} />
+      )}
       <AdminSidebar />
       <main className="flex-1 p-10">
         <div className="max-w-5xl mx-auto">
@@ -96,7 +95,7 @@ const ExpenseRegister: React.FC = () => {
                     </option>
                     {projects.map((project) => (
                       <option key={project.projectId} value={project.projectId}>
-                        {project.projectName} ({project.projectRound}차)
+                        {project.projectName} ({project.projectRound ?? 0}차)
                       </option>
                     ))}
                   </select>

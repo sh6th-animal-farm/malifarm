@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
-import LoadMoreButton from '@/components/common/LoadMoreButton';
 import TabMenu from '@/components/common/TabMenu';
 import Icon from '@/components/icon';
 import { myPageApi } from '@/api/myPageApi';
@@ -59,8 +58,17 @@ export default function WalletLayout() {
       await myPageApi.linkAccount();
       await checkWalletExists(); // 연동 성공 시 지갑 ID 세팅하여 useWallet 활성화
     } catch (error) {
-      if (error.response && error.response.data) {
-        const errorRes = error.response.data; // ApiResponseDTO
+      const apiError = error as {
+        response?: {
+          data?: {
+            error?: { code?: string };
+            message?: string;
+          };
+        };
+      };
+
+      if (apiError.response?.data) {
+        const errorRes = apiError.response.data; // ApiResponseDTO
 
         console.log('서버 에러 코드:', errorRes.error?.code);
         console.log('서버 메시지:', errorRes.message);

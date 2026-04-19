@@ -13,6 +13,7 @@ import AccountCheckFailModal from './components/AccountCheckFailModal';
 import { authApi } from '@/api/authApi';
 import { subscriptionApi } from '@/api/subscriptionApi';
 import Toast from '@/components/common/Toast';
+import type { UserInvestmentLimitDTO } from '@/types/subscriptionType';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string | undefined }>();
@@ -27,6 +28,8 @@ export default function ProjectDetail() {
   const navigate = useNavigate();
   const [isApplied, setIsApplied] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [userInvestmentLimit, setUserInvestmentLimit] =
+    useState<UserInvestmentLimitDTO | null>(null);
   const handleCloseToast = useCallback(() => {
     setToastMsg(null);
   }, []);
@@ -34,7 +37,7 @@ export default function ProjectDetail() {
   const fetchData = async (projectId: string) => {
     try {
       const projectRes = await projectApi.getProjectDetail(projectId);
-      setProjectData(projectRes.data || projectRes);
+      setProjectData(projectRes);
 
       const token = localStorage.getItem('accessToken');
       if (token) {
@@ -64,6 +67,8 @@ export default function ProjectDetail() {
 
   // 사이드바 버튼 클릭 시 실행될 함수
   const handleAction = async () => {
+    if (!projectData) return;
+
     if (projectData.projectStatus === 'INPROGRESS') {
       navigate(`/token/${id}`);
       return;
@@ -93,6 +98,8 @@ export default function ProjectDetail() {
     try {
       const user = (await authApi.getUser()) as any;
       setCurrentUserId(user.userId);
+      const investmentLimit = await subscriptionApi.getUserInvestmentLimit();
+      setUserInvestmentLimit(investmentLimit);
       const checkacc = await projectApi.getCheckAccount(user.userId);
 
       if (checkacc === true) {
@@ -155,8 +162,8 @@ export default function ProjectDetail() {
             price: Math.floor(
               projectData.targetAmount / projectData.totalSupply,
             ),
-            userLimit: 500000000,
-            walletBalance: 0,
+            thumbnailUrl: projectData.images?.[0] ?? '',
+            userLimit: userInvestmentLimit?.availableLimit ?? 0,
             minAmountPerInvestor: projectData.minAmountPerInvestor,
           }}
         />

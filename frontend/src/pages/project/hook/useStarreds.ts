@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { projectApi } from '@/api/projectApi';
 
-export const useStarreds = (initialProjects: any[] = []) => {
-  const [projects, setProjects] = useState<any[]>(initialProjects);
+type StarredProject = {
+  id?: number;
+  projectId?: number;
+  isStarred?: boolean;
+};
+
+export const useStarreds = <T extends StarredProject>(
+  initialProjects: T[] = [],
+) => {
+  const [projects, setProjects] = useState<T[]>(initialProjects);
 
   // 별(하트) 토글 핸들러
   const handleToggleStar = async (projectId: number) => {
@@ -12,7 +20,7 @@ export const useStarreds = (initialProjects: any[] = []) => {
         prev.map((p) => {
           const targetId = p.id || p.projectId;
           if (targetId === projectId) {
-            return { ...p, isStarred: !p.isStarred };
+            return { ...p, isStarred: !p.isStarred } as T;
           }
           return p;
         }),

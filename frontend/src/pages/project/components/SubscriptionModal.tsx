@@ -5,18 +5,20 @@ import { InvestmentLimitBar } from './InvestmentLimitBar';
 import { SubscriptionModalInput } from './SubscriptionModalInput';
 import { subscriptionApi } from '../../../api/subscriptionApi';
 import { useEffect } from 'react';
+import type { SubscriptionApplicationDTO } from '@/types/subscriptionType';
 
 interface SubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
   setToastMsg: (msg: string | null) => void;
+  onSuccess: () => void;
   projectData: {
     userId: string | number;
     projectId: string | number;
     tokenId: number;
     title: string;
     price: number;
-    thumbnail?: string;
+    thumbnailUrl?: string;
     userLimit: number;
     minAmountPerInvestor: number;
   };
@@ -32,7 +34,7 @@ export default function SubscriptionModal({
   const { walletData, isLoading: isWalletLoading } = useWallet(
     projectData.userId,
   );
-  const currentCashBalance = walletData?.cashBalance ?? 0;
+  const currentCashBalance = Math.floor(walletData?.availableBalance ?? 0);
 
   const {
     quantity,
@@ -46,6 +48,8 @@ export default function SubscriptionModal({
     userLimit: projectData.userLimit,
     walletBalance: currentCashBalance,
     minAmountPerInvestor: projectData.minAmountPerInvestor,
+    projectId: String(projectData.projectId),
+    tokenId: projectData.tokenId,
   });
 
   useEffect(() => {
@@ -68,7 +72,7 @@ export default function SubscriptionModal({
 
   const handleApplyClick = async () => {
     try {
-      const payload = {
+      const payload: SubscriptionApplicationDTO = {
         projectId: Number(projectData.projectId),
         userId: Number(projectData.userId),
         subscriptionAmount: totalPrice,
@@ -98,12 +102,13 @@ export default function SubscriptionModal({
       } else {
         alert(`신청 실패: ${result}`);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('청약 통신 에러:', err);
-      // 서버가 500 에러를 던지면 여기로 들어옵니다.
-      alert(
-        err.response?.data || '서버 오류로 인해 신청을 완료할 수 없습니다.',
-      );
+      const message =
+        err instanceof Error
+          ? err.message
+          : '서버 오류로 인해 요청을 완료할 수 없습니다.';
+      alert(message);
     }
   };
 
@@ -124,7 +129,7 @@ export default function SubscriptionModal({
         </div>
 
         <SubscriptionSummary
-          thumbnail={projectData.thumbnail}
+          thumbnail={projectData.thumbnailUrl}
           title={projectData.title}
           labelText={`1 토큰 당 ${projectData.price.toLocaleString()}원`}
         />

@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.animalfarm.backend.domain.user.dto.UserDTO;
+import com.animalfarm.backend.domain.user.dto.UserInvestmentLimitDTO;
 
 @Mapper
 public interface UserRepository {
@@ -27,4 +28,6 @@ public interface UserRepository {
 	String selectUserNameById(Long userId);
 
 	String selectUserRoleById(Long userId);
+
+	UserInvestmentLimitDTO selectUserInvestmentLimit(Long userId);
 }

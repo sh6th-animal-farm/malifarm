@@ -35,7 +35,7 @@ export function useSubscription({
     setIsSubmitting(true);
     try {
       const response = await subscriptionApi.applySubscription(data);
-      return response.data; // "success", "api_fail" 등
+      return response; // "success", "api_fail" 등
     } catch (error) {
       console.error('Subscription Submit Error:', error);
       throw error;

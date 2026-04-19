@@ -1,5 +1,7 @@
 package com.animalfarm.backend.domain.user.service;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,8 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.animalfarm.backend.domain.user.dto.UserDTO;
+import com.animalfarm.backend.domain.user.dto.UserInvestmentLimitDTO;
 import com.animalfarm.backend.domain.user.repository.UserRepository;
 import com.animalfarm.backend.global.RedisUtil;
+import com.animalfarm.backend.global.exception.BusinessException;
+import com.animalfarm.backend.global.exception.ErrorCode;
 import com.animalfarm.backend.global.security.SecurityUtil;
 
 @Service
@@ -66,6 +71,21 @@ public class UserService {
 		}
 
 		return role;
+	}
+
+	public UserInvestmentLimitDTO getUserInvestmentLimit(Long userId) {
+		// 1. DB에서 한도 정보 조회 (Mapper 호출)
+		UserInvestmentLimitDTO limitDTO = userRepository.selectUserInvestmentLimit(userId);
+
+		if (limitDTO == null) {
+			throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+		}
+
+		// 2. 가독성을 위해 현재 잔여 한도(Available)를 한 번 더 계산해서 세팅 (쿼리에서도 하지만 이중 확인)
+		BigDecimal available = limitDTO.getAnnualLimit().subtract(limitDTO.getUsedLimit());
+		limitDTO.setAvailableLimit(available.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : available);
+
+		return limitDTO;
 	}
 
 }

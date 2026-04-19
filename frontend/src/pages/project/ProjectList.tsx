@@ -9,6 +9,7 @@ import SectionHeader from '@/components/layout/SectionHeader';
 import { useKakaoMap } from '@/pages/project/hook/useKakaoMap';
 import MapSection from '@/pages/project/hook/MapSection';
 import { useStarreds } from '@/pages/project/hook/useStarreds';
+import type { ProjectList as ProjectListItem } from '@/types/projectType';
 
 const PROJECT_LIST_RESTORE_KEY = 'project-list-restore-state';
 
@@ -46,7 +47,8 @@ export default function ProjectList() {
   const itemsPerPage = 9;
 
   // 관심 프로젝트 상태 관리 훅
-  const { projects, setProjects, handleToggleStar } = useStarreds([]);
+  const { projects, setProjects, handleToggleStar } =
+    useStarreds<ProjectListItem>([]);
 
   const activeStatus = searchParams.get('projectStatus') || 'ALL';
   const saveListViewState = useCallback(() => {
@@ -88,7 +90,7 @@ export default function ProjectList() {
           projectStatus: activeStatus === 'ALL' ? '' : activeStatus,
         });
         console.log('API 응답:', response);
-        const nextProjects = response || [];
+        const nextProjects: ProjectListItem[] = response || [];
         setProjects(nextProjects);
 
         if (
