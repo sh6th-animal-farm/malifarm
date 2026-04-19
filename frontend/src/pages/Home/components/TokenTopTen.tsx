@@ -7,7 +7,7 @@ export default function TokenTopTen({ tokens }: { tokens: TokenShort[] }) {
       {tokens.map((token, index) => (
         <Link
           to={`/token/${token.tokenId}`}
-          className="shadow-std rounded-lg flex justify-between px-6 py-5 transition hover:-translate-y-0.5 hover:bg-gray-100"
+          className="shadow-std rounded-lg bg-white flex justify-between px-6 py-5 transition hover:-translate-y-0.5 hover:bg-gray-100"
           key={token.tokenId}
         >
           <div className="flex items-center gap-4">

@@ -4,6 +4,8 @@ import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/projectType';
 
 import TabMenu from '@/components/common/TabMenu';
+import Button from '@/components/common/Button';
+import EmptyState from '@/components/common/EmptyState';
 import ImageCarousel from './components/ImageCarousel';
 import FarmTabContent from './components/FarmTabContent';
 import ProjectDetailSideBar from './components/ProjectDetailSideBar';
@@ -13,11 +15,13 @@ import AccountCheckFailModal from './components/AccountCheckFailModal';
 import { authApi } from '@/api/authApi';
 import { subscriptionApi } from '@/api/subscriptionApi';
 import Toast from '@/components/common/Toast';
+import PageShell from '@/components/layout/PageShell';
 import type { UserInvestmentLimitDTO } from '@/types/subscriptionType';
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string | undefined }>();
   const [projectData, setProjectData] = useState<ProjectData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('invest');
   const [activeModal, setActiveModal] = useState<
     'subscription' | 'accountFail' | null
@@ -35,9 +39,16 @@ export default function ProjectDetail() {
   }, []);
 
   const fetchData = async (projectId: string) => {
+    setIsLoading(true);
     try {
       const projectRes = await projectApi.getProjectDetail(projectId);
       setProjectData(projectRes);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(
+          'mobile-project-detail-title',
+          projectRes.projectName ?? '프로젝트 상세',
+        );
+      }
 
       const token = localStorage.getItem('accessToken');
       if (token) {
@@ -58,11 +69,18 @@ export default function ProjectDetail() {
       }
     } catch (error) {
       console.error('데이터 로딩 실패:', error);
+      setProjectData(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (id) fetchData(id);
+    if (id) {
+      fetchData(id);
+      return;
+    }
+    setIsLoading(false);
   }, [id]);
 
   // 사이드바 버튼 클릭 시 실행될 함수
@@ -112,23 +130,70 @@ export default function ProjectDetail() {
     }
   };
 
-  if (!projectData) return null;
+  if (isLoading) {
+    return (
+      <PageShell>
+        <section className="layout-container py-8 lg:py-20">
+          <div className="flex min-h-[420px] flex-col items-center justify-center gap-4 text-gray-400">
+            <div className="mlf-spinner" />
+            <p className="font-body-01">프로젝트 정보를 불러오는 중입니다.</p>
+          </div>
+        </section>
+      </PageShell>
+    );
+  }
+
+  if (!projectData) {
+    return (
+      <PageShell>
+        <section className="layout-container py-8 lg:py-20">
+          <div className="flex min-h-[420px] flex-col items-center justify-center gap-4">
+            <EmptyState
+              message="프로젝트 정보를 찾을 수 없습니다."
+              className="mb-0 py-0"
+            />
+            <Button
+              variant="default"
+              width={180}
+              height={48}
+              onClick={() => navigate('/project')}
+            >
+              목록으로 돌아가기
+            </Button>
+          </div>
+        </section>
+      </PageShell>
+    );
+  }
 
   return (
-    <div className="">
-      <section className="layout-container py-20 md:py-20">
-        <div className="grid grid-cols-12 gap-[24px]">
-          <main className="col-span-12 lg:col-span-8 px-0">
-            <ImageCarousel images={projectData.images} />
+    <PageShell>
+      <div className='md:bg-white'>
+        <section className="layout-container pb-4 md:py-20">
+          <div className="grid grid-cols-12 gap-[24px]">
+            <main className="col-span-12 lg:col-span-8 px-0">
+              <div className="-mx-4 md:mx-0">
+                <ImageCarousel images={projectData.images} />
+              </div>
 
-            <TabMenu
-              items={[
-                { text: '투자 정보', value: 'invest' },
-                { text: '농장 정보', value: 'farm' },
-              ]}
-              currentValue={activeTab}
-              onTabChange={setActiveTab}
-            />
+              <div className="mt-4 lg:hidden">
+                <ProjectDetailSideBar
+                  embedded
+                  projectData={projectData}
+                  isApplied={isApplied}
+                  onAction={handleAction}
+                />
+              </div>
+
+              <TabMenu
+                items={[
+                  { text: '투자 정보', value: 'invest' },
+                  { text: '농장 정보', value: 'farm' },
+                ]}
+                gap={8}
+                currentValue={activeTab}
+                onTabChange={setActiveTab}
+              />
 
             <div className="w-full">
               {activeTab === 'invest' ? (
@@ -139,13 +204,15 @@ export default function ProjectDetail() {
             </div>
           </main>
 
-          <ProjectDetailSideBar
-            projectData={projectData}
-            isApplied={isApplied}
-            onAction={handleAction}
-          />
-        </div>
-      </section>
+            <ProjectDetailSideBar
+              className="hidden lg:block"
+              projectData={projectData}
+              isApplied={isApplied}
+              onAction={handleAction}
+            />
+          </div>
+        </section>
+      </div>
       {projectData && (
         <SubscriptionModal
           isOpen={activeModal === 'subscription'}
@@ -186,6 +253,6 @@ export default function ProjectDetail() {
       />
 
       {toastMsg && <Toast message={toastMsg} onClose={handleCloseToast} />}
-    </div>
+    </PageShell>
   );
 }

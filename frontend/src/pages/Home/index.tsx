@@ -7,6 +7,7 @@ import HeroSection from "./components/HeroSection";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Toast from "@/components/common/Toast";
+import PageShell from "@/components/layout/PageShell";
 
 function Home() {
   const location = useLocation();
@@ -19,7 +20,7 @@ function Home() {
   }, [location.state]);
   
   return (
-    <div className="flex flex-col">
+    <PageShell>
       {toastMessage && (
         <Toast
           message={toastMessage}
@@ -33,7 +34,7 @@ function Home() {
       <CarbonSection />
       <TokenSection />
       <PartnerSection />
-    </div>
+    </PageShell>
   );
 }
 

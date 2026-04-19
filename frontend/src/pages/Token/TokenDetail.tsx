@@ -5,10 +5,12 @@ import TokenListCard from './components/tokenDetail/TokenListCard';
 import TokenTradeCard from './components/tokenDetail/TokenTradeCard';
 import TokenPriceCard from './components/tokenDetail/TokenPriceCard';
 import TokenDetailMobile from './components/mobile/TokenDetailMobile';
-import { useOrderbook } from '@/pages/Token/hooks/useOrderbook';
-import { useTradeHistory } from '@/pages/Token/hooks/useTradeHistory';
-import { useTokenList } from '@/pages/Token/hooks/useTokenList';
-import { useTokenOhlcv } from '@/pages/Token/hooks/useTokenOhlcv';
+import { useOrderbook } from '@/pages/token/hooks/useOrderbook';
+import { useTradeHistory } from '@/pages/token/hooks/useTradeHistory';
+import { useTokenList } from '@/pages/token/hooks/useTokenList';
+import { useTokenOhlcv } from '@/pages/token/hooks/useTokenOhlcv';
+
+const LAST_VIEWED_TOKEN_ID_KEY = 'last-viewed-token-id';
 
 export default function TokenDetail() {
   const { id } = useParams(); // URL 파라미터에서 토큰 ID 추출
@@ -58,6 +60,20 @@ export default function TokenDetail() {
     }
   }, [tokenOhlcv?.marketPrice]);
 
+  useEffect(() => {
+    if (!tokenOhlcv?.tokenName) return;
+    if (typeof window === 'undefined') return;
+    sessionStorage.setItem('mobile-token-detail-title', tokenOhlcv.tokenName);
+  }, [tokenOhlcv?.tokenName]);
+
+  useEffect(() => {
+    if (!id) return;
+    if (typeof window === 'undefined') return;
+    const parsedId = Number(id);
+    if (!Number.isFinite(parsedId) || parsedId <= 0) return;
+    sessionStorage.setItem(LAST_VIEWED_TOKEN_ID_KEY, String(parsedId));
+  }, [id]);
+
   // 클릭 시 페이지 이동
   const handleTokenClick = (tokenId: number) => {
     navigate(`/token/${tokenId}`);
@@ -75,50 +91,56 @@ export default function TokenDetail() {
           tradeList={tradeList}
           tradePrice={selectedPrice ?? fixedPrice ?? 0}
           onPriceSelect={setSelectedPrice}
-          initialTab={location.state?.mobileTab === 'list' ? 'list' : undefined}
+          initialTab={
+            typeof location.state?.mobileTab === 'string'
+              ? location.state.mobileTab
+              : undefined
+          }
         />
       )}
 
       {!isMobile && (
-        <div className="layout-container py-0 md:py-20">
-          <div className="flex flex-col gap-2 md:gap-6">
-            <div className="flex gap-6 items-start w-full">
-              <div className="flex-[2] min-w-0 flex flex-col gap-6">
-                <div className="flex flex-col gap-6">
-                  {tokenOhlcv ? (
-                    <TokenChartCard tokenOhlcv={tokenOhlcv} />
-                  ) : (
-                    <div className="h-[540px] flex items-center justify-center bg-gray-50">
-                      차트 데이터를 불러오는 중입니다.
-                    </div>
-                  )}
-                  <TokenListCard
-                    tokenList={tokenList}
-                    activeTokenId={Number(id)}
-                    onTokenClick={handleTokenClick}
-                  />
-                </div>
-              </div>
-              <div className="flex-1 min-w-[416px] flex flex-col gap-6">
-                <div className="flex flex-col gap-6">
-                  <TokenTradeCard
-                    tokenId={Number(id)}
-                    marketPrice={selectedPrice ?? fixedPrice ?? 0} // 우선순위: 선택한 가격 > 최초 고정 가격 > 0
-                    tickerSymbol={tokenOhlcv?.tickerSymbol || '-'}
-                  />
-                  {buyList && sellList ? (
-                    <TokenPriceCard
-                      ohlcv={tokenOhlcv}
-                      buyList={buyList}
-                      sellList={sellList}
-                      tradeList={tradeList}
-                      onPriceClick={(price) => setSelectedPrice(price)}
+        <div className='md:bg-white'>
+          <div className="layout-container py-0 md:py-20">
+            <div className="flex flex-col gap-2 md:gap-6">
+              <div className="flex gap-6 items-start w-full">
+                <div className="flex-[2] min-w-0 flex flex-col gap-6">
+                  <div className="flex flex-col gap-6">
+                    {tokenOhlcv ? (
+                      <TokenChartCard tokenOhlcv={tokenOhlcv} />
+                    ) : (
+                      <div className="h-[540px] flex items-center justify-center bg-gray-50">
+                        차트 데이터를 불러오는 중입니다.
+                      </div>
+                    )}
+                    <TokenListCard
+                      tokenList={tokenList}
+                      activeTokenId={Number(id)}
+                      onTokenClick={handleTokenClick}
                     />
-                  ) : (
-                    <div className="h-[300px] flex items-center justify-center bg-gray-50">
-                      호가 데이터를 불러오는 중입니다.
-                    </div>
-                  )}
+                  </div>
+                </div>
+                <div className="flex-1 min-w-[416px] flex flex-col gap-6">
+                  <div className="flex flex-col gap-6">
+                    <TokenTradeCard
+                      tokenId={Number(id)}
+                      marketPrice={selectedPrice ?? fixedPrice ?? 0} // 우선순위: 선택한 가격 > 최초 고정 가격 > 0
+                      tickerSymbol={tokenOhlcv?.tickerSymbol || '-'}
+                    />
+                    {buyList && sellList ? (
+                      <TokenPriceCard
+                        ohlcv={tokenOhlcv}
+                        buyList={buyList}
+                        sellList={sellList}
+                        tradeList={tradeList}
+                        onPriceClick={(price) => setSelectedPrice(price)}
+                      />
+                    ) : (
+                      <div className="h-[300px] flex items-center justify-center bg-gray-50">
+                        호가 데이터를 불러오는 중입니다.
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

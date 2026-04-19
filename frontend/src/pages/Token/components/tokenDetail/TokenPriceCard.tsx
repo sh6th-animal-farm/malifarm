@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import type { OrderInfo, TokenOhlcv, TradeInfo } from '@/types/tokenType';
-import { useOrderbookLadder } from '@/pages/Token/hooks/useOrderbookLadder';
+import { useOrderbookLadder } from '@/pages/token/hooks/useOrderbookLadder';
 
 interface TokenPriceCardProps {
   ohlcv: TokenOhlcv | null;

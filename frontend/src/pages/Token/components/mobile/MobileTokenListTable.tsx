@@ -19,7 +19,7 @@ export default function MobileTokenListTable({
   const formatNum = (num: number) => new Intl.NumberFormat().format(num);
 
   return (
-    <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="min-h-0 flex-1 overflow-y-auto [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
       <table className="w-full border-separate border-spacing-0">
         <tbody className="block w-full">
           {tokenList.length > 0 ? (

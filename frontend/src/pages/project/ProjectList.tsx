@@ -6,6 +6,8 @@ import ProjectGrid from '@/pages/project/components/ProjectGrid';
 import FilterGroup from '@/components/common/FilterGroup';
 import Pagination from '@/components/common/Pagination';
 import SectionHeader from '@/components/layout/SectionHeader';
+import PageShell from '@/components/layout/PageShell';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useKakaoMap } from '@/pages/project/hook/useKakaoMap';
 import MapSection from '@/pages/project/hook/MapSection';
 import { useStarreds } from '@/pages/project/hook/useStarreds';
@@ -20,6 +22,8 @@ type ProjectListRestoreState = {
 };
 
 export default function ProjectList() {
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,16 +56,20 @@ export default function ProjectList() {
 
   const activeStatus = searchParams.get('projectStatus') || 'ALL';
   const saveListViewState = useCallback(() => {
+    const scrollY = isMobile
+      ? mobileScrollRef.current?.scrollTop ?? 0
+      : window.scrollY;
+
     const restoreState: ProjectListRestoreState = {
       currentPage,
-      scrollY: window.scrollY,
+      scrollY,
       activeStatus,
     };
     sessionStorage.setItem(
       PROJECT_LIST_RESTORE_KEY,
       JSON.stringify(restoreState),
     );
-  }, [activeStatus, currentPage]);
+  }, [activeStatus, currentPage, isMobile]);
 
   const mapInstance = useKakaoMap('map', projects);
 
@@ -74,11 +82,15 @@ export default function ProjectList() {
       saveListViewState();
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    const target: Window | HTMLDivElement | null = isMobile
+      ? mobileScrollRef.current
+      : window;
+    if (!target) return;
+    target.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      target.removeEventListener('scroll', handleScroll);
     };
-  }, [saveListViewState]);
+  }, [isMobile, saveListViewState]);
 
   // [Effect] 데이터 로딩 - 필터가 변경될 때마다 실행
   useEffect(() => {
@@ -132,7 +144,11 @@ export default function ProjectList() {
     }
 
     const timer = window.setTimeout(() => {
-      window.scrollTo(0, pendingRestore.scrollY);
+      if (isMobile && mobileScrollRef.current) {
+        mobileScrollRef.current.scrollTo(0, pendingRestore.scrollY);
+      } else {
+        window.scrollTo(0, pendingRestore.scrollY);
+      }
       hasRestoredScrollRef.current = true;
       shouldRestoreRef.current = false;
     }, 0);
@@ -140,7 +156,7 @@ export default function ProjectList() {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [activeStatus, isLoading, pendingRestore]);
+  }, [activeStatus, isLoading, isMobile, pendingRestore]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -177,59 +193,59 @@ export default function ProjectList() {
   };
 
   return (
-    <div>
-      <div className="">
-        <section className="layout-container py-20 md:pt-20">
-          <SectionHeader
-            title="프로젝트 지도"
-            subtitle="진행중인 프로젝트를 지도에서 확인하세요"
-          />
-          <MapSection
-            mapInstance={mapInstance}
-            onRegionSelect={handleRegionSelect}
-          />
-        </section>
-      </div>
-      <div className="">
-        <section className="layout-container pb-20 my:pb-20">
-          <div ref={listRef}>
+    <PageShell mobileInnerRef={mobileScrollRef}>
+        <div className="hidden md:block md:bg-white">
+          <section className="layout-container py-20 md:pt-20">
             <SectionHeader
-              title="프로젝트 목록"
-              subtitle="프로젝트를 선택하여 자세한 정보를 확인하세요"
+              title="프로젝트 지도"
+              subtitle="진행중인 프로젝트를 지도에서 확인하세요"
             />
-          </div>
-          <div className="mb-10">
-            <FilterGroup
-              items={[
-                { text: '전체보기', value: 'ALL' },
-                { text: '청약중', value: 'SUBSCRIPTION' },
-                { text: '공고중', value: 'ANNOUNCEMENT' },
-                { text: '진행중', value: 'INPROGRESS' },
-              ]}
-              currentValue={activeStatus}
-              onFilterChange={handleFilterChange}
+            <MapSection
+              mapInstance={mapInstance}
+              onRegionSelect={handleRegionSelect}
             />
-          </div>
+          </section>
+        </div>
+        <div className="md:bg-white">
+          <section className="layout-container pb-4 md:pb-20">
+            <div ref={listRef}>
+              <SectionHeader
+                title="프로젝트 목록"
+                subtitle="프로젝트를 선택하여 자세한 정보를 확인하세요"
+              />
+            </div>
+            <div className={isMobile ? 'py-4' : 'mb-6'}>
+              <FilterGroup
+                items={[
+                  { text: '전체보기', value: 'ALL' },
+                  { text: '청약중', value: 'SUBSCRIPTION' },
+                  { text: '공고중', value: 'ANNOUNCEMENT' },
+                  { text: '진행중', value: 'INPROGRESS' },
+                ]}
+                currentValue={activeStatus}
+                onFilterChange={handleFilterChange}
+              />
+            </div>
 
-          <ProjectGrid
-            projects={currentProjects}
-            activeStatus={activeStatus}
-            isLoading={isLoading}
-            onToggleStar={handleToggleStar}
-            onBeforeNavigateDetail={saveListViewState}
-            detailNavigationState={{ from: 'project-list' }}
-          />
-
-          {!isLoading && totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              className="mt-16"
+            <ProjectGrid
+              projects={currentProjects}
+              activeStatus={activeStatus}
+              isLoading={isLoading}
+              onToggleStar={handleToggleStar}
+              onBeforeNavigateDetail={saveListViewState}
+              detailNavigationState={{ from: 'project-list' }}
             />
-          )}
-        </section>
-      </div>
-    </div>
+
+            {!isLoading && totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                className="mt-4 md:mt-16"
+              />
+            )}
+          </section>
+        </div>
+    </PageShell>
   );
 }

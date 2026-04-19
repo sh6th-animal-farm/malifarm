@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { partners } from '@/pages/Home/data/data';
+import { partners } from '@/pages/home/data/data';
 
 function Partner() {
   const duplicatedPartners = useMemo(

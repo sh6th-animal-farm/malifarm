@@ -1,7 +1,7 @@
 import Badge from '@/components/common/Badge';
 import { PriceUp, PriceDown } from '@/components/icon/Icons';
-import { useTokenChart } from '@/pages/Token/hooks/useTokenChart';
-import { useTokenOhlcv } from '@/pages/Token/hooks/useTokenOhlcv';
+import { useTokenChart } from '@/pages/token/hooks/useTokenChart';
+import { useTokenOhlcv } from '@/pages/token/hooks/useTokenOhlcv';
 import {
   createChart,
   CandlestickSeries,

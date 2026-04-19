@@ -1,6 +1,6 @@
 import ToggleGroup from '@/components/common/ToggleGroup';
 import { PriceDown, PriceUp } from '@/components/icon/Icons';
-import { useTokenChart } from '@/pages/Token/hooks/useTokenChart';
+import { useTokenChart } from '@/pages/token/hooks/useTokenChart';
 import type { TokenOhlcv } from '@/types/tokenType';
 import {
   CandlestickSeries,

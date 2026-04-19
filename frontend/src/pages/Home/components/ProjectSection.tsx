@@ -66,7 +66,7 @@ export default function ProjectSection() {
   }, [projects.length, updateSlideAvailability]);
 
   return (
-    <section className="py-14 md:py-20 lg:py-24">
+    <section className="bg-white py-14 md:py-20 lg:py-24">
       <div className="layout-container">
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <h2 className="font-header-01 text-gray-900">주목할 만한 프로젝트</h2>

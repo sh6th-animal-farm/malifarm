@@ -27,28 +27,28 @@ export default function Investment({ walletInfo }: InvestmentProps) {
       amount: formatAmount(safeWalletInfo.totalBalance),
       unit: "원",
       valueClass: "text-gray-900",
-      unitClass: "text-gray-500",
+      unitClass: "text-gray-400",
     },
     {
       label: "예수금",
       amount: formatAmount(safeWalletInfo.cashBalance),
       unit: "원",
       valueClass: "text-gray-900",
-      unitClass: "text-gray-500",
+      unitClass: "text-gray-400",
     },
     {
       label: "매입금액",
       amount: formatAmount(safeWalletInfo.totalPurchasedValue),
       unit: "원",
       valueClass: "text-gray-900",
-      unitClass: "text-gray-500",
+      unitClass: "text-gray-400",
     },
     {
       label: "평가금액",
       amount: formatAmount(safeWalletInfo.totalMarketValue),
       unit: "원",
       valueClass: "text-gray-900",
-      unitClass: "text-gray-500",
+      unitClass: "text-gray-400",
     },
     {
       label: "평가손익",
@@ -68,12 +68,12 @@ export default function Investment({ walletInfo }: InvestmentProps) {
       amount: formatSignedRate(safeWalletInfo.profitLossRate),
       unit: "",
       valueClass: rateColorClass(safeWalletInfo.profitLossRate),
-      unitClass: "text-gray-500",
+      unitClass: "text-gray-400",
     },
   ];
 
   return (
-    <section className="mb-8 grid grid-cols-2 gap-0 rounded-lg bg-white px-4 py-3 shadow-std md:grid-cols-3 md:px-6 md:py-4">
+    <section className="mb-8 grid grid-cols-2 gap-0 rounded-lg bg-white px-4 py-2 shadow-std md:grid-cols-3 md:px-6 md:py-4">
       {summaryItems.map(({ label, amount, valueClass, unit, unitClass }, index) => (
         <div
           key={label}
@@ -89,7 +89,7 @@ export default function Investment({ walletInfo }: InvestmentProps) {
             index % 3 === 2 ? "md:pr-0" : "",
           ].join(" ")}
         >
-          <p className="self-start text-left font-caption-01 text-gray-500">{label}</p>
+          <p className="self-start text-left font-caption-01 text-gray-400">{label}</p>
           <div className="flex items-baseline gap-1">
             <p className={`font-subtitle-01 tabular-nums ${valueClass}`}>{amount}</p>
             {unit ? <span className={`font-caption-01 leading-none ${unitClass}`}>{unit}</span> : null}

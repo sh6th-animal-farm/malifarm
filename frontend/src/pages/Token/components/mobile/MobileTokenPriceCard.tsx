@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useOrderbookLadder } from '@/pages/Token/hooks/useOrderbookLadder';
+import { useOrderbookLadder } from '@/pages/token/hooks/useOrderbookLadder';
 import type { OrderInfo, TokenOhlcv } from '@/types/tokenType';
 
 interface MobileTokenPriceCardProps {
@@ -48,7 +48,7 @@ export default function MobileTokenPriceCard({
       </div>
       <div
         ref={scrollRef}
-        className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        className="min-h-0 flex-1 bg-white overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
         <table className="w-full table-fixed border-collapse select-none">
           <colgroup>

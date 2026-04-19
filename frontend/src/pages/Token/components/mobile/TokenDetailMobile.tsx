@@ -45,11 +45,9 @@ export default function TokenDetailMobile({
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const saved = sessionStorage.getItem(MOBILE_TOKEN_DETAIL_TAB_KEY);
-    if (!saved && initialTab === 'list') {
-      setMobileTab(initialTab);
-      sessionStorage.setItem(MOBILE_TOKEN_DETAIL_TAB_KEY, initialTab);
-    }
+    if (!initialTab) return;
+    setMobileTab(initialTab);
+    sessionStorage.setItem(MOBILE_TOKEN_DETAIL_TAB_KEY, initialTab);
   }, [initialTab]);
 
   useEffect(() => {
@@ -66,8 +64,8 @@ export default function TokenDetailMobile({
   ];
 
   return (
-    <div className="md:hidden flex h-[calc(100dvh-52px-var(--bottom-tabbar-height))] flex-col">
-      <div className="sticky top-[52px] z-20 bg-white">
+    <div className="md:hidden flex h-[var(--custom-calc-height)] flex-col overflow-hidden">
+      <div className="relative z-20 bg-white">
         <TabMenu
           items={mobileTabs}
           currentValue={mobileTab}
@@ -80,7 +78,7 @@ export default function TokenDetailMobile({
         />
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {mobileTab === 'chart' &&
           (tokenOhlcv ? (
             <MobileTokenChartCard tokenOhlcv={tokenOhlcv} />

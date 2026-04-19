@@ -2,12 +2,12 @@ import { useEffect, useRef } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import PercentageBtn from '@/pages/Token/components/tokenDetail/PercentageBtn';
+import PercentageBtn from '@/pages/token/components/tokenDetail/PercentageBtn';
 import Toast from '@/components/common/Toast';
 import type { OrderInfo, TokenOhlcv } from '@/types/tokenType';
 import { Trashcan } from '@/components/icon/Icons';
-import { useOrderbookLadder } from '@/pages/Token/hooks/useOrderbookLadder';
-import { useTradeOrderForm } from '@/pages/Token/hooks/useTradeOrderForm';
+import { useOrderbookLadder } from '@/pages/token/hooks/useOrderbookLadder';
+import { useTradeOrderForm } from '@/pages/token/hooks/useTradeOrderForm';
 
 interface MobileTokenTradeCardProps {
   tokenId: number;
@@ -83,10 +83,10 @@ export default function MobileTokenTradeCard({
 
   return (
     <div className="flex h-full min-h-0 overflow-hidden bg-white">
-      <div className="flex w-2/5 min-w-0 flex-col border-r border-gray-100">
+      <div className="flex w-2/5 min-w-0 bg-gray-50 flex-col border-r border-gray-100">
         <div
           ref={orderbookScrollRef}
-          className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="min-h-0 flex-1 bg-white overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           {ladder.map((row, idx) => {
             const isSell = row.side === 'SELL';
@@ -140,7 +140,7 @@ export default function MobileTokenTradeCard({
         </div>
       </div>
 
-      <div className="flex w-3/5 min-w-0 flex-col px-4 py-4">
+      <div className="flex w-3/5 min-w-0 flex-col overflow-hidden px-4 py-4">
         <div>
           <ToggleGroup
             tabs={tabs}
@@ -221,7 +221,7 @@ export default function MobileTokenTradeCard({
             </div>
           </div>
         ) : (
-          <div className="flex min-h-0 flex-1 flex-col gap-4 pt-4">
+          <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pt-4">
             <div className="flex items-center gap-2">
               <span className="w-24 text-gray-400 font-caption-03">주문 유형</span>
               <select

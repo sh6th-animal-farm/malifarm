@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import Button from '@/components/common/Button';
 import TabMenu from '@/components/common/TabMenu';
 import Icon from '@/components/icon';
@@ -10,8 +12,12 @@ import Account from './Account';
 import Modal from '@/components/common/Modal.tsx';
 import CreateAcc from './CreateAcc';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
+import { useTokenList } from '@/pages/token/hooks/useTokenList';
+import type { HoldingDTO } from '@/types/myPageType';
 
 export default function WalletLayout() {
+  const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width: 767px)');
   const [tab, setTab] = useState('HOLDINGS');
   const [isLinking, setIsLinking] = useState(false); // 계좌 연동 여부
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // 계좌 생성 여부 모달
@@ -31,6 +37,7 @@ export default function WalletLayout() {
     holdings,
     loading: walletLoading,
   } = useWalletInfo(initialWalletId);
+  const { tokenList = [] } = useTokenList();
 
   // 지갑 ID 가져와서 useWallet 훅 활성화
   const checkWalletExists = useCallback(async () => {
@@ -50,6 +57,61 @@ export default function WalletLayout() {
   useEffect(() => {
     checkWalletExists();
   }, []);
+
+  const resolveTokenId = (holding: HoldingDTO) => {
+    const rawId = (
+      holding as HoldingDTO & {
+        id?: number;
+        tokenID?: number;
+        token_id?: number;
+      }
+    ).tokenId ??
+      (
+        holding as HoldingDTO & {
+          id?: number;
+          tokenID?: number;
+          token_id?: number;
+        }
+      ).id ??
+      (
+        holding as HoldingDTO & {
+          id?: number;
+          tokenID?: number;
+          token_id?: number;
+        }
+      ).tokenID ??
+      (
+        holding as HoldingDTO & {
+          id?: number;
+          tokenID?: number;
+          token_id?: number;
+        }
+      ).token_id;
+
+    const parsed = Number(rawId);
+    if (Number.isFinite(parsed) && parsed > 0) return parsed;
+
+    const matched = tokenList.find(
+      (token) =>
+        token.tickerSymbol === holding.tickerSymbol ||
+        token.tokenName === holding.tokenName,
+    );
+    return matched?.tokenId ?? null;
+  };
+
+  const handleHoldingClick = (holding: HoldingDTO) => {
+    const tokenId = resolveTokenId(holding);
+    if (!tokenId) {
+      console.warn('[Wallet] tokenId 매핑 실패:', holding);
+      return;
+    }
+
+    if (isMobile) {
+      navigate(`/token/${tokenId}`, { state: { mobileTab: 'trade' } });
+      return;
+    }
+    navigate(`/token/${tokenId}`);
+  };
 
   // 계좌 연동
   const handleLinkAccount = async () => {
@@ -119,7 +181,7 @@ export default function WalletLayout() {
   }, [isCreatingAcc, currentStep]);
 
   return (
-    <div>
+    <div className='layout-container py-4 md:py-0 tabular-nums'>
       <PageHeader
         title="나의 전자지갑"
         subtitle="연동된 증권 계좌와 실시간 투자 현황을 확인하세요."
@@ -147,12 +209,16 @@ export default function WalletLayout() {
       />
       {walletInfo && <Investment walletInfo={walletInfo} />}
       <TabMenu
-        className="mb-4"
+        className=""
         items={[{ text: '보유 토큰', value: 'HOLDINGS' }]}
         currentValue={tab}
         onTabChange={setTab}
       />
-      <TokenTable loading={false} holdings={holdings} />
+      <TokenTable
+        loading={false}
+        holdings={holdings}
+        onTokenClick={handleHoldingClick}
+      />
       {/* 
       <TokenTable loading={holdingsLoading} holdings={holdings} />
       {!holdingsLoading && holdings.length > 0 && holdingsHasNext ? (
