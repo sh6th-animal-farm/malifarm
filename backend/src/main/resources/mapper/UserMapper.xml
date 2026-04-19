@@ -6,10 +6,10 @@
 
     <select id="findByEmail" resultType="UserDTO">
         SELECT user_id,
-        email,
-        password,
-        user_name,
-        role
+               email,
+               password,
+               user_name,
+               role
         FROM users
         WHERE email = #{email}
     </select>
@@ -17,18 +17,28 @@
     <insert id="insertUser">
         INSERT INTO users (user_name, email, password, phone_number, role, brn)
         VALUES (#{userName}, #{email}, #{password}, #{phoneNumber}, #{role},
-        #{brn})
+                #{brn})
     </insert>
 
     <select id="existsByEmail" resultType="boolean">
         SELECT EXISTS (SELECT 1
-        FROM users
-        WHERE email = #{email})
+                       FROM users
+                       WHERE email = #{email})
     </select>
 
     <select id="selectAddress" resultType="string">
         SELECT address
         FROM users
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectUserInvestmentLimit" resultType="UserInvestmentLimitDTO">
+        SELECT user_id                                   AS userId,
+               investor_type                             AS investorType,
+               annual_limit_amount                       AS annualLimit,
+               used_limit_amount                         AS usedLimit,
+               (annual_limit_amount - used_limit_amount) AS availableLimit
+        FROM public.users
         WHERE user_id = #{userId}
     </select>
 
