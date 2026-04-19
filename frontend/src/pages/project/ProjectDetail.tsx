@@ -195,14 +195,14 @@ export default function ProjectDetail() {
                 onTabChange={setActiveTab}
               />
 
-              <div className="w-full">
-                {activeTab === 'invest' ? (
-                  <InvestTabContent data={projectData} />
-                ) : (
-                  <FarmTabContent data={projectData} />
-                )}
-              </div>
-            </main>
+            <div className="w-full">
+              {activeTab === 'invest' ? (
+                <InvestTabContent data={projectData} />
+              ) : (
+                <FarmTabContent data={projectData} projectId={projectData.projectId} />
+              )}
+            </div>
+          </main>
 
             <ProjectDetailSideBar
               className="hidden lg:block"

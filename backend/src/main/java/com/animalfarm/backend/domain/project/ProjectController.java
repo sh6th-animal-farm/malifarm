@@ -21,6 +21,7 @@ import com.animalfarm.backend.domain.accounting.DividendService;
 import com.animalfarm.backend.domain.accounting.dto.DividendDTO;
 import com.animalfarm.backend.domain.accounting.dto.DividendSelectDTO;
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
+import com.animalfarm.backend.domain.project.dto.FarmEnvChartPointDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDetailDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectInsertDTO;
@@ -67,6 +68,15 @@ public class ProjectController {
 	@GetMapping("/{projectId}")
 	public ResponseEntity<ApiResponseDTO<ProjectDetailDTO>> selectDetail(@PathVariable("projectId") Long projectId) {
 		ProjectDetailDTO data = projectService.selectDetail(projectId);
+		return ResponseEntity.ok(ApiResponseDTO.success(data));
+	}
+
+	@GetMapping("/{projectId}/farm-env")
+	public ResponseEntity<ApiResponseDTO<List<FarmEnvChartPointDTO>>> getFarmEnvChartData(
+		@PathVariable("projectId") Long projectId,
+		@RequestParam(value = "range", defaultValue = "24h") String range
+	) {
+		List<FarmEnvChartPointDTO> data = projectService.selectFarmEnvChartData(projectId, range);
 		return ResponseEntity.ok(ApiResponseDTO.success(data));
 	}
 
