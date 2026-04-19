@@ -47,7 +47,7 @@ export default function CarbonPriceCard({
 
         {/* 🌟 5. 부가세 안내 문구 */}
         <div className="font-caption-01 text-(--color-gray-500)">
-          * 부가세(VAT) 별도 금액
+          * 부가세(VAT) 포함 금액
         </div>
       </div>
       {/* 🌟 6. 주문 버튼 (피그마 시안의 버튼 색상과 높이 56px 적용) */}
