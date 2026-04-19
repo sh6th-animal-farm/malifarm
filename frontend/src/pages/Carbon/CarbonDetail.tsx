@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { carbonApi } from "../../api/carbonApi";
 import type { CarbonDetailDTO } from "../../types/carbonType";
+import Button from "@/components/common/Button";
+import EmptyState from "@/components/common/EmptyState";
 import CarbonOrderModal from "./components/CarbonOrderModal";
 import CarbonPriceCard from "./components/CarbonPriceCard";
 import InfoGrid from "../project/components/DetailInfoCard";
@@ -42,15 +44,38 @@ export default function CarbonDetail() {
     fetchDetail();
   }, [id]);
 
-  if (isLoading) return <div className="flex justify-center items-center min-h-[500px] text-[var(--color-gray-400)]">데이터를 불러오는 중입니다...</div>;
+  if (isLoading) {
+    return (
+      <PageShell>
+        <div className="layout-container py-8 md:py-20">
+          <div className="flex min-h-[500px] items-center justify-center text-gray-400">
+            데이터를 불러오는 중입니다...
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
   
   if (!detailData) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[500px] gap-4">
-        <div className="w-[64px] h-[64px] bg-[var(--color-gray-100)] text-[var(--color-gray-400)] rounded-full flex items-center justify-center text-[32px] font-bold">!</div>
-        <p className="text-[18px] text-[var(--color-gray-400)] font-medium">상품 정보를 찾을 수 없습니다.</p>
-        <button onClick={() => navigate("/carbon/list")} className="px-6 py-2 bg-[var(--color-green-600)] text-white rounded-md hover:bg-[var(--color-green-700)] transition-colors">목록으로 돌아가기</button>
-      </div>
+      <PageShell>
+        <div className="layout-container py-8 md:py-20">
+          <div className="flex min-h-[500px] flex-col items-center justify-center gap-4">
+            <EmptyState
+              message="상품 정보를 찾을 수 없습니다."
+              className="mb-0 py-0"
+            />
+            <Button
+              variant="default"
+              width={180}
+              height={48}
+              onClick={() => navigate("/carbon/list")}
+            >
+              목록으로 돌아가기
+            </Button>
+          </div>
+        </div>
+      </PageShell>
     );
   }
 
@@ -75,69 +100,69 @@ export default function CarbonDetail() {
 
   // 🌟 TabMenu용 데이터
   const tabItems = [
-    { text: "주요 정보 및 기대 효과", value: "info" }
+    { text: "주요 정보", value: "info" }
     // 필요 시 여기에 다른 탭("프로젝트 진행 상황" 등)을 추가할 수 있습니다.
   ];
 
 
   return (
     <PageShell>
-      {/* 🌟 화면 전체(w-full)를 덮는 연회색 배경(bg-gray-50) 래퍼 추가! */}
-      <div className="w-full bg-[var(--color-gray-50)] min-h-screen">
-        <div className="layout-container py-[48px]">
-        <div className="w-full flex gap-[var(--spacing-gutter)] pt-[48px] pb-[48px]">
+      <div className="min-h-full w-full bg-[var(--color-gray-50)] md:min-h-screen">
+        <div className="layout-container pb-4 md:py-12">
+        <div className="w-full flex flex-col gap-4 pb-4 md:flex-row md:gap-[var(--spacing-gutter)] md:py-12">
           
-          {/* 왼쪽 메인 콘텐츠 영역 */}
           <main className="flex-1 min-w-0 p-0 m-0">
             
-            {/* 상단 이미지 */}
-            <ImageCarousel images={imageList} />
-
-            {/* 프로젝트 헤더 */}
-            <div className="mt-[48px] p-0 ml-0">
-              <div className="text-[var(--color-green-600)] font-caption-03 font-bold mb-[8px]">
-                {carbonInfo.cpType} 프로젝트 | {carbonInfo.vintageYear} 빈티지
-              </div>
-              <h1 className="font-header-01 text-[var(--color-gray-900)] font-bold mb-[12px]">
-                {carbonInfo.cpTitle}
-              </h1>
-              <p className="font-subtitle-02 text-[var(--color-gray-500)] m-0">{locationStr}</p>
+            <div className="-mx-4 md:mx-0">
+              <ImageCarousel images={imageList} />
             </div>
 
-            {/* 상세 정보 섹션 */}
-            {/* 🌟 탭 및 하단 상세 정보 영역 */}
-            <div className="mt-[64px] w-full box-border ml-0">
-              
-              {/* 기존 h2 태그 대신 TabMenu 컴포넌트 삽입! */}
+            <div className="mt-4 md:hidden">
+              <CarbonPriceCard 
+                projectCategory={carbonInfo.cpType}
+                vintageYear={carbonInfo.vintageYear}
+                projectName={carbonInfo.cpTitle}
+                originalPrice={carbonInfo.cpPrice}
+                discountRate={userBenefit?.discountRate || 0}
+                currentPrice={userBenefit?.currentPrice || 0}
+                onOrderClick={() => setIsOrderModalOpen(true)}
+              />
+            </div>
+
+            <div className="w-full">
               <TabMenu 
                 items={tabItems}
                 currentValue={currentTab}
                 onTabChange={setCurrentTab}
+                marginY={16}
               />
               
-              {/* 탭이 'info'일 때만 InfoGrid 렌더링 */}
               {currentTab === "info" && (
-                <div className="mt-[32px]">
+                <div>
                   <InfoGrid items={infoItems} />
                 </div>
               )}
               
             </div>
 
-            {/* 프로젝트 보러가기 버튼 */}
-            <button
+            <Button
               type="button"
+              variant="outline-default"
+              width="100%"
+              height={56}
               onClick={() => navigate(`/project/${carbonInfo.projectId}`)}
-              className="flex justify-center items-center w-full max-w-[480px] mx-auto mt-[48px] p-[16px] border border-[var(--color-green-600)] bg-white text-[var(--color-green-600)] rounded-[var(--radius-s)] font-button-01 font-semibold cursor-pointer hover:bg-[var(--color-green-50)] transition-colors"
+              className="mx-auto mt-6 flex max-w-[480px] md:mt-12"
             >
               프로젝트 보러가기
-            </button>
+            </Button>
           </main>
 
-          {/* 오른쪽 사이드바 (가격 카드) - 흰색 카드가 회색 배경 위로 예쁘게 뜹니다! */}
-          <aside className="w-[416px] shrink-0">
+          <aside className="hidden w-[416px] shrink-0 md:block">
             <div className="sticky top-[100px]">
               <CarbonPriceCard 
+                projectCategory={carbonInfo.cpType}
+                vintageYear={carbonInfo.vintageYear}
+                projectName={carbonInfo.cpTitle}
                 originalPrice={carbonInfo.cpPrice}
                 discountRate={userBenefit?.discountRate || 0}
                 currentPrice={userBenefit?.currentPrice || 0}

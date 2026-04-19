@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Button from "@/components/common/Button";
+import Input from "@/components/common/Input";
 
 declare global {
   interface Window {
@@ -159,12 +161,14 @@ export default function CarbonOrderModal({
   };
 
   if (!isOpen) return null;
+  const canSubmit =
+    isAgreed && currentQty > 0 && (displayMaxQty <= 0 || currentQty <= displayMaxQty) && !isSubmitting;
 
   return createPortal(
-    <div className="fixed inset-0 overflow-y-auto flex items-center justify-center" style={{ zIndex: 9999 }}>
+    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto" style={{ zIndex: 9999 }}>
       <div className="fixed inset-0 bg-black/45" onClick={handleClose} />
 
-      <div className="relative w-[440px] bg-white rounded-(--radius-lg) shadow-(--shadow-std) overflow-hidden font-main flex flex-col z-10 my-[40px]">
+      <div className="relative z-10 my-4 flex max-h-[calc(100dvh-32px)] w-[calc(100%-32px)] max-w-[440px] flex-col overflow-y-auto rounded-(--radius-lg) bg-white font-main shadow-(--shadow-std)">
         
         {/* 헤더 */}
         <div className="flex items-center justify-between px-[24px] pt-[24px] pb-[16px]">
@@ -204,7 +208,7 @@ export default function CarbonOrderModal({
           <div className="flex flex-col gap-[8px]">
             <div className="font-body-04 text-(--color-gray-900)">주문 수량 입력</div>
             <div className="relative">
-              <input 
+              <Input
                 type="number" 
                 min="1" 
                 max={displayMaxQty > 0 ? displayMaxQty : undefined}
@@ -217,7 +221,7 @@ export default function CarbonOrderModal({
                     setAmount(Number(val));
                   }
                 }}
-                className="bg-(--color-gray-50) w-full h-[56px] rounded-(--radius-m) border border-(--color-gray-100) py-0 pr-[72px] pl-[16px] font-header-04 text-(--color-gray-900) outline-none transition-all focus:border-(--color-green-600) box-border [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="h-[56px] border-gray-100 bg-(--color-gray-50) py-0 pr-[72px] pl-[16px] font-header-04 text-(--color-gray-900) [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
               <span className="absolute right-[16px] top-1/2 -translate-y-1/2 font-body-04 text-(--color-gray-900)">tCO2e</span>
             </div>
@@ -259,14 +263,16 @@ export default function CarbonOrderModal({
           </label>
 
           {/* 주문 완료 버튼 */}
-          <button 
+          <Button
             type="button" 
             onClick={handleSubmitOrder}
-            disabled={!isAgreed || currentQty <= 0 || currentQty > displayMaxQty || isSubmitting}
-            className="w-full h-[56px] rounded-(--radius-m) border-0 font-button-01 text-white transition-colors duration-200 disabled:bg-(--color-gray-200) disabled:text-(--color-gray-400) disabled:cursor-not-allowed enabled:bg-(--color-gray-700) enabled:hover:bg-(--color-gray-900) enabled:cursor-pointer"
+            disabled={!canSubmit}
+            variant={canSubmit ? "default" : "disabled"}
+            width="100%"
+            height={56}
           >
             {isSubmitting ? "처리 중..." : "주문 완료하기"}
-          </button>
+          </Button>
 
         </div>
       </div>

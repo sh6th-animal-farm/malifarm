@@ -8,7 +8,7 @@ export default function MobileTokenExecutionCard({
   tradeList,
 }: MobileTokenExecutionCardProps) {
   return (
-    <div className="min-h-0 flex-1 bg-white overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+    <div className="min-h-0 flex-1 bg-white">
       <table className="w-full">
         <thead className="sticky top-0 z-10 bg-white">
           <tr className="text-gray-400 border-b border-gray-100">
@@ -48,4 +48,3 @@ export default function MobileTokenExecutionCard({
     </div>
   );
 }
-

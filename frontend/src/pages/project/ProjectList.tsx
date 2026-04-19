@@ -207,7 +207,7 @@ export default function ProjectList() {
           </section>
         </div>
         <div className="">
-          <section className="layout-container pb-20 my:pb-20">
+          <section className="layout-container pb-4 md:pb-20">
             <div ref={listRef}>
               <SectionHeader
                 title="프로젝트 목록"
@@ -241,7 +241,7 @@ export default function ProjectList() {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
-                className="mt-16"
+                className="mt-4 md:mt-16"
               />
             )}
           </section>
