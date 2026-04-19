@@ -14,13 +14,13 @@ export default function ImageCarousel({
 
   const [currentIdx, setCurrentIdx] = useState(0);
 
-  const [mainTrackIdx, setMainTrackIdx] = useState(1);
+  const [mainTrackIdx, setMainTrackIdx] = useState(hasLoop ? 1 : 0);
   const [isMainAnimating, setIsMainAnimating] = useState(true);
   const mainResettingRef = useRef(false);
   const mainResetRafRef = useRef<number | null>(null);
 
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
-  const [fullTrackIdx, setFullTrackIdx] = useState(1);
+  const [fullTrackIdx, setFullTrackIdx] = useState(hasLoop ? 1 : 0);
   const [isFullAnimating, setIsFullAnimating] = useState(true);
   const fullResettingRef = useRef(false);
   const fullResetRafRef = useRef<number | null>(null);
@@ -48,16 +48,16 @@ export default function ImageCarousel({
   const jumpMain = (index: number) => {
     setCurrentIdx(index);
     setIsMainAnimating(true);
-    setMainTrackIdx(index + 1);
+    setMainTrackIdx(hasLoop ? index + 1 : index);
   };
 
   useEffect(() => {
     setCurrentIdx(0);
-    setMainTrackIdx(1);
+    setMainTrackIdx(hasLoop ? 1 : 0);
     setIsMainAnimating(true);
-    setFullTrackIdx(1);
+    setFullTrackIdx(hasLoop ? 1 : 0);
     setIsFullAnimating(true);
-  }, [images]);
+  }, [images, hasLoop]);
 
   useEffect(() => {
     if (!isFullscreenOpen) return;
@@ -85,7 +85,7 @@ export default function ImageCarousel({
   useEffect(() => {
     if (isFullscreenOpen) {
       setIsFullAnimating(false);
-      setFullTrackIdx(currentIdx + 1);
+      setFullTrackIdx(hasLoop ? currentIdx + 1 : currentIdx);
       fullResetRafRef.current = window.requestAnimationFrame(() => {
         setIsFullAnimating(true);
       });
@@ -93,11 +93,11 @@ export default function ImageCarousel({
     }
 
     setIsMainAnimating(false);
-    setMainTrackIdx(currentIdx + 1);
+    setMainTrackIdx(hasLoop ? currentIdx + 1 : currentIdx);
     mainResetRafRef.current = window.requestAnimationFrame(() => {
       setIsMainAnimating(true);
     });
-  }, [isFullscreenOpen]);
+  }, [isFullscreenOpen, hasLoop]);
 
   useEffect(() => {
     return () => {

@@ -119,6 +119,7 @@ export default function CarbonDetail() {
 
             <div className="mt-4 lg:hidden">
               <CarbonPriceCard 
+                mode="mobile"
                 projectCategory={carbonInfo.cpType}
                 vintageYear={carbonInfo.vintageYear}
                 projectName={carbonInfo.cpTitle}
@@ -160,6 +161,7 @@ export default function CarbonDetail() {
           <aside className="hidden w-[416px] shrink-0 lg:block">
             <div className="sticky top-[100px]">
               <CarbonPriceCard 
+                mode="desktop"
                 projectCategory={carbonInfo.cpType}
                 vintageYear={carbonInfo.vintageYear}
                 projectName={carbonInfo.cpTitle}
