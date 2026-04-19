@@ -109,7 +109,7 @@ export default function ProjectDetail() {
 
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      alert('로그인이 필요한 서비스입니다.');
+      navigate('/auth/login');
       return;
     }
 
@@ -199,7 +199,10 @@ export default function ProjectDetail() {
               {activeTab === 'invest' ? (
                 <InvestTabContent data={projectData} />
               ) : (
-                <FarmTabContent data={projectData} projectId={projectData.projectId} />
+                <FarmTabContent
+                  data={projectData}
+                  projectId={projectData.projectId}
+                />
               )}
             </div>
           </main>
