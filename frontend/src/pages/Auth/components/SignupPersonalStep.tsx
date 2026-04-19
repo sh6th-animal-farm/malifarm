@@ -1,10 +1,11 @@
-import type { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
-import AuthCard from "@/components/common/AuthCard";
-import Button from "@/components/common/Button";
-import Input from "@/components/common/Input";
+import type { ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthCard from '@/components/common/AuthCard';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
+import { LessThan } from '@/components/icon/Icons';
 
-export type SignUpType = "PERSONAL" | "ENTERPRISE" | null;
+export type SignUpType = 'PERSONAL' | 'ENTERPRISE' | null;
 
 export type StatusState = {
   msg: string;
@@ -94,20 +95,48 @@ export default function SignupPersonalStep({
 }: SignupPersonalStepProps) {
   const navigate = useNavigate();
 
-  const labelClassName = "block mb-2 font-caption-03 text-gray-900";
+  const labelClassName = 'block mb-2 font-caption-03 text-gray-900';
+
+  const getPrevStep = () => {
+    if (form.step === 4) {
+      return form.signUpType === 'ENTERPRISE' ? 3 : 1;
+    }
+    if (form.step === 5) {
+      return 4;
+    }
+    if (form.step === 6) {
+      return 5;
+    }
+    return 1;
+  };
+
+  const renderBackIcon = () => (
+    <button
+      type="button"
+      onClick={() => updateForm('step', getPrevStep())}
+      className="flex items-center justify-center w-8 h-8"
+      aria-label="이전 단계로 이동"
+    >
+      <LessThan size={18} color="#111827" />
+    </button>
+  );
 
   if (form.step === 4) {
     return (
-      <AuthCard title="본인 확인" description="휴대폰 본인인증을 진행합니다">
+      <AuthCard
+        title="본인 확인"
+        description="휴대폰 본인인증을 진행합니다"
+        leftIcon={renderBackIcon()}
+      >
         <div className="mb-3">
           <label className={labelClassName}>휴대폰 번호</label>
           <Input
             type="text"
             value={form.phone}
             onChange={(e) => {
-              updateForm("phone", e.target.value.replace(/\D/g, ""));
-              updateForm("phoneVerified", false);
-              setPhoneStatus({ msg: "", ok: null });
+              updateForm('phone', e.target.value.replace(/\D/g, ''));
+              updateForm('phoneVerified', false);
+              setPhoneStatus({ msg: '', ok: null });
             }}
             placeholder="'-' 없이 숫자만 입력 (11자리)"
             maxLength={11}
@@ -129,7 +158,13 @@ export default function SignupPersonalStep({
           </p>
         </div>
 
-        <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
+        <Button
+          type="button"
+          variant="check"
+          width="100%"
+          height={50}
+          onClick={goToNext}
+        >
           다음으로
         </Button>
       </AuthCard>
@@ -138,7 +173,11 @@ export default function SignupPersonalStep({
 
   if (form.step === 5) {
     return (
-      <AuthCard title="이메일 인증" description="로그인 아이디로 사용할 이메일을 인증하세요">
+      <AuthCard
+        title="이메일 인증"
+        description="로그인 아이디로 사용할 이메일을 인증하세요"
+        leftIcon={renderBackIcon()}
+      >
         <div className="mb-5">
           <label className={labelClassName}>이메일 주소 (ID)</label>
           <div className="flex gap-2">
@@ -147,14 +186,15 @@ export default function SignupPersonalStep({
                 type="email"
                 value={form.email}
                 onChange={(e) => {
-                  updateForm("email", e.target.value);
-                  updateForm("emailVerified", false);
-                  updateForm("emailExpireAt", null);
-                  setEmailSendStatus({ msg: "", ok: null });
-                  setEmailVerifyStatus({ msg: "", ok: null });
+                  updateForm('email', e.target.value);
+                  updateForm('emailVerified', false);
+                  updateForm('emailExpireAt', null);
+                  setEmailSendStatus({ msg: '', ok: null });
+                  setEmailVerifyStatus({ msg: '', ok: null });
                 }}
                 placeholder="example@farm.com"
                 className="pr-20"
+                maxLength={255}
                 height={50}
               />
               {emailRemainSec > 0 && (
@@ -168,7 +208,7 @@ export default function SignupPersonalStep({
               className="px-5 h-[50px] bg-gray-900 text-white rounded-[8px] font-semibold whitespace-nowrap"
               onClick={sendEmailCode}
             >
-              {emailRemainSec > 0 ? "재전송" : "인증요청"}
+              {emailRemainSec > 0 ? '재전송' : '인증요청'}
             </button>
           </div>
           {renderStatus(emailSendStatus)}
@@ -181,10 +221,11 @@ export default function SignupPersonalStep({
               type="text"
               value={form.emailCode}
               onChange={(e) => {
-                updateForm("emailCode", e.target.value);
-                setEmailVerifyStatus({ msg: "", ok: null });
+                updateForm('emailCode', e.target.value);
+                setEmailVerifyStatus({ msg: '', ok: null });
               }}
               placeholder="인증번호 6자리"
+              maxLength={6}
               height={50}
             />
             <button
@@ -193,13 +234,19 @@ export default function SignupPersonalStep({
               onClick={confirmEmailCode}
               disabled={loading.emailConfirm}
             >
-              {loading.emailConfirm ? "확인 중..." : "확인"}
+              {loading.emailConfirm ? '확인 중...' : '확인'}
             </button>
           </div>
           {renderStatus(emailVerifyStatus)}
         </div>
 
-        <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
+        <Button
+          type="button"
+          variant="check"
+          width="100%"
+          height={50}
+          onClick={goToNext}
+        >
           다음으로
         </Button>
       </AuthCard>
@@ -208,30 +255,48 @@ export default function SignupPersonalStep({
 
   if (form.step === 6) {
     return (
-      <AuthCard title="회원정보 입력" description="가입 정보를 확인하고 비밀번호를 설정하세요">
+      <AuthCard
+        title="회원정보 입력"
+        description="가입 정보를 확인하고 비밀번호를 설정하세요"
+        leftIcon={renderBackIcon()}
+      >
         <div className="mb-5">
           <label className={labelClassName}>이름</label>
           <Input
             type="text"
             value={form.userName}
             onChange={(e) => {
-              updateForm("userName", e.target.value);
-              setSignupStatus({ msg: "", ok: null });
+              updateForm('userName', e.target.value);
+              setSignupStatus({ msg: '', ok: null });
             }}
-            placeholder="이름 입력"
+            placeholder="이름 입력 (최대 30자)"
+            maxLength={30}
             height={50}
           />
         </div>
 
         <div className="mb-5">
           <label className={labelClassName}>이메일 (ID)</label>
-          <Input type="text" value={form.email} readOnly className="!bg-gray-100" height={50} />
+          <Input
+            type="text"
+            value={form.email}
+            readOnly
+            className="!bg-gray-100"
+            maxLength={255}
+            height={50}
+          />
         </div>
 
-        {form.signUpType === "ENTERPRISE" && (
+        {form.signUpType === 'ENTERPRISE' && (
           <div className="mb-5">
             <label className={labelClassName}>사업자 등록번호</label>
-            <Input type="text" value={form.bNo} readOnly className="!bg-gray-100" height={50} />
+            <Input
+              type="text"
+              value={form.bNo}
+              readOnly
+              className="!bg-gray-100"
+              height={50}
+            />
           </div>
         )}
 
@@ -242,17 +307,18 @@ export default function SignupPersonalStep({
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setSignupStatus({ msg: "", ok: null });
+              setSignupStatus({ msg: '', ok: null });
             }}
             placeholder="비밀번호"
+            maxLength={255}
             height={50}
           />
           {renderStatus(
             password.length === 0
-              ? { msg: "", ok: null }
+              ? { msg: '', ok: null }
               : passwordValidation.isValid
                 ? { msg: passwordValidation.message, ok: true }
-                : { msg: passwordValidation.message, ok: false }
+                : { msg: passwordValidation.message, ok: false },
           )}
         </div>
 
@@ -263,17 +329,18 @@ export default function SignupPersonalStep({
             value={password2}
             onChange={(e) => {
               setPassword2(e.target.value);
-              setSignupStatus({ msg: "", ok: null });
+              setSignupStatus({ msg: '', ok: null });
             }}
             placeholder="비밀번호 재입력"
+            maxLength={255}
             height={50}
           />
           {renderStatus(
             passwordMatched === null
-              ? { msg: "", ok: null }
+              ? { msg: '', ok: null }
               : passwordMatched
-                ? { msg: "비밀번호가 일치합니다.", ok: true }
-                : { msg: "비밀번호가 일치하지 않습니다.", ok: false }
+                ? { msg: '비밀번호가 일치합니다.', ok: true }
+                : { msg: '비밀번호가 일치하지 않습니다.', ok: false },
           )}
         </div>
 
@@ -287,7 +354,7 @@ export default function SignupPersonalStep({
           onClick={submitSignUp}
           disabled={loading.signup}
         >
-          {loading.signup ? "가입 처리 중..." : "가입 완료하기"}
+          {loading.signup ? '가입 처리 중...' : '가입 완료하기'}
         </Button>
       </AuthCard>
     );
@@ -304,7 +371,7 @@ export default function SignupPersonalStep({
           <button
             type="button"
             className="w-full h-[50px] rounded-[8px] bg-green-600 text-white font-semibold"
-            onClick={() => navigate("/auth/login")}
+            onClick={() => navigate('/auth/login')}
           >
             로그인하러 가기
           </button>

@@ -1,10 +1,11 @@
-import AuthCard from "@/components/common/AuthCard";
-import Button from "@/components/common/Button";
-import Input from "@/components/common/Input";
+import AuthCard from '@/components/common/AuthCard';
+import Button from '@/components/common/Button';
+import Input from '@/components/common/Input';
+import { LessThan } from '@/components/icon/Icons';
 import SignupPersonalStep, {
   type FormState,
   type StatusState,
-} from "./SignupPersonalStep";
+} from './SignupPersonalStep';
 
 type SignupEnterpriseStepProps = {
   form: FormState;
@@ -78,11 +79,24 @@ export default function SignupEnterpriseStep({
   formatMMSS,
   renderStatus,
 }: SignupEnterpriseStepProps) {
-  const labelClassName = "block mb-2 font-caption-03 text-gray-900";
+  const labelClassName = 'block mb-2 font-caption-03 text-gray-900';
 
   if (form.step === 2) {
     return (
-      <AuthCard title="기업 인증" description="사업자 등록번호를 확인합니다">
+      <AuthCard
+        title="기업 인증"
+        description="사업자 등록번호를 확인합니다"
+        leftIcon={
+          <button
+            type="button"
+            onClick={() => updateForm('step', 1)}
+            className="flex items-center justify-center w-8 h-8"
+            aria-label="이전 단계로 이동"
+          >
+            <LessThan size={18} color="#111827" />
+          </button>
+        }
+      >
         <div className="mb-5">
           <label className={labelClassName}>사업자 등록번호</label>
           <div className="flex gap-2">
@@ -100,13 +114,19 @@ export default function SignupEnterpriseStep({
               onClick={verifyBno}
               disabled={loading.enterpriseVerify}
             >
-              {loading.enterpriseVerify ? "조회 중..." : "인증하기"}
+              {loading.enterpriseVerify ? '조회 중...' : '인증하기'}
             </button>
           </div>
           {renderStatus(bNoStatus)}
         </div>
 
-        <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
+        <Button
+          type="button"
+          variant="check"
+          width="100%"
+          height={50}
+          onClick={goToNext}
+        >
           다음으로
         </Button>
       </AuthCard>
@@ -115,7 +135,20 @@ export default function SignupEnterpriseStep({
 
   if (form.step === 3) {
     return (
-      <AuthCard title="유의사항 확인" description="법인회원 거래 유의사항을 확인해주세요">
+      <AuthCard
+        title="유의사항 확인"
+        description="법인회원 거래 유의사항을 확인해주세요"
+        leftIcon={
+          <button
+            type="button"
+            onClick={() => updateForm('step', 2)}
+            className="flex items-center justify-center w-8 h-8"
+            aria-label="이전 단계로 이동"
+          >
+            <LessThan size={18} color="#111827" />
+          </button>
+        }
+      >
         <div className="bg-gray-50 border border-gray-200 p-5 rounded-[8px] text-[13px] h-[150px] overflow-y-auto mb-6 text-gray-600 leading-6">
           <h4 className="font-bold mb-3">[법인회원 고객확인 거래 유의사항]</h4>
           1. 자금세탁방지 의무 준수
@@ -130,8 +163,8 @@ export default function SignupEnterpriseStep({
             type="checkbox"
             checked={form.cautionAgreed}
             onChange={(e) => {
-              updateForm("cautionAgreed", e.target.checked);
-              setCautionStatus({ msg: "", ok: null });
+              updateForm('cautionAgreed', e.target.checked);
+              setCautionStatus({ msg: '', ok: null });
             }}
             className="w-4 h-4 accent-(--color-green-600) shrink-0 cursor-pointer"
           />
@@ -142,7 +175,13 @@ export default function SignupEnterpriseStep({
 
         {renderStatus(cautionStatus)}
 
-        <Button type="button" variant="check" width="100%" height={50} onClick={goToNext}>
+        <Button
+          type="button"
+          variant="check"
+          width="100%"
+          height={50}
+          onClick={goToNext}
+        >
           다음으로
         </Button>
       </AuthCard>

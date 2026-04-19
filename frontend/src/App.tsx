@@ -3,6 +3,8 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import './styles/index.css';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import BottomTabBar from './components/layout/BottomTabBar';
+import ScrollToTop from './components/layout/ScrollToTop';
 import Home from './pages/Home';
 import Login from './pages/Auth/Login';
 import Signup from './pages/Auth/Signup';
@@ -109,6 +111,7 @@ function App() {
         </Routes>
       </main>
 
+      <BottomTabBar />
       <Footer />
     </div>
   );
