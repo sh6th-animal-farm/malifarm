@@ -16,7 +16,7 @@ export default function TokenSection() {
   }
 
   return (
-    <section className="py-14 md:py-20 lg:py-24">
+    <section className="bg-white py-14 md:py-20 lg:py-24">
       <div className="layout-container">
         <div className="mb-7 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <h2 className="font-header-01 text-gray-900">토큰 거래소 TOP 10</h2>
