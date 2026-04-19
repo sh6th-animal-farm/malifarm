@@ -1,5 +1,3 @@
-import heroSmartFarm from "@/assets/hero-smart-farm.png";
-
 export default function HeroSection() {
   return (
     <section className="bg-white py-0 md:pb-18">
@@ -13,7 +11,6 @@ export default function HeroSection() {
             loop
             playsInline
             preload="auto"
-            poster={heroSmartFarm}
             aria-hidden="true"
           />
 
