@@ -24,7 +24,7 @@ export default function CarbonPriceCard({
 
   return (
     <div className="w-full">
-      <div className="rounded-lg bg-white p-4 md:hidden">
+      <div className="rounded-lg bg-white p-4 lg:hidden">
         <p className="mb-1 font-caption-03 text-green-600">
           {projectCategory} 프로젝트 | {vintageYear} 빈티지
         </p>
@@ -71,7 +71,7 @@ export default function CarbonPriceCard({
         </Button>
       </div>
 
-      <div className="relative hidden rounded-lg bg-white p-8 shadow-std md:block">
+      <div className="relative hidden rounded-lg bg-white p-8 shadow-std lg:block">
         <div className="space-y-6">
           <div>
             <p className="mb-1 font-caption-03 text-green-600">

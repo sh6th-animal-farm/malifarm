@@ -51,26 +51,26 @@ export default function CarbonCard({ item }: CarbonCardProps) {
         </div>
       </div>
 
-      <div className="p-[24px] flex-1 flex flex-col">
+      <div className="flex flex-1 flex-col p-6">
         
-        <div className="font-subtitle-01 leading-[1.3] text-(--color-gray-900) line-clamp-2">
+        <div className="line-clamp-2 font-subtitle-00 leading-[1.35] text-gray-900">
           {item.cpTitle}
         </div>
 
-        <div className="h-px bg-(--color-gray-100) mt-[24px] mb-4" />
+        <div className="mt-5 mb-4 h-px bg-gray-100" />
 
-        <div className="flex justify-between items-baseline gap-2.5">
-          <span className="font-caption-01 text-(--color-gray-500)">구매 가능 수량</span>
-          <span className="text-(--color-gray-900) font-caption-03">
+        <div className="flex items-baseline justify-between gap-2.5">
+          <span className="font-caption-01 text-gray-500">구매 가능 수량</span>
+          <span className="font-body-03 text-gray-900">
             {item.cpAmount ? Number(item.cpAmount).toLocaleString() : "-"} tCO2e
           </span>
         </div>
 
-        <div className="mt-4 text-right flex-1 flex flex-col justify-end">
-          <div className="min-h-4.75 mb-1.25">
+        <div className="mt-4 flex flex-1 flex-col justify-end text-right">
+          <div className="mb-1 min-h-5">
             {hasDiscount && (
               <>
-                <span className="font-caption-01 text-(--color-gray-400) line-through mr-2">
+                <span className="mr-2 font-caption-01 text-gray-400 line-through">
                   {originalPrice.toLocaleString()} P
                 </span>
                 <span className="font-caption-02 text-error">
@@ -79,7 +79,7 @@ export default function CarbonCard({ item }: CarbonCardProps) {
               </>
             )}
           </div>
-          <div className="font-header-02 text-(--color-gray-900)">
+          <div className="font-header-03 text-gray-900">
             {(hasDiscount ? currentPrice : originalPrice).toLocaleString()} P
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function CarbonCard({ item }: CarbonCardProps) {
           variant={isRemoval ? "default" : "default-info"}
           width="100%"
           height={56}
-          className="mt-[24px] shrink-0"
+          className="mt-5 shrink-0"
         >
           상세 보기 및 주문
         </Button>

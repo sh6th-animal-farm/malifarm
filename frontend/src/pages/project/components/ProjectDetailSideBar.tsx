@@ -21,12 +21,16 @@ interface SideBarProps {
   };
   isApplied: boolean;
   onAction: () => void;
+  embedded?: boolean;
+  className?: string;
 }
 
 export default function ProjectDetailSideBar({
   projectData,
   isApplied,
   onAction,
+  embedded = false,
+  className = '',
 }: SideBarProps) {
   // D-Day 계산 로직
   const getDDay = () => {
@@ -49,12 +53,12 @@ export default function ProjectDetailSideBar({
     projectData.targetAmount / projectData.totalSupply,
   );
 
-  return (
-    <aside className="col-span-12 lg:col-span-4 px-0">
-      <div className="sticky top-[96px]">
-        <div className="relative p-8 bg-white rounded-lg shadow-std">
+  const cardContent = (
+    <div
+      className={`relative rounded-lg bg-white ${embedded ? 'p-4 shadow-none' : 'p-8 shadow-std'}`}
+    >
           {/* 1. 상태 배지 영역 */}
-          <div className="absolute top-8 right-8">
+          <div className={`absolute ${embedded ? 'top-4 right-4' : 'top-8 right-8'}`}>
             {projectData.projectStatus === 'ANNOUNCEMENT' && (
               <Badge variant="info" children="공고중" />
             )}
@@ -72,10 +76,10 @@ export default function ProjectDetailSideBar({
             )}
           </div>
 
-          <p className="font-caption-01 text-gray-400 mb-1 font-medium">
+          <p className="mb-1 font-caption-02 text-gray-400">
             {projectData.tickerSymbol}
           </p>
-          <h1 className="font-header-02 text-gray-900 mb-5 leading-tight">
+          <h1 className="font-header-02 text-gray-900 mb-5 pr-20 leading-tight">
             {projectData.projectName}
           </h1>
 
@@ -102,12 +106,12 @@ export default function ProjectDetailSideBar({
                 </div>
               </div>
 
-              <div className="space-y-3 mb-8">
-                <div className="bg-gray-50 p-5 rounded-lg">
+                <div className="space-y-3 mb-8">
+                  <div className="bg-gray-50 p-5 rounded-lg">
                   <span className="font-caption-01 text-gray-500 block mb-3">
                     총 모집 금액
                   </span>
-                  <strong className="text-[28px] font-header-02 text-gray-900 block leading-none">
+                  <strong className="font-header-02 text-gray-900 block leading-none">
                     {projectData.targetAmount?.toLocaleString()}원
                   </strong>
                 </div>
@@ -115,7 +119,7 @@ export default function ProjectDetailSideBar({
                   <span className="font-caption-01 text-gray-500 block mb-3">
                     1 토큰 당 금액
                   </span>
-                  <strong className="text-[28px] font-header-02 text-green-600 block leading-none">
+                  <strong className="font-header-02 text-green-600 block leading-none">
                     {tokenPrice.toLocaleString()}원
                   </strong>
                 </div>
@@ -161,8 +165,8 @@ export default function ProjectDetailSideBar({
 
           {/* [CASE 2] 진행중 */}
           {projectData.projectStatus === 'INPROGRESS' && (
-            <div className="space-y-6">
-              <div className="bg-gray-50 p-6 rounded-lg">
+              <div className="space-y-6">
+                <div className="bg-gray-50 p-6 rounded-lg">
                 <span className="font-caption-01 text-gray-500 block mb-2">
                   현재 토큰가 (Market Price)
                 </span>
@@ -199,7 +203,15 @@ export default function ProjectDetailSideBar({
             </div>
           )}
         </div>
-      </div>
+  );
+
+  if (embedded) {
+    return cardContent;
+  }
+
+  return (
+    <aside className={`col-span-12 lg:col-span-4 px-0 ${className}`}>
+      <div className="sticky top-[96px]">{cardContent}</div>
     </aside>
   );
 }

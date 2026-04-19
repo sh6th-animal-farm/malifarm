@@ -43,8 +43,31 @@ export default function CarbonList() {
 
   return (
     <PageShell>
-      <section className="layout-container md:py-20">
-          <div className="flex justify-between items-start">
+      <section className="layout-container py-4 lg:py-20">
+          <div className="mb-4 flex flex-col gap-3 md:hidden">
+            <div className="flex items-center gap-2">
+              <h2 className="font-header-03 text-gray-900">탄소마켓</h2>
+              <div className="relative inline-flex">
+                <button
+                  className={`flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none align-middle font-caption-02 text-white transition-all ${
+                    isGuideOpen ? "bg-green-600" : "bg-gray-300"
+                  }`}
+                  onClick={() => setIsGuideOpen(!isGuideOpen)}
+                >
+                  ?
+                </button>
+                <CarbonDiscountRateModal
+                  isOpen={isGuideOpen}
+                  onClose={() => setIsGuideOpen(false)}
+                />
+              </div>
+            </div>
+            <p className="font-body-01 text-gray-700">
+              보유한 포인트를 사용하여 탄소 배출권을 구매하고 ESG 경영을 실천하세요.
+            </p>
+          </div>
+
+          <div className="flex items-start justify-between">
             <div className="relative">
               <SectionHeader
                 title="탄소마켓"
@@ -76,7 +99,7 @@ export default function CarbonList() {
                 variant="outline-default"
                 width="auto"
                 height={44}
-                className="mt-[5px] whitespace-nowrap px-[20px] py-[10px] md:inline-flex"
+                className="mt-[5px] hidden whitespace-nowrap px-[20px] py-[10px] md:inline-flex"
               >
                 구매한 탄소 상품 보러가기 &gt;
               </Button>
@@ -84,7 +107,7 @@ export default function CarbonList() {
           </div>
 
         {!isForbidden && (
-          <div className="py-4">
+          <div className="py-3 md:py-4">
             <FilterGroup
               items={[
                 { text: "전체보기", value: "ALL" },
@@ -101,8 +124,8 @@ export default function CarbonList() {
 
         <div>
           {isLoading ? (
-            <div className="flex justify-center items-center h-[400px] text-[var(--color-gray-400)]">
-              로딩 중...
+            <div className="flex h-[320px] items-center justify-center text-gray-400">
+              <span className="font-body-01">로딩 중...</span>
             </div>
           ) : isForbidden ? (
             <EmptyState
@@ -115,7 +138,7 @@ export default function CarbonList() {
               className="mb-0 py-10"
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-[26px]">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 xl:gap-[26px]">
               {carbonList.map((item) => (
                 <CarbonCard key={item.cpId} item={item} />
               ))}

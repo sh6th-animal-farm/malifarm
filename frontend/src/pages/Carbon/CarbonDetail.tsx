@@ -47,7 +47,7 @@ export default function CarbonDetail() {
   if (isLoading) {
     return (
       <PageShell>
-        <div className="layout-container py-8 md:py-20">
+        <div className="layout-container py-8 lg:py-20">
           <div className="flex min-h-[500px] items-center justify-center text-gray-400">
             데이터를 불러오는 중입니다...
           </div>
@@ -59,7 +59,7 @@ export default function CarbonDetail() {
   if (!detailData) {
     return (
       <PageShell>
-        <div className="layout-container py-8 md:py-20">
+        <div className="layout-container py-8 lg:py-20">
           <div className="flex min-h-[500px] flex-col items-center justify-center gap-4">
             <EmptyState
               message="상품 정보를 찾을 수 없습니다."
@@ -107,17 +107,17 @@ export default function CarbonDetail() {
 
   return (
     <PageShell>
-      <div className="min-h-full w-full bg-[var(--color-gray-50)] md:min-h-screen">
-        <div className="layout-container pb-4 md:py-12">
-        <div className="w-full flex flex-col gap-4 pb-4 md:flex-row md:gap-[var(--spacing-gutter)] md:py-12">
+      <div className="min-h-full w-full bg-[var(--color-gray-50)] lg:min-h-screen">
+        <div className="layout-container pb-4 lg:py-12">
+        <div className="w-full flex flex-col gap-4 pb-4 lg:flex-row lg:gap-[var(--spacing-gutter)] lg:py-12">
           
           <main className="flex-1 min-w-0 p-0 m-0">
             
-            <div className="-mx-4 md:mx-0">
+            <div className="-mx-4 lg:mx-0">
               <ImageCarousel images={imageList} />
             </div>
 
-            <div className="mt-4 md:hidden">
+            <div className="mt-4 lg:hidden">
               <CarbonPriceCard 
                 projectCategory={carbonInfo.cpType}
                 vintageYear={carbonInfo.vintageYear}
@@ -151,13 +151,13 @@ export default function CarbonDetail() {
               width="100%"
               height={56}
               onClick={() => navigate(`/project/${carbonInfo.projectId}`)}
-              className="mx-auto mt-6 flex max-w-[480px] md:mt-12"
+              className="mx-auto mt-6 flex max-w-[480px] lg:mt-12"
             >
               프로젝트 보러가기
             </Button>
           </main>
 
-          <aside className="hidden w-[416px] shrink-0 md:block">
+          <aside className="hidden w-[416px] shrink-0 lg:block">
             <div className="sticky top-[100px]">
               <CarbonPriceCard 
                 projectCategory={carbonInfo.cpType}
