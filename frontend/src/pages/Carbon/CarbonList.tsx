@@ -6,6 +6,7 @@ import type { CarbonListDTO } from "../../types/carbonType";
 import EmptyState from "@/components/common/EmptyState";
 import FilterGroup from "@/components/common/FilterGroup";
 import Button from "@/components/common/Button";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import SectionHeader from "@/components/layout/SectionHeader";
 import PageShell from "@/components/layout/PageShell";
 import CarbonCard from "./components/CarbonCard";
@@ -13,6 +14,7 @@ import CarbonDiscountRateModal from "./components/CarbonDiscountRateModal";
 
 export default function CarbonList() {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const [category, setCategory] = useState<"ALL" | "REMOVAL" | "REDUCTION">("ALL");
   const [carbonList, setCarbonList] = useState<CarbonListDTO[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,31 +45,8 @@ export default function CarbonList() {
 
   return (
     <PageShell>
-      <section className="layout-container py-4 lg:py-20">
-          <div className="mb-4 flex flex-col gap-3 md:hidden">
-            <div className="flex items-center gap-2">
-              <h2 className="font-header-03 text-gray-900">탄소마켓</h2>
-              <div className="relative inline-flex">
-                <button
-                  className={`flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-none align-middle font-caption-02 text-white transition-all ${
-                    isGuideOpen ? "bg-green-600" : "bg-gray-300"
-                  }`}
-                  onClick={() => setIsGuideOpen(!isGuideOpen)}
-                >
-                  ?
-                </button>
-                <CarbonDiscountRateModal
-                  isOpen={isGuideOpen}
-                  onClose={() => setIsGuideOpen(false)}
-                />
-              </div>
-            </div>
-            <p className="font-body-01 text-gray-700">
-              보유한 포인트를 사용하여 탄소 배출권을 구매하고 ESG 경영을 실천하세요.
-            </p>
-          </div>
-
-          <div className="flex items-start justify-between">
+      <section className="layout-container pb-4 lg:py-20">
+          <div className="flex justify-between">
             <div className="relative">
               <SectionHeader
                 title="탄소마켓"
@@ -93,13 +72,13 @@ export default function CarbonList() {
               />
             </div>
 
-            {!isForbidden && (
+            {!isForbidden && !isMobile && (
               <Button
                 onClick={() => navigate("/mypage/carbon-history")}
                 variant="outline-default"
                 width="auto"
                 height={44}
-                className="mt-[5px] hidden whitespace-nowrap px-[20px] py-[10px] md:inline-flex"
+                className="whitespace-nowrap px-[20px] py-[10px]"
               >
                 구매한 탄소 상품 보러가기 &gt;
               </Button>

@@ -26,9 +26,11 @@ export default function PageShell({
     >
       <div
         ref={mobileInnerRef}
-        className={`flex min-h-0 flex-1 flex-col overflow-y-auto ${mobileInnerClassName}`}
+        className={`flex min-h-0 flex-1 flex-col overflow-y-scroll [-webkit-overflow-scrolling:touch] ${mobileInnerClassName}`}
       >
-        {children}
+        <div className="flex min-h-[calc(100%+1px)] flex-col">
+          {children}
+        </div>
       </div>
     </div>
   );

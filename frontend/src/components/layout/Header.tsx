@@ -150,7 +150,7 @@ export default function Header() {
     showCarbonDetailMobileBackButton;
 
   return (
-    <header className="h-[var(--spacing-header-height)] bg-white md:bg-white/85 md:backdrop-blur-md sticky top-0 z-[1000] flex items-center">
+    <header className="h-[var(--spacing-header-height)] bg-white md:bg-white/85 md:backdrop-blur-md sticky top-0 z-[1000] flex items-center lg:fixed lg:inset-x-0 lg:top-0">
       <div className="layout-container relative flex h-full items-center justify-between">
         {showMobileBackButton && (
           <button
@@ -301,25 +301,25 @@ export default function Header() {
                 >
                   <Link
                     to="/mypage/profile"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                   >
                     내 정보
                   </Link>
                   <Link
                     to="/mypage/project-history"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                   >
                     나의 프로젝트
                   </Link>
                   <Link
                     to="/mypage/wallet"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                   >
                     나의 전자지갑
                   </Link>
                   <Link
                     to="/mypage/transaction-history"
-                    className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                   >
                     거래 내역
                   </Link>
@@ -328,7 +328,7 @@ export default function Header() {
                   {userRole === "ADMIN" && (
                     <Link
                       to="/admin"
-                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                      className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                     >
                       관리자 페이지
                     </Link>
@@ -337,7 +337,7 @@ export default function Header() {
                   {userRole === "ENTERPRISE" && (
                     <Link
                       to="/mypage/carbon-history"
-                      className="block w-full px-4 py-2.5 font-caption-01 text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                      className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                     >
                       탄소 배출권 구매 내역
                     </Link>
@@ -346,7 +346,7 @@ export default function Header() {
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="block w-full cursor-pointer px-4 py-2.5 text-left font-caption-01 text-error hover:bg-gray-50 hover:text-red-700"
+                    className="block w-full cursor-pointer px-4 py-2.5 text-left font-caption-02 text-error hover:bg-gray-50 hover:text-red-700"
                   >
                     로그아웃
                   </button>
