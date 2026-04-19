@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/projectType';
 
