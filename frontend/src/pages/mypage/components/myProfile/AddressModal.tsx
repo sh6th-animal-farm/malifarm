@@ -24,6 +24,10 @@ export default function AddressModal({
   const [detailAddress, setDetailAddress] = useState('');
   const detailAddressRef = useRef<HTMLInputElement>(null);
 
+  // 에러 상태 관리
+  const [baseAddressError, setBaseAddressError] = useState(false);
+  const [detailAddressError, setDetailAddressError] = useState(false);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -41,6 +45,10 @@ export default function AddressModal({
     setBaseAddress(nextBaseAddress);
     setDetailAddress(nextDetailAddress);
     setDisplayAddress(nextBaseAddress || '주소 등록이 필요합니다.');
+
+    // 모달 새로 열 때 에러 초기화
+    setBaseAddressError(false);
+    setDetailAddressError(false);
   }, [addressDraft, isOpen]);
 
   useEffect(() => {
@@ -102,7 +110,7 @@ export default function AddressModal({
     ).daum?.Postcode;
 
     if (!daumPostcode) {
-      alert('주소 검색 스크립트가 로드되지 않았습니다.');
+      console.error('주소 검색 스크립트가 로드되지 않았습니다.');
       return;
     }
 
@@ -135,6 +143,9 @@ export default function AddressModal({
         setDetailAddress('');
         setDisplayAddress(address);
 
+        // 주소가 들어왔으므로 기본 주소 에러 해제
+        setBaseAddressError(false);
+
         window.setTimeout(() => {
           detailAddressRef.current?.focus();
         }, 0);
@@ -145,22 +156,23 @@ export default function AddressModal({
   const handleChangeDetailAddress = (value: string) => {
     const normalizedDetailAddress = value.replaceAll(ADDRESS_DELIMITER, ' ');
     setDetailAddress(normalizedDetailAddress);
+
+    // 입력을 시작하면 상세주소 에러 해제
+    if (normalizedDetailAddress.trim().length > 0) {
+      setDetailAddressError(false);
+    }
   };
 
   const handleSave = () => {
-    const normalizedDetail = detailAddress.trim();
-    if (!baseAddress.trim()) {
-      alert('주소 검색 후 저장해주세요.');
-      return;
-    }
+    const isBaseValid = !!baseAddress.trim();
+    const isDetailValid = !!detailAddress.trim();
 
-    if (!normalizedDetail) {
-      alert('상세주소를 입력해주세요.');
-      return;
-    }
+    setBaseAddressError(!isBaseValid);
+    setDetailAddressError(!isDetailValid);
 
-    const normalized = finalAddress.trim();
-    onSave(normalized);
+    if (isBaseValid && isDetailValid) {
+      onSave(finalAddress.trim());
+    }
   };
 
   if (!isOpen) return null;
@@ -199,18 +211,30 @@ export default function AddressModal({
               주소 검색
             </Button>
           </div>
+          {baseAddressError && (
+            <p className="px-1 mt-1 text-xs text-error">
+              주소 검색 후 저장해주세요.
+            </p>
+          )}
 
           {showDetailAddressInput ? (
             <div>
-              <Input
-                ref={detailAddressRef}
-                type="text"
-                value={detailAddress}
-                onChange={(event) =>
-                  handleChangeDetailAddress(event.target.value)
-                }
-                placeholder="상세주소를 입력해주세요"
-              />
+              <div>
+                <Input
+                  ref={detailAddressRef}
+                  type="text"
+                  value={detailAddress}
+                  onChange={(event) =>
+                    handleChangeDetailAddress(event.target.value)
+                  }
+                  placeholder="상세주소를 입력해주세요"
+                />
+              </div>
+              {detailAddressError && (
+                <p className="px-1 mt-1 text-xs text-error">
+                  상세주소를 입력해주세요.
+                </p>
+              )}
             </div>
           ) : null}
         </div>
