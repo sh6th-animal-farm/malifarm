@@ -71,6 +71,48 @@
         ORDER BY created_at ASC
     </select>
 
+    <select id="selectFarmEnvChartData"
+            resultType="com.animalfarm.backend.domain.project.dto.FarmEnvChartPointDTO">
+        <choose>
+            <when test="range == '24h'">
+                SELECT
+                    fed.created_at AS createdAt,
+                    fed.temperature_inside AS temperatureInside,
+                    fed.humidity_inside AS humidityInside
+                FROM farm_env_data fed
+                JOIN projects p ON p.farm_id = fed.farm_id
+                WHERE p.project_id = #{projectId}
+                  AND fed.created_at >= NOW() - INTERVAL '24 hours'
+                ORDER BY fed.created_at ASC
+            </when>
+            <when test="range == '7d'">
+                SELECT
+                    (DATE_TRUNC('hour', fed.created_at)
+                     - ((EXTRACT(HOUR FROM fed.created_at)::int % 6) * INTERVAL '1 hour')) AS createdAt,
+                    AVG(fed.temperature_inside) AS temperatureInside,
+                    AVG(fed.humidity_inside) AS humidityInside
+                FROM farm_env_data fed
+                JOIN projects p ON p.farm_id = fed.farm_id
+                WHERE p.project_id = #{projectId}
+                  AND fed.created_at >= NOW() - INTERVAL '7 days'
+                GROUP BY 1
+                ORDER BY 1 ASC
+            </when>
+            <otherwise>
+                SELECT
+                    DATE_TRUNC('day', fed.created_at) AS createdAt,
+                    AVG(fed.temperature_inside) AS temperatureInside,
+                    AVG(fed.humidity_inside) AS humidityInside
+                FROM farm_env_data fed
+                JOIN projects p ON p.farm_id = fed.farm_id
+                WHERE p.project_id = #{projectId}
+                  AND fed.created_at >= NOW() - INTERVAL '30 days'
+                GROUP BY 1
+                ORDER BY 1 ASC
+            </otherwise>
+        </choose>
+    </select>
+
     <select id="selectByCondition"
             parameterType="projectSearchReqDTO" resultType="projectListDTO">
         SELECT
@@ -96,6 +138,14 @@
                 AND p.project_status = #{projectStatus}
             </if>
         </where>
+        ORDER BY
+        CASE p.project_status
+        WHEN 'ANNOUNCEMENT' THEN 1
+        WHEN 'SUBSCRIPTION' THEN 2
+        WHEN 'INPROGRESS' THEN 3
+        ELSE 4
+        END ASC,
+        p.created_at DESC
     </select>
 
     <select id="selectByConditionForMain"

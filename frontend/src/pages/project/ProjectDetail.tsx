@@ -134,7 +134,7 @@ export default function ProjectDetail() {
               {activeTab === 'invest' ? (
                 <InvestTabContent data={projectData} />
               ) : (
-                <FarmTabContent data={projectData} />
+                <FarmTabContent data={projectData} projectId={projectData.projectId} />
               )}
             </div>
           </main>
