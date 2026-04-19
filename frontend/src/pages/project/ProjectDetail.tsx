@@ -168,7 +168,7 @@ export default function ProjectDetail() {
 
   return (
     <PageShell>
-      <section className="layout-container pb-20 md:py-20">
+      <section className="layout-container pb-4 md:py-20">
         <div className="grid grid-cols-12 gap-[24px]">
           <main className="col-span-12 lg:col-span-8 px-0">
             <div className="-mx-4 md:mx-0">
@@ -189,6 +189,7 @@ export default function ProjectDetail() {
                 { text: '투자 정보', value: 'invest' },
                 { text: '농장 정보', value: 'farm' },
               ]}
+              gap={8}
               currentValue={activeTab}
               onTabChange={setActiveTab}
             />

@@ -59,7 +59,10 @@
 @layer base {
   @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 
-  :root { --bottom-tabbar-height: 0px; }
+  :root {
+    --bottom-tabbar-height: 0px;
+    --app-height: 100vh;
+  }
 
   * { @apply m-0 p-0 box-border tracking-std; }
   body {
@@ -200,7 +203,7 @@
   :root {
     --spacing-header-height: 48px;
     --spacing-bottom-tabbar-height: var(--bottom-tabbar-height);
-    --custom-calc-height: calc(100dvh - var(--spacing-header-height) - var(--spacing-bottom-tabbar-height));
+    --custom-calc-height: 100%;
   }
 
   #root {
@@ -214,8 +217,12 @@
   html, body {
     height: 100%;
     overflow: hidden;
-    position: fixed;
     width: 100%;
+    overscroll-behavior-y: none;
+  }
+
+  #root {
+    overscroll-behavior-y: none;
   }
 
   .layout-container {

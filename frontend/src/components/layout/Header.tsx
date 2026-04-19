@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/authApi.ts";
 import Icon from "@/components/icon";
-import userSession from "@/pages/Auth/hook/userSession";
+import userSession from "@/pages/auth/hook/userSession";
 
 export default function Header() {
   const location = useLocation();
@@ -148,9 +148,17 @@ export default function Header() {
     showProjectDetailMobileBackButton ||
     showTokenDetailMobileBackButton ||
     showCarbonDetailMobileBackButton;
+  const isMobileImageHeroRoute =
+    showProjectDetailMobileBackButton || showCarbonDetailMobileBackButton;
 
   return (
-    <header className="h-[var(--spacing-header-height)] bg-white md:bg-white/85 md:backdrop-blur-md sticky top-0 z-[1000] flex items-center lg:fixed lg:inset-x-0 lg:top-0">
+    <header
+      className={`z-[1000] flex items-center touch-manipulation h-[calc(var(--spacing-header-height)+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] ${
+        isMobileImageHeroRoute
+          ? "fixed inset-x-0 top-0 bg-transparent"
+          : "sticky top-0 bg-white"
+      } md:h-[var(--spacing-header-height)] md:pt-0 md:bg-white/85 md:backdrop-blur-md lg:fixed lg:inset-x-0 lg:top-0`}
+    >
       <div className="layout-container relative flex h-full items-center justify-between">
         {showMobileBackButton && (
           <button
@@ -170,7 +178,9 @@ export default function Header() {
               }
               navigate("/mypage");
             }}
-            className="absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center text-gray-700 md:hidden"
+            className={`absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center md:hidden ${
+              isMobileImageHeroRoute ? "text-white" : "text-gray-700"
+            }`}
             aria-label="뒤로가기"
           >
             <Icon name="chevron_right" size={22} className="rotate-180" />
@@ -194,16 +204,18 @@ export default function Header() {
           <span className="text-green-600 self-center">스마트팜</span>
         </Link>
 
-        <div
-          className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap font-header-03
-          } ${
-            showMobileBackButton
-              ? "absolute left-1/2 -translate-x-1/2"
-              : ""
-          }`}
-        >
-          {getMobileHeaderTitle()}
-        </div>
+        {!isMobileImageHeroRoute && (
+          <div
+            className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap font-header-03
+            } ${
+              showMobileBackButton
+                ? "absolute left-1/2 -translate-x-1/2"
+                : ""
+            }`}
+          >
+            {getMobileHeaderTitle()}
+          </div>
+        )}
 
         {/* 네비게이션 영역 */}
         <nav className="hidden lg:block">

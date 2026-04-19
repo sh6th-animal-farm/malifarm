@@ -63,8 +63,29 @@ function App() {
       });
     };
   }, []);
+
+  useEffect(() => {
+    const updateAppHeight = () => {
+      document.documentElement.style.setProperty(
+        '--app-height',
+        `${window.innerHeight}px`,
+      );
+    };
+
+    updateAppHeight();
+    window.addEventListener('resize', updateAppHeight);
+    window.addEventListener('orientationchange', updateAppHeight);
+    window.addEventListener('pageshow', updateAppHeight);
+
+    return () => {
+      window.removeEventListener('resize', updateAppHeight);
+      window.removeEventListener('orientationchange', updateAppHeight);
+      window.removeEventListener('pageshow', updateAppHeight);
+    };
+  }, []);
+
   return (
-    <div className="flex flex-col h-dvh overflow-hidden md:h-auto md:overflow-visible">
+    <div className="flex flex-col h-[var(--app-height)] overflow-hidden md:h-auto md:overflow-visible">
       <Header />
 
       <main className="flex-1 overflow-hidden md:overflow-visible pb-[var(--bottom-tabbar-height)] lg:pt-[var(--spacing-header-height)]">

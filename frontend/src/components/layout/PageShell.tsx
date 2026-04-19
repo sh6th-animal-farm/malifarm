@@ -26,11 +26,9 @@ export default function PageShell({
     >
       <div
         ref={mobileInnerRef}
-        className={`flex min-h-0 flex-1 flex-col overflow-y-scroll [-webkit-overflow-scrolling:touch] ${mobileInnerClassName}`}
+        className={`flex min-h-0 flex-1 flex-col overflow-y-scroll overscroll-y-contain [-webkit-overflow-scrolling:touch] ${mobileInnerClassName}`}
       >
-        <div className="flex min-h-[calc(100%+1px)] flex-col">
-          {children}
-        </div>
+        <div className="flex min-h-full flex-col pb-px">{children}</div>
       </div>
     </div>
   );
