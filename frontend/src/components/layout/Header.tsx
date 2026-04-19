@@ -7,12 +7,10 @@ import userSession from "@/pages/auth/hook/userSession";
 export default function Header() {
   const location = useLocation();
   const navigate = useNavigate();
-  const isHomeRoute = location.pathname === "/";
   const [isLogIn, setIsLogIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [userRole, setUserRole] = useState("");
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [isHomeTopTransparent, setIsHomeTopTransparent] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { sessionExpireText } = userSession();
@@ -76,30 +74,6 @@ export default function Header() {
     return () => window.removeEventListener("click", handleOutsideClick);
   }, []);
 
-  useEffect(() => {
-    if (!isHomeRoute) {
-      setIsHomeTopTransparent(false);
-      return;
-    }
-
-    const updateHeaderTone = () => {
-      if (window.innerWidth < 1024) {
-        setIsHomeTopTransparent(false);
-        return;
-      }
-      setIsHomeTopTransparent(window.scrollY <= 8);
-    };
-
-    updateHeaderTone();
-    window.addEventListener("scroll", updateHeaderTone, { passive: true });
-    window.addEventListener("resize", updateHeaderTone);
-
-    return () => {
-      window.removeEventListener("scroll", updateHeaderTone);
-      window.removeEventListener("resize", updateHeaderTone);
-    };
-  }, [isHomeRoute]);
-
   const toggleDropdown = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setOpenDropdown(openDropdown === id ? null : id);
@@ -117,15 +91,9 @@ export default function Header() {
   // 활성화 체크 및 Tailwind 클래스 반환
   const getNavItemClass = (path: string) => {
     const baseClass =
-      `relative inline-flex flex-col items-center font-body-03 px-5 py-1 transition-all duration-200 no-underline ${
-        useLightTextOnHeader
-          ? "text-white/85 hover:text-white"
-          : "text-gray-700 hover:text-gray-900"
-      }`;
+      "relative inline-flex flex-col items-center font-body-03 px-5 py-1 text-gray-700 transition-all duration-200 hover:text-gray-900 no-underline";
     const activeClass =
-      `${useLightTextOnHeader ? "text-white" : "text-gray-900"} -translate-y-[2px] after:content-[''] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 ${
-        useLightTextOnHeader ? "after:bg-white" : "after:bg-green-600"
-      } after:rounded-[var(--radius-xl)]`;
+      "text-gray-900 -translate-y-[2px] after:content-[''] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-green-600 after:rounded-[var(--radius-xl)]";
 
     const isActive =
       location.pathname === path || location.pathname.startsWith(`${path}/`);
@@ -182,20 +150,9 @@ export default function Header() {
     showCarbonDetailMobileBackButton;
   const isMobileImageHeroRoute =
     showProjectDetailMobileBackButton || showCarbonDetailMobileBackButton;
-  const useTransparentHeader = isHomeTopTransparent && !isMobileImageHeroRoute;
-  const useLightTextOnHeader = useTransparentHeader || isMobileImageHeroRoute;
-
   return (
     <header
-      className={`z-[1000] flex items-center touch-manipulation transition-colors duration-300 h-[calc(var(--spacing-header-height)+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] ${
-        isMobileImageHeroRoute || useTransparentHeader
-          ? "fixed inset-x-0 top-0 bg-transparent"
-          : "sticky top-0 bg-white"
-      } md:h-[var(--spacing-header-height)] md:pt-0 ${
-        useTransparentHeader
-          ? "md:bg-transparent md:backdrop-blur-0"
-          : "md:bg-white/85 md:backdrop-blur-md"
-      } lg:fixed lg:inset-x-0 lg:top-0`}
+      className="z-[1000] flex items-center touch-manipulation h-[calc(var(--spacing-header-height)+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] sticky top-0 bg-white md:h-[var(--spacing-header-height)] md:pt-0 md:bg-white/85 md:backdrop-blur-md lg:fixed lg:inset-x-0 lg:top-0"
     >
       <div className="layout-container relative flex h-full items-center justify-between">
         {showMobileBackButton && (
@@ -216,9 +173,7 @@ export default function Header() {
               }
               navigate("/mypage");
             }}
-            className={`absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center md:hidden ${
-              isMobileImageHeroRoute ? "text-white" : "text-gray-700"
-            }`}
+            className="absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center text-gray-700 md:hidden"
             aria-label="뒤로가기"
           >
             <Icon name="chevron_right" size={22} className="rotate-180" />
@@ -228,15 +183,13 @@ export default function Header() {
         {/* 로고 영역 */}
         <Link
           to="/"
-          className={`font-header-03 md:font-subtitle-00 overflow-hidden whitespace-nowrap cursor-pointer leading-none ${
-            useLightTextOnHeader ? "text-white" : "text-gray-900"
-          } ${
+          className={`font-header-03 md:font-subtitle-00 text-gray-900 overflow-hidden whitespace-nowrap cursor-pointer leading-none ${
             location.pathname === "/" ? "inline-flex" : "hidden md:inline-flex"
           }`}
         >
           <Icon
             name="leaf"
-            color={useLightTextOnHeader ? "white" : "var(--color-green-600)"}
+            color="var(--color-green-600)"
             size={28}
             className="mr-1 self-center"
           />
@@ -246,9 +199,7 @@ export default function Header() {
 
         {!isMobileImageHeroRoute && (
           <div
-            className={`${location.pathname === "/" ? "hidden" : "block"} md:hidden whitespace-nowrap font-header-03 ${
-              useLightTextOnHeader ? "text-white" : "text-gray-900"
-            }
+            className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap font-header-03
             } ${
               showMobileBackButton
                 ? "absolute left-1/2 -translate-x-1/2"
@@ -292,7 +243,7 @@ export default function Header() {
             <div className="flex items-center gap-5">
               <Link
                 to="/auth/login"
-                className={`font-button-01 ${useLightTextOnHeader ? "text-white" : "text-gray-900"}`}
+                className="text-gray-900 font-button-01"
               >
                 로그인
               </Link>
@@ -330,16 +281,12 @@ export default function Header() {
 
               <div className="inline-flex items-center gap-5">
                 <span
-                  className={`inline-flex h-[30px] w-[106px] items-center justify-between gap-2 rounded-[var(--radius-xl)] px-2.5 py-1.5 font-caption-02 whitespace-nowrap ${
-                    useLightTextOnHeader
-                      ? "bg-white/20 text-white"
-                      : "bg-gray-50 text-gray-700"
-                  }`}
+                  className="inline-flex h-[30px] w-[106px] items-center justify-between gap-2 rounded-[var(--radius-xl)] bg-gray-50 px-2.5 py-1.5 font-caption-02 text-gray-700 whitespace-nowrap"
                 >
                   <Icon
                     name="clock"
                     size={18}
-                    color={useLightTextOnHeader ? "white" : "var(--color-gray-500)"}
+                    color="var(--color-gray-500)"
                   />
                   <span className="tabular-nums">{sessionExpireText}</span>
                 </span>
@@ -352,9 +299,9 @@ export default function Header() {
                   <Icon
                     name="profile"
                     size={18}
-                    color={useLightTextOnHeader ? "white" : "var(--color-gray-700)"}
+                    color="var(--color-gray-700)"
                   />
-                  <span className={`font-body-03 whitespace-nowrap ${useLightTextOnHeader ? "text-white" : "text-gray-700"}`}>
+                  <span className="font-body-03 text-gray-700 whitespace-nowrap">
                     {userName} 님
                   </span>
                 </button>
