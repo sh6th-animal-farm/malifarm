@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/projectType';
 
@@ -91,7 +91,7 @@ export default function ProjectDetail() {
 
     const token = localStorage.getItem('accessToken');
     if (!token) {
-      alert('로그인이 필요한 서비스입니다.');
+      navigate('/auth/login');
       return;
     }
 
@@ -134,7 +134,10 @@ export default function ProjectDetail() {
               {activeTab === 'invest' ? (
                 <InvestTabContent data={projectData} />
               ) : (
-                <FarmTabContent data={projectData} projectId={projectData.projectId} />
+                <FarmTabContent
+                  data={projectData}
+                  projectId={projectData.projectId}
+                />
               )}
             </div>
           </main>
