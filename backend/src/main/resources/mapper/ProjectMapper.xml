@@ -76,37 +76,37 @@
         <choose>
             <when test="range == '24h'">
                 SELECT
-                    fed.created_at AS createdAt,
-                    fed.temperature_inside AS temperatureInside,
-                    fed.humidity_inside AS humidityInside
+                fed.created_at AS createdAt,
+                fed.temperature_inside AS temperatureInside,
+                fed.humidity_inside AS humidityInside
                 FROM farm_env_data fed
                 JOIN projects p ON p.farm_id = fed.farm_id
                 WHERE p.project_id = #{projectId}
-                  AND fed.created_at >= NOW() - INTERVAL '24 hours'
+                AND fed.created_at >= NOW() - INTERVAL '24 hours'
                 ORDER BY fed.created_at ASC
             </when>
             <when test="range == '7d'">
                 SELECT
-                    (DATE_TRUNC('hour', fed.created_at)
-                     - ((EXTRACT(HOUR FROM fed.created_at)::int % 6) * INTERVAL '1 hour')) AS createdAt,
-                    AVG(fed.temperature_inside) AS temperatureInside,
-                    AVG(fed.humidity_inside) AS humidityInside
+                (DATE_TRUNC('hour', fed.created_at)
+                - ((EXTRACT(HOUR FROM fed.created_at)::int % 6) * INTERVAL '1 hour')) AS createdAt,
+                AVG(fed.temperature_inside) AS temperatureInside,
+                AVG(fed.humidity_inside) AS humidityInside
                 FROM farm_env_data fed
                 JOIN projects p ON p.farm_id = fed.farm_id
                 WHERE p.project_id = #{projectId}
-                  AND fed.created_at >= NOW() - INTERVAL '7 days'
+                AND fed.created_at >= NOW() - INTERVAL '7 days'
                 GROUP BY 1
                 ORDER BY 1 ASC
             </when>
             <otherwise>
                 SELECT
-                    DATE_TRUNC('day', fed.created_at) AS createdAt,
-                    AVG(fed.temperature_inside) AS temperatureInside,
-                    AVG(fed.humidity_inside) AS humidityInside
+                DATE_TRUNC('day', fed.created_at) AS createdAt,
+                AVG(fed.temperature_inside) AS temperatureInside,
+                AVG(fed.humidity_inside) AS humidityInside
                 FROM farm_env_data fed
                 JOIN projects p ON p.farm_id = fed.farm_id
                 WHERE p.project_id = #{projectId}
-                  AND fed.created_at >= NOW() - INTERVAL '30 days'
+                AND fed.created_at >= NOW() - INTERVAL '30 days'
                 GROUP BY 1
                 ORDER BY 1 ASC
             </otherwise>
@@ -140,8 +140,8 @@
         </where>
         ORDER BY
         CASE p.project_status
-        WHEN 'ANNOUNCEMENT' THEN 1
-        WHEN 'SUBSCRIPTION' THEN 2
+        WHEN 'ANNOUNCEMENT' THEN 2
+        WHEN 'SUBSCRIPTION' THEN 1
         WHEN 'INPROGRESS' THEN 3
         ELSE 4
         END ASC,
