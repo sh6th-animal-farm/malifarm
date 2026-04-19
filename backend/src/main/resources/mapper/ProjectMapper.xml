@@ -140,8 +140,8 @@
         </where>
         ORDER BY
         CASE p.project_status
-        WHEN 'ANNOUNCEMENT' THEN 2
         WHEN 'SUBSCRIPTION' THEN 1
+        WHEN 'ANNOUNCEMENT' THEN 2
         WHEN 'INPROGRESS' THEN 3
         ELSE 4
         END ASC,
