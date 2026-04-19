@@ -152,7 +152,11 @@ export default function Header() {
     showProjectDetailMobileBackButton || showCarbonDetailMobileBackButton;
   return (
     <header
-      className="z-[1000] flex items-center touch-manipulation h-[calc(var(--spacing-header-height)+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] sticky top-0 bg-white md:h-[var(--spacing-header-height)] md:pt-0 md:bg-white/85 md:backdrop-blur-md lg:fixed lg:inset-x-0 lg:top-0"
+      className={`z-[1000] flex items-center touch-manipulation h-[calc(var(--spacing-header-height)+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] ${
+        isMobileImageHeroRoute
+          ? "fixed inset-x-0 top-0 bg-transparent"
+          : "sticky top-0 bg-white"
+      } md:h-[var(--spacing-header-height)] md:pt-0 md:bg-white/85 md:backdrop-blur-md lg:fixed lg:inset-x-0 lg:top-0`}
     >
       <div className="layout-container relative flex h-full items-center justify-between">
         {showMobileBackButton && (
@@ -173,7 +177,9 @@ export default function Header() {
               }
               navigate("/mypage");
             }}
-            className="absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center text-gray-700 md:hidden"
+            className={`absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center md:hidden ${
+              isMobileImageHeroRoute ? "text-white" : "text-gray-700"
+            }`}
             aria-label="뒤로가기"
           >
             <Icon name="chevron_right" size={22} className="rotate-180" />

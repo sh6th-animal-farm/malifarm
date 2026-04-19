@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useOrderbookLadder } from '@/pages/Token/hooks/useOrderbookLadder';
+import { useOrderbookLadder } from '@/pages/token/hooks/useOrderbookLadder';
 import type { OrderInfo, TokenOhlcv } from '@/types/tokenType';
 
 interface MobileTokenPriceCardProps {

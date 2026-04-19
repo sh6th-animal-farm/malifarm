@@ -1,4 +1,4 @@
-// src/pages/Carbon/components/CarbonDiscountRateModal.tsx
+// src/pages/carbon/components/CarbonDiscountRateModal.tsx
 
 interface CarbonDiscountRateModalProps {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import TokenTopTen from './TokenTopTen';
-import { useTokenList } from '@/pages/Token/hooks/useTokenList.ts';
+import { useTokenList } from '@/pages/token/hooks/useTokenList.ts';
 
 export default function TokenSection() {
   const { tokenList, isLoading } = useTokenList('CHANGE', 10); // 등락률 높은 순으로 10개 추출

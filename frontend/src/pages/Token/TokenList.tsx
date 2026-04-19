@@ -3,7 +3,7 @@ import TokenListTable from './components/tokenList/TokenListTable';
 import TokenSummaryCard from './components/tokenList/TokenSummaryCard';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
-import { useTokenList } from '@/pages/Token/hooks/useTokenList';
+import { useTokenList } from '@/pages/token/hooks/useTokenList';
 import { useNavigate } from 'react-router-dom';
 
 const LAST_VIEWED_TOKEN_ID_KEY = 'last-viewed-token-id';
@@ -53,7 +53,7 @@ export default function TokenList() {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full md:bg-white">
       <section className="layout-container py-20">
         <SectionHeader
           title="토큰 거래소"

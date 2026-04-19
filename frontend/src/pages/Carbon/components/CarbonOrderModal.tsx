@@ -1,4 +1,4 @@
-// src/pages/Carbon/components/CarbonOrderModal.tsx
+// src/pages/carbon/components/CarbonOrderModal.tsx
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";

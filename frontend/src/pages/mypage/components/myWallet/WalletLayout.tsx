@@ -12,7 +12,7 @@ import Account from './Account';
 import Modal from '@/components/common/Modal.tsx';
 import CreateAcc from './CreateAcc';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
-import { useTokenList } from '@/pages/Token/hooks/useTokenList';
+import { useTokenList } from '@/pages/token/hooks/useTokenList';
 import type { HoldingDTO } from '@/types/myPageType';
 
 export default function WalletLayout() {

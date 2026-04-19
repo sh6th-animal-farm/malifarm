@@ -4,7 +4,7 @@ import Button from '@/components/common/Button';
 import PercentageBtn from './PercentageBtn';
 import Toast from '@/components/common/Toast';
 import { Trashcan } from '@/components/icon/Icons';
-import { useTradeOrderForm } from '@/pages/Token/hooks/useTradeOrderForm';
+import { useTradeOrderForm } from '@/pages/token/hooks/useTradeOrderForm';
 
 interface TokenTradeCardProps {
   tokenId: number;

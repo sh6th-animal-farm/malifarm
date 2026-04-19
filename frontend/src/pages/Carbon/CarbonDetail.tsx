@@ -1,4 +1,4 @@
-// src/pages/Carbon/CarbonDetail.tsx
+// src/pages/carbon/CarbonDetail.tsx
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { carbonApi } from "../../api/carbonApi";
@@ -85,8 +85,6 @@ export default function CarbonDetail() {
   const imageList = [detailData.thumbnailUrl || "/resources/img/carbon_sample.jpg"];
 
 
-  const locationStr = `위치: ${detailData.addressSido || ""} ${detailData.addressSigungu || ""} ${detailData.addressStreet || ""} ${detailData.addressDetails || ""} ${detailData.farmName || ""} 일대`.trim();
-  
   const infoItems = [
     { label: "발급 주체", value: "마이리틀 스마트팜 협회" },
     { label: "인증기관", value: carbonInfo.productCertificate },
@@ -107,7 +105,7 @@ export default function CarbonDetail() {
 
   return (
     <PageShell>
-      <div className="min-h-full w-full bg-[var(--color-gray-50)] lg:min-h-screen">
+      <div className="min-h-full w-full md:bg-white lg:min-h-screen">
         <div className="layout-container pb-4 lg:py-12">
         <div className="w-full flex flex-col gap-4 pb-4 lg:flex-row lg:gap-[var(--spacing-gutter)] lg:py-12">
           

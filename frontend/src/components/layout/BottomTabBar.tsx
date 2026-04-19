@@ -37,10 +37,14 @@ export default function BottomTabBar() {
 
     if (navRef.current) observer.observe(navRef.current);
     window.addEventListener("resize", setHeightVar);
+    window.visualViewport?.addEventListener("resize", setHeightVar);
+    window.visualViewport?.addEventListener("scroll", setHeightVar);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", setHeightVar);
+      window.visualViewport?.removeEventListener("resize", setHeightVar);
+      window.visualViewport?.removeEventListener("scroll", setHeightVar);
     };
   }, []);
 

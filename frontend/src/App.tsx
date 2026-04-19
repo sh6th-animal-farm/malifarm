@@ -6,14 +6,14 @@ import Footer from './components/layout/Footer';
 import BottomTabBar from './components/layout/BottomTabBar';
 import ScrollToTop from './components/layout/ScrollToTop';
 import Home from './pages/home';
-import Login from './pages/Auth/Login';
-import Signup from './pages/Auth/Signup';
-import NotFound from './pages/Error/NotFound';
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
+import NotFound from './pages/error/NotFound';
 import ProjectDetail from './pages/project/ProjectDetail';
-import TokenList from './pages/Token/TokenList';
-import TokenDetail from './pages/Token/TokenDetail';
-import CarbonList from './pages/Carbon/CarbonList';
-import CarbonDetail from './pages/Carbon/CarbonDetail';
+import TokenList from './pages/token/TokenList';
+import TokenDetail from './pages/token/TokenDetail';
+import CarbonList from './pages/carbon/CarbonList';
+import CarbonDetail from './pages/carbon/CarbonDetail';
 import News from './pages/news';
 import NewsDetail from './pages/news/components/Detail';
 import MyPage from './pages/mypage';
@@ -32,9 +32,9 @@ import {
   ProjectRegister,
   RevenueRegister,
 } from '@/pages/admin';
-import Policy from '@/pages/Policy/Policy';
-import FindPassword from './pages/Auth/components/FindPassword';
-import ResetPassword from './pages/Auth/components/ResetPassword';
+import Policy from '@/pages/policy/Policy';
+import FindPassword from './pages/auth/components/FindPassword';
+import ResetPassword from './pages/auth/components/ResetPassword';
 
 function App() {
   useEffect(() => {
@@ -66,9 +66,10 @@ function App() {
 
   useEffect(() => {
     const updateAppHeight = () => {
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
       document.documentElement.style.setProperty(
         '--app-height',
-        `${window.innerHeight}px`,
+        `${Math.round(viewportHeight)}px`,
       );
     };
 
@@ -76,11 +77,15 @@ function App() {
     window.addEventListener('resize', updateAppHeight);
     window.addEventListener('orientationchange', updateAppHeight);
     window.addEventListener('pageshow', updateAppHeight);
+    window.visualViewport?.addEventListener('resize', updateAppHeight);
+    window.visualViewport?.addEventListener('scroll', updateAppHeight);
 
     return () => {
       window.removeEventListener('resize', updateAppHeight);
       window.removeEventListener('orientationchange', updateAppHeight);
       window.removeEventListener('pageshow', updateAppHeight);
+      window.visualViewport?.removeEventListener('resize', updateAppHeight);
+      window.visualViewport?.removeEventListener('scroll', updateAppHeight);
     };
   }, []);
 

@@ -2,12 +2,12 @@ import { useEffect, useRef } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
-import PercentageBtn from '@/pages/Token/components/tokenDetail/PercentageBtn';
+import PercentageBtn from '@/pages/token/components/tokenDetail/PercentageBtn';
 import Toast from '@/components/common/Toast';
 import type { OrderInfo, TokenOhlcv } from '@/types/tokenType';
 import { Trashcan } from '@/components/icon/Icons';
-import { useOrderbookLadder } from '@/pages/Token/hooks/useOrderbookLadder';
-import { useTradeOrderForm } from '@/pages/Token/hooks/useTradeOrderForm';
+import { useOrderbookLadder } from '@/pages/token/hooks/useOrderbookLadder';
+import { useTradeOrderForm } from '@/pages/token/hooks/useTradeOrderForm';
 
 interface MobileTokenTradeCardProps {
   tokenId: number;
