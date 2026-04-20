@@ -14,9 +14,12 @@ import SubscriptionModal from './components/SubscriptionModal';
 import AccountCheckFailModal from './components/AccountCheckFailModal';
 import { authApi } from '@/api/authApi';
 import { subscriptionApi } from '@/api/subscriptionApi';
+import Modal from '@/components/common/Modal';
 import Toast from '@/components/common/Toast';
 import PageShell from '@/components/layout/PageShell';
 import type { UserInvestmentLimitDTO } from '@/types/subscriptionType';
+
+const PROJECT_TOAST_DURATION = 1000;
 
 export default function ProjectDetail() {
   const { id } = useParams<{ id: string | undefined }>();
@@ -24,7 +27,7 @@ export default function ProjectDetail() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('invest');
   const [activeModal, setActiveModal] = useState<
-    'subscription' | 'accountFail' | null
+    'subscription' | 'accountFail' | 'cancelConfirm' | null
   >(null);
   const [currentUserId, setCurrentUserId] = useState<
     string | number | undefined
@@ -38,8 +41,37 @@ export default function ProjectDetail() {
     setToastMsg(null);
   }, []);
 
-  const fetchData = async (projectId: string) => {
-    setIsLoading(true);
+  const handleCancelSubscription = async () => {
+    try {
+      await subscriptionApi.cancelSubscription(Number(id));
+      setToastMsg('청약이 취소되었습니다.');
+      setActiveModal(null);
+      setIsApplied(false);
+      if (id) await fetchData(id, { showLoader: false });
+    } catch (error: any) {
+      const errorMsg =
+        error.response?.data?.message || '취소 중 오류가 발생했습니다.';
+      console.error('실제 취소 오류 발생:', errorMsg);
+      alert(errorMsg);
+    }
+  };
+
+  const handleSubscriptionSuccess = async () => {
+    setIsApplied(true);
+    if (id) {
+      await fetchData(id, { showLoader: false });
+    }
+  };
+
+  const fetchData = async (
+    projectId: string,
+    options: { showLoader?: boolean } = {},
+  ) => {
+    const { showLoader = true } = options;
+
+    if (showLoader) {
+      setIsLoading(true);
+    }
     try {
       const projectRes = await projectApi.getProjectDetail(projectId);
       setProjectData(projectRes);
@@ -71,7 +103,9 @@ export default function ProjectDetail() {
       console.error('데이터 로딩 실패:', error);
       setProjectData(null);
     } finally {
-      setIsLoading(false);
+      if (showLoader) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -92,18 +126,7 @@ export default function ProjectDetail() {
       return;
     }
     if (isApplied) {
-      if (window.confirm('청약을 취소하시겠습니까?')) {
-        try {
-          await subscriptionApi.cancelSubscription(Number(id));
-          setToastMsg('청약이 취소되었습니다.');
-          if (id) await fetchData(id);
-        } catch (error: any) {
-          const errorMsg =
-            error.response?.data?.message || '취소 중 오류가 발생했습니다.';
-          console.error('실제 취소 오류 발생:', errorMsg);
-          alert(errorMsg);
-        }
-      }
+      setActiveModal('cancelConfirm');
       return;
     }
 
@@ -168,7 +191,7 @@ export default function ProjectDetail() {
 
   return (
     <PageShell>
-      <div className='md:bg-white'>
+      <div className="md:bg-white">
         <section className="layout-container pb-4 md:py-20">
           <div className="grid grid-cols-12 gap-[24px]">
             <main className="col-span-12 lg:col-span-8 px-0">
@@ -195,17 +218,17 @@ export default function ProjectDetail() {
                 onTabChange={setActiveTab}
               />
 
-            <div className="w-full">
-              {activeTab === 'invest' ? (
-                <InvestTabContent data={projectData} />
-              ) : (
-                <FarmTabContent
-                  data={projectData}
-                  projectId={projectData.projectId}
-                />
-              )}
-            </div>
-          </main>
+              <div className="w-full">
+                {activeTab === 'invest' ? (
+                  <InvestTabContent data={projectData} />
+                ) : (
+                  <FarmTabContent
+                    data={projectData}
+                    projectId={projectData.projectId}
+                  />
+                )}
+              </div>
+            </main>
 
             <ProjectDetailSideBar
               className="hidden lg:block"
@@ -221,9 +244,7 @@ export default function ProjectDetail() {
           isOpen={activeModal === 'subscription'}
           onClose={() => setActiveModal(null)}
           setToastMsg={setToastMsg}
-          onSuccess={() => {
-            if (id) fetchData(id);
-          }}
+          onSuccess={handleSubscriptionSuccess}
           projectData={{
             userId: currentUserId || '',
             projectId: String(projectData.projectId),
@@ -255,7 +276,34 @@ export default function ProjectDetail() {
         onPrimaryClick={() => navigate('/mypage/wallet')}
       />
 
-      {toastMsg && <Toast message={toastMsg} onClose={handleCloseToast} />}
+      {activeModal === 'cancelConfirm' && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4 backdrop-blur-[8px]"
+          onClick={() => setActiveModal(null)}
+        >
+          <div
+            className="w-full max-w-[360px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Modal
+              variant="warning"
+              title="청약을 취소하시겠습니까?"
+              leftText="확인"
+              rightText="취소"
+              onConfirm={handleCancelSubscription}
+              onCancel={() => setActiveModal(null)}
+            />
+          </div>
+        </div>
+      )}
+
+      {toastMsg && (
+        <Toast
+          message={toastMsg}
+          onClose={handleCloseToast}
+          duration={PROJECT_TOAST_DURATION}
+        />
+      )}
     </PageShell>
   );
 }
