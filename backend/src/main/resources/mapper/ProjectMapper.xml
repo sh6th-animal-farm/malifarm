@@ -46,13 +46,14 @@
 
     <select id="selectDetail" resultMap="ProjectDetailMap">
         SELECT
-        p.*, f.*, c.crop, c.method, t.ticker_symbol, t.total_supply, t.token_id, img.image_url
+        p.*, f.*, c.crop, c.method, t.ticker_symbol, t.total_supply, t.token_id, img.image_url, img.is_thumbnail
         FROM projects p
         LEFT JOIN farms f ON p.farm_id = f.farm_id
         LEFT JOIN cultivations c ON p.project_id = c.project_id
         LEFT JOIN tokens t ON p.project_id = t.project_id
         LEFT JOIN project_images img ON p.project_id = img.project_id
         WHERE p.project_id = #{projectId}
+        ORDER BY img.is_thumbnail DESC, img.image_url ASC
     </select>
 
     <select id="selectRecentTemperature" resultType="java.math.BigDecimal">
