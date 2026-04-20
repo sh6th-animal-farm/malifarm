@@ -59,7 +59,7 @@
         #{from_balanceAfter},
         #{to_balanceAfter},
         #{hashValue},
-        #{prevHashValue} )
+        COALESCE(#{prevHashValue}, '0') )
     </insert>
 
     <insert id="insertTokenLedgerBatch" parameterType="java.util.List">
