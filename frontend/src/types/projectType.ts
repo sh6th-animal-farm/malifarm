@@ -40,6 +40,14 @@ export interface ProjectData {
   };
 }
 
+export type FarmEnvChartRange = '24h' | '7d' | '30d';
+
+export interface FarmEnvChartPoint {
+  createdAt: string;
+  temperatureInside: number | null;
+  humidityInside: number | null;
+}
+
 export type ProjectStatus = 'SUBSCRIPTION' | 'ANNOUNCEMENT' | 'INPROGRESS';
 
 export type ProjectDTO = {

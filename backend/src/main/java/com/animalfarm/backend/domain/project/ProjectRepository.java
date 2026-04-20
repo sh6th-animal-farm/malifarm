@@ -3,8 +3,10 @@ package com.animalfarm.backend.domain.project;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
+import com.animalfarm.backend.domain.project.dto.FarmEnvChartPointDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDetailDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectInsertDTO;
@@ -52,6 +54,11 @@ public interface ProjectRepository {
 	void updateProjectStatus(ProjectStatusDTO projectStatusDTO);
 
 	ProjectDTO selectByProjectId(Long projectId);
+
+	List<FarmEnvChartPointDTO> selectFarmEnvChartData(
+		@Param("projectId") Long projectId,
+		@Param("range") String range
+	);
 
 	Long selectMyWalletId(Long userId);
 

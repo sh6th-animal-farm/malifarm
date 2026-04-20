@@ -36,6 +36,7 @@ export default function Modal({
 
       {text ? (
         <Button
+          type="button"
           variant="check"
           width="312px"
           height="46px"
@@ -45,6 +46,7 @@ export default function Modal({
       ) : (
         <div className="flex gap-3">
           <Button
+            type="button"
             variant="check"
             width="150px"
             height="46px"
@@ -52,6 +54,7 @@ export default function Modal({
             onClick={onConfirm}
           />
           <Button
+            type="button"
             variant="outline-default"
             width="150px"
             height="46px"

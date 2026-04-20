@@ -37,7 +37,7 @@ export default function ToggleGroup({
             font-caption-02 text-gray-400 bg-transparent
             ${
               activeTab === tab.id
-                ? 'bg-white font-caption-03 text-green-600 shadow-std'
+                ? 'bg-white font-caption-03 text-green-600'
                 : 'hover:text-gray-600'
             }
           `}
