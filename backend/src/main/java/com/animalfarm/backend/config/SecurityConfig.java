@@ -64,6 +64,8 @@ public class SecurityConfig {
 				.permitAll()
 				.requestMatchers("/api/auth/**", "/api/project/**", "/api/token/**")
 				.permitAll()
+				.requestMatchers("/api/chatbot/**")
+				.permitAll()
 
 				// [Read-Only] GET 요청에 대해 전역 허용
 				.requestMatchers(HttpMethod.GET, "/api/project/**", "/api/token/**", "/api/token",
