@@ -35,7 +35,6 @@ import {
 import Policy from '@/pages/policy/Policy';
 import FindPassword from './pages/auth/components/FindPassword';
 import ResetPassword from './pages/auth/components/ResetPassword';
-import ChatWidget from '@/components/common/ChatWidget';
 
 function App() {
   useEffect(() => {
@@ -91,8 +90,7 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col h-[var(--app-height)] overflow-hidden md:min-h-screen md:h-auto md:overflow-visible">
-      <Header />
+    <div className="flex flex-col h-[var(--app-height)] overflow-hidden md:h-auto md:overflow-visible">
 
       <main className="flex-1 overflow-hidden md:overflow-visible pb-[var(--bottom-tabbar-height)] lg:pt-[var(--spacing-header-height)]">
         <ScrollToTop />
@@ -140,7 +138,6 @@ function App() {
       </main>
 
       <BottomTabBar />
-      <ChatWidget />
       <Footer />
     </div>
   );
