@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { newsApi } from "@/api/newsApi";
 import type { MarketNewsDTO } from "@/types/newsType";
+import introduceImage from "@/assets/icons/introduce.png";
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -91,7 +92,7 @@ export default function HeroSection() {
               <button
                 type="button"
                 onClick={() => currentNews && navigate(`/news/${currentNews.newsId}`)}
-                className="mt-6 flex w-full max-w-[760px] cursor-pointer items-center gap-3 rounded-[var(--radius-s)] border border-white/30 bg-black/35 px-4 py-3 text-left backdrop-blur-sm transition-colors duration-200 hover:bg-black/50 disabled:cursor-default disabled:hover:bg-black/35"
+                className="mt-6 flex w-full max-w-[760px] cursor-pointer items-center gap-3 rounded-[var(--radius-s)] bg-black/35 px-4 py-3 text-left backdrop-blur-sm transition-colors duration-200 hover:bg-black/50 disabled:cursor-default disabled:hover:bg-black/35"
                 disabled={!currentNews}
                 aria-label="현재 뉴스 보기"
               >
@@ -102,6 +103,11 @@ export default function HeroSection() {
                   {currentNews?.title ?? "최신 뉴스를 불러오는 중입니다..."}
                 </span>
               </button>
+
+              {/* <div className="mt-4 inline-flex items-center gap-2 rounded-[var(--radius-s)] bg-white/12 px-3 py-2 text-white/90 backdrop-blur-sm">
+                <img src={introduceImage} alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
+                <span className="font-caption-02">기획 · 투자 · 가이드를 한 번에 확인하세요</span>
+              </div> */}
             </div>
           </div>
         </div>

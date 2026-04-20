@@ -1,6 +1,6 @@
 import TokenSection from "./components/TokenSection";
 import PartnerSection from "./components/PartnerSection";
-import CarbonSection from "./components/CarbonSection";
+import TrustMetricsSection from "./components/TrustMetricsSection";
 import ProjectSection from "./components/ProjectSection";
 import StatusSection from "./components/StatusSection";
 import HeroSection from "./components/HeroSection";
@@ -29,9 +29,9 @@ function Home() {
       )}
 
       <HeroSection />
-      <StatusSection />
+      {/* <StatusSection /> */}
+      <TrustMetricsSection />
       <ProjectSection />
-      <CarbonSection />
       <TokenSection />
       <PartnerSection />
     </PageShell>
