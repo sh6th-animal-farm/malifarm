@@ -2,7 +2,7 @@ import { stats } from '@/pages/home/data/data';
 
 export default function StatusSection() {
   return (
-    <section className="bg-gray-50 py-14 md:py-20 lg:py-24">
+    <section className="py-14 md:py-20 lg:py-24">
       <div className="layout-container">
         <div className="grid rounded-lg bg-white shadow-std md:grid-cols-3">
           {stats.map((stat) => (

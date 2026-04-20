@@ -18,7 +18,7 @@ function Home() {
       setToastMessage(location.state.toastMessage);
     }
   }, [location.state]);
-  
+
   return (
     <PageShell>
       {toastMessage && (
