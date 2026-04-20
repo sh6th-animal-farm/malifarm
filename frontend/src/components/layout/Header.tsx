@@ -246,16 +246,16 @@ export default function Header() {
         <div className="hidden items-center gap-5 lg:flex" ref={dropdownRef}>
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-1">
               <Link
                 to="/auth/login"
-                className="text-gray-900 font-button-01"
+                className="cursor-pointer px-4 py-1.5 text-gray-900 font-caption-03 transition-colors duration-200 rounded-[var(--radius-s)] hover:bg-gray-100"
               >
                 로그인
               </Link>
               <Link
                 to="/auth/signup"
-                className="px-3 py-1 width-[72px] height-[32px] bg-green-600 text-white inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap"
+                className="inline-flex px-4 py-1.5 cursor-pointer items-center justify-center overflow-hidden rounded-[var(--radius-s)] bg-green-600 px-3 py-1 font-caption-03 whitespace-nowrap text-white transition-all duration-200 hover:border-green-700 hover:bg-green-700"
               >
                 회원가입
               </Link>
