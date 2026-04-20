@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { newsApi } from "@/api/newsApi";
 import type { MarketNewsDTO } from "@/types/newsType";
-import introduceImage from "@/assets/icons/introduce.png";
 
 export default function HeroSection() {
   const navigate = useNavigate();
