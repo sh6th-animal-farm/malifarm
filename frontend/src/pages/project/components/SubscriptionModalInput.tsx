@@ -47,12 +47,13 @@ export const SubscriptionModalInput = ({
         }`}
       >
         <input
-          type="number"
+          type="text"
           inputMode="decimal"
           className="flex-1 text-right text-gray-600 font-header-04 bg-transparent outline-none border-none focus:ring-0"
           value={value}
           onChange={handleInputChange}
           step="0.0001"
+          maxLength={15}
           placeholder="0" // 값이 비어있을 때만 회색으로 0이 보임
         />
         <span className="text-sm font-body-04 text-gray-600 shrink-0">
