@@ -104,49 +104,54 @@ const toAdminProject = (project: ProjectDTO): AdminProject => ({
   totalSupply: 0,
 });
 
+const createInitialFormData = (): ProjectFormData => ({
+  projectId: 0,
+  farmId: 0,
+  projectName: '',
+  projectRound: 1,
+  projectDescription: '',
+  tokenName: '',
+  tokenSymbol: '',
+  tickerSymbol: '',
+  targetAmount: 0,
+  totalSupply: 0,
+  minAmountPerInvestor: 0,
+  maxAmountPerInvestor: 0,
+  actualAmount: 0,
+  expectedReturn: 0,
+  roi: 0,
+  managerCount: 0,
+  announcementStartDate: '',
+  announcementEndDate: '',
+  subscriptionStartDate: '',
+  subscriptionEndDate: '',
+  resultAnnouncementDate: '',
+  projectStartDate: '',
+  projectEndDate: '',
+  images: [],
+  subscriptionRate: 0,
+  projectStatus: 'ANNOUNCEMENT',
+  method: '',
+  crop: '',
+  temperatureInside: [],
+  humidityInside: [],
+  farm: {
+    addressSido: '',
+    area: 0,
+  },
+  projectImages: [],
+  deletedPictureIds: [],
+});
+
 const ProjectRegister: React.FC = () => {
-  const [formData, setFormData] = useState<ProjectFormData>({
-    projectId: 0,
-    farmId: 0,
-    projectName: '',
-    projectRound: 1,
-    projectDescription: '',
-    tokenName: '',
-    tokenSymbol: '',
-    tickerSymbol: '',
-    targetAmount: 0,
-    totalSupply: 0,
-    minAmountPerInvestor: 0,
-    maxAmountPerInvestor: 0,
-    actualAmount: 0,
-    expectedReturn: 0,
-    roi: 0,
-    managerCount: 0,
-    announcementStartDate: '',
-    announcementEndDate: '',
-    subscriptionStartDate: '',
-    subscriptionEndDate: '',
-    resultAnnouncementDate: '',
-    projectStartDate: '',
-    projectEndDate: '',
-    images: [],
-    subscriptionRate: 0,
-    projectStatus: 'ANNOUNCEMENT',
-    method: '',
-    crop: '',
-    temperatureInside: [],
-    humidityInside: [],
-    farm: {
-      addressSido: '',
-      area: 0,
-    },
-    projectImages: [],
-    deletedPictureIds: [],
-  });
+  const [formData, setFormData] = useState<ProjectFormData>(
+    createInitialFormData(),
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projects, setProjects] = useState<AdminProject[]>([]);
   const [farms, setFarms] = useState<Farm[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -173,8 +178,19 @@ const ProjectRegister: React.FC = () => {
     loadFarms();
   }, []);
 
+  const resetForm = () => {
+    setFormData(createInitialFormData());
+    setImagePreviews([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const form = new FormData();
 
     // 필수 필드 추가
@@ -233,14 +249,24 @@ const ProjectRegister: React.FC = () => {
       await adminApi.insertProject(form);
       console.log('프로젝트 등록 완료');
       alert('프로젝트가 등록되었습니다!');
+      resetForm();
     } catch (error) {
       console.log('등록 실패:', error);
-      alert('프로젝트 등록 중 오류가 발생했습니다.');
+      const errorMsg =
+        (error as any)?.response?.data ||
+        (error as Error)?.message ||
+        '프로젝트 등록 중 오류가 발생했습니다.';
+      alert(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const form = new FormData();
 
     // 필수 필드 추가
@@ -310,7 +336,13 @@ const ProjectRegister: React.FC = () => {
       alert('프로젝트가 수정되었습니다!');
     } catch (error) {
       console.log('수정 실패:', error);
-      alert('프로젝트 수정 중 오류가 발생했습니다.');
+      const errorMsg =
+        (error as any)?.response?.data ||
+        (error as Error)?.message ||
+        '프로젝트 수정 중 오류가 발생했습니다.';
+      alert(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -877,8 +909,8 @@ const ProjectRegister: React.FC = () => {
             <div className="flex gap-4 pt-6 border-t">
               <Button
                 type="submit"
-                onClick={handleSubmit}
                 className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 font-bold text-lg flex-1"
+                disabled={isSubmitting}
               >
                 프로젝트 등록
               </Button>
@@ -886,6 +918,7 @@ const ProjectRegister: React.FC = () => {
                 type="button"
                 onClick={handleUpdate}
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-bold text-lg flex-1"
+                disabled={isSubmitting}
               >
                 프로젝트 수정
               </Button>
