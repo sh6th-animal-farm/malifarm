@@ -1,6 +1,6 @@
 import Button from '@/components/common/Button';
 import Input from '@/components/common/Input';
-import { validatePassword } from '@/pages/Auth/hook/passwordValidation';
+import { validatePassword } from '@/pages/auth/hook/passwordValidation';
 import { useMemo } from 'react';
 
 interface PasswordModalProps {

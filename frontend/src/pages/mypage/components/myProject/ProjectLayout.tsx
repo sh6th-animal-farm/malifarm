@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import FilterGroup from "@/components/common/FilterGroup";
 import TabMenu from "@/components/common/TabMenu";
@@ -94,6 +95,7 @@ export default function ProjectLayout() {
 
     fetchProjects();
   }, [tab, filter]);
+  const isMobile = useMediaQuery("(max-width: 767px)");
   const canLoadMore = hasNext && !loading;
   const moveToProjectDetail = (projectId: number) => {
     navigate(`/project/${projectId}`);
@@ -121,42 +123,74 @@ export default function ProjectLayout() {
   };
 
   return (
-    <div>
-      <PageHeader
-        title="나의 프로젝트"
-        subtitle="참여 중이거나 관심 있는 농업 재생 프로젝트 현황입니다."
-      />
-
-      <TabMenu
-        items={tabs}
-        currentValue={tab}
-        onTabChange={(value) => {
-          setTab(value as ProjectTab);
-          setFilter("ALL");
-        }}
-      />
-
-      <div className="mb-5">
-        <FilterGroup
-          items={filters}
-          currentValue={filter}
-          onFilterChange={(value) => setFilter(value as ProjectFilter)}
-        />
-      </div>
-
-      <ProjectTable
-        loading={loading}
-        projects={projects}
-        onMove={moveToProjectDetail}
-      />
-
-      {canLoadMore ? (
-        <div className="mt-6">
-          <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-            {loadingMore ? "불러오는 중..." : "+ 더보기"}
-          </LoadMoreButton>
+    <div className={isMobile ? "flex h-full flex-col overflow-hidden" : ""}>
+      {isMobile ? (
+        <div className="shrink-0 border-b border-gray-100 bg-white">
+          <TabMenu
+            items={tabs}
+            currentValue={tab}
+            onTabChange={(value) => {
+              setTab(value as ProjectTab);
+              setFilter("ALL");
+            }}
+            tabPaddingY={8}
+            gap={0}
+            marginY={0}
+            equalWidth
+            className="px-4"
+          />
         </div>
-      ) : null}
+      ) : (
+        <>
+          <PageHeader
+            title="나의 프로젝트"
+            subtitle="참여 중이거나 관심 있는 농업 재생 프로젝트 현황입니다."
+          />
+
+          <TabMenu
+            items={tabs}
+            currentValue={tab}
+            onTabChange={(value) => {
+              setTab(value as ProjectTab);
+              setFilter("ALL");
+            }}
+            marginY={0}
+          />
+        </>
+      )}
+
+      <div className={isMobile ? "flex-1 overflow-y-auto" : ""}>
+        
+        <div
+          className={
+            isMobile
+              ? "layout-container pt-4"
+              : "layout-container py-4"
+          }
+        >
+          <FilterGroup
+            items={filters}
+            currentValue={filter}
+            onFilterChange={(value) => setFilter(value as ProjectFilter)}
+          />
+        </div>
+
+        <div className={isMobile ? "layout-container py-4" : ""}>
+          <ProjectTable
+            loading={loading}
+            projects={projects}
+            onMove={moveToProjectDetail}
+          />
+
+          {canLoadMore ? (
+            <div className="mt-6">
+              <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
+                {loadingMore ? "불러오는 중..." : "+ 더보기"}
+              </LoadMoreButton>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }

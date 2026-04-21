@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/Button';
 import Badge from '@/components/common/Badge';
 import Toggle from '@/components/common/Toggle';
@@ -26,6 +27,7 @@ const notificationItems = [
 ] as const;
 
 export default function ProfileLayout() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
   const [pushEnabled, setPushEnabled] = useState(false);
@@ -193,8 +195,13 @@ export default function ProfileLayout() {
     setCurrentPassword(value);
   };
 
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/auth/login');
+  };
+
   return (
-    <div>
+    <div className="layout-container py-4 md:py-0">
       <PageHeader
         title="내 정보"
         subtitle="마리팜에서 사용되는 회원님의 정보를 관리합니다."
@@ -284,6 +291,16 @@ export default function ProfileLayout() {
               </div>
             ))}
           </div>
+        </section>
+
+        <section className="overflow-hidden rounded-lg bg-white shadow-std">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex w-full cursor-pointer items-center justify-between px-4 py-4 text-left transition-colors hover:bg-red-50 md:px-6"
+          >
+            <span className="font-body-02 text-error">로그아웃</span>
+          </button>
         </section>
 
         <section className="rounded-lg border border-dashed border-gray-200 p-4 md:p-6">

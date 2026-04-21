@@ -13,6 +13,7 @@ const ICON_MAP: Record<IconName, React.ComponentType<IconProps>> = {
   search: Icons.Search,
   warning: Icons.Warning,
   chevron_right: Icons.ChevronRight,
+  close: Icons.Close,
   link: Icons.LinkIcon,
   trashcan: Icons.Trashcan,
   check: Icons.Check,

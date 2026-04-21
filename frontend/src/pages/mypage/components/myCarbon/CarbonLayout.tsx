@@ -34,7 +34,7 @@ export default function CarbonLayout() {
   const canLoadMore = visibleCount < items.length;
 
   return (
-    <div>
+    <div className="layout-container py-4 md:py-0">
       <PageHeader
         title="탄소 배출권 구매 내역"
         subtitle="회원님이 구매하신 탄소 배출권의 상세 내역을 확인하세요."

@@ -24,7 +24,7 @@ export default function TabMenu({
   onTabChange,
   width = "100%",
   className = "",
-  tabPaddingY = 12,
+  tabPaddingY = 8,
   gap = 24,
   marginY = 24,
   equalWidth = false,

@@ -94,7 +94,9 @@ export default function FarmTabContent({
         formatLabelByRange(point.createdAt, selectedRange),
       ),
       temperatures: envPoints.map((point) =>
-        point.temperatureInside != null ? Number(point.temperatureInside) : null,
+        point.temperatureInside != null
+          ? Number(point.temperatureInside)
+          : null,
       ),
       humidities: envPoints.map((point) =>
         point.humidityInside != null
@@ -214,8 +216,7 @@ export default function FarmTabContent({
             callbacks: {
               title: (items) => items[0]?.label ?? '',
               label: (item) => {
-                const unit =
-                  item.dataset.yAxisID === 'temperature' ? '℃' : '%';
+                const unit = item.dataset.yAxisID === 'temperature' ? '℃' : '%';
                 return `${item.dataset.label} ${formatMetricValue(item.parsed.y)}${unit}`;
               },
             },
@@ -335,7 +336,7 @@ export default function FarmTabContent({
         ]}
       />
 
-      <section className="overflow-hidden rounded-[20px] border border-[#e7efe3] bg-[#f7fbf5] shadow-std">
+      <section className="overflow-hidden rounded-[20px] border border-[#e7efe3] bg-white shadow-std">
         <div className="border-b border-[#e3eddc] px-6 py-5 md:px-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
