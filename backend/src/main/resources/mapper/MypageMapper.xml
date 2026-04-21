@@ -105,12 +105,12 @@
 
     <select id="selectJoinedProjectCards" resultType="MypageProjectDTO">
         SELECT
-        p.project_id AS projectId,
-        p.project_name AS projectName,
-        p.project_status AS projectStatus,
-        NULL AS subscriptionStatus,
-        p.project_start_date AS projectStartDate,
-        p.project_end_date AS projectEndDate
+            DISTINCT p.project_id AS projectId,
+            p.project_name AS projectName,
+            p.project_status AS projectStatus,
+            NULL AS subscriptionStatus,
+            p.project_start_date AS projectStartDate,
+            p.project_end_date AS projectEndDate
         FROM projects p
         JOIN subscription_hists sh
         ON sh.project_id = p.project_id
@@ -124,7 +124,7 @@
     </select>
 
     <select id="countJoinedProjectCards" resultType="long">
-        SELECT COUNT(*)
+        SELECT COUNT(DISTINCT p.project_id)
         FROM projects p
         JOIN subscription_hists sh
         ON sh.project_id = p.project_id
