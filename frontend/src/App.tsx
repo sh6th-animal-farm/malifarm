@@ -90,10 +90,10 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col h-[var(--app-height)] overflow-hidden md:h-auto md:overflow-visible">
+    <div className="flex flex-col h-[var(--app-height)] overflow-hidden lg:h-auto lg:overflow-visible">
       <Header />
       
-      <main className="flex-1 overflow-hidden md:overflow-visible pb-[var(--bottom-tabbar-height)] lg:pt-[var(--spacing-header-height)]">
+      <main className="flex-1 overflow-hidden lg:overflow-visible pb-[var(--bottom-tabbar-height)] lg:pt-[var(--spacing-header-height)]">
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home />} />

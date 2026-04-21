@@ -73,27 +73,24 @@ function DistributionList({ rows, averageText }: { rows: DistributionRow[]; aver
       {rows.map((row) => (
         <div
           key={row.label}
-          className={`relative flex items-center justify-between gap-3 rounded-[var(--radius-m)] bg-gray-50 px-4 py-3 ${
+          className={`flex items-center justify-between gap-3 rounded-[var(--radius-m)] bg-gray-50 px-3 py-3 md:px-4 ${
             row.isAverageBucket ? 'border-2 border-green-600' : ''
           }`}
         >
-          {row.isAverageBucket && (
-            <div className="absolute -left-2 top-1/2 -translate-x-full -translate-y-1/2">
-              <span className="relative inline-flex rounded-full bg-green-600 px-2.5 py-1 font-caption-01 text-white">
-                평균 {averageText}
-                <span className="absolute -right-[2px] top-1/2 h-[10px] w-[10px] -translate-y-1/2 rotate-45 bg-green-600" />
-              </span>
-            </div>
-          )}
-          <div className="inline-flex items-center gap-2">
+          <div className="inline-flex min-w-0 items-center gap-2">
             <span
               className="h-2.5 w-2.5 rounded-full"
               style={{ backgroundColor: row.color }}
               aria-hidden="true"
             />
             <span className="font-body-02 text-gray-700">{row.label}</span>
+            {row.isAverageBucket && (
+              <span className="inline-flex shrink-0 rounded-full bg-green-600 px-2 py-0.5 font-caption-01 text-white">
+                평균 {averageText}
+              </span>
+            )}
           </div>
-          <div className="text-right">
+          <div className="shrink-0 text-right">
             <strong className="inline-block min-w-[28px] text-right font-body-03 tabular-nums text-gray-900">
               {row.count}
             </strong>
@@ -111,11 +108,11 @@ function DistributionDonut({ background, totalCount }: { background: string; tot
   return (
     <div className="flex flex-col items-center justify-center">
       <div
-        className="relative h-72 w-72 rounded-full md:h-80 md:w-80"
+        className="relative h-[min(72vw,20rem)] w-[min(72vw,20rem)] rounded-full"
         style={{ background }}
         aria-label="예상 수익률 분포 도넛 차트"
       >
-        <div className="absolute left-1/2 top-1/2 flex h-40 w-40 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-white text-center md:h-44 md:w-44">
+        <div className="absolute left-1/2 top-1/2 flex h-[56%] w-[56%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-white text-center">
           <span className="font-caption-01 text-gray-500">전체 프로젝트</span>
           <strong className="font-subtitle-01 text-gray-900 md:font-header-03">{totalCount}</strong>
         </div>
@@ -136,7 +133,8 @@ export default function TrustMetricsChart() {
       setIsLoading(true);
       try {
         const projects = await apiClient.get<ProjectSummaryDTO[], ProjectSummaryDTO[]>('/api/project/all');
-        const activeProjects = projects.filter((project) =>
+        const projectList = Array.isArray(projects) ? projects : [];
+        const activeProjects = projectList.filter((project) =>
           ACTIVE_STATUSES.has(String(project.projectStatus ?? '').toUpperCase()),
         );
 
@@ -232,8 +230,8 @@ export default function TrustMetricsChart() {
           <strong className="font-header-04 text-gray-900">연간 예상 수익률 분포</strong>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-2 lg:items-center">
-          <div className="flex h-72 flex-col justify-center md:h-80">
+        <div className="grid gap-4 md:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] lg:items-center">
+          <div className="min-w-0">
             <DistributionList rows={distributionRows} averageText={`${average.toFixed(1)}%`} />
           </div>
           <DistributionDonut background={donutBackground} totalCount={totalCount} />
@@ -256,7 +254,7 @@ export default function TrustMetricsChart() {
           <img
             src={clapImage}
             alt="clap"
-            className="h-auto w-[92%] max-w-[380px] object-contain"
+            className="h-auto w-full max-w-[420px] object-contain"
           />
         </div>
       </div>
