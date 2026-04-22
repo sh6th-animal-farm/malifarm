@@ -5,6 +5,7 @@ import type { TokenOhlcv } from '@/types/tokenType';
 import {
   CandlestickSeries,
   ColorType,
+  CrosshairMode,
   createChart,
   HistogramSeries,
   type IChartApi,
@@ -72,8 +73,13 @@ export default function MobileTokenChartCard({
       },
       timeScale: {
         timeVisible: true,
-        secondsVisible: false,
+        secondsVisible: true,
         borderVisible: false,
+      },
+      crosshair: {
+        mode: CrosshairMode.Normal,
+        vertLine: { labelVisible: true },
+        horzLine: { labelVisible: true },
       },
       rightPriceScale: {
         borderVisible: false,
@@ -83,8 +89,7 @@ export default function MobileTokenChartCard({
         locale: 'ko-KR',
         priceFormatter: (price: number) =>
           Number(price).toLocaleString('ko-KR', {
-            useGrouping: true,
-            minimumFractionDigits: 0,
+            minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }),
       },
