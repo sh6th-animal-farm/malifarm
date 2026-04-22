@@ -3,20 +3,27 @@ import PartnerSection from "./components/PartnerSection";
 import TrustMetricsSection from "./components/TrustMetricsSection";
 import ProjectSection from "./components/ProjectSection";
 import HeroSection from "./components/HeroSection";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Toast from "@/components/common/Toast";
 import PageShell from "@/components/layout/PageShell";
 
 function Home() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
-    if (location.state?.toastMessage) {
-      setToastMessage(location.state.toastMessage);
-    }
-  }, [location.state]);
+    const message = location.state?.toastMessage;
+    if (!message) return;
+
+    setToastMessage(message);
+
+    navigate(location.pathname, {
+      replace: true,
+      state: {},
+    });
+  }, [location.pathname, location.state, navigate]);
 
   return (
     <PageShell>
@@ -29,7 +36,6 @@ function Home() {
         )}
 
         <HeroSection />
-        {/* <StatusSection /> */}
         <TrustMetricsSection />
         <ProjectSection />
         <TokenSection />
