@@ -55,7 +55,15 @@ export default function TokenChartCard({
         borderVisible: false,
       },
       rightPriceScale: { borderVisible: false },
-      localization: { locale: 'ko-KR' },
+      localization: {
+        locale: 'ko-KR',
+        priceFormatter: (price: number) =>
+          Number(price).toLocaleString('ko-KR', {
+            useGrouping: true,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          }),
+      },
       width: chartContainerRef.current.clientWidth,
       height: 450,
     });
