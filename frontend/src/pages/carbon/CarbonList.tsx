@@ -14,7 +14,7 @@ import CarbonDiscountRateModal from "./components/CarbonDiscountRateModal";
 
 export default function CarbonList() {
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const [category, setCategory] = useState<"ALL" | "REMOVAL" | "REDUCTION">("ALL");
   const [carbonList, setCarbonList] = useState<CarbonListDTO[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,13 +45,13 @@ export default function CarbonList() {
 
   return (
     <PageShell>
-      <div className="md:bg-white">
+      <div className="lg:bg-white">
         <section className="layout-container pb-4 lg:py-20">
             <div className="flex justify-between">
               <div className="relative">
                 <SectionHeader
                   title="탄소마켓"
-                  subtitle="보유한 포인트를 사용하여 탄소 배출권을 구매하고 ESG 경영을 실천하세요."
+                  subtitle="보유한 토큰에서 나온 탄소 배출권을 구매하고 ESG 경영을 실천하세요."
                   className="mb-0"
                   titleSuffix={
                     <div className="relative inline-flex">

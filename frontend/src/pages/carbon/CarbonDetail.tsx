@@ -105,7 +105,7 @@ export default function CarbonDetail() {
 
   return (
     <PageShell>
-      <div className="min-h-full w-full md:bg-white lg:min-h-screen">
+      <div className="min-h-full w-full lg:bg-white lg:min-h-screen">
         <div className="layout-container pb-4 lg:py-12">
         <div className="w-full flex flex-col gap-4 pb-4 lg:flex-row lg:gap-[var(--spacing-gutter)] lg:py-12">
           

@@ -5,7 +5,7 @@ import PageShell from "@/components/layout/PageShell";
 
 export default function MyPage() {
 
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   return (
     isMobile ? (

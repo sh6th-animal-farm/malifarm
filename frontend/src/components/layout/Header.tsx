@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "@/api/authApi.ts";
 import Icon from "@/components/icon";
+import BrandIcon from "@/components/common/BrandIcon";
 import userSession from "@/pages/auth/hook/userSession";
 
 export default function Header() {
@@ -91,7 +92,7 @@ export default function Header() {
   // 활성화 체크 및 Tailwind 클래스 반환
   const getNavItemClass = (path: string) => {
     const baseClass =
-      "relative inline-flex flex-col items-center font-body-03 px-5 py-1 text-gray-700 transition-all duration-200 hover:text-gray-900 no-underline";
+      "relative inline-flex flex-col items-center px-5 py-1 font-body-03 text-gray-700 transition-all duration-200 hover:text-gray-900 no-underline";
     const activeClass =
       "text-gray-900 -translate-y-[2px] after:content-[''] after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-1 after:h-1 after:bg-green-600 after:rounded-[var(--radius-xl)]";
 
@@ -150,15 +151,16 @@ export default function Header() {
     showCarbonDetailMobileBackButton;
   const isMobileImageHeroRoute =
     showProjectDetailMobileBackButton || showCarbonDetailMobileBackButton;
+
   return (
     <header
-      className={`z-[1000] flex items-center touch-manipulation h-[calc(var(--spacing-header-height)+env(safe-area-inset-top))] pt-[env(safe-area-inset-top)] ${
+      className={`z-[1000] flex h-[calc(48px+env(safe-area-inset-top))] items-center touch-manipulation pt-[env(safe-area-inset-top)] transition-colors duration-300 ${
         isMobileImageHeroRoute
           ? "fixed inset-x-0 top-0 bg-transparent"
           : "sticky top-0 bg-white"
-      } md:h-[var(--spacing-header-height)] md:pt-0 md:bg-white/85 md:backdrop-blur-md lg:fixed lg:inset-x-0 lg:top-0`}
+      } lg:h-[var(--spacing-header-height)] lg:pt-0 lg:bg-white/85 lg:backdrop-blur-md lg:shadow-std lg:fixed lg:inset-x-0 lg:top-0`}
     >
-      <div className="layout-container relative flex h-full items-center justify-between">
+      <div className="relative flex h-full w-full items-center justify-between px-4 lg:px-8 xl:px-18">
         {showMobileBackButton && (
           <button
             type="button"
@@ -177,7 +179,7 @@ export default function Header() {
               }
               navigate("/mypage");
             }}
-            className={`absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center md:hidden ${
+            className={`absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center lg:hidden ${
               isMobileImageHeroRoute ? "text-white" : "text-gray-700"
             }`}
             aria-label="뒤로가기"
@@ -189,23 +191,18 @@ export default function Header() {
         {/* 로고 영역 */}
         <Link
           to="/"
-          className={`font-header-03 md:font-subtitle-00 text-gray-900 overflow-hidden whitespace-nowrap cursor-pointer leading-none ${
-            location.pathname === "/" ? "inline-flex" : "hidden md:inline-flex"
+          className={`font-header-03 lg:font-subtitle-00 overflow-hidden whitespace-nowrap leading-none text-gray-900 cursor-pointer ${
+            location.pathname === "/" ? "inline-flex" : "hidden lg:inline-flex"
           }`}
         >
-          <Icon
-            name="leaf"
-            color="var(--color-green-600)"
-            size={28}
-            className="mr-1 self-center"
-          />
+          <BrandIcon size={40} className="mr-1 self-center" />
           <span className="keep self-center">마이리틀</span>
-          <span className="text-green-600 self-center">스마트팜</span>
+          <span className="self-center text-green-600">스마트팜</span>
         </Link>
 
         {!isMobileImageHeroRoute && (
           <div
-            className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap font-header-03
+            className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 lg:hidden whitespace-nowrap font-header-03
             } ${
               showMobileBackButton
                 ? "absolute left-1/2 -translate-x-1/2"
@@ -246,16 +243,16 @@ export default function Header() {
         <div className="hidden items-center gap-5 lg:flex" ref={dropdownRef}>
           {!isLogIn ? (
             /* 로그인 안 한 사용자 */
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-1">
               <Link
                 to="/auth/login"
-                className="text-gray-900 font-button-01"
+                className="cursor-pointer rounded-[var(--radius-s)] px-4 py-1.5 font-caption-03 text-gray-900 transition-colors duration-200 hover:bg-gray-100"
               >
                 로그인
               </Link>
               <Link
                 to="/auth/signup"
-                className="px-3 py-1 width-[72px] height-[32px] bg-green-600 text-white inline-flex items-center justify-center font-button-01 transition-all duration-200 rounded-[var(--radius-s)] border overflow-hidden whitespace-nowrap"
+                className="inline-flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap rounded-[var(--radius-s)] bg-green-600 px-4 py-1.5 font-caption-03 text-white transition-all duration-200 hover:border-green-700 hover:bg-green-700"
               >
                 회원가입
               </Link>
@@ -299,7 +296,7 @@ export default function Header() {
 
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 bg-none border-none cursor-pointer p-0 text-left outline-none"
+                  className="inline-flex cursor-pointer items-center gap-2 border-none bg-none p-0 text-left text-gray-700 outline-none"
                   onClick={(e) => toggleDropdown("profile", e)}
                 >
                   <Icon
@@ -307,7 +304,7 @@ export default function Header() {
                     size={18}
                     color="var(--color-gray-700)"
                   />
-                  <span className="font-body-03 text-gray-700 whitespace-nowrap">
+                  <span className="font-body-03 whitespace-nowrap">
                     {userName} 님
                   </span>
                 </button>

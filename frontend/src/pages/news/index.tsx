@@ -86,7 +86,7 @@ export default function News() {
   };
 
   return (
-    <main className="md:bg-white">
+    <main className="lg:bg-white">
       <section className="layout-container py-10 sm:py-14 md:py-20">
         <SectionHeader
           title="뉴스"

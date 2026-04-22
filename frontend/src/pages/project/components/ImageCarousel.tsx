@@ -193,7 +193,7 @@ export default function ImageCarousel({
   };
 
   if (!images || total === 0) {
-    return <div className="w-full aspect-[16/9] rounded-none bg-gray-50 md:rounded-lg" />;
+    return <div className="w-full aspect-[16/9] rounded-none bg-gray-50 lg:rounded-lg" />;
   }
 
   const overlay = isFullscreenOpen ? (
@@ -261,7 +261,7 @@ export default function ImageCarousel({
 
   return (
     <div className="relative overflow-hidden">
-      <div className="relative w-full aspect-[16/9] overflow-hidden rounded-none bg-gray-50 md:rounded-lg">
+      <div className="relative w-full aspect-[16/9] overflow-hidden rounded-none bg-gray-50 lg:rounded-lg">
         <div
           className="flex h-full"
           style={{

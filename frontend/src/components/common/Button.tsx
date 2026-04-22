@@ -49,7 +49,7 @@ export default function Button({
     'default-info':
       'bg-gray-900 border-gray-900 text-white hover:bg-info hover:border-info',
     disabled:
-      'bg-gray-500 border-gray-500 text-white cursor-not-allowed opacity-70',
+      'bg-gray-100 border-gray-100 text-gray-400 cursor-not-allowed',
     'outline-default': 'border-green-600 text-green-600 hover:bg-green-0',
     'outline-disabled':
       'bg-white border-gray-300 text-gray-300 cursor-not-allowed',

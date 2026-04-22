@@ -15,7 +15,7 @@ export default function Policy() {
   ];
 
   const tabStyle = (tab: PolicyTab) =>
-    `group flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3.5 transition-colors md:px-5 md:py-4 ${
+    `group flex w-full cursor-pointer items-center justify-between rounded-lg px-4 py-3.5 transition-colors lg:px-5 lg:py-4 ${
       activeTab === tab
         ? "bg-white font-body-04 text-green-600 shadow-std"
         : "font-body-01 text-gray-500 hover:bg-green-0 hover:text-green-700"
@@ -28,8 +28,8 @@ export default function Policy() {
   const pClass = "font-body-01 leading-7 text-gray-700";
 
   return (
-    <main className="layout-container py-10 md:py-16 flex flex-col gap-6 md:flex-row">
-      <div className="md:hidden">
+    <main className="layout-container py-10 lg:py-16 flex flex-col gap-6 lg:flex-row">
+      <div className="lg:hidden">
         <TabMenu
           items={policyTabs}
           currentValue={activeTab}
@@ -41,7 +41,7 @@ export default function Policy() {
         />
       </div>
 
-      <aside className="hidden md:block w-full md:w-[280px] md:shrink-0 h-fit">
+      <aside className="hidden lg:block w-full lg:w-[280px] lg:shrink-0 h-fit">
         {/* <h2 className="font-header-04 text-gray-900 mb-4 px-1">이용약관</h2> */}
 
         <ul className="flex flex-col gap-1">
@@ -143,7 +143,7 @@ export default function Policy() {
         </ul>
       </aside>
 
-      <article className="flex-1 rounded-lg bg-white p-6 md:p-8 shadow-std">
+      <article className="flex-1 rounded-lg bg-white p-6 lg:p-8 shadow-std">
         {activeTab === "marifarm" && (
           <section>
             <h3 className={sectionTitleClass}>마리팜 이용약관</h3>

@@ -13,12 +13,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
   ref,
 ) {
   const heightMap = {
+    36: 'h-[36px]',
+    40: 'h-[40px]',
     42: 'h-[42px]',
     48: 'h-[48px]',
     50: 'h-[50px]',
   };
 
-  const selectedHeight = heightMap[height as keyof typeof heightMap];
+  const selectedHeight = heightMap[height as keyof typeof heightMap] ?? heightMap[50];
 
   return (
     <input

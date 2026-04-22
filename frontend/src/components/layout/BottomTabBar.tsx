@@ -51,7 +51,7 @@ export default function BottomTabBar() {
   return (
     <nav
       ref={navRef}
-      className="fixed inset-x-0 bottom-0 z-[1100] bg-white shadow-std md:hidden"
+      className="fixed inset-x-0 bottom-0 z-[1100] bg-white shadow-std lg:hidden"
     >
       <ul className="flex items-center justify-center gap-x-2 pb-6">
         {tabs.map((tab) => {
