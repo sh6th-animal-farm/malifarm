@@ -44,9 +44,9 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen bg-black lg:-mt-[var(--spacing-header-height)]"
+      className="relative w-full overflow-x-hidden bg-black lg:-mt-[var(--spacing-header-height)]"
     >
-      <div className="relative h-[100svh] overflow-hidden lg:h-screen">
+      <div className="relative h-[clamp(560px,88svh,760px)] overflow-hidden md:h-[clamp(620px,90svh,860px)] lg:h-screen">
         <video
           className="absolute inset-0 h-full w-full object-cover"
           src="/main_video_1.mp4"
@@ -59,14 +59,14 @@ export default function HeroSection() {
         />
 
         <div className="relative z-10 h-full">
-          <div className="flex h-full w-full items-end px-4 pb-14 md:px-8 md:pb-18 lg:pb-18 xl:px-18">
-            <div className="w-full max-w-[760px]">
-              <p className="mb-4 inline-flex items-center gap-2 font-caption-03 uppercase tracking-[0.08em] text-white/85">
+          <div className="layout-container flex h-full items-end pb-12 md:pb-16 lg:pb-18">
+            <div className="w-full max-w-[46rem]">
+              <p className="mb-3 inline-flex items-center gap-2 font-caption-03 uppercase tracking-[0.08em] text-white/85 md:mb-4">
                 <span className="h-px w-8 bg-white/70" />
                 Smart Farm STO
               </p>
-              <h1 className="font-header-hero tracking-[-0.02em] text-white drop-shadow-[0_0px_8px_rgba(0,0,0,0.4)]">
-                <span className="inline-flex items-end text-[1.16em] font-[800] leading-none text-lime-300">
+              <h1 className="text-[clamp(2rem,7.2vw,4.25rem)] leading-[1.12] font-[800] tracking-[-0.02em] text-white drop-shadow-[0_0px_8px_rgba(0,0,0,0.4)]">
+                <span className="inline-flex items-end text-[1.12em] font-[800] leading-none text-lime-300">
                   <span className="relative inline-block">
                     <span className="pointer-events-none absolute -top-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-lime-300" />
                     수
@@ -75,7 +75,7 @@ export default function HeroSection() {
                 </span>
                 의 기쁨을
                 <br />
-                <span className="inline-flex items-end text-[1.16em] font-[800] leading-none text-emerald-300">
+                <span className="inline-flex items-end text-[1.12em] font-[800] leading-none text-emerald-300">
                   <span>수</span>
                   <span className="relative inline-block">
                     <span className="pointer-events-none absolute -top-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-emerald-300" />
@@ -84,21 +84,21 @@ export default function HeroSection() {
                 </span>
                 으로 연결하다
               </h1>
-              <p className="mt-6 max-w-[560px] font-subtitle-02 text-white/90 drop-shadow-[0_0px_8px_rgba(0,0,0,0.5)]">
+              <p className="mt-4 max-w-[35rem] text-[clamp(0.875rem,2.8vw,1.125rem)] leading-[1.5] font-medium text-white/90 drop-shadow-[0_0px_8px_rgba(0,0,0,0.5)] md:mt-6">
                 농장의 성장을 데이터로 확인하고, 투자 성과를 한 화면에서 간결하게 관리하세요.
               </p>
 
               <button
                 type="button"
                 onClick={() => currentNews && navigate(`/news/${currentNews.newsId}`)}
-                className="mt-6 flex w-full max-w-[760px] cursor-pointer items-center gap-3 rounded-[var(--radius-s)] bg-black/35 px-4 py-3 text-left backdrop-blur-sm transition-colors duration-200 hover:bg-black/50 disabled:cursor-default disabled:hover:bg-black/35"
+                className="mt-5 flex w-full max-w-[46rem] cursor-pointer items-center gap-2.5 rounded-[var(--radius-s)] bg-black/35 px-3 py-2.5 text-left backdrop-blur-sm transition-colors duration-200 hover:bg-black/50 disabled:cursor-default disabled:hover:bg-black/35 md:mt-6 md:gap-3 md:px-4 md:py-3"
                 disabled={!currentNews}
                 aria-label="현재 뉴스 보기"
               >
                 <span className="shrink-0 rounded-full bg-green-600 px-2 py-1 text-[11px] font-bold leading-none text-white">
                   속보
                 </span>
-                <span className="min-w-0 flex-1 truncate font-caption-03 text-white">
+                <span className="min-w-0 flex-1 truncate font-caption-02 text-white md:font-caption-03">
                   {currentNews?.title ?? "최신 뉴스를 불러오는 중입니다..."}
                 </span>
               </button>

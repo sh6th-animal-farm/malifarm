@@ -30,7 +30,7 @@ const menuItems = [
 ];
 
 export default function MobileMyPageEntry() {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
   const [userRole, setUserRole] = useState("");
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<ProfileDTO | null>(null);

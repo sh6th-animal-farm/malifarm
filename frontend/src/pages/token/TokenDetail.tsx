@@ -18,7 +18,7 @@ export default function TokenDetail() {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined'
-      ? window.matchMedia('(max-width: 767px)').matches
+      ? window.matchMedia("(max-width: 1023px)").matches
       : false,
   );
   const isFixed = useRef(false); // 가격이 고정되었는지 저장
@@ -39,7 +39,7 @@ export default function TokenDetail() {
   }, [id]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const mediaQuery = window.matchMedia("(max-width: 1023px)");
     const handleChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
 
     setIsMobile(mediaQuery.matches);
@@ -100,7 +100,7 @@ export default function TokenDetail() {
       )}
 
       {!isMobile && (
-        <div className='md:bg-white'>
+        <div className='lg:bg-white'>
           <div className="layout-container py-0 md:py-20">
             <div className="flex flex-col gap-2 md:gap-6">
               <div className="flex gap-6 items-start w-full">

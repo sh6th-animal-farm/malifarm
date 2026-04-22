@@ -20,19 +20,21 @@ function Home() {
 
   return (
     <PageShell>
-      {toastMessage && (
-        <Toast
-          message={toastMessage}
-          onClose={() => setToastMessage("")}
-        />
-      )}
+      <div className="min-w-0 overflow-x-hidden">
+        {toastMessage && (
+          <Toast
+            message={toastMessage}
+            onClose={() => setToastMessage("")}
+          />
+        )}
 
-      <HeroSection />
-      {/* <StatusSection /> */}
-      <TrustMetricsSection />
-      <ProjectSection />
-      <TokenSection />
-      <PartnerSection />
+        <HeroSection />
+        {/* <StatusSection /> */}
+        <TrustMetricsSection />
+        <ProjectSection />
+        <TokenSection />
+        <PartnerSection />
+      </div>
     </PageShell>
   );
 }
