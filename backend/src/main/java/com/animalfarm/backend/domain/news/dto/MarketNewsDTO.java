@@ -23,11 +23,11 @@ public class MarketNewsDTO {
 	private String newsType;    // GLOBAL, TOKEN
 	private LocalDateTime createdAt;
 
-	// 👇 [추가됨] 프론트엔드 UI 위젯용 정량 데이터 트랙
-	private Double avgChangeRate;     // 평균 등락률 (예: 1.52)
-	private Double adrValue;		  // 등락비율 ADR (예: 250.0)
+	// 프론트엔드 UI 위젯용 정량 데이터 트랙
+	private Double avgChangeRate;     // 평균 등락률 
+	private Double adrValue;		  // 등락비율 ADR 
 	private String adrText;           // 등락비율 텍스트 
-	private Double volGrowthRate;     // 전체 대금 증감률 (예: -68.1)
-	private String highlightTokens;   // 특징주 이름 모음 (예: "지리산 꾸지뽕 1호, 과수원 2호")
+	private Double volGrowthRate;     // 전체 대금 증감률 
+	private String highlightTokens;   // 특징주 이름 모음 
 
 }
