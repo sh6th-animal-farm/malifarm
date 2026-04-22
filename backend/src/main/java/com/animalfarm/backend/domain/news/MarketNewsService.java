@@ -21,6 +21,8 @@ import com.animalfarm.backend.global.http.ExternalApiClient;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+
 
 @Slf4j
 @Service
@@ -32,10 +34,10 @@ public class MarketNewsService {
 	private final LlmService llmService;
 
 	// 강황증권 API 베이스 URL
-	private final String KH_API_BASE = "https://kh-holdings.cloud";
+	@Value("${api.kh-stock.url}")
+	private String khApiBase;
 
-	// 분석 기준 수치 (기획서 기반 튜닝)
-	//private static final BigDecimal MIN_VOL_THRESHOLD = new BigDecimal("0"); // 최소 거래대금 1천만 원, 테스트 10만원
+	// 분석 기준 수치
 	private static final BigDecimal VOL_SURGE_THRESHOLD = new BigDecimal("0.5");    // 직전 대비 거래량 증가율 50%
 	private static final BigDecimal VOLATILITY_THRESHOLD = new BigDecimal("0.03");  // 가격 변동성 3%
 	private static final BigDecimal IMBALANCE_THRESHOLD = new BigDecimal("2.0");    // 호가 불균형 2배
@@ -50,7 +52,7 @@ public class MarketNewsService {
 			if (tokens == null || tokens.isEmpty())
 				return;
 
-			// ⭐ 핵심: 6시간 사이클을 전반전 3시간 / 후반전 3시간으로 분할
+			// 6시간 사이클을 전반전 3시간 / 후반전 3시간으로 분할
 			long endSec = System.currentTimeMillis() / 1000;
 			long startSec = endSec - (3 * 60 * 60);       // 최근 3시간 (후반전)
 			long prevStartSec = startSec - (3 * 60 * 60); // 직전 3시간 (전반전)
@@ -68,7 +70,7 @@ public class MarketNewsService {
 			StringBuilder impactfulTokensReport = new StringBuilder();
 			List<String> highlightTokenNamesList = new ArrayList<>(); // UI용 특징주 이름 모음
 
-			// 1. 개별 종목 전수조사 및 통계 집계
+			// 개별 종목 전수조사 및 통계 집계
 			for (TokenListDTO token : tokens) {
 				Long id = token.getTokenId();
 				try {
@@ -122,7 +124,7 @@ public class MarketNewsService {
 							sumOrderVolume(buys).toPlainString(), sumOrderVolume(sells).toPlainString()
 						));
 
-						// 💡 UI 위젯에 띄워줄 토큰 이름 수집
+						// UI 위젯에 띄워줄 토큰 이름 수집
 						highlightTokenNamesList.add(token.getTokenName());
 					}
 				} catch (Exception e) {
@@ -131,13 +133,13 @@ public class MarketNewsService {
 			}
 
 			// =================================================================
-			// 2. KOSPI 3대 지표 산출 (지수 등락률, ADR, 거래대금 증감)
+			// KOSPI 3대 지표 산출 (지수 등락률, ADR, 거래대금 증감)
 			// =================================================================
 
-			// ① 평균 등락률 (전체 토큰의 ChangeRate 평균)
+			// 평균 등락률 (전체 토큰의 ChangeRate 평균)
 			double averageChangeRate = validChangeRateCount > 0 ? (totalChangeRateSum / validChangeRateCount) : 0.0;
 
-			// ② ADR (등락비율: 상승종목수 / 하락종목수 * 100)
+			// ADR (등락비율: 상승종목수 / 하락종목수 * 100)
 			Double adrValue = null;
 			String adrText;
 
@@ -154,7 +156,7 @@ public class MarketNewsService {
 			}
 
 
-			// ③ 전체 시장 거래대금 증감률 (후반전 3H vs 전반전 3H)
+			// 전체 시장 거래대금 증감률 (후반전 3H vs 전반전 3H)
 			double marketVolGrowth = 0;
 			if (totalPrevVol.compareTo(BigDecimal.ZERO) > 0) {
 				marketVolGrowth =
@@ -162,7 +164,7 @@ public class MarketNewsService {
 						* 100;
 			}
 
-			// 3. LLM에게 던져줄 정제된 팩트 데이터 조립
+			// LLM에게 던져줄 정제된 팩트 데이터 조립
 			String factData = String.format(
 				"평균등락률:%.2f%%, ADR:%s, 총거래대금:%s, 전체대금증감률(최근3H vs 직전3H):%.1f%%, [통계] 상승:%d/하락:%d/보합:%d, [특징주(수급/호가쏠림)]: %s",
 				averageChangeRate, adrText, totalRecentVol.toPlainString(), marketVolGrowth,
@@ -177,7 +179,7 @@ public class MarketNewsService {
 				? llmRes.getTitle().trim()
 				: llmRes.getShortSummary();
 
-			// 💡 UI 위젯이 깨지지 않도록 최대 5개까지만 잘라서 문자열로 조립!
+			// UI 위젯이 깨지지 않도록 최대 5개까지만 잘라서 문자열로 조립
 			String highlightTokensStr = highlightTokenNamesList.stream()
 				.limit(5)
 				.collect(Collectors.joining(", "));
@@ -187,7 +189,6 @@ public class MarketNewsService {
 				.title(generatedTitle)
 				.summaryShort(llmRes.getShortSummary())
 				.summaryText(llmRes.getTextBody())
-				// 💡 [추가됨] 프론트엔드 UI 위젯이 그대로 가져다 쓸 데이터 직접 삽입!
 				.avgChangeRate(averageChangeRate)
 				.adrValue(adrValue)
 				.adrText(adrText)
@@ -203,7 +204,9 @@ public class MarketNewsService {
 		}
 	}
 
-	// --- 비즈니스 로직(필터링 및 계산) ---
+	// =================================================================
+	// 비즈니스 로직(필터링 및 계산)
+	// =================================================================
 
 	private boolean isImpactful(List<CandleDTO> candles, BigDecimal prevVol, BigDecimal recentVol,
 		List<OrderPriceDTO> buys, List<OrderPriceDTO> sells) {
@@ -257,11 +260,13 @@ public class MarketNewsService {
 		return matchCount >= 2; // 3개 중 2개 이상 만족 시 true
 	}
 
-	// --- External API Call Helpers ---
+	// =================================================================
+	// 외부 API 호출 및 데이터 가공 헬퍼 메서드
+	// =================================================================
 
 	private List<TokenListDTO> fetchAllTokens() {
 		return externalApiClient.callApi(
-			KH_API_BASE + "/api/market", // 전체 토큰 리스트 엔드포인트 수정
+			khApiBase + "api/market",			
 			HttpMethod.GET, null,
 			new ParameterizedTypeReference<ExternalApiResponseDTO<List<TokenListDTO>>>() {
 			}
@@ -270,7 +275,7 @@ public class MarketNewsService {
 
 	private List<CandleDTO> fetchCandles(Long id, long s, long e) {
 		return externalApiClient.callApi(
-			String.format("%s/api/market/candles/%d?unit=60&start=%d&end=%d", KH_API_BASE, id, s, e),
+			String.format("%sapi/market/candles/%d?unit=60&start=%d&end=%d", khApiBase, id, s, e),
 			HttpMethod.GET, null,
 			new ParameterizedTypeReference<ExternalApiResponseDTO<List<CandleDTO>>>() {
 			}
@@ -279,7 +284,7 @@ public class MarketNewsService {
 
 	private List<OrderPriceDTO> fetchBuyOrders(Long id) {
 		return externalApiClient.callApi(
-			KH_API_BASE + "/api/market/order/buy/" + id, // 매수 엔드포인트 분리
+			khApiBase + "api/market/order/buy/" + id,		 // 매수 엔드포인트 분리
 			HttpMethod.GET, null,
 			new ParameterizedTypeReference<ExternalApiResponseDTO<List<OrderPriceDTO>>>() {
 			}
@@ -288,7 +293,7 @@ public class MarketNewsService {
 
 	private List<OrderPriceDTO> fetchSellOrders(Long id) {
 		return externalApiClient.callApi(
-			KH_API_BASE + "/api/market/order/sell/" + id, // 매도 엔드포인트 분리
+			khApiBase + "api/market/order/sell/" + id, 		// 매도 엔드포인트 분리
 			HttpMethod.GET, null,
 			new ParameterizedTypeReference<ExternalApiResponseDTO<List<OrderPriceDTO>>>() {
 			}
@@ -303,7 +308,7 @@ public class MarketNewsService {
 					return candle.getTradeAmount();
 				}
 
-				// 2. tradeAmount가 null이라면? -> (거래량 * 종가)로 직접 거래대금 계산!
+				// 2. tradeAmount가 null이라면? -> (거래량 * 종가)로 직접 거래대금 계산
 				if (candle.getTradeVolume() != null && candle.getClosingPrice() != null) {
 					return candle.getTradeVolume().multiply(candle.getClosingPrice());
 				}
@@ -322,10 +327,5 @@ public class MarketNewsService {
 			.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
-	private String buildTokenFactData(TokenListDTO token, BigDecimal recentVol, BigDecimal prevVol,
-		List<OrderPriceDTO> buys, List<OrderPriceDTO> sells) {
-		return String.format("종목명:%s, 현재가:%s, 직전3H-대금:%s, 최근3H-대금:%s, 매수잔량:%s, 매도잔량:%s",
-			token.getTokenName(), token.getMarketPrice(), prevVol.toPlainString(), recentVol.toPlainString(),
-			sumOrderVolume(buys).toPlainString(), sumOrderVolume(sells).toPlainString());
-	}
+	
 }
