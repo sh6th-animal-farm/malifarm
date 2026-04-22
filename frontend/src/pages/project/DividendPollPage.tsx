@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import DividendPollAddressModal from './components/DividendPollAddressModal';
+import Toast from '@/components/common/Toast';
 
 type DividendType = 'CASH' | 'CROP';
 
@@ -25,6 +26,10 @@ export default function DividendPollPage() {
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [address, setAddress] = useState('');
   const [detailAddress, setDetailAddress] = useState('');
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const handleCloseToast = useCallback(() => {
+    setToastMsg(null);
+  }, []);
 
   const fullAddress = useMemo(
     () => [address, detailAddress].filter(Boolean).join(' ').trim(),
@@ -58,7 +63,7 @@ export default function DividendPollPage() {
     ).daum?.Postcode;
 
     if (!daumPostcode) {
-      alert('주소 검색 기능이 아직 연결되지 않았습니다.');
+      console.error('주소 검색 기능이 아직 연결되지 않았습니다.');
       return;
     }
 
@@ -93,17 +98,17 @@ export default function DividendPollPage() {
       return;
     }
 
-    alert('현금 수령 방식이 선택되었습니다.');
+    setToastMsg('현금 수령 방식이 선택되었습니다.');
     navigate(id ? `/project/${id}` : '/project');
   };
 
   const handleConfirmCrop = () => {
     if (!fullAddress) {
-      alert('배송지를 먼저 입력해 주세요.');
+      setToastMsg('배송지를 먼저 입력해 주세요.');
       return;
     }
 
-    alert(`농산물 수령 방식이 선택되었습니다.\n배송지: ${fullAddress}`);
+    setToastMsg(`농산물 수령 방식이 선택되었습니다.\n배송지: ${fullAddress}`);
     setIsAddressModalOpen(false);
     navigate(id ? `/project/${id}` : '/project');
   };
@@ -225,6 +230,7 @@ export default function DividendPollPage() {
         onDetailAddressChange={setDetailAddress}
         onConfirm={handleConfirmCrop}
       />
+      {toastMsg && <Toast message={toastMsg} onClose={handleCloseToast} />}
     </>
   );
 }
