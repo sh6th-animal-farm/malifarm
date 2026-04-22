@@ -5,6 +5,7 @@ import type { TokenOhlcv } from '@/types/tokenType';
 import {
   CandlestickSeries,
   ColorType,
+  CrosshairMode,
   createChart,
   HistogramSeries,
   type IChartApi,
@@ -51,16 +52,20 @@ export default function TokenChartCard({
       },
       timeScale: {
         timeVisible: true,
-        secondsVisible: false,
+        secondsVisible: true,
         borderVisible: false,
+      },
+      crosshair: {
+        mode: CrosshairMode.Normal,
+        vertLine: { labelVisible: true },
+        horzLine: { labelVisible: true },
       },
       rightPriceScale: { borderVisible: false },
       localization: {
         locale: 'ko-KR',
         priceFormatter: (price: number) =>
           Number(price).toLocaleString('ko-KR', {
-            useGrouping: true,
-            minimumFractionDigits: 0,
+            minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }),
       },
@@ -75,6 +80,11 @@ export default function TokenChartCard({
       borderDownColor: '#1976d2',
       wickUpColor: '#d32f2f',
       wickDownColor: '#1976d2',
+      priceFormat: {
+        type: 'price',
+        precision: 2,
+        minMove: 0.01,
+      },
     });
 
     const volumeSeries = chart.addSeries(HistogramSeries, {
