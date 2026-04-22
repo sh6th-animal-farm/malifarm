@@ -51,7 +51,7 @@ export default function CarbonList() {
               <div className="relative">
                 <SectionHeader
                   title="탄소마켓"
-                  subtitle="보유한 포인트를 사용하여 탄소 배출권을 구매하고 ESG 경영을 실천하세요."
+                  subtitle="보유한 토큰에서 나온 탄소 배출권을 구매하고 ESG 경영을 실천하세요."
                   className="mb-0"
                   titleSuffix={
                     <div className="relative inline-flex">

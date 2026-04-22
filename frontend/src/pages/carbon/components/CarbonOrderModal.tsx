@@ -76,7 +76,7 @@ export default function CarbonOrderModal({
       try {
         const reqAmount = Number(amount) || 1;
 
-        const p = (await apiClient.get('/api/carbon/quotes', {
+        const p = (await apiClient.get('/api/carbon/orders/quote', {
           params: { cpId, amount: reqAmount },
         })) as CarbonQuoteResponse;
 
@@ -106,7 +106,9 @@ export default function CarbonOrderModal({
         }
       } catch (error) {
         console.error('견적 정보를 불러오는데 실패했습니다.', error);
-        setToastMessage('견적 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
+        setToastMessage(
+          '견적 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.',
+        );
       }
     };
 
@@ -136,9 +138,7 @@ export default function CarbonOrderModal({
   }, [isOpen]);
 
   const handleSubmitOrder = async () => {
-    console.log('🔥 impCode:', import.meta.env.VITE_PORTONE_IMP_CODE);
-    console.log('🔥 channelKey:', import.meta.env.VITE_PORTONE_CHANNEL_KEY);
-
+    
     if (!window.IMP) {
       setToastMessage(
         '결제 모듈(PortOne)을 불러오지 못했습니다. 새로고침 후 다시 시도해주세요.',
@@ -193,8 +193,6 @@ export default function CarbonOrderModal({
   };
 
   if (!isOpen) return null;
-  const canSubmit =
-    isAgreed && currentQty > 0 && (displayMaxQty <= 0 || currentQty <= displayMaxQty) && !isSubmitting;
 
   return createPortal(
     <>
