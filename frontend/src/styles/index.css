@@ -226,7 +226,7 @@
   .font-subtitle-03 { font: 400 16px/1.4 var(--font-main); }
 }
 
-@media (width < 768px) {
+@media (width < 1024px) {
   :root {
     --spacing-header-height: 48px;
     --spacing-bottom-tabbar-height: var(--bottom-tabbar-height);

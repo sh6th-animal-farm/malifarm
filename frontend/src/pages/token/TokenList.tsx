@@ -24,7 +24,7 @@ export default function TokenList() {
   }, [tokenList]);
 
   useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    const isMobile = window.matchMedia("(max-width: 1023px)").matches;
 
     if (!isMobile || tokenList.length === 0) return;
 

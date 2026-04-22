@@ -191,8 +191,8 @@ export default function ProjectDetail() {
 
   return (
     <PageShell>
-      <div className="md:bg-white">
-        <section className="layout-container pb-4 md:py-20">
+      <div className="lg:bg-white">
+        <section className="layout-container pb-4 lg:py-20">
           <div className="grid grid-cols-12 gap-[24px]">
             <main className="col-span-12 lg:col-span-8 px-0">
               <div className="-mx-4 md:mx-0">

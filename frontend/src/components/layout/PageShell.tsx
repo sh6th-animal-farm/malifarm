@@ -14,7 +14,7 @@ export default function PageShell({
   mobileInnerClassName = '',
   mobileInnerRef,
 }: PageShellProps) {
-  const isMobile = useMediaQuery('(max-width: 1023px)');
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   if (!isMobile) {
     return <>{children}</>;

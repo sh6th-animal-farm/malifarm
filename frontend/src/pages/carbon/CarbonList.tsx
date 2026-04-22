@@ -14,7 +14,7 @@ import CarbonDiscountRateModal from "./components/CarbonDiscountRateModal";
 
 export default function CarbonList() {
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const [category, setCategory] = useState<"ALL" | "REMOVAL" | "REDUCTION">("ALL");
   const [carbonList, setCarbonList] = useState<CarbonListDTO[]>([]);
   const [isLoading, setIsLoading] = useState(false);

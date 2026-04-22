@@ -22,7 +22,7 @@ type ProjectListRestoreState = {
 };
 
 export default function ProjectList() {
-  const isMobile = useMediaQuery('(max-width: 767px)');
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
