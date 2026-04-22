@@ -95,7 +95,7 @@ export default function ProjectLayout() {
 
     fetchProjects();
   }, [tab, filter]);
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const canLoadMore = hasNext && !loading;
   const moveToProjectDetail = (projectId: number) => {
     navigate(`/project/${projectId}`);

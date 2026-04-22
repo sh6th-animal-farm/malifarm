@@ -7,20 +7,20 @@ export default function TokenTopTen({ tokens }: { tokens: TokenShort[] }) {
       {tokens.map((token, index) => (
         <Link
           to={`/token/${token.tokenId}`}
-          className="shadow-std rounded-lg bg-white flex justify-between px-6 py-5 transition hover:-translate-y-0.5 hover:bg-gray-100"
+          className="shadow-std flex min-w-0 items-center justify-between gap-3 rounded-lg bg-white px-4 py-4 transition hover:-translate-y-0.5 hover:bg-gray-100 md:px-6 md:py-5"
           key={token.tokenId}
         >
-          <div className="flex items-center gap-4">
-            <span className="w-6 font-header-04 text-green-600">
+          <div className="flex min-w-0 items-center gap-3 md:gap-4">
+            <span className="w-5 shrink-0 font-header-04 text-green-600 md:w-6">
               {index + 1}
             </span>
-            <span className="font-body-03 text-gray-900">
+            <span className="truncate font-body-03 text-gray-900">
               {token.tokenName}
             </span>
           </div>
 
-          <div className="text-right">
-            <div className="font-subtitle-01 text-gray-900">
+          <div className="shrink-0 text-right">
+            <div className="font-body-03 text-gray-900 md:font-subtitle-01">
               {token.marketPrice.toLocaleString()}원
             </div>
             <div

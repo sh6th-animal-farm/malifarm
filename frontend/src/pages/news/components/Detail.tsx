@@ -175,7 +175,7 @@ export default function NewsDetail() {
   };
 
   return (
-    <main className="min-h-screen md:bg-white">
+    <main className="min-h-screen lg:bg-white">
       <div className="layout-container max-w-840 py-10 md:py-16">
         <button
           type="button"

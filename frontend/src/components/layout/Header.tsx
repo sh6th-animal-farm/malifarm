@@ -154,13 +154,13 @@ export default function Header() {
 
   return (
     <header
-      className={`z-[1000] flex h-[calc(var(--spacing-header-height)+env(safe-area-inset-top))] items-center touch-manipulation pt-[env(safe-area-inset-top)] transition-colors duration-300 ${
+      className={`z-[1000] flex h-[calc(48px+env(safe-area-inset-top))] items-center touch-manipulation pt-[env(safe-area-inset-top)] transition-colors duration-300 ${
         isMobileImageHeroRoute
           ? "fixed inset-x-0 top-0 bg-transparent"
           : "sticky top-0 bg-white"
-      } md:h-[var(--spacing-header-height)] md:pt-0 md:bg-white/85 md:backdrop-blur-md md:shadow-std lg:fixed lg:inset-x-0 lg:top-0`}
+      } lg:h-[var(--spacing-header-height)] lg:pt-0 lg:bg-white/85 lg:backdrop-blur-md lg:shadow-std lg:fixed lg:inset-x-0 lg:top-0`}
     >
-      <div className="relative flex h-full w-full items-center justify-between px-4 md:px-8 xl:px-18">
+      <div className="relative flex h-full w-full items-center justify-between px-4 lg:px-8 xl:px-18">
         {showMobileBackButton && (
           <button
             type="button"
@@ -179,7 +179,7 @@ export default function Header() {
               }
               navigate("/mypage");
             }}
-            className={`absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center md:hidden ${
+            className={`absolute left-0 inline-flex h-10 w-10 cursor-pointer items-center justify-center lg:hidden ${
               isMobileImageHeroRoute ? "text-white" : "text-gray-700"
             }`}
             aria-label="뒤로가기"
@@ -191,8 +191,8 @@ export default function Header() {
         {/* 로고 영역 */}
         <Link
           to="/"
-          className={`font-header-03 md:font-subtitle-00 overflow-hidden whitespace-nowrap leading-none text-gray-900 cursor-pointer ${
-            location.pathname === "/" ? "inline-flex" : "hidden md:inline-flex"
+          className={`font-header-03 lg:font-subtitle-00 overflow-hidden whitespace-nowrap leading-none text-gray-900 cursor-pointer ${
+            location.pathname === "/" ? "inline-flex" : "hidden lg:inline-flex"
           }`}
         >
           <BrandIcon size={40} className="mr-1 self-center" />
@@ -202,7 +202,7 @@ export default function Header() {
 
         {!isMobileImageHeroRoute && (
           <div
-            className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 md:hidden whitespace-nowrap font-header-03
+            className={`${location.pathname === "/" ? "hidden" : "block"} text-gray-900 lg:hidden whitespace-nowrap font-header-03
             } ${
               showMobileBackButton
                 ? "absolute left-1/2 -translate-x-1/2"

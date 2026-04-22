@@ -14,7 +14,7 @@ import CarbonDiscountRateModal from "./components/CarbonDiscountRateModal";
 
 export default function CarbonList() {
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const [category, setCategory] = useState<"ALL" | "REMOVAL" | "REDUCTION">("ALL");
   const [carbonList, setCarbonList] = useState<CarbonListDTO[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ export default function CarbonList() {
 
   return (
     <PageShell>
-      <div className="md:bg-white">
+      <div className="lg:bg-white">
         <section className="layout-container pb-4 lg:py-20">
             <div className="flex justify-between">
               <div className="relative">

@@ -37,9 +37,7 @@ export default function ProjectSection() {
     const fetchProjects = async () => {
       try {
         const data = await homeApi.getMainProjects();
-        console.log('메인 프로젝트 데이터:', data);
         setProjects(data.map(toCardModel));
-        console.log('변환된 프로젝트:', data.map(toCardModel));
       } catch (e) {
         console.error('프로젝트 목록 로드 실패', e);
       }
@@ -78,15 +76,15 @@ export default function ProjectSection() {
           </Link>
         </div>
 
-        <div className="overflow-visible">
+        <div>
           <div
             ref={sliderRef}
-            className="-mx-4 flex snap-x snap-proximity gap-6 overflow-x-auto px-4 py-8 [scroll-padding-inline:2rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto py-8 md:gap-6 [scroll-padding-inline:1rem] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="min-w-0 shrink-0 basis-[88%] snap-start sm:basis-[70%] md:basis-[calc(50%-12px)] lg:basis-[calc((100%-48px)/3)]"
+                className="min-w-0 shrink-0 basis-[92%] snap-start sm:basis-[72%] md:basis-[calc(50%-12px)] lg:basis-[calc((100%-48px)/3)]"
               >
                 <ProjectCard
                   project={project}
@@ -98,7 +96,7 @@ export default function ProjectSection() {
           </div>
         </div>
 
-        <div className="flex items-center justify-center gap-3">
+        <div className="hidden items-center justify-center gap-3 md:flex">
           <button
             type="button"
             onClick={() => slideByViewport('prev')}

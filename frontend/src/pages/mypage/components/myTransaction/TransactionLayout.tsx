@@ -29,7 +29,7 @@ const projectFilters = [
 ];
 
 export default function TransactionLayout() {
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const [tab, setTab] = useState("TOKEN");
   const [filter, setFilter] = useState("ALL");
   const [period, setPeriod] = useState(0);

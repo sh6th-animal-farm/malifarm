@@ -13,7 +13,7 @@ export default function TokenTable({
   holdings,
   onTokenClick,
 }: TokenTableProps) {
-  const isMobile = useMediaQuery("(max-width: 767px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const stateRowClassName =
     "flex min-h-40 items-center justify-center px-4 py-3 text-center font-body-01 text-gray-400 md:px-6 md:py-4";
 
