@@ -62,9 +62,9 @@ export interface PortOneResponse {
   error_msg?: string;
 }
 
-export interface CustomWindow extends Window {
+export type CustomWindow = Window & {
   IMP?: {
     init: (code: string) => void;
     request_pay: (params: Record<string, unknown>, callback: (rsp: PortOneResponse) => void) => void;
   };
-}
+};

@@ -34,9 +34,12 @@ import com.animalfarm.backend.domain.subscription.dto.SubscriptionHistDTO;
 import com.animalfarm.backend.domain.token.TokenRepository;
 import com.animalfarm.backend.domain.token.TokenService;
 import com.animalfarm.backend.domain.token.dto.TokenIssueDTO;
+import com.animalfarm.backend.domain.user.dto.WalletDTO;
 import com.animalfarm.backend.global.ApiResponseDTO;
 import com.animalfarm.backend.global.MailService;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
+import com.animalfarm.backend.global.exception.BusinessException;
+import com.animalfarm.backend.global.exception.ErrorCode;
 import com.animalfarm.backend.global.http.ExternalApiClient;
 import com.animalfarm.backend.global.security.SecurityUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -118,6 +121,7 @@ public class SubscriptionService {
 			cancelApplication.setSubscriptionAmount(refundDTO.getAmount().multiply(new BigDecimal("-1")));
 			cancelApplication.setProjectId(refundDTO.getProjectId());
 			subscriptionRepository.updatePlusAmount(cancelApplication);
+			subscriptionRepository.restoreLimit(userId, refundDTO.getAmount());
 
 		} catch (RuntimeException e) {
 			// 유틸리티에서 던진 구체적인 에러 메시지("잔액 부족" 등)가 이곳으로 전달됨
@@ -213,6 +217,11 @@ public class SubscriptionService {
 	// 1. 외부 API 호출 (트랜잭션 없음)
 	public void postApplication(SubscriptionApplicationDTO dto) {
 		Long uclId = subscriptionRepository.selectUclId(dto.getUserId());
+		WalletDTO myWalletInfo = projectService.selectMyWalletInfo(uclId);
+		BigDecimal availableBalance = myWalletInfo.getAvailableBalance();
+		if (availableBalance.compareTo(dto.getSubscriptionAmount()) < 0) {
+			throw new BusinessException(ErrorCode.INSUFFICIENT_BALANCE);
+		}
 		dto.setUclId(uclId);
 		String targetUrl = KH_BASE_URL + "api/project/application/" + dto.getTokenId() + "?subscriptionId="
 			+ dto.getShId() + "&walletId=" + dto.getUclId() + "&amount=" + dto.getSubscriptionAmount();
@@ -251,6 +260,7 @@ public class SubscriptionService {
 
 		if ("PAID".equals(dto.getPaymentStatus())) {
 			subscriptionRepository.updatePlusAmount(dto);
+			subscriptionRepository.useLimit(dto.getUserId(), dto.getSubscriptionAmount());
 		}
 	}
 

@@ -7,6 +7,7 @@ import { myPageApi } from "@/api/myPageApi";
 import type { MyTransactionHistDTO } from "@/types/myPageType";
 import { toCategory } from "./transactionFormatters";
 import TransactionTable from "./TransactionTable";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const tabs = [
   { text: "토큰", value: "TOKEN" },
@@ -28,6 +29,7 @@ const projectFilters = [
 ];
 
 export default function TransactionLayout() {
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const [tab, setTab] = useState("TOKEN");
   const [filter, setFilter] = useState("ALL");
   const [period, setPeriod] = useState(0);
@@ -104,48 +106,75 @@ export default function TransactionLayout() {
   };
 
   return (
-    <div>
-      <PageHeader
-        title="거래 내역"
-        subtitle="투자, 충전, 정산 등 모든 거래 기록을 확인하세요."
-      />
-
-      <TabMenu
-        items={tabs}
-        currentValue={tab}
-        onTabChange={(next) => {
-          setTab(next);
-          setFilter("ALL");
-        }}
-      />
-
-      <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <FilterGroup
-          items={tab === "TOKEN" ? tokenFilters : projectFilters}
-          currentValue={filter}
-          onFilterChange={setFilter}
-        />
-        <select
-          value={period}
-          onChange={(event) => setPeriod(Number(event.target.value))}
-          className="w-full rounded-[var(--radius-s)] border border-gray-100 bg-white px-3 py-2 font-caption-01 text-gray-700 md:w-28"
-        >
-          <option value={0}>전체 기간</option>
-          <option value={1}>최근 1개월</option>
-          <option value={3}>최근 3개월</option>
-          <option value={6}>최근 6개월</option>
-        </select>
-      </div>
-
-      <TransactionTable loading={loading} transactions={transactions} />
-
-      {!loading && transactions.length > 0 && hasNext ? (
-        <div className="mt-6">
-          <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-            {loadingMore ? "불러오는 중..." : "+ 더보기"}
-          </LoadMoreButton>
+    <div
+      className={isMobile ? "flex h-full flex-col overflow-hidden" : "layout-container md:py-0"}
+    >
+      {isMobile ? (
+        <div className="shrink-0 border-b border-gray-100 bg-white">
+          <TabMenu
+            items={tabs}
+            currentValue={tab}
+            onTabChange={(next) => {
+              setTab(next);
+              setFilter("ALL");
+            }}
+            tabPaddingY={8}
+            gap={0}
+            marginY={0}
+            equalWidth
+            className="px-4"
+          />
         </div>
-      ) : null}
+      ) : (
+        <>
+          <PageHeader
+            title="거래 내역"
+            subtitle="투자, 충전, 정산 등 모든 거래 기록을 확인하세요."
+          />
+          <div className="mb-6">
+            <TabMenu
+              items={tabs}
+              currentValue={tab}
+              onTabChange={(next) => {
+                setTab(next);
+                setFilter("ALL");
+              }}
+            />
+          </div>
+        </>
+      )}
+
+      <div className={isMobile ? "flex-1 overflow-y-auto" : ""}>
+        <div className={isMobile ? "layout-container py-4 pb-20" : ""}>
+          <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <FilterGroup
+              items={tab === "TOKEN" ? tokenFilters : projectFilters}
+              currentValue={filter}
+              onFilterChange={setFilter}
+            />
+            <select
+              value={period}
+              onChange={(event) => setPeriod(Number(event.target.value))}
+              className="w-full rounded-[var(--radius-s)] border border-gray-100 bg-white px-3 py-2 font-caption-01 text-gray-700 md:w-28"
+            >
+              <option value={0}>전체 기간</option>
+              <option value={1}>최근 1개월</option>
+              <option value={3}>최근 3개월</option>
+              <option value={6}>최근 6개월</option>
+            </select>
+          </div>
+
+          <TransactionTable loading={loading} transactions={transactions} />
+
+          {!loading && transactions.length > 0 && hasNext ? (
+            <div className="mt-6">
+              <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
+                {loadingMore ? "불러오는 중..." : "+ 더보기"}
+              </LoadMoreButton>
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }

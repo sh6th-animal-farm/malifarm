@@ -1,4 +1,11 @@
-import type { Project, ProjectData, ProjectList } from '@/types/projectType';
+import type {
+  FarmEnvChartPoint,
+  FarmEnvChartRange,
+  Project,
+  ProjectData,
+  ProjectList,
+  Wallet,
+} from '@/types/projectType';
 import apiClient from './apiClient';
 import type { FarmDTO } from '@/types/farmType';
 
@@ -18,58 +25,69 @@ export interface DividendPollResponse {
 }
 
 export const projectApi = {
-  getProjectDetail: (projectId: string | number) => {
-    return apiClient.get<ProjectData>(`/api/project/${projectId}`);
+  getProjectDetail: (projectId: string | number): Promise<ProjectData> => {
+    return apiClient.get(`/api/project/${projectId}`);
   },
-  getCheckAccount: (userId: string | number | undefined) => {
+  getFarmEnvChartData: (
+    projectId: string | number,
+    range: FarmEnvChartRange,
+  ): Promise<FarmEnvChartPoint[]> => {
+    return apiClient.get(`/api/project/${projectId}/farm-env`, {
+      params: { range },
+    });
+  },
+  getCheckAccount: (
+    userId: string | number | undefined,
+  ): Promise<boolean> => {
     return apiClient.get(`/api/project/checkAccount`, {
       params: { userId },
     });
   },
-  getMyWalletInfo: (userId: string | number | undefined) => {
+  getMyWalletInfo: (
+    userId: string | number | undefined,
+  ): Promise<Wallet> => {
     return apiClient.get(`/api/project/walletInfo`, {
       params: { userId },
     });
   },
-  getAllProjects: () => {
-    return apiClient.get<Project[]>(`/api/project/all`);
+  getAllProjects: (): Promise<Project[]> => {
+    return apiClient.get(`/api/project/all`);
   },
-  getStarredStatus: (projectId: number) => {
+  getStarredStatus: (projectId: number): Promise<boolean> => {
     return apiClient.get(`/api/project/starred`, {
       params: { projectId },
     });
   },
-  toggleStar: (projectId: number) => {
+  toggleStar: (projectId: number): Promise<boolean> => {
     return apiClient.post(`/api/project/starred`, projectId, {});
   },
-  getAllFarms: () => {
-    return apiClient.get<FarmDTO[]>(`/api/project/farm/all`);
+  getAllFarms: (): Promise<FarmDTO[]> => {
+    return apiClient.get(`/api/project/farm/all`);
   },
-  getProjectsByCondition: async (params: {
+  getProjectsByCondition: (params: {
     projectStatus?: string;
     keyword?: string;
     userId?: number | null;
-  }) => {
-    const response = await apiClient.get<ProjectList[]>(`/api/project/list`, {
+  }): Promise<ProjectList[]> => {
+    return apiClient.get(`/api/project/list`, {
       params: params,
     });
-    return response;
   },
-  getDividendPollData: async (dividendId: number | string) => {
-    const response = (await apiClient.get(`/api/project/dividend/poll-data`, {
+  getDividendPollData: (
+    dividendId: number | string,
+  ): Promise<DividendPollResponse> => {
+    return apiClient.get(`/api/project/dividend/poll-data`, {
       params: { id: dividendId },
-    })) as DividendPollResponse;
-    return response;
+    });
   },
-  selectDividendPoll: async (payload: {
+  selectDividendPoll: (payload: {
     dividendId: number;
     dividendType: 'CASH' | 'CROP';
     address?: string;
-  }) => {
-    const response = (await apiClient.post(
+  }): Promise<boolean> => {
+    return apiClient.post(
       `/api/project/dividend/poll/select`,
       payload,
-    )) as boolean;
-    return response;
+    );
   },
 };

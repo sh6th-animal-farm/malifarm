@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.animalfarm.backend.domain.accounting.dto.SnapshotResponseDTO;
 import com.animalfarm.backend.domain.project.dto.FarmDTO;
+import com.animalfarm.backend.domain.project.dto.FarmEnvChartPointDTO;
+import com.animalfarm.backend.domain.project.dto.FarmEnvChartRange;
 import com.animalfarm.backend.domain.project.dto.ImgEditable;
 import com.animalfarm.backend.domain.project.dto.ProjectDTO;
 import com.animalfarm.backend.domain.project.dto.ProjectDetailDTO;
@@ -66,6 +68,11 @@ public class ProjectService {
 
 	public ProjectDetailDTO selectDetail(Long projectId) {
 		return projectRepository.selectDetail(projectId);
+	}
+
+	public List<FarmEnvChartPointDTO> selectFarmEnvChartData(Long projectId, String range) {
+		FarmEnvChartRange chartRange = FarmEnvChartRange.from(range);
+		return projectRepository.selectFarmEnvChartData(projectId, chartRange.getValue());
 	}
 
 	public List<ProjectListDTO> selectByCondition(ProjectSearchReqDTO searchDTO) {
@@ -133,7 +140,7 @@ public class ProjectService {
 				.from_balanceAfter(BigDecimal.ZERO) // 송금 후 잔액 변동 없음 변경 필수
 				.to_balanceAfter(totalSupply) // 수금 후 잔액 변동 없음 변경 필수
 				.prevHashValue(lastHash)
-				.hashValue(HashManager.createHash("0", projectId, totalSupply)) // 해시 계산
+				.hashValue(HashManager.createHash(lastHash, projectId, totalSupply)) // 해시 계산
 				.build();
 
 			tokenRepository.insertTokenLedger(projectNewTokenDTO);

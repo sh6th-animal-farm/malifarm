@@ -46,13 +46,14 @@
 
     <select id="selectDetail" resultMap="ProjectDetailMap">
         SELECT
-        p.*, f.*, c.crop, c.method, t.ticker_symbol, t.total_supply, t.token_id, img.image_url
+        p.*, f.*, c.crop, c.method, t.ticker_symbol, t.total_supply, t.token_id, img.image_url, img.is_thumbnail
         FROM projects p
         LEFT JOIN farms f ON p.farm_id = f.farm_id
         LEFT JOIN cultivations c ON p.project_id = c.project_id
         LEFT JOIN tokens t ON p.project_id = t.project_id
         LEFT JOIN project_images img ON p.project_id = img.project_id
         WHERE p.project_id = #{projectId}
+        ORDER BY img.is_thumbnail DESC, img.image_url ASC
     </select>
 
     <select id="selectRecentTemperature" resultType="java.math.BigDecimal">
@@ -69,6 +70,48 @@
         WHERE farm_id = #{farmId}
         AND created_at >= NOW() - INTERVAL '12 hours'
         ORDER BY created_at ASC
+    </select>
+
+    <select id="selectFarmEnvChartData"
+            resultType="com.animalfarm.backend.domain.project.dto.FarmEnvChartPointDTO">
+        <choose>
+            <when test="range == '24h'">
+                SELECT
+                fed.created_at AS createdAt,
+                fed.temperature_inside AS temperatureInside,
+                fed.humidity_inside AS humidityInside
+                FROM farm_env_data fed
+                JOIN projects p ON p.farm_id = fed.farm_id
+                WHERE p.project_id = #{projectId}
+                AND fed.created_at >= NOW() - INTERVAL '24 hours'
+                ORDER BY fed.created_at ASC
+            </when>
+            <when test="range == '7d'">
+                SELECT
+                (DATE_TRUNC('hour', fed.created_at)
+                - ((EXTRACT(HOUR FROM fed.created_at)::int % 6) * INTERVAL '1 hour')) AS createdAt,
+                AVG(fed.temperature_inside) AS temperatureInside,
+                AVG(fed.humidity_inside) AS humidityInside
+                FROM farm_env_data fed
+                JOIN projects p ON p.farm_id = fed.farm_id
+                WHERE p.project_id = #{projectId}
+                AND fed.created_at >= NOW() - INTERVAL '7 days'
+                GROUP BY 1
+                ORDER BY 1 ASC
+            </when>
+            <otherwise>
+                SELECT
+                DATE_TRUNC('day', fed.created_at) AS createdAt,
+                AVG(fed.temperature_inside) AS temperatureInside,
+                AVG(fed.humidity_inside) AS humidityInside
+                FROM farm_env_data fed
+                JOIN projects p ON p.farm_id = fed.farm_id
+                WHERE p.project_id = #{projectId}
+                AND fed.created_at >= NOW() - INTERVAL '30 days'
+                GROUP BY 1
+                ORDER BY 1 ASC
+            </otherwise>
+        </choose>
     </select>
 
     <select id="selectByCondition"
@@ -96,6 +139,14 @@
                 AND p.project_status = #{projectStatus}
             </if>
         </where>
+        ORDER BY
+        CASE p.project_status
+        WHEN 'SUBSCRIPTION' THEN 1
+        WHEN 'ANNOUNCEMENT' THEN 2
+        WHEN 'INPROGRESS' THEN 3
+        ELSE 4
+        END ASC,
+        p.created_at DESC
     </select>
 
     <select id="selectByConditionForMain"
@@ -115,7 +166,13 @@
         JOIN farms f on
         p.farm_id = f.farm_id
         AND p.project_status IN ('SUBSCRIPTION', 'ANNOUNCEMENT')
-        ORDER BY p.created_at DESC
+        ORDER BY
+        CASE p.project_status
+        WHEN 'SUBSCRIPTION' THEN 1
+        WHEN 'ANNOUNCEMENT' THEN 2
+        ELSE 3
+        END ASC,
+        p.created_at DESC
         LIMIT 10
     </select>
 

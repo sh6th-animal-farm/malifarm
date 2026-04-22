@@ -90,13 +90,7 @@ export const Clock = ({ size, color, className, ...props }: IconProps) => (
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
-    <circle
-      cx="12"
-      cy="12"
-      r="8.5"
-      stroke={color}
-      strokeWidth="1.8"
-    />
+    <circle cx="12" cy="12" r="8.5" stroke={color} strokeWidth="1.8" />
     <path
       d="M12 7.5V12L15 13.8"
       stroke={color}
@@ -300,6 +294,26 @@ export const ChevronRight = ({
   </svg>
 );
 
+export const Close = ({ size, color, className, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    className={className}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M6 6L18 18M18 6L6 18"
+      stroke={color}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const User = ({ size, color, className, ...props }: IconProps) => (
   <svg
     width={size}
@@ -492,3 +506,20 @@ export const CircularProgress = ({ percent }: { percent: number }) => {
     </div>
   );
 };
+
+export const LessThan = ({ size, color, className, ...props }: IconProps) => (
+  <svg
+    width={size}
+    height={size}
+    className={className}
+    viewBox="0 0 640 640"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      fill={color}
+      d="M417.9 145.1C427.3 135.7 427.3 120.5 417.9 111.1C408.5 101.7 393.3 101.7 383.9 111.1L183.9 311.1C174.5 320.5 174.5 335.7 183.9 345.1L383.9 545.1C393.3 554.5 408.5 554.5 417.9 545.1C427.3 535.7 427.3 520.5 417.9 511.1L245.9 328.1L417.9 145.1z"
+    />
+  </svg>
+);

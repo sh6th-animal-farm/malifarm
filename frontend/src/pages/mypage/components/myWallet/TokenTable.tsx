@@ -1,14 +1,42 @@
 import type { HoldingDTO } from "@/types/myPageType";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import TokenRow from "./TokenRow";
 
 interface TokenTableProps {
   loading: boolean;
   holdings: HoldingDTO[];
+  onTokenClick?: (holding: HoldingDTO) => void;
 }
 
-export default function TokenTable({ loading, holdings }: TokenTableProps) {
+export default function TokenTable({
+  loading,
+  holdings,
+  onTokenClick,
+}: TokenTableProps) {
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const stateRowClassName =
     "flex min-h-40 items-center justify-center px-4 py-3 text-center font-body-01 text-gray-400 md:px-6 md:py-4";
+
+  if (isMobile) {
+    return (
+      <section className="space-y-3">
+        {loading ? (
+          <div className={stateRowClassName}>불러오는 중...</div>
+        ) : holdings.length > 0 ? (
+          holdings.map((holding, index) => (
+            <TokenRow
+              key={`${holding.tokenId ?? holding.tokenName}-${index}`}
+              holding={holding}
+              isMobile
+              onClick={() => onTokenClick?.(holding)}
+            />
+          ))
+        ) : (
+          <div className={stateRowClassName}>보유 토큰이 없습니다.</div>
+        )}
+      </section>
+    );
+  }
 
   return (
     <section className="rounded-lg bg-white shadow-std">
@@ -27,8 +55,9 @@ export default function TokenTable({ loading, holdings }: TokenTableProps) {
               <div>
                 {holdings.map((holding, index) => (
                   <TokenRow
-                    key={`${holding.tokenName}-${index}`}
+                    key={`${holding.tokenId ?? holding.tokenName}-${index}`}
                     holding={holding}
+                    onClick={() => onTokenClick?.(holding)}
                   />
                 ))}
               </div>

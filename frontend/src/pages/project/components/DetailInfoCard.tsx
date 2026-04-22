@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react';
+
 interface InfoItem {
   label: string;
-  value: string | number;
+  value: ReactNode;
   highlight?: boolean;
   fullWidth?: boolean;
 }

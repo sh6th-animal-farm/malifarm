@@ -1,3 +1,4 @@
+import Badge from '@/components/common/Badge';
 import Button from '@/components/common/Button';
 
 interface SideBarProps {
@@ -16,16 +17,20 @@ interface SideBarProps {
     subscriptionEndDate: string;
     targetAmount: number;
     totalSupply: number;
-    tokenId?: string;
+    tokenId?: number;
   };
   isApplied: boolean;
   onAction: () => void;
+  embedded?: boolean;
+  className?: string;
 }
 
 export default function ProjectDetailSideBar({
   projectData,
   isApplied,
   onAction,
+  embedded = false,
+  className = '',
 }: SideBarProps) {
   // D-Day 계산 로직
   const getDDay = () => {
@@ -48,43 +53,33 @@ export default function ProjectDetailSideBar({
     projectData.targetAmount / projectData.totalSupply,
   );
 
-  return (
-    <aside className="col-span-12 lg:col-span-4 px-0">
-      <div className="sticky top-[96px]">
-        <div className="relative p-8 bg-white rounded-lg shadow-std">
+  const cardContent = (
+    <div
+      className={`relative rounded-lg bg-white ${embedded ? 'p-4 shadow-none' : 'p-8 shadow-std'}`}
+    >
           {/* 1. 상태 배지 영역 */}
-          <div className="absolute top-8 right-8">
+          <div className={`absolute ${embedded ? 'top-4 right-4' : 'top-8 right-8'}`}>
             {projectData.projectStatus === 'ANNOUNCEMENT' && (
-              <span className="px-3.5 py-1.5 bg-info-light text-info rounded-lg font-button-02 font-semibold">
-                공고중
-              </span>
+              <Badge variant="info" children="공고중" />
             )}
             {projectData.projectStatus === 'SUBSCRIPTION' && (
-              <span className="px-3.5 py-1.5 bg-warning-light text-warning rounded-lg font-button-02 font-semibold">
-                청약중
-              </span>
+              <Badge variant="warning" children="청약중" />
             )}
             {projectData.projectStatus === 'INPROGRESS' && (
-              <span className="px-3 py-1 bg-green-0 text-green-700 rounded-[var(--radius-s)] font-caption-03 font-bold">
-                진행중
-              </span>
+              <Badge variant="success" children="진행중" />
             )}
             {projectData.projectStatus === 'COMPLETED' && (
-              <span className="px-3 py-1 bg-gray-70 text-gray-600 rounded-[var(--radius-s)] font-caption-03 font-bold">
-                종료
-              </span>
+              <Badge variant="default" children="종료" />
             )}
             {projectData.projectStatus === 'CANCELED' && (
-              <span className="px-3 py-1 bg-gray-70 text-gray-600 rounded-[var(--radius-s)] font-caption-03 font-bold">
-                취소
-              </span>
+              <Badge variant="default" children="취소" />
             )}
           </div>
 
-          <p className="font-caption-01 text-gray-400 mb-2 font-medium">
+          <p className="mb-1 font-caption-02 text-gray-400">
             {projectData.tickerSymbol}
           </p>
-          <h1 className="font-header-02 text-gray-900 mb-5 leading-tight">
+          <h1 className="font-header-02 text-gray-900 mb-5 pr-20 leading-tight">
             {projectData.projectName}
           </h1>
 
@@ -94,7 +89,7 @@ export default function ProjectDetailSideBar({
           {(projectData.projectStatus === 'ANNOUNCEMENT' ||
             projectData.projectStatus === 'SUBSCRIPTION') && (
             <>
-              <div className="mb-8">
+              <div className="mb-8 px-0.5">
                 <div className="flex justify-between items-end mb-3">
                   <span className="font-caption-01 text-gray-900 font-medium">
                     {projectData.subscriptionRate}% 모집됨
@@ -103,35 +98,35 @@ export default function ProjectDetailSideBar({
                     {getDDay()}
                   </span>
                 </div>
-                <div className="w-full h-2 bg-gray-70 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-gray-50 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-green-500 transition-all duration-500"
+                    className="h-full bg-green-600 transition-all duration-500"
                     style={{ width: `${projectData.subscriptionRate}%` }}
                   />
                 </div>
               </div>
 
-              <div className="space-y-3 mb-8">
-                <div className="bg-gray-70 p-5 rounded-lg">
+                <div className="space-y-3 mb-8">
+                  <div className="bg-gray-50 p-5 rounded-lg">
                   <span className="font-caption-01 text-gray-500 block mb-3">
-                    총 모집 금액 (Target)
+                    총 모집 금액
                   </span>
-                  <strong className="text-[28px] font-header-02 text-gray-900 block leading-none">
+                  <strong className="font-header-02 text-gray-900 block leading-none">
                     {projectData.targetAmount?.toLocaleString()}원
                   </strong>
                 </div>
                 <div className="bg-white border border-green-600 p-5 rounded-lg">
                   <span className="font-caption-01 text-gray-500 block mb-3">
-                    1 토큰당 청약 금액
+                    1 토큰 당 금액
                   </span>
-                  <strong className="text-[28px] font-header-02 text-green-600 block leading-none">
+                  <strong className="font-header-02 text-green-600 block leading-none">
                     {tokenPrice.toLocaleString()}원
                   </strong>
                 </div>
               </div>
 
               {/* 버튼 로직: 공통 Button 컴포넌트로 교체 */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {projectData.projectStatus === 'ANNOUNCEMENT' ? (
                   // 1. 공고중일 때
                   <Button variant="subscriptionDisabled" width="100%">
@@ -162,7 +157,7 @@ export default function ProjectDetailSideBar({
                   </Button>
                 )}
                 <p className="text-center font-caption-01 text-gray-400">
-                  * 본 자산은 kh 증권 원장에 실시간 기록됩니다.
+                  * 본 자산은 kh 증권에 실시간으로 기록됩니다.
                 </p>
               </div>
             </>
@@ -170,8 +165,8 @@ export default function ProjectDetailSideBar({
 
           {/* [CASE 2] 진행중 */}
           {projectData.projectStatus === 'INPROGRESS' && (
-            <div className="space-y-6">
-              <div className="bg-gray-70 p-6 rounded-lg">
+              <div className="space-y-6">
+                <div className="bg-gray-50 p-6 rounded-lg">
                 <span className="font-caption-01 text-gray-500 block mb-2">
                   현재 토큰가 (Market Price)
                 </span>
@@ -194,7 +189,7 @@ export default function ProjectDetailSideBar({
           {(projectData.projectStatus === 'COMPLETED' ||
             projectData.projectStatus === 'CANCELED') && (
             <div className="space-y-6">
-              <div className="bg-gray-70 p-6 rounded-lg">
+              <div className="bg-gray-50 p-6 rounded-lg">
                 <span className="font-caption-01 text-gray-500 block mb-2">
                   최종 토큰가
                 </span>
@@ -208,7 +203,15 @@ export default function ProjectDetailSideBar({
             </div>
           )}
         </div>
-      </div>
+  );
+
+  if (embedded) {
+    return cardContent;
+  }
+
+  return (
+    <aside className={`col-span-12 lg:col-span-4 px-0 ${className}`}>
+      <div className="sticky top-[96px]">{cardContent}</div>
     </aside>
   );
 }

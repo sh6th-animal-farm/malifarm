@@ -5,18 +5,20 @@ import { InvestmentLimitBar } from './InvestmentLimitBar';
 import { SubscriptionModalInput } from './SubscriptionModalInput';
 import { subscriptionApi } from '../../../api/subscriptionApi';
 import { useEffect } from 'react';
+import type { SubscriptionApplicationDTO } from '@/types/subscriptionType';
 
 interface SubscriptionModalProps {
   isOpen: boolean;
   onClose: () => void;
   setToastMsg: (msg: string | null) => void;
+  onSuccess: () => void;
   projectData: {
     userId: string | number;
     projectId: string | number;
     tokenId: number;
     title: string;
     price: number;
-    thumbnail?: string;
+    thumbnailUrl?: string;
     userLimit: number;
     minAmountPerInvestor: number;
   };
@@ -32,7 +34,7 @@ export default function SubscriptionModal({
   const { walletData, isLoading: isWalletLoading } = useWallet(
     projectData.userId,
   );
-  const currentCashBalance = walletData?.cashBalance ?? 0;
+  const currentCashBalance = Math.floor(walletData?.availableBalance ?? 0);
 
   const {
     quantity,
@@ -46,6 +48,8 @@ export default function SubscriptionModal({
     userLimit: projectData.userLimit,
     walletBalance: currentCashBalance,
     minAmountPerInvestor: projectData.minAmountPerInvestor,
+    projectId: String(projectData.projectId),
+    tokenId: projectData.tokenId,
   });
 
   useEffect(() => {
@@ -68,7 +72,7 @@ export default function SubscriptionModal({
 
   const handleApplyClick = async () => {
     try {
-      const payload = {
+      const payload: SubscriptionApplicationDTO = {
         projectId: Number(projectData.projectId),
         userId: Number(projectData.userId),
         subscriptionAmount: totalPrice,
@@ -77,8 +81,6 @@ export default function SubscriptionModal({
         subscriptionStatus: 'PENDING',
         paymentStatus: 'RESERVED',
       };
-
-      console.log('보내는 데이터 확인:', payload);
 
       // 2. API 호출
       const result = await subscriptionApi.applySubscription(payload);
@@ -89,21 +91,24 @@ export default function SubscriptionModal({
         setToastMsg('청약 신청이 완료되었습니다.');
         onSuccess();
       } else if (result === 'api_fail') {
-        alert(
+        setToastMsg(
           'DB 저장은 성공했으나, 증권사 시스템 전송에 실패했습니다. 고객센터로 문의하세요.',
         );
         onClose();
       } else if (result === 'empty_payload') {
-        alert('증권사로 보낼 데이터가 비어있습니다. 입력값을 확인해주세요.');
+        setToastMsg(
+          '증권사로 보낼 데이터가 비어있습니다. 입력값을 확인해주세요.',
+        );
       } else {
-        alert(`신청 실패: ${result}`);
+        setToastMsg(`신청 실패`);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('청약 통신 에러:', err);
-      // 서버가 500 에러를 던지면 여기로 들어옵니다.
-      alert(
-        err.response?.data || '서버 오류로 인해 신청을 완료할 수 없습니다.',
-      );
+      const message =
+        err instanceof Error
+          ? err.message
+          : '서버 오류로 인해 요청을 완료할 수 없습니다.';
+      console.error(message);
     }
   };
 
@@ -124,7 +129,7 @@ export default function SubscriptionModal({
         </div>
 
         <SubscriptionSummary
-          thumbnail={projectData.thumbnail}
+          thumbnail={projectData.thumbnailUrl}
           title={projectData.title}
           labelText={`1 토큰 당 ${projectData.price.toLocaleString()}원`}
         />
@@ -145,23 +150,19 @@ export default function SubscriptionModal({
           minAmountText={`* 최소 청약 금액: ${projectData.minAmountPerInvestor.toLocaleString()}원`}
         />
 
-        <div className="flex justify-between text-[13px] mb-5 px-1 font-medium">
-          <span className="text-gray-600">나의 지갑 잔액</span>
-          <span className="text-gray-900">
-            {isWalletLoading
-              ? '조회 중...'
-              : `${currentCashBalance.toLocaleString()}원`}
-          </span>
-        </div>
-
         <div className="bg-gray-50 rounded-[12px] p-4 mb-5">
-          <div className="flex justify-between text-xs text-gray-500 mb-2">
-            <span>청약 수량</span>
-            <span>{quantity.toLocaleString()} 토큰</span>
+          <div className="px-0.5 font-caption-02 text-gray-400 flex justify-between items-center mb-3">
+            <span>나의 지갑 잔액</span>
+            <span>
+              {isWalletLoading
+                ? '조회 중...'
+                : `${currentCashBalance.toLocaleString()}원`}
+            </span>
           </div>
-          <div className="pt-3 border-t flex justify-between items-center">
-            <span className="text-sm font-bold">총 청약 금액</span>
-            <span className="text-green-600 text-xl font-bold">
+          <div className="border border-[0.5px] border-gray-200 rounded-[8px]" />
+          <div className="pt-2 px-0.5 flex items-center justify-between text-xs text-gray-600">
+            <span className="font-caption-03 text-gray-600">총 청약 금액</span>
+            <span className="text-green-600 text-xl font-semibold">
               {totalPrice.toLocaleString()} 원
             </span>
           </div>

@@ -36,7 +36,7 @@ export const useSubscription = ({
 
     // 유효성 검사
     const maxAvailableAmount = Math.min(userLimit, walletBalance);
-    const maxQuantity = maxAvailableAmount / price;
+    const maxQuantity = maxAvailableAmount;
 
     if (total < minAmountPerInvestor) {
       setErrorMsg(

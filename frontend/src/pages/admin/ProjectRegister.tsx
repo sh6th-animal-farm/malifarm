@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { adminApi } from '@/api/adminApi';
 import Button from '@/components/common/Button';
 import AdminSidebar from '@/pages/admin/AdminSidebar';
+import type { ProjectDTO } from '@/types/projectType';
 import '../../styles/admin.css';
 
 interface ProjectFormData {
@@ -78,76 +79,79 @@ interface Farm {
   farmName: string;
 }
 
-type Project = {
-  projectId: number;
-  projectName: string;
-  projectRound: number;
-  farmId: number;
-  targetAmount: number;
-  minAmountPerInvestor: number;
-  maxAmountPerInvestor?: number;
-  actualAmount?: number;
-  expectedReturn: number;
-  roi?: number;
-  managerCount: number;
-  announcementStartDate: string;
-  announcementEndDate: string;
-  subscriptionStartDate: string;
-  subscriptionEndDate: string;
-  resultAnnouncementDate: string;
-  projectStartDate: string;
-  projectEndDate: string;
-  tokenName?: string;
-  tokenSymbol?: string;
-  totalSupply?: number;
-};
+const toAdminProject = (project: ProjectDTO): AdminProject => ({
+  projectId: project.projectId,
+  projectName: project.projectName,
+  projectRound: project.projectRound ?? 0,
+  farmId: 0,
+  targetAmount: 0,
+  minAmountPerInvestor: 0,
+  maxAmountPerInvestor: 0,
+  actualAmount: 0,
+  expectedReturn: project.expectedReturn ?? 0,
+  roi: 0,
+  managerCount: 0,
+  announcementStartDate: project.announcementStartDate ?? '',
+  announcementEndDate: project.announcementEndDate ?? '',
+  subscriptionStartDate: project.subscriptionStartDate ?? '',
+  subscriptionEndDate: project.subscriptionEndDate ?? '',
+  resultAnnouncementDate: '',
+  projectStartDate: project.projectStartDate ?? '',
+  projectEndDate: project.projectEndDate ?? '',
+  tokenName: '',
+  tokenSymbol: '',
+  tickerSymbol: '',
+  totalSupply: 0,
+});
+
+const createInitialFormData = (): ProjectFormData => ({
+  projectId: 0,
+  farmId: 0,
+  projectName: '',
+  projectRound: 1,
+  projectDescription: '',
+  tokenName: '',
+  tokenSymbol: '',
+  tickerSymbol: '',
+  targetAmount: 0,
+  totalSupply: 0,
+  minAmountPerInvestor: 0,
+  maxAmountPerInvestor: 0,
+  actualAmount: 0,
+  expectedReturn: 0,
+  roi: 0,
+  managerCount: 0,
+  announcementStartDate: '',
+  announcementEndDate: '',
+  subscriptionStartDate: '',
+  subscriptionEndDate: '',
+  resultAnnouncementDate: '',
+  projectStartDate: '',
+  projectEndDate: '',
+  images: [],
+  subscriptionRate: 0,
+  projectStatus: 'ANNOUNCEMENT',
+  method: '',
+  crop: '',
+  temperatureInside: [],
+  humidityInside: [],
+  farm: {
+    addressSido: '',
+    area: 0,
+  },
+  projectImages: [],
+  deletedPictureIds: [],
+});
 
 const ProjectRegister: React.FC = () => {
-  const [formData, setFormData] = useState<ProjectFormData>({
-    projectId: 0,
-    farmId: 0,
-    projectName: '',
-    projectRound: 1,
-    projectDescription: '',
-    tokenName: '',
-    tokenSymbol: '',
-    tickerSymbol: '',
-    targetAmount: 0,
-    totalSupply: 0,
-    minAmountPerInvestor: 0,
-    maxAmountPerInvestor: 0,
-    actualAmount: 0,
-    expectedReturn: 0,
-    roi: 0,
-    managerCount: 0,
-    announcementStartDate: '',
-    announcementEndDate: '',
-    subscriptionStartDate: '',
-    subscriptionEndDate: '',
-    resultAnnouncementDate: '',
-    projectStartDate: '',
-    projectEndDate: '',
-    images: [],
-    subscriptionRate: 0,
-    projectStatus: 'ANNOUNCEMENT',
-    method: '',
-    crop: '',
-    temperatureInside: [],
-    humidityInside: [],
-    farm: {
-      addressSido: '',
-      area: 0,
-    },
-    projectImages: [],
-    deletedPictureIds: [],
-  });
-  const [selectedProjectId, setSelectedProjectId] = useState<number | null>(
-    null,
+  const [formData, setFormData] = useState<ProjectFormData>(
+    createInitialFormData(),
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projects, setProjects] = useState<AdminProject[]>([]);
   const [farms, setFarms] = useState<Farm[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -155,7 +159,7 @@ const ProjectRegister: React.FC = () => {
     const loadProjects = async () => {
       try {
         const result = await adminApi.getProjects();
-        setProjects(Array.isArray(result) ? result : (result?.data ?? []));
+        setProjects(result.map(toAdminProject));
       } catch (error) {
         console.error('프로젝트 로드 실패:', error);
         setProjects([]);
@@ -164,7 +168,7 @@ const ProjectRegister: React.FC = () => {
     const loadFarms = async () => {
       try {
         const result = await adminApi.getFarms();
-        setFarms(Array.isArray(result) ? result : (result?.data ?? []));
+        setFarms(result);
       } catch (error) {
         console.error('농장 로드 실패:', error);
         setFarms([]);
@@ -174,8 +178,19 @@ const ProjectRegister: React.FC = () => {
     loadFarms();
   }, []);
 
+  const resetForm = () => {
+    setFormData(createInitialFormData());
+    setImagePreviews([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const form = new FormData();
 
     // 필수 필드 추가
@@ -225,7 +240,7 @@ const ProjectRegister: React.FC = () => {
 
     // 이미지 파일 추가
     if (formData.projectImages && formData.projectImages.length > 0) {
-      formData.projectImages.forEach((file, index) => {
+      formData.projectImages.forEach((file) => {
         form.append(`projectImages`, file);
       });
     }
@@ -234,14 +249,24 @@ const ProjectRegister: React.FC = () => {
       await adminApi.insertProject(form);
       console.log('프로젝트 등록 완료');
       alert('프로젝트가 등록되었습니다!');
+      resetForm();
     } catch (error) {
       console.log('등록 실패:', error);
-      alert('프로젝트 등록 중 오류가 발생했습니다.');
+      const errorMsg =
+        (error as any)?.response?.data ||
+        (error as Error)?.message ||
+        '프로젝트 등록 중 오류가 발생했습니다.';
+      alert(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     const form = new FormData();
 
     // 필수 필드 추가
@@ -292,7 +317,7 @@ const ProjectRegister: React.FC = () => {
 
     // 이미지 파일 추가
     if (formData.projectImages && formData.projectImages.length > 0) {
-      formData.projectImages.forEach((file, index) => {
+      formData.projectImages.forEach((file) => {
         form.append(`projectImages`, file);
       });
     }
@@ -311,13 +336,14 @@ const ProjectRegister: React.FC = () => {
       alert('프로젝트가 수정되었습니다!');
     } catch (error) {
       console.log('수정 실패:', error);
-      alert('프로젝트 수정 중 오류가 발생했습니다.');
+      const errorMsg =
+        (error as any)?.response?.data ||
+        (error as Error)?.message ||
+        '프로젝트 수정 중 오류가 발생했습니다.';
+      alert(errorMsg);
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const formatNumberInput = (value: any) => {
-    if (typeof value !== 'number') return value;
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   const parseNumberInput = (value: any) => {
@@ -367,7 +393,7 @@ const ProjectRegister: React.FC = () => {
     setLoading(true);
     try {
       const result = await adminApi.getProjects();
-      setProjects(Array.isArray(result) ? result : (result?.data ?? []));
+      setProjects(result.map(toAdminProject));
     } catch (error) {
       console.error('프로젝트 로드 실패:', error);
       setProjects([]);
@@ -403,7 +429,6 @@ const ProjectRegister: React.FC = () => {
         tokenInfo?.tickerSymbol || selected.tickerSymbol,
       );
 
-      setSelectedProjectId(project.projectId);
       setFormData({
         ...formData,
         projectId: selected.projectId ?? project.projectId,
@@ -884,8 +909,8 @@ const ProjectRegister: React.FC = () => {
             <div className="flex gap-4 pt-6 border-t">
               <Button
                 type="submit"
-                onClick={handleSubmit}
                 className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 font-bold text-lg flex-1"
+                disabled={isSubmitting}
               >
                 프로젝트 등록
               </Button>
@@ -893,6 +918,7 @@ const ProjectRegister: React.FC = () => {
                 type="button"
                 onClick={handleUpdate}
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 font-bold text-lg flex-1"
+                disabled={isSubmitting}
               >
                 프로젝트 수정
               </Button>
