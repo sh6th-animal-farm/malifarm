@@ -80,7 +80,7 @@ export default function CarbonCard({ item }: CarbonCardProps) {
             )}
           </div>
           <div className="font-header-03 text-gray-900">
-            {(hasDiscount ? currentPrice : originalPrice).toLocaleString()} P
+            {(hasDiscount ? currentPrice : originalPrice).toLocaleString()} 원
           </div>
         </div>
 

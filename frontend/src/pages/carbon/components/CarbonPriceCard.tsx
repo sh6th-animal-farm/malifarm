@@ -61,7 +61,7 @@ export default function CarbonPriceCard({
           </div>
 
           <p className="mt-2 text-right font-caption-01 text-gray-400">
-            * 부가세(VAT) 별도 금액
+            * 부가세(VAT) 포함 금액
           </p>
 
           <Button
@@ -111,7 +111,7 @@ export default function CarbonPriceCard({
             </div>
 
             <p className="text-right font-caption-01 text-gray-400">
-              * 부가세(VAT) 별도 금액
+              * 부가세(VAT) 포함 금액
             </p>
           </div>
 

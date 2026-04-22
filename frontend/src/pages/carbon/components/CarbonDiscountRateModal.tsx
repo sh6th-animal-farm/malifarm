@@ -1,5 +1,3 @@
-// src/pages/carbon/components/CarbonDiscountRateModal.tsx
-
 interface CarbonDiscountRateModalProps {
   isOpen: boolean;
   onClose: () => void;
