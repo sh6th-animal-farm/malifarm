@@ -194,7 +194,7 @@ export default function ProjectList() {
 
   return (
     <PageShell mobileInnerRef={mobileScrollRef}>
-        <div className="hidden md:block md:bg-white">
+        <div className="hidden lg:block lg:bg-white">
           <section className="layout-container py-20 md:pt-20">
             <SectionHeader
               title="프로젝트 지도"
@@ -206,8 +206,8 @@ export default function ProjectList() {
             />
           </section>
         </div>
-        <div className="md:bg-white">
-          <section className="layout-container pb-4 md:pb-20">
+        <div className="lg:bg-white">
+          <section className="layout-container pb-4 lg:pb-20">
             <div ref={listRef}>
               <SectionHeader
                 title="프로젝트 목록"

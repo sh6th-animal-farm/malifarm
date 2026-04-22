@@ -45,7 +45,7 @@ export default function CarbonList() {
 
   return (
     <PageShell>
-      <div className="md:bg-white">
+      <div className="lg:bg-white">
         <section className="layout-container pb-4 lg:py-20">
             <div className="flex justify-between">
               <div className="relative">

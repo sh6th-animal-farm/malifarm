@@ -53,7 +53,7 @@ export default function TokenList() {
   }
 
   return (
-    <div className="w-full md:bg-white">
+    <div className="w-full lg:bg-white">
       <section className="layout-container py-20">
         <SectionHeader
           title="토큰 거래소"

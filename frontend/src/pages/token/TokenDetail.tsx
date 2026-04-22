@@ -100,7 +100,7 @@ export default function TokenDetail() {
       )}
 
       {!isMobile && (
-        <div className='md:bg-white'>
+        <div className='lg:bg-white'>
           <div className="layout-container py-0 md:py-20">
             <div className="flex flex-col gap-2 md:gap-6">
               <div className="flex gap-6 items-start w-full">
