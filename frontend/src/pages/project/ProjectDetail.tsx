@@ -52,7 +52,6 @@ export default function ProjectDetail() {
       const errorMsg =
         error.response?.data?.message || '취소 중 오류가 발생했습니다.';
       console.error('실제 취소 오류 발생:', errorMsg);
-      alert(errorMsg);
     }
   };
 

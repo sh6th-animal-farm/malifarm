@@ -82,8 +82,6 @@ export default function SubscriptionModal({
         paymentStatus: 'RESERVED',
       };
 
-      console.log('보내는 데이터 확인:', payload);
-
       // 2. API 호출
       const result = await subscriptionApi.applySubscription(payload);
 
@@ -93,14 +91,16 @@ export default function SubscriptionModal({
         setToastMsg('청약 신청이 완료되었습니다.');
         onSuccess();
       } else if (result === 'api_fail') {
-        alert(
+        setToastMsg(
           'DB 저장은 성공했으나, 증권사 시스템 전송에 실패했습니다. 고객센터로 문의하세요.',
         );
         onClose();
       } else if (result === 'empty_payload') {
-        alert('증권사로 보낼 데이터가 비어있습니다. 입력값을 확인해주세요.');
+        setToastMsg(
+          '증권사로 보낼 데이터가 비어있습니다. 입력값을 확인해주세요.',
+        );
       } else {
-        alert(`신청 실패: ${result}`);
+        setToastMsg(`신청 실패`);
       }
     } catch (err: unknown) {
       console.error('청약 통신 에러:', err);
@@ -108,7 +108,7 @@ export default function SubscriptionModal({
         err instanceof Error
           ? err.message
           : '서버 오류로 인해 요청을 완료할 수 없습니다.';
-      alert(message);
+      console.error(message);
     }
   };
 

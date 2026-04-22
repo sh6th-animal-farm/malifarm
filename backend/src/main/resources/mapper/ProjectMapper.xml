@@ -166,7 +166,13 @@
         JOIN farms f on
         p.farm_id = f.farm_id
         AND p.project_status IN ('SUBSCRIPTION', 'ANNOUNCEMENT')
-        ORDER BY p.created_at DESC
+        ORDER BY
+        CASE p.project_status
+        WHEN 'SUBSCRIPTION' THEN 1
+        WHEN 'ANNOUNCEMENT' THEN 2
+        ELSE 3
+        END ASC,
+        p.created_at DESC
         LIMIT 10
     </select>
 
