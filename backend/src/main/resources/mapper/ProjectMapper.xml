@@ -170,7 +170,7 @@
         CASE p.project_status
         WHEN 'SUBSCRIPTION' THEN 1
         WHEN 'ANNOUNCEMENT' THEN 2
-        ELSE 4
+        ELSE 3
         END ASC,
         p.created_at DESC
         LIMIT 10
