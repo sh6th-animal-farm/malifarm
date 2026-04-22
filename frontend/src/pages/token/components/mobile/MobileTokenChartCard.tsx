@@ -79,7 +79,15 @@ export default function MobileTokenChartCard({
         borderVisible: false,
         minimumWidth: 60,
       },
-      localization: { locale: 'ko-KR' },
+      localization: {
+        locale: 'ko-KR',
+        priceFormatter: (price: number) =>
+          Number(price).toLocaleString('ko-KR', {
+            useGrouping: true,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          }),
+      },
       width: chartContainerRef.current.clientWidth,
       height: chartHeight,
     });
