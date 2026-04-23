@@ -210,6 +210,23 @@ export default function WalletLayout() {
           )
         }
       />
+      {!isInitialLoading && !initialWalletId && (
+        <div className="mb-4 flex justify-end lg:hidden">
+          <Button
+            variant="default"
+            width={112}
+            height={36}
+            className="font-button-02"
+            onClick={handleLinkAccount}
+            disabled={isLinking}
+          >
+            <span className="inline-flex items-center gap-1">
+              <Icon name="link" size={14} color="white" />
+              {isLinking ? '연동 중...' : '계좌 연동'}
+            </span>
+          </Button>
+        </div>
+      )}
       <Account
         walletInfo={walletInfo}
         loading={isInitialLoading || walletLoading}
