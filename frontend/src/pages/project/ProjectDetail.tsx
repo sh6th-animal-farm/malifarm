@@ -117,11 +117,11 @@ export default function ProjectDetail() {
   }, [id]);
 
   // 사이드바 버튼 클릭 시 실행될 함수
-  const handleAction = async () => {
+  const handleAction = async (tokenId?: number) => {
     if (!projectData) return;
 
     if (projectData.projectStatus === 'INPROGRESS') {
-      navigate(`/token/${id}`);
+      navigate(`/token/${tokenId ?? projectData.tokenId ?? id}`);
       return;
     }
     if (isApplied) {
