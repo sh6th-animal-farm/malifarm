@@ -26,7 +26,6 @@ public class GlobalExceptionHandler {
 	// 커스텀 에러 처리
 	@ExceptionHandler(BusinessException.class)
 	public ResponseEntity<ApiResponseDTO<Void>> handleBusinessException(BusinessException e) {
-		log.info("handleBusinessException");
 		return ResponseEntity
 			.status(e.getHttpStatus())
 			.body(ApiResponseDTO.fail(e.getCode(), e.getMessage()));
