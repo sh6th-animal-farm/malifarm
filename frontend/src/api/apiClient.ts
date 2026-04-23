@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL; // 백엔드 API 주소
 
@@ -104,13 +105,13 @@ apiClient.interceptors.response.use(
   async (error) => {
     const res = error.response?.data; // ApiResponseDTO { success, message, data, error }
     const originalRequest = error.config;
+    const navigate = useNavigate();
 
     if (res && !res.success) {
       const errorCode = res.error.code;
       const errorMsg = res.message;
 
       switch (errorCode) {
-        case 'AUTH_002':
         case 'AUTH_003': {
           if (originalRequest?.url?.includes('/api/auth/refresh')) {
             console.error(errorMsg);
@@ -158,15 +159,25 @@ apiClient.interceptors.response.use(
           }
         }
 
-        case 'EXTERNAL_001': // 외부 API 에러
+        case 'EXTERNAL_001':
+          // 외부 API 에러
           console.error(errorMsg);
           break;
 
-        case 'PROJECT_002': // 별(하트) 처리 실패
+        case 'EXTERNAL_004': {
+          // 외부 API 잘못된 요청 주소 에러
+          console.error(errorMsg);
+          navigate('/not-found', { replace: true });
+          return Promise.reject(error);
+        }
+
+        case 'PROJECT_002':
+          // 별(하트) 처리 실패
           console.error('관심 프로젝트 처리 실패:', errorMsg);
           break;
 
-        default: // 그 외 에러
+        default:
+          // 그 외 에러
           console.error(errorMsg);
       }
     } else {

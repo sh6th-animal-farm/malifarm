@@ -108,7 +108,12 @@ export const useTradeOrderForm = ({
           }
         }
       } else {
-        setVolume(calculatedValue.toFixed(4));
+        // activeTab === 'sell'
+        if (perc === 100) {
+          setVolume(calculatedValue.toString());
+        } else {
+          setVolume(calculatedValue.toFixed(4));
+        }
       }
     } catch (error) {
       console.error('잔액 조회 실패:', error);

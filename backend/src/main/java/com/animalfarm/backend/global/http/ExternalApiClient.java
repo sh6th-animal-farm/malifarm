@@ -78,8 +78,6 @@ public class ExternalApiClient {
 				.onStatus(HttpStatusCode::isError, clientResponse ->
 					clientResponse.bodyToMono(String.class)
 						.flatMap(errorBody -> {
-							log.error("[External API Fail] Status: {}, Body: {}", clientResponse.statusCode(),
-								errorBody);
 							return Mono.error(new ExternalApiException(
 								clientResponse.statusCode().value(),
 								errorBody
@@ -98,6 +96,7 @@ public class ExternalApiClient {
 
 		} catch (ExternalApiException e) {
 			// 비즈니스 에러는 그대로 던짐
+			log.error("[External API Fail] Status: {}, Body: {}", e.getStatusCode(), e.getMessage());
 			throw e;
 		} catch (Exception e) {
 			// 시스템 에러(타임아웃, 접속 불가 등) 처리

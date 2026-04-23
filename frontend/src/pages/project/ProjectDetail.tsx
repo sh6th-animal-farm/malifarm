@@ -4,8 +4,6 @@ import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/projectType';
 
 import TabMenu from '@/components/common/TabMenu';
-import Button from '@/components/common/Button';
-import EmptyState from '@/components/common/EmptyState';
 import ImageCarousel from './components/ImageCarousel';
 import FarmTabContent from './components/FarmTabContent';
 import ProjectDetailSideBar from './components/ProjectDetailSideBar';
@@ -117,11 +115,11 @@ export default function ProjectDetail() {
   }, [id]);
 
   // 사이드바 버튼 클릭 시 실행될 함수
-  const handleAction = async () => {
+  const handleAction = async (tokenId?: number) => {
     if (!projectData) return;
 
     if (projectData.projectStatus === 'INPROGRESS') {
-      navigate(`/token/${id}`);
+      navigate(`/token/${tokenId ?? projectData.tokenId ?? id}`);
       return;
     }
     if (isApplied) {
@@ -166,26 +164,8 @@ export default function ProjectDetail() {
   }
 
   if (!projectData) {
-    return (
-      <PageShell>
-        <section className="layout-container py-8 lg:py-20">
-          <div className="flex min-h-[420px] flex-col items-center justify-center gap-4">
-            <EmptyState
-              message="프로젝트 정보를 찾을 수 없습니다."
-              className="mb-0 py-0"
-            />
-            <Button
-              variant="default"
-              width={180}
-              height={48}
-              onClick={() => navigate('/project')}
-            >
-              목록으로 돌아가기
-            </Button>
-          </div>
-        </section>
-      </PageShell>
-    );
+    navigate('/not-found', { replace: true });
+    return null;
   }
 
   return (
