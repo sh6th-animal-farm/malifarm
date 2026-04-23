@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import EmptyState from '@/components/common/EmptyState';
-import Button from '@/components/common/Button';
 import { newsApi } from '@/api/newsApi';
 import type { MarketNewsDTO } from '@/types/newsType';
-import { mockNewsComments } from '@/pages/news/mockNews';
 import heroImage from '@/assets/hero.png';
 
 const NEWS_IMAGE_URLS = [
@@ -74,19 +71,19 @@ const getAdrBorderClass = (value: number | null): string => {
 export default function NewsDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const isLoggedIn = Boolean(localStorage.getItem('accessToken'));
   const [news, setNews] = useState<MarketNewsDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageIndex, setImageIndex] = useState(0);
   const [useFallbackImage, setUseFallbackImage] = useState(false);
 
   useEffect(() => {
-    const newsId = Number(id);
-    if (!newsId) {
+    if (!id || isNaN(Number(id))) {
       setIsLoading(false);
       setNews(null);
-      return;
+      navigate('/not-found', { replace: true });
     }
+
+    const newsId = Number(id);
 
     let mounted = true;
 
@@ -100,6 +97,7 @@ export default function NewsDetail() {
         console.error('뉴스 상세 로딩 실패:', error);
         if (!mounted) return;
         setNews(null);
+        navigate('/not-found', { replace: true });
       } finally {
         if (mounted) {
           setIsLoading(false);
@@ -178,14 +176,9 @@ export default function NewsDetail() {
     setUseFallbackImage(true);
   };
 
-  if (!news) {
-    window.location.href = '/not-found';
-    return null;
-  }
-
   return (
     <main className="min-h-screen lg:bg-white">
-      <div className="layout-container max-w-840 py-10 md:py-16">
+      <div className="layout-container max-w-840 py-10 md:py-20">
         <button
           type="button"
           onClick={() => navigate('/news')}
@@ -204,23 +197,23 @@ export default function NewsDetail() {
             <section className="pb-8">
               <div className="mb-5 flex flex-wrap items-center gap-3 text-gray-400">
                 <span className="font-caption-03 text-green-600">
-                  {formatHourNews(news.createdAt)}
+                  {formatHourNews(news?.createdAt || '')}
                 </span>
                 <span className="h-1 w-1 rounded-full bg-gray-300" />
                 <span className="font-caption-01">마리팜 뉴스</span>
                 <span className="h-1 w-1 rounded-full bg-gray-300" />
                 <span className="font-caption-01">
-                  {formatDate(news.createdAt)}
+                  {formatDate(news?.createdAt || '')}
                 </span>
               </div>
 
               <h1 className="font-header-02 text-gray-900">
-                {news.title ?? news.summaryShort}
+                {news?.title ?? news?.summaryShort}
               </h1>
 
               <div className="mt-6 border-l-2 border-green-600/20 pl-4 md:pl-5">
                 <p className="font-subtitle-03 text-gray-600">
-                  {news.summaryShort}
+                  {news?.summaryShort}
                 </p>
               </div>
             </section>
@@ -240,13 +233,13 @@ export default function NewsDetail() {
             <section>
               <div className="grid gap-3 md:grid-cols-3">
                 <div
-                  className={`border-l-4 ${getValueBorderClass(news.avgChangeRate)} pl-4 py-1`}
+                  className={`border-l-4 ${getValueBorderClass(news?.avgChangeRate || 0)} pl-4 py-1`}
                 >
                   <p className="font-caption-02 text-gray-500">평균 등락률</p>
                   <p
-                    className={`mt-1 font-header-02 ${getValueColorClass(news.avgChangeRate)}`}
+                    className={`mt-1 font-header-02 ${getValueColorClass(news?.avgChangeRate || 0)}`}
                   >
-                    {toPercentText(news.avgChangeRate)}
+                    {toPercentText(news?.avgChangeRate || 0)}
                   </p>
                 </div>
 
@@ -256,26 +249,29 @@ export default function NewsDetail() {
                 </div> */}
 
                 <div
-                  className={`border-l-4 ${getAdrBorderClass(news.adrValue)} pl-4 py-1`}
+                  className={`border-l-4 ${getAdrBorderClass(news?.adrValue || 0)} pl-4 py-1`}
                 >
                   <p className="font-caption-02 text-gray-500">
                     시장 투심 (ADR)
                   </p>
                   <p
-                    className={`mt-1 font-header-02 ${getAdrColorClass(news.adrValue)}`}
+                    className={`mt-1 font-header-02 ${getAdrColorClass(news?.adrValue || 0)}`}
                   >
-                    {getAdrDisplayText(news.adrText, news.adrValue)}
+                    {getAdrDisplayText(
+                      news?.adrText || '',
+                      news?.adrValue || 0,
+                    )}
                   </p>
                 </div>
 
                 <div
-                  className={`border-l-4 ${getValueBorderClass(news.volGrowthRate)} pl-4 py-1`}
+                  className={`border-l-4 ${getValueBorderClass(news?.volGrowthRate || 0)} pl-4 py-1`}
                 >
                   <p className="font-caption-02 text-gray-500">유동성 흐름</p>
                   <p
-                    className={`mt-1 font-header-02 ${getValueColorClass(news.volGrowthRate)}`}
+                    className={`mt-1 font-header-02 ${getValueColorClass(news?.volGrowthRate || 0)}`}
                   >
-                    {toPercentText(news.volGrowthRate)}
+                    {toPercentText(news?.volGrowthRate || 0)}
                   </p>
                 </div>
               </div>
@@ -310,6 +306,8 @@ export default function NewsDetail() {
             </section>
           </div>
         )}
+
+        {/*         
         <section className="mt-4 rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
           <div className="mb-6">
             <h2 className="font-subtitle-01 text-gray-900">
@@ -365,7 +363,7 @@ export default function NewsDetail() {
               </article>
             ))}
           </div>
-        </section>
+        </section> */}
       </div>
     </main>
   );

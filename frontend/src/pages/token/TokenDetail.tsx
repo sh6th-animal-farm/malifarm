@@ -86,6 +86,13 @@ export default function TokenDetail() {
     navigate(`/token/${tokenId}`);
   };
 
+  // 숫자가 아니거나, 에러 발생했을 때
+  useEffect(() => {
+    if (isError || !id || isNaN(Number(id))) {
+      navigate('/not-found', { replace: true });
+    }
+  }, [id, isError, navigate]);
+
   // 로딩 중이거나 에러 발생 시 빈 페이지 리턴
   if (isLoading || isError) {
     return <div className="min-h-screen bg-white" />;

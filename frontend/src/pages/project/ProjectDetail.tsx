@@ -4,8 +4,6 @@ import { projectApi } from '@/api/projectApi';
 import type { ProjectData } from '@/types/projectType';
 
 import TabMenu from '@/components/common/TabMenu';
-import Button from '@/components/common/Button';
-import EmptyState from '@/components/common/EmptyState';
 import ImageCarousel from './components/ImageCarousel';
 import FarmTabContent from './components/FarmTabContent';
 import ProjectDetailSideBar from './components/ProjectDetailSideBar';
@@ -166,7 +164,7 @@ export default function ProjectDetail() {
   }
 
   if (!projectData) {
-    window.location.href = '/not-found';
+    navigate('/not-found', { replace: true });
     return null;
   }
 

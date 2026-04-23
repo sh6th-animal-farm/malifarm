@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { carbonApi } from '../../api/carbonApi';
 import type { CarbonDetailDTO } from '../../types/carbonType';
 import Button from '@/components/common/Button';
-import EmptyState from '@/components/common/EmptyState';
 import CarbonOrderModal from './components/CarbonOrderModal';
 import CarbonPriceCard from './components/CarbonPriceCard';
 import InfoGrid from '../project/components/DetailInfoCard';
@@ -56,7 +55,7 @@ export default function CarbonDetail() {
   }
 
   if (!detailData) {
-    window.location.href = '/not-found';
+    navigate('/not-found', { replace: true });
     return null;
   }
 
