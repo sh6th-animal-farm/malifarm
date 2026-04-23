@@ -52,7 +52,7 @@ export default function TokenPriceCard({
     );
 
   return (
-    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std flex flex-col gap-4 p-6 h-[760px] w-[420px] overflow-hidden">
+    <div className="bg-white rounded-[var(--radius-m)] shadow-std flex flex-col gap-4 p-6 h-[760px] w-[420px] overflow-hidden">
       {/* 호가/체결 탭 */}
       <ToggleGroup
         tabs={tabs}
@@ -64,7 +64,7 @@ export default function TokenPriceCard({
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide">
         {activeTab === 'order' ? (
-          <table className="w-full table-fixed border-collapse select-none">
+          <table className="w-full table-fixed border-collapse select-none numeric-fixed">
             <thead className="sticky top-0 z-10 bg-white">
               <tr className="text-gray-400 border-b border-gray-100">
                 <th className="p-2 font-caption-02">매도잔량</th>
@@ -77,12 +77,8 @@ export default function TokenPriceCard({
                 const priceColor =
                   row.side === 'SELL' ? 'text-info' : 'text-error';
                 const priceBgClass =
-                  row.side === 'SELL' ? 'bg-info-light' : 'bg-error-light';
+                  row.side === 'SELL' ? 'bg-info-light' : 'bg-error-light/50';
                 const isLastRow = idx === ladder.length - 1;
-                const isSellEnd =
-                  row.side === 'SELL' &&
-                  idx < ladder.length - 1 &&
-                  ladder[idx + 1].side === 'BUY';
                 const currentBorderColor =
                   row.side === 'SELL' ? 'border-info' : 'border-error';
                 const priceCellBorderClass = row.isCurrent
@@ -93,7 +89,7 @@ export default function TokenPriceCard({
                   <tr
                     key={idx}
                     data-current-row={row.isCurrent ? 'true' : undefined}
-                    className={`h-10 transition-colors hover:bg-gray-50 hover:cursor-pointer ${isSellEnd ? 'border-b border-gray-100' : ''}`}
+                    className="h-10 transition-colors hover:bg-gray-50 hover:cursor-pointer"
                     onClick={() => onPriceClick(row.price)}
                   >
                     {/* 매도 물량 바 */}
@@ -102,11 +98,14 @@ export default function TokenPriceCard({
                         row.volume > 0 ? (
                           <>
                             <div
-                              className="absolute right-0 top-1 bottom-1 bg-info-light rounded-l-[var(--radius-s)] transition-all duration-500"
+                              className="absolute right-0 top-1 bottom-1 bg-info/20 rounded-l-[var(--radius-s)] transition-all duration-500"
                               style={{ width: `${row.ratio}%`, zIndex: 1 }}
                             />
                             <span className="relative z-10 pr-1">
-                              {Number(row.volume).toFixed(4)}
+                              {Number(row.volume).toLocaleString('ko-KR', {
+                                minimumFractionDigits: 4,
+                                maximumFractionDigits: 4,
+                              })}
                             </span>
                           </>
                         ) : (
@@ -128,11 +127,14 @@ export default function TokenPriceCard({
                         row.volume > 0 ? (
                           <>
                             <div
-                              className="absolute left-0 top-1 bottom-1 bg-error-light rounded-r-[var(--radius-s)] transition-all duration-500"
+                              className="absolute left-0 top-1 bottom-1 bg-error/20 rounded-r-[var(--radius-s)] transition-all duration-500"
                               style={{ width: `${row.ratio}%` }}
                             />
                             <span className="relative z-10 pl-1">
-                              {Number(row.volume).toFixed(4)}
+                              {Number(row.volume).toLocaleString('ko-KR', {
+                                minimumFractionDigits: 4,
+                                maximumFractionDigits: 4,
+                              })}
                             </span>
                           </>
                         ) : (
@@ -146,7 +148,7 @@ export default function TokenPriceCard({
             </tbody>
           </table>
         ) : (
-          <table className="w-full">
+          <table className="w-full numeric-fixed">
             <thead className="sticky top-0 z-10 bg-white">
               <tr className="text-gray-400 border-b border-gray-100">
                 <th className="py-2 pl-4 text-left font-caption-02">구분</th>

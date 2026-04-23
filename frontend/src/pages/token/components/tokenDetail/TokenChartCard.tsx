@@ -126,7 +126,7 @@ export default function TokenChartCard({
   );
 
   return (
-    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] p-4 md:p-6 shadow-std">
+    <div className="bg-white rounded-[var(--radius-m)] p-4 md:p-6 shadow-std">
       <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-start">
         <div className="flex flex-col gap-4">
           {/* 토큰 제목부 */}

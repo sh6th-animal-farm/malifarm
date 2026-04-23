@@ -20,7 +20,7 @@ export default function MobileTokenListTable({
 
   return (
     <div className="min-h-0 flex-1 overflow-y-auto [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-      <table className="w-full border-separate border-spacing-0">
+      <table className="w-full border-separate border-spacing-0 numeric-fixed">
         <tbody className="block w-full">
           {tokenList.length > 0 ? (
             tokenList.map((token, index) => {

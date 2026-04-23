@@ -87,7 +87,7 @@ export default function CarbonList() {
             </div>
 
           {!isForbidden && (
-            <div className="py-3 md:py-4">
+            <div className="py-3">
               <FilterGroup
                 items={[
                   { text: "전체보기", value: "ALL" },

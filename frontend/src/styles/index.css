@@ -116,6 +116,18 @@
 @utility font-button-03 { font: 500 16px/1.4 var(--font-main); }
 @utility font-bottom-01 { font: 500 11px/1.4 var(--font-main); }
 @utility font-bottom-02 { font: 600 11px/1.4 var(--font-main); }
+@utility numeric-fixed {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+@layer components {
+  .numeric-scope,
+  .numeric-scope * {
+    font-variant-numeric: tabular-nums !important;
+    font-feature-settings: "tnum" 1, "lnum" 1 !important;
+  }
+}
 
 /* --- 8. UI Components Layer --- */
 @layer components {
