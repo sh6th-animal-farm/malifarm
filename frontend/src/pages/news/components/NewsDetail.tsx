@@ -182,7 +182,7 @@ export default function NewsDetail() {
 
   return (
     <main className="min-h-screen lg:bg-white">
-      <div className="layout-container max-w-840 py-10 md:py-16">
+      <div className="layout-container max-w-840 py-10 md:py-20">
         <button
           type="button"
           onClick={() => navigate('/news')}
@@ -307,6 +307,8 @@ export default function NewsDetail() {
             </section>
           </div>
         )}
+
+        {/*         
         <section className="mt-4 rounded-lg bg-white px-6 py-8 shadow-std md:px-8 md:py-10">
           <div className="mb-6">
             <h2 className="font-subtitle-01 text-gray-900">
@@ -362,7 +364,7 @@ export default function NewsDetail() {
               </article>
             ))}
           </div>
-        </section>
+        </section> */}
       </div>
     </main>
   );
