@@ -162,12 +162,12 @@ apiClient.interceptors.response.use(
           console.error(errorMsg);
           break;
 
-        case 'EXTERNAL_004': {
-          // 외부 API 잘못된 요청 주소 에러
-          console.error(errorMsg);
-          window.location.href = '/not-found';
-          return Promise.reject(error);
-        }
+        // case 'EXTERNAL_004': {
+        //   // 외부 API 잘못된 요청 주소 에러
+        //   console.error(errorMsg);
+        //   window.location.href = '/not-found';
+        //   return Promise.reject(error);
+        // }
 
         case 'PROJECT_002':
           // 별(하트) 처리 실패
