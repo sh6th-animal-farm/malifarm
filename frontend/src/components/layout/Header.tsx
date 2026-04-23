@@ -173,7 +173,7 @@ export default function Header() {
           : 'sticky top-0 bg-white'
       } lg:h-[var(--spacing-header-height)] lg:pt-0 lg:bg-white/85 lg:backdrop-blur-md lg:shadow-std lg:fixed lg:inset-x-0 lg:top-0`}
     >
-      <div className="relative flex h-full w-full items-center justify-between px-4 lg:px-8 xl:px-18">
+      <div className="relative flex h-full w-full items-center items-center px-4 lg:px-8 xl:px-18">
         {showMobileBackButton && (
           <button
             type="button"
@@ -202,30 +202,34 @@ export default function Header() {
         )}
 
         {/* 로고 영역 */}
-        <Link
-          to="/"
-          className={`font-header-03 lg:font-subtitle-00 overflow-hidden whitespace-nowrap leading-none text-gray-900 cursor-pointer ${
-            location.pathname === '/' ? 'inline-flex' : 'hidden lg:inline-flex'
-          }`}
-        >
-          <BrandIcon size={40} className="mr-1 self-center" />
-          <span className="keep self-center">마이리틀</span>
-          <span className="self-center text-green-600">스마트팜</span>
-        </Link>
+        <div className="flex flex-1 items-center justify-start">
+          <Link
+            to="/"
+            className={`font-header-03 lg:font-subtitle-00 overflow-hidden whitespace-nowrap leading-none text-gray-900 cursor-pointer ${
+              location.pathname === '/'
+                ? 'inline-flex'
+                : 'hidden lg:inline-flex'
+            }`}
+          >
+            <BrandIcon size={40} className="mr-1 self-center" />
+            <span className="keep self-center">마이리틀</span>
+            <span className="self-center text-green-600">스마트팜</span>
+          </Link>
 
-        {!isMobileImageHeroRoute && (
-          <div
-            className={`${location.pathname === '/' ? 'hidden' : 'block'} text-gray-900 lg:hidden whitespace-nowrap font-header-03
+          {!isMobileImageHeroRoute && (
+            <div
+              className={`${location.pathname === '/' ? 'hidden' : 'block'} text-gray-900 lg:hidden whitespace-nowrap font-header-03
             } ${
               showMobileBackButton ? 'absolute left-1/2 -translate-x-1/2' : ''
             }`}
-          >
-            {getMobileHeaderTitle()}
-          </div>
-        )}
+            >
+              {getMobileHeaderTitle()}
+            </div>
+          )}
+        </div>
 
         {/* 네비게이션 영역 */}
-        <nav className="hidden lg:block">
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 lg:block">
           <ul className="flex list-none gap-1">
             <li>
               <Link to="/project" className={getNavItemClass('/project')}>
@@ -251,31 +255,32 @@ export default function Header() {
         </nav>
 
         {/* 로그인/회원가입 또는 알림/프로필 영역 */}
-        <div className="hidden items-center gap-5 lg:flex" ref={dropdownRef}>
-          {isLoading ? (
-            /* 로딩 중일 때 영역만 차지*/
-            <div className="h-[40px] min-w-[180px]" aria-hidden="true" />
-          ) : !isLogIn ? (
-            /* 로그인 안 한 사용자 */
-            <div className="flex items-center gap-1">
-              <Link
-                to="/auth/login"
-                className="cursor-pointer rounded-[var(--radius-s)] px-4 py-1.5 font-caption-03 text-gray-900 transition-colors duration-200 hover:bg-gray-100"
-              >
-                로그인
-              </Link>
-              <Link
-                to="/auth/signup"
-                className="inline-flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap rounded-[var(--radius-s)] bg-green-600 px-4 py-1.5 font-caption-03 text-white transition-all duration-200 hover:border-green-700 hover:bg-green-700"
-              >
-                회원가입
-              </Link>
-            </div>
-          ) : (
-            /* 로그인 한 사용자 */
-            <div className="flex items-center gap-[18px] relative">
-              {/* 알림 아이콘/드롭다운 비활성화 */}
-              {/*
+        <div className="flex flex-1 items-center justify-end">
+          <div className="hidden items-center gap-5 lg:flex" ref={dropdownRef}>
+            {isLoading ? (
+              /* 로딩 중일 때 영역만 차지*/
+              <div className="h-[40px] min-w-[180px]" aria-hidden="true" />
+            ) : !isLogIn ? (
+              /* 로그인 안 한 사용자 */
+              <div className="flex items-center gap-1">
+                <Link
+                  to="/auth/login"
+                  className="cursor-pointer rounded-[var(--radius-s)] px-4 py-1.5 font-caption-03 text-gray-900 transition-colors duration-200 hover:bg-gray-100"
+                >
+                  로그인
+                </Link>
+                <Link
+                  to="/auth/signup"
+                  className="inline-flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap rounded-[var(--radius-s)] bg-green-600 px-4 py-1.5 font-caption-03 text-white transition-all duration-200 hover:border-green-700 hover:bg-green-700"
+                >
+                  회원가입
+                </Link>
+              </div>
+            ) : (
+              /* 로그인 한 사용자 */
+              <div className="flex items-center gap-[18px] relative">
+                {/* 알림 아이콘/드롭다운 비활성화 */}
+                {/*
                 <div className="relative inline-block">
                   <button
                     type="button"
@@ -296,89 +301,94 @@ export default function Header() {
                 </div>
                 */}
 
-              <div className="inline-flex items-center gap-5">
-                <span className="inline-flex h-[30px] w-[106px] items-center justify-between gap-2 rounded-[var(--radius-xl)] bg-gray-50 px-2.5 py-1.5 font-caption-02 text-gray-700 whitespace-nowrap">
-                  <Icon name="clock" size={18} color="var(--color-gray-500)" />
-                  <span className="tabular-nums">{sessionExpireText}</span>
-                </span>
-
-                <button
-                  type="button"
-                  className="inline-flex cursor-pointer items-center gap-2 border-none bg-none p-0 text-left text-gray-700 outline-none"
-                  onClick={(e) => toggleDropdown('profile', e)}
-                >
-                  <Icon
-                    name="profile"
-                    size={18}
-                    color="var(--color-gray-700)"
-                  />
-                  <span className="font-body-03 whitespace-nowrap">
-                    {userName} 님
+                <div className="inline-flex items-center gap-5">
+                  <span className="inline-flex h-[30px] w-[106px] items-center justify-between gap-2 rounded-[var(--radius-xl)] bg-gray-50 px-2.5 py-1.5 font-caption-02 text-gray-700 whitespace-nowrap">
+                    <Icon
+                      name="clock"
+                      size={18}
+                      color="var(--color-gray-500)"
+                    />
+                    <span className="tabular-nums">{sessionExpireText}</span>
                   </span>
-                </button>
 
-                <div
-                  className={`
+                  <button
+                    type="button"
+                    className="inline-flex cursor-pointer items-center gap-2 border-none bg-none p-0 text-left text-gray-700 outline-none"
+                    onClick={(e) => toggleDropdown('profile', e)}
+                  >
+                    <Icon
+                      name="profile"
+                      size={18}
+                      color="var(--color-gray-700)"
+                    />
+                    <span className="font-body-03 whitespace-nowrap">
+                      {userName} 님
+                    </span>
+                  </button>
+
+                  <div
+                    className={`
                       absolute top-[calc(100%+12px)] right-0 flex w-max min-w-[180px] flex-col overflow-hidden
                       bg-white shadow-std rounded-[var(--radius-s)] z-[1000]
                       ${openDropdown === 'profile' ? 'block' : 'hidden'}
                     `}
-                >
-                  <Link
-                    to="/mypage/profile"
-                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                   >
-                    내 정보
-                  </Link>
-                  <Link
-                    to="/mypage/project-history"
-                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
-                  >
-                    나의 프로젝트
-                  </Link>
-                  <Link
-                    to="/mypage/wallet"
-                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
-                  >
-                    나의 전자지갑
-                  </Link>
-                  <Link
-                    to="/mypage/transaction-history"
-                    className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
-                  >
-                    거래 내역
-                  </Link>
-
-                  {/* ADMIN 권한인 사용자만 표시 */}
-                  {userRole === 'ADMIN' && (
                     <Link
-                      to="/admin"
+                      to="/mypage/profile"
                       className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                     >
-                      관리자 페이지
+                      내 정보
                     </Link>
-                  )}
-
-                  {userRole === 'ENTERPRISE' && (
                     <Link
-                      to="/mypage/carbon-history"
+                      to="/mypage/project-history"
                       className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
                     >
-                      탄소 배출권 구매 내역
+                      나의 프로젝트
                     </Link>
-                  )}
+                    <Link
+                      to="/mypage/wallet"
+                      className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
+                    >
+                      나의 전자지갑
+                    </Link>
+                    <Link
+                      to="/mypage/transaction-history"
+                      className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
+                    >
+                      거래 내역
+                    </Link>
 
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="block w-full cursor-pointer px-4 py-2.5 text-left font-caption-02 text-error hover:bg-gray-50 hover:text-red-700"
-                  >
-                    로그아웃
-                  </button>
+                    {/* ADMIN 권한인 사용자만 표시 */}
+                    {userRole === 'ADMIN' && (
+                      <Link
+                        to="/admin"
+                        className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
+                      >
+                        관리자 페이지
+                      </Link>
+                    )}
+
+                    {userRole === 'ENTERPRISE' && (
+                      <Link
+                        to="/mypage/carbon-history"
+                        className="block w-full px-4 py-2.5 font-caption-02 text-gray-700 hover:bg-gray-50 hover:text-green-700"
+                      >
+                        탄소 배출권 구매 내역
+                      </Link>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="block w-full cursor-pointer px-4 py-2.5 text-left font-caption-02 text-error hover:bg-gray-50 hover:text-red-700"
+                    >
+                      로그아웃
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </header>
