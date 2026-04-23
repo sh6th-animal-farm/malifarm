@@ -14,21 +14,18 @@ import type {
 
 export const myPageApi = {
   // 나의 전자 지갑
-  getWalletInfo: () =>
-    apiClient.get<WalletInfoDTO, WalletInfoDTO>('/api/mypage/wallet-info'),
+  getWalletInfo: (): Promise<WalletInfoDTO> =>
+    apiClient.get('/api/mypage/wallet-info'),
 
-  getHoldings: (page = 1) =>
-    apiClient.get<HoldingDTO[], HoldingDTO[]>(
-      `/api/mypage/holdings?page=${page}`,
-    ),
+  getHoldings: (page = 1): Promise<HoldingDTO[]> =>
+    apiClient.get(`/api/mypage/holdings?page=${page}`),
 
   // 계좌 연동
-  linkAccount: () => apiClient.get<number, number>('/api/mypage/account/link'),
+  linkAccount: (): Promise<number> => apiClient.get('/api/mypage/account/link'),
 
   // 계좌 생성 및 연동
-  createAndLinkAccount: () =>
-    apiClient.get<number, number>('/api/mypage/account/create-link'),
-
+  createAndLinkAccount: (): Promise<number> =>
+    apiClient.get('/api/mypage/account/create-link'),
   // 거래 내역
   getTransactionHistory: ({
     page = 1,
@@ -38,14 +35,14 @@ export const myPageApi = {
     page?: number;
     period?: number;
     category?: string;
-  }) =>
-    apiClient.get<MyTransactionHistDTO[], MyTransactionHistDTO[]>(
+  }): Promise<MyTransactionHistDTO[]> =>
+    apiClient.get(
       `/api/mypage/transaction-history?page=${page}&period=${period}${category ? `&category=${category}` : ''}`,
     ),
 
   // 나의 프로젝트
-  getProjectTabs: () =>
-    apiClient.get<ProjectTabsDTO, ProjectTabsDTO>('/api/mypage/projects/tabs'),
+  getProjectTabs: (): Promise<ProjectTabsDTO> =>
+    apiClient.get('/api/mypage/projects/tabs'),
 
   getProjects: ({
     type = 'JOIN',
@@ -63,27 +60,21 @@ export const myPageApi = {
       | 'CANCELED';
     page?: number;
     size?: number;
-  }) =>
-    apiClient.get<
-      PagedResponseDTO<MyPageProjectDTO>,
-      PagedResponseDTO<MyPageProjectDTO>
-    >(
+  }): Promise<PagedResponseDTO<MyPageProjectDTO>> =>
+    apiClient.get(
       `/api/mypage/projects?type=${type}&status=${status}&page=${page}&size=${size}`,
     ),
 
   // 탄소 배출권 구매 내역
-  getCarbonHistory: () =>
-    apiClient.get<CarbonHistoryDTO[], CarbonHistoryDTO[]>(
-      '/api/mypage/carbon-history',
-    ),
+  getCarbonHistory: (): Promise<CarbonHistoryDTO[]> =>
+    apiClient.get('/api/mypage/carbon-history'),
 
   // 내 정보
-  getProfile: () =>
-    apiClient.get<ProfileDTO, ProfileDTO>('/api/mypage/profile'),
+  getProfile: (): Promise<ProfileDTO> => apiClient.get('/api/mypage/profile'),
 
-  updateProfile: (payload: ProfileUpdateRequestDTO) =>
-    apiClient.patch<null, null>('/api/mypage/profile', payload),
+  updateProfile: (payload: ProfileUpdateRequestDTO): Promise<null> =>
+    apiClient.patch('/api/mypage/profile', payload),
 
-  updatePassword: (payload: PasswordUpdateRequestDTO) =>
-    apiClient.patch<null, null>('/api/mypage/password', payload),
+  updatePassword: (payload: PasswordUpdateRequestDTO): Promise<null> =>
+    apiClient.patch('/api/mypage/password', payload),
 };

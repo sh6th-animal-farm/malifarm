@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL; // 백엔드 API 주소
 
@@ -105,7 +104,6 @@ apiClient.interceptors.response.use(
   async (error) => {
     const res = error.response?.data; // ApiResponseDTO { success, message, data, error }
     const originalRequest = error.config;
-    const navigate = useNavigate();
 
     if (res && !res.success) {
       const errorCode = res.error.code;
@@ -167,7 +165,7 @@ apiClient.interceptors.response.use(
         case 'EXTERNAL_004': {
           // 외부 API 잘못된 요청 주소 에러
           console.error(errorMsg);
-          navigate('/not-found', { replace: true });
+          window.location.href = '/not-found';
           return Promise.reject(error);
         }
 
