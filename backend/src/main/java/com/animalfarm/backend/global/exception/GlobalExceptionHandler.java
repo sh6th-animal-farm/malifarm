@@ -2,6 +2,7 @@ package com.animalfarm.backend.global.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SimpleTimeZone;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,9 +36,10 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?> handleExternalApiException(ExternalApiException e) {
 		int statusCode = e.getStatusCode();
 		String errorBody = e.getErrorBody();
-		log.error("[External API Fail] Status: {}, Body: {}", statusCode, errorBody);
 
-		String message = "문제가 발생했습니다. 다시 시도해주세요";
+		// 1. 외부 응답에서 메시지 추출
+		String message = "서비스 이용 중 오류가 발생했습니다.";
+
 		try {
 			ExternalApiResponseDTO<?> error = objectMapper.readValue(errorBody, ExternalApiResponseDTO.class);
 
@@ -49,9 +51,17 @@ public class GlobalExceptionHandler {
 			log.warn("API 응답 메시지 파싱 실패: {}", errorBody);
 		}
 
+		// 2. 상태 코드에 따라 에러 코드 매핑
+		ErrorCode errorCode;
+		if (statusCode == 404) {
+			errorCode = ErrorCode.EXTERNAL_API_NOTFOUND;
+		} else {
+			errorCode = ErrorCode.EXTERNAL_API_ERROR;
+		}
+
 		return ResponseEntity
 			.status(e.getStatusCode())
-			.body(ApiResponseDTO.fail(ErrorCode.EXTERNAL_API_ERROR.getCode(), message)); // 외부 API 응답에서 추출한 메시지 전달
+			.body(ApiResponseDTO.fail(errorCode.getCode(), message)); // 외부 API 응답에서 추출한 메시지 전달
 	}
 
 	@ExceptionHandler(Exception.class)
