@@ -1,10 +1,10 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import TokenChartCard from './components/tokenDetail/TokenChartCard';
-import TokenListCard from './components/tokenDetail/TokenListCard';
-import TokenTradeCard from './components/tokenDetail/TokenTradeCard';
-import TokenPriceCard from './components/tokenDetail/TokenPriceCard';
-import TokenDetailMobile from './components/mobile/TokenDetailMobile';
+import TokenChartCard from '@/pages/token/components/tokenDetail/TokenChartCard';
+import TokenListCard from '@/pages/token/components/tokenDetail/TokenListCard';
+import TokenTradeCard from '@/pages/token/components/tokenDetail/TokenTradeCard';
+import TokenPriceCard from '@/pages/token/components/tokenDetail/TokenPriceCard';
+import TokenDetailMobile from '@/pages/token/components/mobile/TokenDetailMobile';
 import { useOrderbook } from '@/pages/token/hooks/useOrderbook';
 import { useTradeHistory } from '@/pages/token/hooks/useTradeHistory';
 import { useTokenList } from '@/pages/token/hooks/useTokenList';

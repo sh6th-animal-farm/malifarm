@@ -1,5 +1,5 @@
 import type { Token } from '@/types/tokenType';
-import TokenListTableRow from './TokenListTableRow';
+import TokenListTableRow from '@/pages/token/components/tokenList/TokenListTableRow';
 import { useNavigate } from 'react-router';
 
 interface TokenTableMainProps {

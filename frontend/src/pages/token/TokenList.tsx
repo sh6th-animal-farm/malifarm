@@ -1,6 +1,6 @@
 import SectionHeader from '@/components/layout/SectionHeader';
-import TokenListTable from './components/tokenList/TokenListTable';
-import TokenSummaryCard from './components/tokenList/TokenSummaryCard';
+import TokenListTable from '@/pages/token/components/tokenList/TokenListTable';
+import TokenSummaryCard from '@/pages/token/components/tokenList/TokenSummaryCard';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useTokenList } from '@/pages/token/hooks/useTokenList';
@@ -24,7 +24,7 @@ export default function TokenList() {
   }, [tokenList]);
 
   useEffect(() => {
-    const isMobile = window.matchMedia("(max-width: 1023px)").matches;
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches;
 
     if (!isMobile || tokenList.length === 0) return;
 
