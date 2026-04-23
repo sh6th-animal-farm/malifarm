@@ -18,7 +18,7 @@ export default function TokenDetail() {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined'
-      ? window.matchMedia("(max-width: 1023px)").matches
+      ? window.matchMedia('(max-width: 1023px)').matches
       : false,
   );
   const isFixed = useRef(false); // 가격이 고정되었는지 저장
@@ -27,7 +27,7 @@ export default function TokenDetail() {
 
   // 훅을 통한 데이터 관리 (에러 방지를 위해 기본값 [] 설정)
   const { tokenList = [] } = useTokenList(); // 토큰 목록
-  const { tokenOhlcv } = useTokenOhlcv(id); // 토큰 OHLCV
+  const { tokenOhlcv, isLoading, isError } = useTokenOhlcv(id); // 토큰 OHLCV
   const { buyList = [], sellList = [] } = useOrderbook(id); // 호가 (매수, 매도)
   const { trades: tradeList = [] } = useTradeHistory(id); // 체결
 
@@ -39,7 +39,7 @@ export default function TokenDetail() {
   }, [id]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 1023px)");
+    const mediaQuery = window.matchMedia('(max-width: 1023px)');
     const handleChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
 
     setIsMobile(mediaQuery.matches);
@@ -79,6 +79,11 @@ export default function TokenDetail() {
     navigate(`/token/${tokenId}`);
   };
 
+  // 로딩 중이거나 에러 발생 시 빈 페이지 리턴
+  if (isLoading || isError) {
+    return <div className="min-h-screen bg-white" />;
+  }
+
   return (
     <>
       {isMobile && (
@@ -100,7 +105,7 @@ export default function TokenDetail() {
       )}
 
       {!isMobile && (
-        <div className='lg:bg-white'>
+        <div className="lg:bg-white">
           <div className="layout-container py-0 md:py-20">
             <div className="flex flex-col gap-2 md:gap-6">
               <div className="flex gap-6 items-start w-full">

@@ -5,15 +5,21 @@ import type { TokenOhlcv } from '@/types/tokenType';
 
 export const useTokenOhlcv = (tokenId: string | number | undefined) => {
   const [tokenOhlcv, setTokenOhlcv] = useState<TokenOhlcv | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (!tokenId) return;
 
     const fetchAndSubscribe = async () => {
+      setIsLoading(true);
+      setIsError(false);
+
       try {
         // 1. 초기 OHLCV 데이터 로드
         const initialData = await tokenApi.getOhlcv(Number(tokenId));
         setTokenOhlcv(initialData);
+        setIsLoading(false); // 성공 시 로딩 해제
 
         // 2. 실시간 시세 업데이트 구독
         const url = import.meta.env.VITE_WS_URL;
@@ -30,6 +36,8 @@ export const useTokenOhlcv = (tokenId: string | number | undefined) => {
         return subId;
       } catch (err) {
         console.error('OHLCV 로드 실패:', err);
+        setIsError(true);
+        setIsLoading(false);
       }
     };
 
@@ -38,9 +46,13 @@ export const useTokenOhlcv = (tokenId: string | number | undefined) => {
 
     return () => {
       if (currentSubId) WebSocketManager.unsubscribe(currentSubId);
-      setTokenOhlcv(null); // 토큰 변경 시 초기화
+
+      // 토큰 변경 시 상태값 초기화
+      setTokenOhlcv(null);
+      setIsError(false);
+      setIsLoading(true);
     };
   }, [tokenId]);
 
-  return { tokenOhlcv };
+  return { tokenOhlcv, isLoading, isError };
 };
