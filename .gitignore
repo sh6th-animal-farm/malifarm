@@ -42,6 +42,8 @@ backend/src/main/resources/config/slack.properties
 backend/src/main/resources/config/kakao.properties
 backend/src/main/resources/config/smartFarm.properties
 backend/src/main/resources/config/swagger.properties
+backend/src/main/resources/config/jwt.properties
+backend/src/main/resources/config/llmApi.properties
 
 ### Frontend (React + Vite) ###
 frontend/node_modules/
