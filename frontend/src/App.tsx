@@ -134,7 +134,7 @@ function App() {
           <Route path="/admin/expense" element={<ExpenseRegister />} />
           <Route path="/admin/revenue" element={<RevenueRegister />} />
           <Route path="/policy" element={<Policy />} />
-          <Route path="*/*" element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 

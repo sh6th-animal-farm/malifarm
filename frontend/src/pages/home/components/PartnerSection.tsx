@@ -28,10 +28,10 @@ function Partner() {
         <div className="flex w-max animate-infinite-scroll">
           {duplicatedPartners.map((partner, index) => (
             <div
-              className="mr-12 flex min-w-[190px] items-center justify-center transition-transform hover:scale-105"
+              className="mr-30 flex min-w- items-center justify-center transition-transform hover:scale-105"
               key={`${partner.name}-${index}`}
             >
-              <div className="flex h-[72px] w-[170px] items-center justify-center">
+              <div className="flex h-[88px] w-[120px] items-center justify-center">
                 <img
                   src={partner.src}
                   alt={partner.name}
