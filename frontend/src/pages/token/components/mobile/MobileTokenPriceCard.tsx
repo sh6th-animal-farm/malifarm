@@ -50,7 +50,7 @@ export default function MobileTokenPriceCard({
         ref={scrollRef}
         className="min-h-0 flex-1 bg-white overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
-        <table className="w-full table-fixed border-collapse select-none">
+        <table className="w-full table-fixed border-collapse select-none numeric-fixed">
           <colgroup>
             <col style={{ width: '36%' }} />
             <col style={{ width: '28%' }} />
@@ -60,7 +60,7 @@ export default function MobileTokenPriceCard({
             {ladder.map((row, idx) => {
               const priceColor = row.side === 'SELL' ? 'text-info' : 'text-error';
               const priceBgClass =
-                row.side === 'SELL' ? 'bg-info-light' : 'bg-error-light';
+                row.side === 'SELL' ? 'bg-info/10' : 'bg-error/10';
               const hasBottomDivider = idx !== ladder.length - 1;
               const isBuyStart =
                 row.side === 'BUY' && idx > 0 && ladder[idx - 1].side !== 'BUY';
@@ -72,17 +72,21 @@ export default function MobileTokenPriceCard({
                   className={`h-9 ${isBuyStart ? 'border-t border-gray-100' : ''}`}
                 >
                   <td className="relative py-2.5 text-right text-[12px] font-medium text-gray-500">
-                    {row.side === 'SELL' && row.volume > 0 && (
-                      <>
-                        <div
-                          className="absolute right-0 top-1 bottom-1 rounded-l-[var(--radius-s)] bg-info/20 transition-all duration-500"
-                          style={{ width: `${row.ratio}%`, zIndex: 1 }}
-                        />
-                        <span className="relative z-10 pr-1">
-                          {Number(row.volume).toFixed(4)}
-                        </span>
-                      </>
-                    )}
+                    {row.side === 'SELL' ? (
+                      row.volume > 0 ? (
+                        <>
+                          <div
+                            className="absolute right-0 top-1 bottom-1 rounded-l-[var(--radius-s)] bg-info/20 transition-all duration-500"
+                            style={{ width: `${row.ratio}%`, zIndex: 1 }}
+                          />
+                          <span className="relative z-10 pr-1">
+                            {Number(row.volume).toFixed(4)}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="relative z-10 pr-1">-</span>
+                      )
+                    ) : null}
                   </td>
 
                   <td
@@ -104,17 +108,21 @@ export default function MobileTokenPriceCard({
                   </td>
 
                   <td className="relative py-2.5 text-left text-[12px] font-medium text-gray-500">
-                    {row.side === 'BUY' && row.volume > 0 && (
-                      <>
-                        <div
-                          className="absolute left-0 top-1 bottom-1 rounded-r-[var(--radius-s)] bg-error/20 transition-all duration-500"
-                          style={{ width: `${row.ratio}%` }}
-                        />
-                        <span className="relative z-10 pl-1">
-                          {Number(row.volume).toFixed(4)}
-                        </span>
-                      </>
-                    )}
+                    {row.side === 'BUY' ? (
+                      row.volume > 0 ? (
+                        <>
+                          <div
+                            className="absolute left-0 top-1 bottom-1 rounded-r-[var(--radius-s)] bg-error/20 transition-all duration-500"
+                            style={{ width: `${row.ratio}%` }}
+                          />
+                          <span className="relative z-10 pl-1">
+                            {Number(row.volume).toFixed(4)}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="relative z-10 pl-1">-</span>
+                      )
+                    ) : null}
                   </td>
                 </tr>
               );

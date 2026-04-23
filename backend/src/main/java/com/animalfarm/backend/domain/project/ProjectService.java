@@ -111,6 +111,7 @@ public class ProjectService {
 				.divide(projectInsertDTO.getTargetAmount(), 4, RoundingMode.HALF_UP).multiply(new BigDecimal("100"));
 			projectInsertDTO.setSubscriptionRate(subscriptionRate);
 			projectRepository.insertProject(projectInsertDTO);
+			projectInsertDTO.setTokenId(projectInsertDTO.getProjectId());
 			if (projectInsertDTO.getProjectImageNames() != null && !projectInsertDTO.getProjectImageNames().isEmpty()) {
 				projectRepository.insertPictureList(extractPictureDTO(projectInsertDTO));
 			}

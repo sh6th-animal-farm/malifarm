@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ToggleGroup from '@/components/common/ToggleGroup';
 import type { OrderInfo, TokenOhlcv, TradeInfo } from '@/types/tokenType';
 import { useOrderbookLadder } from '@/pages/token/hooks/useOrderbookLadder';
@@ -18,6 +18,8 @@ export default function TokenPriceCard({
   tradeList,
   onPriceClick,
 }: TokenPriceCardProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const focusedTokenIdRef = useRef<number | null>(null);
   const [activeTab, setActiveTab] = useState('order');
   const tabs = [
     { id: 'order', label: '호가' },
@@ -26,13 +28,31 @@ export default function TokenPriceCard({
 
   const ladder = useOrderbookLadder({ ohlcv, buyList, sellList });
 
+  useEffect(() => {
+    if (activeTab !== 'order') return;
+    if (!ohlcv || !scrollRef.current || ladder.length === 0) return;
+    if (focusedTokenIdRef.current === ohlcv.tokenId) return;
+
+    const container = scrollRef.current;
+    const currentRow = container.querySelector<HTMLTableRowElement>(
+      'tr[data-current-row="true"]',
+    );
+    if (!currentRow) return;
+
+    const targetTop =
+      currentRow.offsetTop - container.clientHeight / 2 + currentRow.clientHeight / 2;
+
+    container.scrollTop = Math.max(0, targetTop);
+    focusedTokenIdRef.current = ohlcv.tokenId;
+  }, [activeTab, ohlcv, ladder.length]);
+
   if (!ohlcv)
     return (
       <div className="h-[760px] w-[420px] animate-pulse bg-gray-50 rounded-[var(--radius-m)]" />
     );
 
   return (
-    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std flex flex-col gap-4 p-6 h-[760px] w-[420px] overflow-hidden">
+    <div className="bg-white rounded-[var(--radius-m)] shadow-std flex flex-col gap-4 p-6 h-[760px] w-[420px] overflow-hidden">
       {/* 호가/체결 탭 */}
       <ToggleGroup
         tabs={tabs}
@@ -42,9 +62,9 @@ export default function TokenPriceCard({
         fullWidth
       />
 
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto scrollbar-hide">
         {activeTab === 'order' ? (
-          <table className="w-full table-fixed border-collapse select-none">
+          <table className="w-full table-fixed border-collapse select-none numeric-fixed">
             <thead className="sticky top-0 z-10 bg-white">
               <tr className="text-gray-400 border-b border-gray-100">
                 <th className="p-2 font-caption-02">매도잔량</th>
@@ -56,45 +76,71 @@ export default function TokenPriceCard({
               {ladder.map((row, idx) => {
                 const priceColor =
                   row.side === 'SELL' ? 'text-info' : 'text-error';
+                const priceBgClass =
+                  row.side === 'SELL' ? 'bg-info-light' : 'bg-error-light/50';
+                const isLastRow = idx === ladder.length - 1;
+                const currentBorderColor =
+                  row.side === 'SELL' ? 'border-info' : 'border-error';
+                const priceCellBorderClass = row.isCurrent
+                  ? `border-2 ${currentBorderColor}`
+                  : `border-x border-gray-100 ${!isLastRow ? 'border-b border-gray-100' : ''}`;
 
                 return (
-                  <tr key={idx} className={'h-10'}>
+                  <tr
+                    key={idx}
+                    data-current-row={row.isCurrent ? 'true' : undefined}
+                    className="h-10 transition-colors hover:bg-gray-50 hover:cursor-pointer"
+                    onClick={() => onPriceClick(row.price)}
+                  >
                     {/* 매도 물량 바 */}
                     <td className="relative py-3 text-right text-[12px] font-medium text-gray-500">
-                      {row.side === 'SELL' && row.volume > 0 && (
-                        <>
-                          <div
-                            className="absolute right-0 top-1 bottom-1 bg-info-light rounded-l-[var(--radius-s)] transition-all duration-500"
-                            style={{ width: `${row.ratio}%`, zIndex: 1 }}
-                          />
-                          <span className="relative z-10 pr-1">
-                            {Number(row.volume).toFixed(4)}
-                          </span>
-                        </>
-                      )}
+                      {row.side === 'SELL' ? (
+                        row.volume > 0 ? (
+                          <>
+                            <div
+                              className="absolute right-0 top-1 bottom-1 bg-info/20 rounded-l-[var(--radius-s)] transition-all duration-500"
+                              style={{ width: `${row.ratio}%`, zIndex: 1 }}
+                            />
+                            <span className="relative z-10 pr-1">
+                              {Number(row.volume).toLocaleString('ko-KR', {
+                                minimumFractionDigits: 4,
+                                maximumFractionDigits: 4,
+                              })}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="relative z-10 pr-1">-</span>
+                        )
+                      ) : null}
                     </td>
 
                     {/* 가격 */}
                     <td
-                      onClick={() => onPriceClick(row.price)}
-                      className={`py-3 text-center font-body-03 hover:bg-gray-50 transition-colors cursor-pointer ${priceColor} ${row.isCurrent ? 'border-2 border-[${priceColor}]' : ''}`}
+                      className={`py-3 text-center font-body-03 cursor-pointer ${priceColor} ${priceBgClass} ${priceCellBorderClass}`}
                     >
                       {row.price?.toLocaleString()}
                     </td>
 
                     {/* 매수 물량 바 */}
                     <td className="relative py-3 text-left text-[12px] font-medium text-gray-500">
-                      {row.side === 'BUY' && row.volume > 0 && (
-                        <>
-                          <div
-                            className="absolute left-0 top-1 bottom-1 bg-error-light rounded-r-[var(--radius-s)] transition-all duration-500"
-                            style={{ width: `${row.ratio}%` }}
-                          />
-                          <span className="relative z-10 pl-1">
-                            {Number(row.volume).toFixed(4)}
-                          </span>
-                        </>
-                      )}
+                      {row.side === 'BUY' ? (
+                        row.volume > 0 ? (
+                          <>
+                            <div
+                              className="absolute left-0 top-1 bottom-1 bg-error/20 rounded-r-[var(--radius-s)] transition-all duration-500"
+                              style={{ width: `${row.ratio}%` }}
+                            />
+                            <span className="relative z-10 pl-1">
+                              {Number(row.volume).toLocaleString('ko-KR', {
+                                minimumFractionDigits: 4,
+                                maximumFractionDigits: 4,
+                              })}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="relative z-10 pl-1">-</span>
+                        )
+                      ) : null}
                     </td>
                   </tr>
                 );
@@ -102,7 +148,7 @@ export default function TokenPriceCard({
             </tbody>
           </table>
         ) : (
-          <table className="w-full">
+          <table className="w-full numeric-fixed">
             <thead className="sticky top-0 z-10 bg-white">
               <tr className="text-gray-400 border-b border-gray-100">
                 <th className="py-2 pl-4 text-left font-caption-02">구분</th>

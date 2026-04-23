@@ -165,7 +165,7 @@ apiClient.interceptors.response.use(
         case 'EXTERNAL_004': {
           // 외부 API 잘못된 요청 주소 에러
           console.error(errorMsg);
-          window.location.href = '/404';
+          window.location.href = '/not-found';
           return Promise.reject(error);
         }
 

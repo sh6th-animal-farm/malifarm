@@ -61,7 +61,7 @@ export default function TokenListTableRow({
       onMouseOver={() => onHover(token.tokenId)}
       onClick={onClick}
       className={`
-        flex items-center w-full py-4 border-bottom border-gray-50 cursor-pointer transition-colors duration-500
+        flex items-center w-full py-4 border-bottom border-gray-50 cursor-pointer transition-colors duration-500 numeric-fixed
         ${isActive ? 'bg-gray-50' : 'bg-white hover:bg-gray-50'}
       `}
     >

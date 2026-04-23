@@ -26,6 +26,14 @@ export default function MobileTokenTradeCard({
   buyList,
   sellList,
 }: MobileTokenTradeCardProps) {
+  const formatCompactVolume = (value: number) => {
+    if (!Number.isFinite(value) || value <= 0) return '-';
+    if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(2)}b`;
+    if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}m`;
+    if (value >= 1_000) return `${(value / 1_000).toFixed(2)}k`;
+    return value.toFixed(2);
+  };
+
   const tabs = [
     { id: 'buy', label: '매수' },
     { id: 'sell', label: '매도' },
@@ -82,7 +90,7 @@ export default function MobileTokenTradeCard({
   }, [ohlcv?.tokenId, ladder.length]);
 
   return (
-    <div className="flex h-full min-h-0 overflow-hidden bg-white">
+    <div className="flex h-full min-h-0 overflow-hidden bg-white numeric-fixed">
       <div className="flex w-2/5 min-w-0 bg-gray-50 flex-col border-r border-gray-100">
         <div
           ref={orderbookScrollRef}
@@ -125,7 +133,7 @@ export default function MobileTokenTradeCard({
                 </div>
                 <div className="relative flex h-full items-center justify-end">
                   <span className="relative z-10 px-2 font-caption-02 text-gray-600">
-                    {row.volume > 0 ? Number(row.volume).toFixed(4) : '-'}
+                    {formatCompactVolume(Number(row.volume))}
                   </span>
                   {row.volume > 0 && (
                     <div

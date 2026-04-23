@@ -51,7 +51,7 @@ export default function TokenTradeCard({
 
   return (
     <div
-      className={`flex flex-col gap-4 ${embedded ? 'border-0 rounded-none shadow-none p-3' : 'border border-gray-100 rounded-[var(--radius-m)] p-4 md:p-6 shadow-std bg-white'} w-full md:w-[420px] ${
+      className={`flex flex-col gap-4 numeric-fixed ${embedded ? 'border-0 rounded-none shadow-none p-3' : 'rounded-[var(--radius-m)] p-4 md:p-6 shadow-std bg-white'} w-full md:w-[420px] ${
         isMobileCombined ? 'h-full' : 'h-[450px]'
       }`}
     >

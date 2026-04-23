@@ -25,6 +25,13 @@ export default function TokenDetail() {
   const [fixedPrice, setFixedPrice] = useState<number | null>(null); // 최초 로드 시 시장가로 세팅
   const [selectedPrice, setSelectedPrice] = useState<number | null>(null); // 사용자가 직접 선택한 가격
 
+  // 숫자가 아닌 ID가 들어오면 즉시 not-found 페이지로 보냄
+  useEffect(() => {
+    if (!id || isNaN(Number(id))) {
+      navigate('/not-found', { replace: true });
+    }
+  }, [id, navigate]);
+
   // 훅을 통한 데이터 관리 (에러 방지를 위해 기본값 [] 설정)
   const { tokenList = [] } = useTokenList(); // 토큰 목록
   const { tokenOhlcv, isLoading, isError } = useTokenOhlcv(id); // 토큰 OHLCV
@@ -105,7 +112,7 @@ export default function TokenDetail() {
       )}
 
       {!isMobile && (
-        <div className="lg:bg-white">
+        <div className="numeric-scope lg:bg-white">
           <div className="layout-container py-0 md:py-20">
             <div className="flex flex-col gap-2 md:gap-6">
               <div className="flex gap-6 items-start w-full">
