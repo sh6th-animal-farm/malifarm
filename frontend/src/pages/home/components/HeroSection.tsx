@@ -71,12 +71,18 @@ export default function HeroSection() {
                     <span className="pointer-events-none absolute -top-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-lime-300" />
                     수
                   </span>
-                  <span>확</span>
+                  <span className="relative inline-block">
+                    <span className="pointer-events-none absolute -top-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-lime-300" />
+                    확
+                  </span>
                 </span>
                 의 기쁨을
                 <br />
                 <span className="inline-flex items-end text-[1.12em] font-[800] leading-none text-emerald-300">
-                  <span>수</span>
+                  <span className="relative inline-block">
+                    <span className="pointer-events-none absolute -top-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-emerald-300" />
+                    수
+                  </span>
                   <span className="relative inline-block">
                     <span className="pointer-events-none absolute -top-1.5 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-emerald-300" />
                     익

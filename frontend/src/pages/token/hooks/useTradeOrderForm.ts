@@ -166,7 +166,6 @@ export const useTradeOrderForm = ({
     try {
       await tokenApi.createOrder(tokenId, order);
       setToastMsg('주문 완료');
-      setPrice('');
       setVolume('');
       setAmount('');
     } catch (e) {
