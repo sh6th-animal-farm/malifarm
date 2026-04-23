@@ -50,7 +50,7 @@ export default function MobileTokenPriceCard({
         ref={scrollRef}
         className="min-h-0 flex-1 bg-white overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
-        <table className="w-full table-fixed border-collapse select-none">
+        <table className="w-full table-fixed border-collapse select-none numeric-fixed">
           <colgroup>
             <col style={{ width: '36%' }} />
             <col style={{ width: '28%' }} />
@@ -60,7 +60,7 @@ export default function MobileTokenPriceCard({
             {ladder.map((row, idx) => {
               const priceColor = row.side === 'SELL' ? 'text-info' : 'text-error';
               const priceBgClass =
-                row.side === 'SELL' ? 'bg-info-light' : 'bg-error-light';
+                row.side === 'SELL' ? 'bg-info/10' : 'bg-error/10';
               const hasBottomDivider = idx !== ladder.length - 1;
               const isBuyStart =
                 row.side === 'BUY' && idx > 0 && ladder[idx - 1].side !== 'BUY';

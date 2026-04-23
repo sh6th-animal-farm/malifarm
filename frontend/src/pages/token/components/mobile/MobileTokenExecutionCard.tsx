@@ -10,7 +10,7 @@ export default function MobileTokenExecutionCard({
   return (
     <div className="flex h-full min-h-0 flex-col bg-white">
       <div className="min-h-0 flex-1 overflow-y-auto bg-white">
-        <table className="w-full">
+        <table className="w-full numeric-fixed">
           <thead className="sticky top-0 z-10 bg-white">
             <tr className="text-gray-400 border-b border-gray-100">
               <th className="py-2 pl-4 text-left font-caption-02">구분</th>

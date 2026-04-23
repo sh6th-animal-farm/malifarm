@@ -214,7 +214,7 @@ export default function ProjectList() {
                 subtitle="프로젝트를 선택하여 자세한 정보를 확인하세요"
               />
             </div>
-            <div className={isMobile ? 'py-4' : 'mb-6'}>
+            <div className='py-3'>
               <FilterGroup
                 items={[
                   { text: '전체보기', value: 'ALL' },

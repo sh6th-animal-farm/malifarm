@@ -13,9 +13,9 @@ export default function TokenListCard({
   activeTokenId,
 }: TokenListCardProps) {
   return (
-    <div className="bg-white border border-gray-100 rounded-[var(--radius-m)] shadow-std overflow-hidden">
+    <div className="bg-white rounded-[var(--radius-m)] shadow-std overflow-hidden">
       <div className="overflow-y-auto max-h-[600px] scrollbar-hide">
-        <table className="w-full border-collapse text-left font-body-03">
+        <table className="w-full border-collapse text-left font-body-03 numeric-fixed">
           <thead className="sticky top-0 z-10 bg-gray-50">
             <tr>
               <th className="pl-6 font-body-02 text-gray-400 border-bottom border-gray-200">
