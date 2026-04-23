@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL; // 백엔드 API 주소
 
