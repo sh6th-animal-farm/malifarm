@@ -4,6 +4,7 @@ import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,8 +28,8 @@ public class JwtProvider {
 	private final UserDetailsService userDetailsService;
 
 	// 토큰 서명에 사용할 비밀키 (외부 유출 절대 금지)
-	// STO 서비스 특성상 보안을 위해 충분히 긴 시크릿 키를 사용해야 합니다.
-	private String salt = "SmartFarm_STO_Secret_Key_Animal_Farm_MLF_2026_Project_Full_Security";
+	@Value("${jwt.secret}")
+	private String salt;
 	private Key secretKey;
 
 	//final 필드인 UserDetailsService를 초기화 하기 위해 생성자를 통해 주입
@@ -36,7 +37,7 @@ public class JwtProvider {
 	public JwtProvider(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
 	}
-	
+
 	private final long accessTokenExp = 60 * 60 * 1000L; //1시간
 	private final long refreshTokenExp = 14L * 24 * 60 * 60 * 1000L; //14일
 
