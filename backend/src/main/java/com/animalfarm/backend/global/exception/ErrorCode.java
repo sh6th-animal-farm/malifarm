@@ -30,10 +30,14 @@ public enum ErrorCode {
 	// 시스템 에러
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_001", "서버 내부 오류가 발생했습니다."),
 
+	// 요청 주소 에러
+	PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTFOUND_001", "페이지를 찾을 수 없습니다"),
+
 	// 외부 API 연동 에러
 	EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_001", "외부 서비스 연동 중 오류가 발생했습니다."),
 	EXTERNAL_API_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT, "EXTERNAL_002", "외부 서비스 응답 시간이 초과되었습니다."),
 	EXTERNAL_API_PARSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EXTERNAL_003", "외부 서비스 데이터 해석에 실패했습니다."),
+	EXTERNAL_API_NOTFOUND(HttpStatus.NOT_FOUND, "EXTERNAL_004", "외부 서비스 데이터 조회에 실패했습니다."),
 
 	// 계좌 연동
 	EXTERNAL_API_ACC_EXIST(HttpStatus.BAD_REQUEST, "EXTERNAL_004", "이미 연동된 회원입니다."),
@@ -45,7 +49,7 @@ public enum ErrorCode {
 	PROJECT_LIST_FETCH_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "PROJECT_003", "프로젝트 목록을 불러오는 중 오류가 발생했습니다."),
 
 	// 청약 신청 에러
-	INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "PAY-001", "증권 계좌 잔액이 부족합니다."),
+	INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "PAY_001", "증권 계좌 잔액이 부족합니다."),
 
 	// 뉴스 에러
 	NEWS_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWS_001", "해당 뉴스를 찾을 수 없습니다.");

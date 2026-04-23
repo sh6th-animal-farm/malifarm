@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.animalfarm.backend.domain.project.dto.TokenLedgerDTO;
 import com.animalfarm.backend.domain.token.dto.CandleDTO;
@@ -22,6 +24,9 @@ import com.animalfarm.backend.domain.token.dto.TokenSummaryDTO;
 import com.animalfarm.backend.domain.token.dto.TokenPendingDTO;
 import com.animalfarm.backend.domain.token.dto.TradePriceDTO;
 import com.animalfarm.backend.global.dto.ExternalApiResponseDTO;
+import com.animalfarm.backend.global.exception.BusinessException;
+import com.animalfarm.backend.global.exception.ErrorCode;
+import com.animalfarm.backend.global.exception.ExternalApiException;
 import com.animalfarm.backend.global.http.ExternalApiClient;
 
 import lombok.extern.slf4j.Slf4j;
@@ -241,7 +246,7 @@ public class TokenService {
 	}
 
 	public TokenSummaryDTO selectTokenOhlcv(Long tokenId) {
-		try {
+		// try {
 			TokenSummaryDTO token = externalApiClient.callApi(
 				khUrl + "api/market/ohlcv/" + tokenId,
 				HttpMethod.GET,
@@ -249,12 +254,14 @@ public class TokenService {
 				new ParameterizedTypeReference<ExternalApiResponseDTO<TokenSummaryDTO>>() {}
 			);
 
-			return token; // token이 null인 경우, null 반환
-
-		} catch (Exception e) {
-			log.error("[Service Error] 토큰 상세 정보 조회 실패: {}",e.getMessage());
-			return null;
-		}
+			return token;
+		// } catch (ExternalApiException e) {
+		// 	// ExternalApiException은 그대로 던져서 전역 핸들러의 전용 로직을 타게 합니다.
+		// 	throw e;
+		// } catch (Exception e) {
+		// 	// 그 외의 알 수 없는 시스템 에러만 BusinessException으로 변환합니다.
+		// 	throw new BusinessException(ErrorCode.EXTERNAL_API_ERROR);
+		// }
 	}
 
 	public TokenDTO selectByProjectId(Long projectId) {
