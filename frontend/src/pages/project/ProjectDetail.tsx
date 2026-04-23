@@ -166,26 +166,8 @@ export default function ProjectDetail() {
   }
 
   if (!projectData) {
-    return (
-      <PageShell>
-        <section className="layout-container py-8 lg:py-20">
-          <div className="flex min-h-[420px] flex-col items-center justify-center gap-4">
-            <EmptyState
-              message="프로젝트 정보를 찾을 수 없습니다."
-              className="mb-0 py-0"
-            />
-            <Button
-              variant="default"
-              width={180}
-              height={48}
-              onClick={() => navigate('/project')}
-            >
-              목록으로 돌아가기
-            </Button>
-          </div>
-        </section>
-      </PageShell>
-    );
+    window.location.href = '/not-found';
+    return null;
   }
 
   return (
