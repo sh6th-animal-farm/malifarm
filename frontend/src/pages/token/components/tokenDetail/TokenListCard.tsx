@@ -18,13 +18,13 @@ export default function TokenListCard({
         <table className="w-full border-collapse text-left font-body-03 numeric-fixed">
           <thead className="sticky top-0 z-10 bg-gray-50">
             <tr>
-              <th className="pl-6 font-body-02 text-gray-400 border-bottom border-gray-200">
+              <th className="pl-6 font-body-02 text-gray-400">
                 종목
               </th>
-              <th className="p-4 font-body-02 text-gray-400 border-bottom border-gray-200 text-right">
+              <th className="p-4 font-body-02 text-gray-400 text-right">
                 현재가
               </th>
-              <th className="pr-6 font-body-02 text-gray-400 border-bottom border-gray-200 text-right">
+              <th className="pr-6 font-body-02 text-gray-400 text-right">
                 등락률
               </th>
             </tr>

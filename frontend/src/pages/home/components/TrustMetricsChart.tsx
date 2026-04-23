@@ -224,8 +224,8 @@ export default function TrustMetricsChart() {
 
   const formatWon = (value: number) => `${Math.round(value).toLocaleString()}원`;
   return (
-    <div className="grid gap-5 lg:grid-cols-[3fr_2fr]">
-      <div className="rounded-[24px] bg-white p-6 shadow-std">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] lg:items-stretch">
+      <div className="h-full rounded-[24px] bg-white p-7 shadow-std">
         <div className="mb-2">
           <strong className="font-header-04 text-gray-900">연간 예상 수익률 분포</strong>
         </div>
@@ -239,7 +239,7 @@ export default function TrustMetricsChart() {
       </div>
 
       <div className="h-full rounded-[24px] bg-white p-6 shadow-std">
-        <div className="flex h-full flex-col items-center justify-between overflow-hidden">
+        <div className="flex h-full flex-col items-center gap-3 overflow-hidden">
           <div className="w-full px-2 pt-2 text-center">
             <div className="flex justify-center">
               <Badge variant="success" width="auto" height={30}>
@@ -251,11 +251,13 @@ export default function TrustMetricsChart() {
             </p>
           </div>
 
-          <img
-            src={clapImage}
-            alt="clap"
-            className="h-auto w-full max-w-[420px] object-contain"
-          />
+          <div className="relative h-64 overflow-hidden">
+            <img
+              src={clapImage}
+              alt="clap"
+              className="block h-full w-full object-contain"
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -11,14 +11,33 @@ const stats: StatItem[] = [
 ];
 
 const partners = [
-  { name: 'Google', src: 'https://img.icons8.com/color/96/google-logo.png' },
-  { name: 'Microsoft', src: 'https://img.icons8.com/color/96/microsoft.png' },
-  { name: 'Amazon', src: 'https://img.icons8.com/color/96/amazon.png' },
-  { name: 'NVIDIA', src: 'https://img.icons8.com/color/96/nvidia.png' },
-  { name: 'Meta', src: 'https://img.icons8.com/color/96/meta--v1.png' },
   {
-    name: 'Intel',
-    src: 'https://img.icons8.com/?size=100&id=TaJZJbJzrhhN&format=png&color=000000',
+    name: 'Shinhan DS',
+    src: 'https://www.shinhands.co.kr/assets/images/about/ci_signature1.png',
+  },
+  {
+    name: 'njy',
+    src: 'https://njy.mafra.go.kr/images/renewal/i-logo.svg',
+  },
+  {
+    name: 'NH',
+    src: 'https://www.nonghyup.com/images/common/logo_nh_main_new.png',
+  },
+  {
+    name: 'NH',
+    src: 'https://hrd.rda.go.kr/ehrd_front/assets/images/new/main-page/logo.png',
+  },
+  {
+    name: 'rda',
+    src: 'https://www.rda.go.kr/inc/2019_rda/images/main/rda_logo.png',
+  },
+  {
+    name: 'rda',
+    src: 'https://smartfarmkorea.net/static/images/common/logo.svg',
+  },
+  {
+    name: 'kcc',
+    src: 'https://www.kccworld.co.kr/assets/images/ho/common/img_logo.png',
   },
 ];
 
