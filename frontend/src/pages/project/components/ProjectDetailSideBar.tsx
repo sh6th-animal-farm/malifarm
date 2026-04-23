@@ -20,7 +20,7 @@ interface SideBarProps {
     tokenId?: number;
   };
   isApplied: boolean;
-  onAction: () => void;
+  onAction: (tokenId?: number) => void;
   embedded?: boolean;
   className?: string;
 }
@@ -142,7 +142,7 @@ export default function ProjectDetailSideBar({
                   <Button
                     variant="subscriptionCancel"
                     width="100%"
-                    onClick={onAction}
+                    onClick={() => onAction()}
                   >
                     청약 신청 취소하기
                   </Button>
@@ -151,7 +151,7 @@ export default function ProjectDetailSideBar({
                   <Button
                     variant="subscriptionCheck"
                     width="100%"
-                    onClick={onAction}
+                    onClick={() => onAction()}
                   >
                     청약 신청하기
                   </Button>
@@ -179,7 +179,11 @@ export default function ProjectDetailSideBar({
                   </span>
                 </div>
               </div>
-              <Button variant="default" width="100%" onClick={onAction}>
+              <Button
+                variant="default"
+                width="100%"
+                onClick={() => onAction(projectData.tokenId)}
+              >
                 토큰 거래소 바로가기
               </Button>
             </div>
