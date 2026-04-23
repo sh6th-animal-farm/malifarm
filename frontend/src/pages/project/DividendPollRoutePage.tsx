@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { projectApi, type DividendPollData } from '@/api/projectApi';
 import DividendPollAddressModal from './components/DividendPollAddressModal';
+import Toast from '@/components/common/Toast';
 
 type DividendType = 'CASH' | 'CROP';
 
@@ -42,6 +43,10 @@ export default function DividendPollRoutePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const handleCloseToast = useCallback(() => {
+    setToastMsg(null);
+  }, []);
 
   const dividendId = searchParams.get('id') ?? pathId ?? '';
 
@@ -107,7 +112,7 @@ export default function DividendPollRoutePage() {
     ).daum?.Postcode;
 
     if (!daumPostcode) {
-      alert(
+      setToastMsg(
         '주소 검색 기능이 아직 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.',
       );
       return;
@@ -144,7 +149,7 @@ export default function DividendPollRoutePage() {
     const token = localStorage.getItem('accessToken');
     if (!token) {
       const redirectTo = `/project/dividend/poll?id=${pollData.dividendId}`;
-      alert('수령 방식 선택을 완료하려면 로그인이 필요합니다.');
+      setToastMsg('수령 방식 선택을 완료하려면 로그인이 필요합니다.');
       navigate(`/auth/login?redirect=${encodeURIComponent(redirectTo)}`);
       return;
     }
@@ -158,15 +163,11 @@ export default function DividendPollRoutePage() {
       });
       const message = '수령 방식 선택이 완료되었습니다.';
 
-      alert(message || '수령 방식 선택이 완료되었습니다.');
+      setToastMsg(message || '수령 방식 선택이 완료되었습니다.');
       setIsAddressModalOpen(false);
       navigate('/mypage/transaction-history');
     } catch (error: any) {
       console.error('배당 수령 방식 저장 실패:', error);
-      alert(
-        error?.response?.data ||
-          '수령 방식 저장 중 오류가 발생했습니다. 다시 시도해 주세요.',
-      );
     } finally {
       setIsSubmitting(false);
     }
@@ -183,7 +184,7 @@ export default function DividendPollRoutePage() {
 
   const handleConfirmCrop = () => {
     if (!fullAddress) {
-      alert('배송지를 먼저 입력해 주세요.');
+      setToastMsg('배송지를 먼저 입력해 주세요.');
       return;
     }
 
@@ -337,6 +338,7 @@ export default function DividendPollRoutePage() {
         onDetailAddressChange={setDetailAddress}
         onConfirm={handleConfirmCrop}
       />
+      {toastMsg && <Toast message={toastMsg} onClose={handleCloseToast} />}
     </>
   );
 }

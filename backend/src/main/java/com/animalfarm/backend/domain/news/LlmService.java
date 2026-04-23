@@ -31,15 +31,14 @@ public class LlmService {
 	@Value("${openai.api.key}")
 	private String apiKey;
 
-	@Value("${openai.api.model:gpt-4o-mini}") // 기본값으로 빠르고 저렴한 gpt-4o-mini 사용
+	@Value("${openai.api.model:gpt-5.4-mini}") 
 	private String apiModel;
 
 	public LlmResponseDTO ask(String factData, String type) {
 
-		// 1. 완벽한 프롬프트 엔지니어링 (시스템 프롬프트)
 		String systemPrompt = buildSystemPrompt(type);
 
-		// 2. OpenAI API 요청 바디(Body) 구성
+		// OpenAI API 요청 바디(Body) 구성
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBearerAuth(apiKey);
@@ -80,7 +79,7 @@ public class LlmService {
 		}
 	}
 
-	// 프롬프트 조립 메서드 (기획서 예시 반영)
+	// 프롬프트 조립 메서드
 	private String buildSystemPrompt(String type) {
 		StringBuilder sb = new StringBuilder();
 
@@ -130,7 +129,8 @@ public class LlmService {
 			.append("- 규제/정책 뉴스 공백 구간에서 거래대금만 완만히 유지\n\n");
 
 		sb.append("【필수 작성 지침】\n")
-			.append("0. [제목 생성 - 사건 중심]: 기사 제목(title)은 반드시 '무슨 사건이 발생했는지'가 먼저 드러나게 작성하세요. 스마트팜 STO 맥락을 반영해 28~45자 내외로 만들고, 핵심 수치 또는 핵심 특징주 1개를 포함하세요.\n")
+			.append(
+				"0. [제목 생성 - 사건 중심]: 기사 제목(title)은 반드시 '무슨 사건이 발생했는지'가 먼저 드러나게 작성하세요. 스마트팜 STO 맥락을 반영해 28~45자 내외로 만들고, 핵심 수치 또는 핵심 특징주 1개를 포함하세요.\n")
 			.append(
 				"1. [수치 포맷팅]: 제공된 팩트 데이터의 수치를 기사에 적극적으로 인용하되, 모든 비율(%) 수치는 반드시 **소수점 첫째 자리**까지만 작성하세요 (예: 1468.22% -> 1468.2%, 250% -> 250.0%).\n")
 			.append(

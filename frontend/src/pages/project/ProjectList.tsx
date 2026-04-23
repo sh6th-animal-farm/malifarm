@@ -22,7 +22,7 @@ type ProjectListRestoreState = {
 };
 
 export default function ProjectList() {
-  const isMobile = useMediaQuery("(max-width: 1023px)");
+  const isMobile = useMediaQuery('(max-width: 1023px)');
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,7 +57,7 @@ export default function ProjectList() {
   const activeStatus = searchParams.get('projectStatus') || 'ALL';
   const saveListViewState = useCallback(() => {
     const scrollY = isMobile
-      ? mobileScrollRef.current?.scrollTop ?? 0
+      ? (mobileScrollRef.current?.scrollTop ?? 0)
       : window.scrollY;
 
     const restoreState: ProjectListRestoreState = {
@@ -101,7 +101,6 @@ export default function ProjectList() {
         const response = await projectApi.getProjectsByCondition({
           projectStatus: activeStatus === 'ALL' ? '' : activeStatus,
         });
-        console.log('API 응답:', response);
         const nextProjects: ProjectListItem[] = response || [];
         setProjects(nextProjects);
 
@@ -227,25 +226,25 @@ export default function ProjectList() {
               />
             </div>
 
-            <ProjectGrid
-              projects={currentProjects}
-              activeStatus={activeStatus}
-              isLoading={isLoading}
-              onToggleStar={handleToggleStar}
-              onBeforeNavigateDetail={saveListViewState}
-              detailNavigationState={{ from: 'project-list' }}
-            />
+          <ProjectGrid
+            projects={currentProjects}
+            activeStatus={activeStatus}
+            isLoading={isLoading}
+            onToggleStar={handleToggleStar}
+            onBeforeNavigateDetail={saveListViewState}
+            detailNavigationState={{ from: 'project-list' }}
+          />
 
-            {!isLoading && totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                className="mt-4 md:mt-16"
-              />
-            )}
-          </section>
-        </div>
+          {!isLoading && totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              className="mt-4 md:mt-16"
+            />
+          )}
+        </section>
+      </div>
     </PageShell>
   );
 }
