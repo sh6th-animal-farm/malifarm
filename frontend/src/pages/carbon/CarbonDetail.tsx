@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { carbonApi } from '../../api/carbonApi';
 import type { CarbonDetailDTO } from '../../types/carbonType';
 import Button from '@/components/common/Button';
-import EmptyState from '@/components/common/EmptyState';
 import CarbonOrderModal from './components/CarbonOrderModal';
 import CarbonPriceCard from './components/CarbonPriceCard';
 import InfoGrid from '../project/components/DetailInfoCard';
