@@ -17,7 +17,7 @@ import type { HoldingDTO } from '@/types/myPageType';
 
 export default function WalletLayout() {
   const navigate = useNavigate();
-  const isMobile = useMediaQuery("(max-width: 1023px)");
+  const isMobile = useMediaQuery('(max-width: 1023px)');
   const [tab, setTab] = useState('HOLDINGS');
   const [isLinking, setIsLinking] = useState(false); // 계좌 연동 여부
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // 계좌 생성 여부 모달
@@ -58,14 +58,22 @@ export default function WalletLayout() {
     checkWalletExists();
   }, []);
 
+  // 계좌 생성 완료 후 정보 불러오기
+  useEffect(() => {
+    if (!isCreatingAcc) {
+      checkWalletExists();
+    }
+  }, [isCreatingAcc]);
+
   const resolveTokenId = (holding: HoldingDTO) => {
-    const rawId = (
-      holding as HoldingDTO & {
-        id?: number;
-        tokenID?: number;
-        token_id?: number;
-      }
-    ).tokenId ??
+    const rawId =
+      (
+        holding as HoldingDTO & {
+          id?: number;
+          tokenID?: number;
+          token_id?: number;
+        }
+      ).tokenId ??
       (
         holding as HoldingDTO & {
           id?: number;
@@ -157,7 +165,6 @@ export default function WalletLayout() {
 
       // 2. 실제 API 호출 (연동 시작)
       await myPageApi.createAndLinkAccount();
-      await checkWalletExists(); // 연동 성공 시 지갑 ID 세팅하여 useWallet 활성화
     } catch (error: any) {
       // 3. 에러 발생 시 에러 모달 열기
       setIsErrorModalOpen(true);
@@ -181,7 +188,7 @@ export default function WalletLayout() {
   }, [isCreatingAcc, currentStep]);
 
   return (
-    <div className='layout-container py-4 lg:py-0 tabular-nums'>
+    <div className="layout-container py-4 lg:py-0 tabular-nums">
       <PageHeader
         title="나의 전자지갑"
         subtitle="연동된 증권 계좌와 실시간 투자 현황을 확인하세요."
@@ -253,7 +260,6 @@ export default function WalletLayout() {
             onClose={() => {
               setIsCreatingAcc(false); // 모달 닫기
               setCurrentStep(1);
-              checkWalletExists(); // 생성 완료 후 지갑 로드
             }}
           />
         </div>
