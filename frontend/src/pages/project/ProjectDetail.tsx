@@ -166,7 +166,7 @@ export default function ProjectDetail() {
   }
 
   if (!projectData) {
-    window.location.href = '/not-found';
+    navigate('/not-found', { replace: true });
     return null;
   }
 

@@ -81,12 +81,13 @@ export default function NewsDetail() {
   const [useFallbackImage, setUseFallbackImage] = useState(false);
 
   useEffect(() => {
-    const newsId = Number(id);
-    if (!newsId) {
+    if (!id || isNaN(Number(id))) {
       setIsLoading(false);
       setNews(null);
-      return;
+      navigate('/not-found', { replace: true });
     }
+
+    const newsId = Number(id);
 
     let mounted = true;
 
@@ -100,6 +101,7 @@ export default function NewsDetail() {
         console.error('뉴스 상세 로딩 실패:', error);
         if (!mounted) return;
         setNews(null);
+        navigate('/not-found', { replace: true });
       } finally {
         if (mounted) {
           setIsLoading(false);
@@ -177,11 +179,6 @@ export default function NewsDetail() {
 
     setUseFallbackImage(true);
   };
-
-  if (!news) {
-    window.location.href = '/not-found';
-    return null;
-  }
 
   return (
     <main className="min-h-screen lg:bg-white">

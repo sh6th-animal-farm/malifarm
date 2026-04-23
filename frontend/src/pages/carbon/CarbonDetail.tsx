@@ -56,7 +56,7 @@ export default function CarbonDetail() {
   }
 
   if (!detailData) {
-    window.location.href = '/not-found';
+    navigate('/not-found', { replace: true });
     return null;
   }
 

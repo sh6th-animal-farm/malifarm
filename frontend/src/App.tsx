@@ -15,7 +15,7 @@ import TokenDetail from './pages/token/TokenDetail';
 import CarbonList from './pages/carbon/CarbonList';
 import CarbonDetail from './pages/carbon/CarbonDetail';
 import News from './pages/news';
-import NewsDetail from './pages/news/components/Detail';
+import NewsDetail from './pages/news/components/NewsDetail';
 import MyPage from './pages/mypage';
 import MobileMyPageEntry from './pages/mypage/components/MobileMyPageEntry';
 import ProfileLayout from './pages/mypage/components/myProfile/ProfileLayout';
@@ -66,7 +66,8 @@ function App() {
 
   useEffect(() => {
     const updateAppHeight = () => {
-      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const viewportHeight =
+        window.visualViewport?.height ?? window.innerHeight;
       document.documentElement.style.setProperty(
         '--app-height',
         `${Math.round(viewportHeight)}px`,
@@ -92,7 +93,7 @@ function App() {
   return (
     <div className="flex flex-col h-[var(--app-height)] overflow-hidden lg:h-auto lg:min-h-screen lg:overflow-visible">
       <Header />
-      
+
       <main className="flex-1 overflow-hidden lg:overflow-visible pb-[var(--bottom-tabbar-height)] lg:pt-[var(--spacing-header-height)]">
         <ScrollToTop />
         <Routes>
