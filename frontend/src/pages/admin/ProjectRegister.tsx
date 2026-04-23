@@ -143,6 +143,14 @@ const createInitialFormData = (): ProjectFormData => ({
   deletedPictureIds: [],
 });
 
+const commaNumberFields = new Set([
+  'targetAmount',
+  'totalSupply',
+  'minAmountPerInvestor',
+  'maxAmountPerInvestor',
+  'actualAmount',
+]);
+
 const ProjectRegister: React.FC = () => {
   const [formData, setFormData] = useState<ProjectFormData>(
     createInitialFormData(),
@@ -198,8 +206,11 @@ const ProjectRegister: React.FC = () => {
     form.append('projectName', formData.projectName);
     form.append('projectRound', String(formData.projectRound));
     form.append('projectDescription', formData.projectDescription);
-    form.append('targetAmount', String(formData.targetAmount));
-    form.append('minAmountPerInvestor', String(formData.minAmountPerInvestor));
+    form.append('targetAmount', String(parseNumberInput(formData.targetAmount)));
+    form.append(
+      'minAmountPerInvestor',
+      String(parseNumberInput(formData.minAmountPerInvestor)),
+    );
     form.append('expectedReturn', String(formData.expectedReturn));
     form.append('managerCount', String(formData.managerCount));
     form.append(
@@ -231,12 +242,12 @@ const ProjectRegister: React.FC = () => {
     // 선택적 필드
     form.append('tokenName', formData.tokenName);
     form.append('tickerSymbol', formData.tickerSymbol || '');
-    form.append('totalSupply', String(formData.totalSupply || 0));
+    form.append('totalSupply', String(parseNumberInput(formData.totalSupply)));
     form.append(
       'maxAmountPerInvestor',
-      String(formData.maxAmountPerInvestor || 0),
+      String(parseNumberInput(formData.maxAmountPerInvestor)),
     );
-    form.append('actualAmount', String(formData.actualAmount || 0));
+    form.append('actualAmount', String(parseNumberInput(formData.actualAmount)));
 
     // 이미지 파일 추가
     if (formData.projectImages && formData.projectImages.length > 0) {
@@ -275,8 +286,11 @@ const ProjectRegister: React.FC = () => {
     form.append('projectName', formData.projectName);
     form.append('projectRound', String(formData.projectRound));
     form.append('projectDescription', formData.projectDescription);
-    form.append('targetAmount', String(formData.targetAmount));
-    form.append('minAmountPerInvestor', String(formData.minAmountPerInvestor));
+    form.append('targetAmount', String(parseNumberInput(formData.targetAmount)));
+    form.append(
+      'minAmountPerInvestor',
+      String(parseNumberInput(formData.minAmountPerInvestor)),
+    );
     form.append('expectedReturn', String(formData.expectedReturn));
     form.append('managerCount', String(formData.managerCount));
     form.append(
@@ -308,12 +322,12 @@ const ProjectRegister: React.FC = () => {
     // 선택적 필드
     form.append('tokenName', formData.tokenName);
     form.append('tickerSymbol', formData.tickerSymbol || '');
-    form.append('totalSupply', String(formData.totalSupply || 0));
+    form.append('totalSupply', String(parseNumberInput(formData.totalSupply)));
     form.append(
       'maxAmountPerInvestor',
-      String(formData.maxAmountPerInvestor || 0),
+      String(parseNumberInput(formData.maxAmountPerInvestor)),
     );
-    form.append('actualAmount', String(formData.actualAmount || 0));
+    form.append('actualAmount', String(parseNumberInput(formData.actualAmount)));
 
     // 이미지 파일 추가
     if (formData.projectImages && formData.projectImages.length > 0) {
@@ -359,7 +373,10 @@ const ProjectRegister: React.FC = () => {
     >,
   ) => {
     const { name, value, type } = e.target;
-    const parsedValue = type === 'number' ? parseNumberInput(value) : value;
+    const parsedValue =
+      type === 'number' || commaNumberFields.has(name)
+        ? parseNumberInput(value)
+        : value;
     setFormData({ ...formData, [name]: parsedValue });
   };
 
