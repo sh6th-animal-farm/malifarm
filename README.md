@@ -64,7 +64,7 @@
           <li><b>프론트엔드</b></li>
           <ul>
             <li>레이아웃, 헤더, 푸터</li>
-            <li>토큰거래소 목록, 상세 페이지</li>
+            <li>토큰거래소 페이지</li>
           </ul>
           <li><b>백엔드</b></li>
           <ul>
@@ -72,7 +72,7 @@
             <li>주문 및 주문 취소 기능</li>
             <li>호가, 체결, 차트 실시간 반영</li>
             <li>전자지갑 실시간 반영</li>
-            <li>- 기타 외부거래소 API</li>
+            <li>외부증권사 Open API</li>
           </ul>
           <li><b>CI/CD</b> (GitHub Actions)</li>
         </ul>
@@ -82,14 +82,17 @@
           <li>기획 / 디자인</li>
           <li><b>프론트엔드</b></li>
           <ul>
-            <li>거래소 목록 페이지</li>
+            <li>메인페이지</li>
+            <li>마이페이지</li>
+            <li>뉴스페이지</li>
+            <li>반응형/PWA</li>
           </ul>
           <li><b>백엔드</b></li>
           <ul>
-            <li>주문 / 체결</li>
-            <li>차트 / 시세</li>
-            <li>Redis 실시간 통신</li>
-            <li>기타 API</li>
+            <li>데이터 파이프라인 구축</li>
+            <li>거래 데이터 실시간 전송</li>
+            <li>외부증권사 Open API</li>
+            <li>AI 에이전트를 통한 시장 활성화</li>
           </ul>
         </ul>
       </td>
@@ -98,16 +101,17 @@
           <li>기획 / 디자인</li>
           <li><b>프론트엔드</b></li>
           <ul>
-            <li>프로젝트 상세 페이지</li>
-            <li>계좌 체크 실패 모달</li>
+            <li>프로젝트 페이지</li>
+            <li>관리자 페이지</li>
           </ul>
           <li><b>백엔드</b></li>
           <ul>
-            <li>프로젝트 상세 조회</li>
-            <li>계좌 연동 체크</li>
-            <li>청약 신청</li>
-            <li>토큰 분배 로직</li>
-            <li>진행 스케줄러</li>
+            <li>프로젝트 생애주기 관리</li>
+            <li>관심 프로젝트 처리</li>
+            <li>청약 신청/취소</li>
+            <li>토큰 분배</li>
+            <li>실시간 농장 정보 API</li>
+            <li>토큰 원장 해시함수</li>
           </ul>
         </ul>
       </td>
@@ -116,14 +120,15 @@
           <li>기획 / 디자인</li>
           <li><b>프론트엔드</b></li>
           <ul>
-            <li>로그인 페이지</li>
-            <li>탄소마켓 전체 / 상세</li>
+            <li>탄소마켓 페이지</li>
           </ul>
           <li><b>백엔드</b></li>
           <ul>
-            <li>로그인 후 토큰 관리</li>
-            <li>탄소마켓 전체 / 상세</li>
-            <li>지갑, 거래내역 조회</li>
+            <li>로그인 세션 관리</li>
+            <li>JWT와 Security 관리</li>
+            <li>탄소마켓 지분 계산</li>
+            <li>LLM을 활용한 뉴스 발행</li>
+            <li>마켓메이커를 통한 시장 활성화</li>
           </ul>
         </ul>
       </td>
@@ -132,16 +137,15 @@
           <li>기획 / 디자인</li>
           <li><b>프론트엔드</b></li>
           <ul>
-            <li>회원가입 페이지</li>
-            <li>탄소마켓 전체 / 모달</li>
-            <li>이니시스 결제 연동</li>
+            <li>로그인/회원가입 페이지</li>
           </ul>
           <li><b>백엔드</b></li>
           <ul>
-            <li>회원가입</li>
-            <li>탄소마켓 전체 조회</li>
-            <li>사업자/메일 인증</li>
-            <li>내 정보/내역 조회</li>
+            <li>로그인 세션 관리</li>
+            <li>회원가입 이메일 인증</li>
+            <li>비밀번호 검증 로직</li>
+            <li>Security를 통한 역할 접근 제어</li>
+            <li>탄소마켓 스냅샷 로직 적용</li>
           </ul>
         </ul>
       </td>
@@ -156,10 +160,30 @@
 
 ## 기술 스택
 ### 공통
-- GitHub, Swagger, Notion, Slack, Discord
+![GitHub](https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white)
+![Swagger](https://img.shields.io/badge/swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
+![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)
+![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
+![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)
+
 ### 프론트엔드
-- React, Vite, TailwindCSS, PWA, KakaoMaps
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![PWA](https://img.shields.io/badge/PWA-1a0dab?style=for-the-badge&logo=PWA&logoColor=white)
+![KakaoTalk](https://img.shields.io/badge/kakaomaps-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)
+
 ### 백엔드
-- Java, Spring Boot, Spring Batch, Spring Security, Python, FastAPI, MyBatis, PostgreSQL, Redis
+![Java](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Spring Batch](https://img.shields.io/badge/Spring%20Batch-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571.svg?style=for-the-badge&logo=fastapi)
+![MyBatis](https://img.shields.io/badge/MyBatis-C71A11?style=for-the-badge)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+
 ### CI/CD
-- GitHub Actions, Docker
+![GitHub Actions](https://img.shields.io/badge/github%20actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
