@@ -44,7 +44,7 @@
 <table>
   <tbody>
     <tr>
-      <td width="20%" align="center"><a href="https://github.com/lsj1137"><b>황유나(팀장)</b></a></td>
+      <td width="20%" align="center"><a href="https://github.com/hyn4008"><b>황유나(팀장)</b></a></td>
       <td width="20%" align="center"><a href="https://github.com/minsjes"><b>강민제</b></a></td>
       <td width="20%" align="center"><a href="https://github.com/songseonghyeon"><b>송성현</b></a></td>
       <td width="20%" align="center"><a href="https://github.com/Yanghaji"><b>양지은</b></a></td>
