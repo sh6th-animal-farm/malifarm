@@ -1,14 +1,17 @@
 ## 마이리틀 스마트팜
 <img width="1437" height="806" alt="image" src="https://github.com/user-attachments/assets/1770d5c8-b4e3-409c-8187-0dcb0831bf76" />
 
+
 ## 프로젝트 소개
 - 개요 : 유휴 농지를 스마트팜으로 전환하고, 해당 스마트팜에서 발생하는 수익권을 토큰 증권 형태로 발행·관리하는 플랫폼
 - 목적 : 농업과 조각 투자를 결합하여 농업 투자에 대한 개인 투자자의 진입 장벽을 제거하고, 지역 경제 활성화 및 탄소 중립 실천
-- 기간 : 2026.01~02, 2026.03~04 (총 2개월)
+- 기간 : 2026.01 ~ 02, 2026.03 ~ 04 (총 2개월)
+
 
 ## 링크
 - 배포 URL : https://www.malifarm.site
 - 시연 영상 : https://www.youtube.com/watch?v=yCeqjWOhzlw
+
 
 ## 주요 기능
 ### (1) 프로젝트 생애주기 관리 (Project Life Cycle)
@@ -36,15 +39,15 @@
 - 결제 솔루션 연동: 포트원(KG 이니시스) API를 통한 실제 탄소배출권 결제 프로세스 구현
 - 구매 이력 증빙: 탄소배출권 구매 내역 및 인증 현황을 마이페이지를 통해 관리
 
-## 팀원 소개 및 역할
 
+## 팀원 소개 및 역할
 <table>
   <tbody>
     <tr>
       <td width="20%" align="center"><a href="https://github.com/lsj1137"><b>황유나(팀장)</b></a></td>
       <td width="20%" align="center"><a href="https://github.com/minsjes"><b>강민제</b></a></td>
       <td width="20%" align="center"><a href="https://github.com/songseonghyeon"><b>송성현</b></a></td>
-      <td width="16.6%" align="center"><a href="https://github.com/Yanghaji"><b>양지은</b></a></td>
+      <td width="20%" align="center"><a href="https://github.com/Yanghaji"><b>양지은</b></a></td>
       <td width="20%" align="center"><a href="https://github.com/dydwns6837"><b>유용준</b></a></td>
     </tr>
     <tr>
@@ -146,8 +149,10 @@
   </tbody>
 </table>
 
+
 ## 서비스 아키텍처
 <img width="1420" height="1060" alt="image" src="https://github.com/user-attachments/assets/9964de5a-34e9-4d8b-b691-8b475e508e14" />
+
 
 ## 기술 스택
 ### 공통
